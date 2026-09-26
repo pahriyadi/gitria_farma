@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<title>PROPOSAL PENAWARAN PENGEMBANGAN SISTEM ERP SAWAMAWA MEDICAL CENTER</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page Section1 {
+    size: 21.0cm 29.7cm; /* A4 */
+    margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+    mso-header-margin: 35.4pt;
+    mso-footer-margin: 35.4pt;
+    mso-paper-source: 0;
+}
+div.Section1 { page: Section1; }
+body {
+    font-family: "Calibri", "Arial", sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #212529;
+    background-color: #ffffff;
+}
+h1 {
+    font-size: 18pt;
+    color: #0d9f4f;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 2pt;
+    text-transform: uppercase;
+}
+h2 {
+    font-size: 13pt;
+    color: #333333;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-bottom: 4pt;
+}
+h3 {
+    font-size: 12pt;
+    color: #0d9f4f;
+    font-weight: bold;
+    border-bottom: 1.5pt solid #0d9f4f;
+    padding-bottom: 3pt;
+    margin-top: 15pt;
+    margin-bottom: 8pt;
+}
+p {
+    margin-top: 0pt;
+    margin-bottom: 6pt;
+    text-align: justify;
+}
+table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8pt;
+    margin-bottom: 12pt;
+}
+table.data-table th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: bold;
+    border: 1pt solid #cbd5e1;
+    padding: 6pt 8pt;
+    font-size: 10pt;
+    text-align: left;
+}
+table.data-table td {
+    border: 1pt solid #cbd5e1;
+    padding: 6pt 8pt;
+    font-size: 9.5pt;
+    vertical-align: top;
+}
+table.info-table {
+    width: 100%;
+    margin-bottom: 12pt;
+    background-color: #f8fafc;
+    border: 1pt solid #e2e8f0;
+    border-left: 4pt solid #0d9f4f;
+    padding: 8pt;
+}
+table.info-table td {
+    padding: 2pt 4pt;
+    font-size: 10pt;
+}
+table.signature-table {
+    width: 100%;
+    margin-top: 30pt;
+    border: none;
+}
+table.signature-table td {
+    border: none;
+    text-align: center;
+    vertical-align: top;
+    font-size: 10.5pt;
+}
+.badge-total {
+    background-color: #0d9f4f;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 4pt 8pt;
+    font-size: 11pt;
+}
+.highlight-box {
+    background-color: #f0fdf4;
+    border: 1pt solid #86efac;
+    border-left: 4pt solid #16a34a;
+    padding: 8pt;
+    margin-top: 8pt;
+    margin-bottom: 8pt;
+    font-size: 10pt;
+}
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-bold { font-weight: bold; }
+</style>
+</head>
+<body>
+<div class="Section1">
+
+    <h1>PROPOSAL PENAWARAN PENGEMBANGAN SISTEM</h1>
+    <h2>SISTEM INFORMASI MANAJEMEN KLINIK, FARMASI, RESTO GIZI & AKUNTANSI TERPADU</h2>
+    <p class="text-center" style="font-weight: bold; color: #0d9f4f; font-size: 12pt; margin-bottom: 15pt;">SAWAMAWA MEDICAL CENTER & RESTO SEHAT</p>
+
+    <hr style="border: 0.5pt solid #cbd5e1; margin-bottom: 12pt;">
+
+    <table class="info-table">
+        <tr>
+            <td style="width: 25%; font-weight: bold;">Nomor Dokumen</td>
+            <td style="width: 2%;">:</td>
+            <td>PROP/SMC/ERP/VIII/2026-001</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Tanggal Penawaran</td>
+            <td>:</td>
+            <td>22 Agustus 2026</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Perihal</td>
+            <td>:</td>
+            <td>Penawaran Pengadaan Perangkat Lunak (Software) SIM-Klinik Terintegrasi Enterprise</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Masa Berlaku</td>
+            <td>:</td>
+            <td>30 (Tiga Puluh) Hari Kalender</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">Ditujukan Kepada</td>
+            <td>:</td>
+            <td>Manajemen & Direksi <strong>Sawamawa Medical Center</strong>, Sumbawa Besar, NTB</td>
+        </tr>
+    </table>
+
+    <h3>1. LATAR BELAKANG & TUJUAN</h3>
+    <p>Dalam rangka meningkatkan mutu pelayanan medis, kecepatan administrasi pasien, akurasi pengelolaan persediaan obat farmasi, efisiensi resto gizi pasien, serta transparansi pembukuan keuangan berstandar akuntansi resmi, dibutuhkan satu sistem terpadu (<strong>All-in-One Enterprise ERP</strong>) yang menggabungkan seluruh unit operasional ke dalam satu basis data terpusat (<em>single source of truth</em>).</p>
+    <p>Sistem ini dirancang khusus untuk memangkas waktu tunggu antrean pasien, mencegah kebocoran stok obat & bahan baku, mengotomatisasi jurnal keuangan tanpa kesalahan manual, serta menyajikan laporan laba rugi dan posisi neraca keuangan secara <em>real-time</em>.</p>
+
+    <h3>2. RUANG LINGKUP & FITUR UTAMA SISTEM</h3>
+    <p>Sistem ERP Sawamawa Medical Center mencakup 10 modul komprehensif yang saling terhubung otomatis:</p>
+    <table class="data-table">
+        <tr>
+            <th style="width: 30%;">Kategori Modul</th>
+            <th>Cakupan Fitur Operasional Utama</th>
+        </tr>
+        <tr>
+            <td class="font-bold">1. Portal Pasien & Pelayanan Medis</td>
+            <td>Landing page profil klinik, registrasi online/offline, antrean multi-poli (Display TV bersuara), Rekam Medis Elektronik (RME) SOAP Dokter, Diagnosa ICD-10 & ICD-9-CM, Dental Odontogram, Hasil Uji Lab Patologi, dan Rawat Inap.</td>
+        </tr>
+        <tr>
+            <td class="font-bold">2. Farmasi & Apotek Terpadu</td>
+            <td>Katalog master obat, penelusuran Multi-Batch (FIFO/FEFO), pemantauan tanggal kedaluwarsa (Expired Tracking), dispensing resep dokter elektronik (E-Prescribing), dan penjualan obat bebas (OTC).</td>
+        </tr>
+        <tr>
+            <td class="font-bold">3. POS Restoran Sehat & Dapur (KDS)</td>
+            <td>Kasir layar sentuh (Touchscreen POS), manajemen meja (Open Table Bill), Kitchen Display System (KDS) monitor dapur, dan integrasi pesanan makanan diet rujukan dokter gizi.</td>
+        </tr>
+        <tr>
+            <td class="font-bold">4. Kasir & Pembayaran Multi-Payment</td>
+            <td>Kalkulasi tagihan terpadu (Klinik + Obat + Resto + Lab), multi-payment (Tunai, QRIS, Transfer, EDC, BPJS/Asuransi, Piutang), dan cetak kuitansi/struk thermal resmi.</td>
+        </tr>
+        <tr>
+            <td class="font-bold">5. Keuangan & Akuntansi Standar Audit</td>
+            <td>Kasir kas & bank, auto-journaling double-entry, wizard setup saldo awal cerdas (Smart Auto-Balancing), buku besar, dan 5 laporan keuangan resmi (Laba Rugi, Neraca, Arus Kas, Omset Unit Bisnis) berkop surat.</td>
+        </tr>
+        <tr>
+            <td class="font-bold">6. Keamanan & Performa Tinggi</td>
+            <td>Paginasi DataTables Server-Side Processing (< 15 ms), RBAC 10 peran pengguna, enkripsi data, audit trail logging, dan menu "Apa yang Baru?" berbasis database.</td>
+        </tr>
+    </table>
+
+    <h3>3. RINCIAN NILAI INVESTASI PENGEMBANGAN SISTEM</h3>
+    <p>Total nilai investasi pengadaan dan implementasi sistem ditetapkan sebesar <strong>Rp 20.000.000,- (Dua Puluh Juta Rupiah)</strong> dengan rincian pembagian modul sebagai berikut:</p>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;" class="text-center">NO</th>
+                <th style="width: 32%;">KOMPONEN & MODUL SISTEM</th>
+                <th style="width: 43%;">URAIAN CAKUPAN PEKERJAAN</th>
+                <th style="width: 20%;" class="text-right">NILAI INVESTASI (IDR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center font-bold">1</td>
+                <td class="font-bold">Modul Inti Klinik, Pendaftaran & RME Medis</td>
+                <td>• Registrasi Pasien (Online/Offline) & No RM Otomatis<br>• Manajemen Antrean Multi-Poli & Layar TV Display<br>• RME SOAP Dokter, Diagnosa ICD-10 & Tindakan ICD-9-CM<br>• Odontogram Gigi & Modul Laboratorium Patologi<br>• Manajemen Kamar & Tempat Tidur Rawat Inap</td>
+                <td class="text-right font-bold">Rp 5.500.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">2</td>
+                <td class="font-bold">Modul Farmasi & Apotek Terpadu (Multi-Batch)</td>
+                <td>• Master Obat, Stok Fisik & Warning Stok Kritis<br>• Tracking Multi-Batch Penerimaan & Tanggal Kedaluwarsa<br>• Dispensing E-Prescription Dokter & Penjualan Bebas (OTC)<br>• Kartu Riwayat Mutasi Stok Otomatis (FIFO/FEFO)</td>
+                <td class="text-right font-bold">Rp 3.500.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">3</td>
+                <td class="font-bold">Modul POS Resto Sehat & Dapur (KDS)</td>
+                <td>• Point of Sale (POS) Layar Sentuh (Touchscreen) Resto<br>• Manajemen Meja & Open Table Bill Kasir<br>• Kitchen Display System (KDS) Layar Dapur Real-time<br>• Integrasi Rujukan Paket Makanan Diet Dokter Gizi</td>
+                <td class="text-right font-bold">Rp 3.000.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">4</td>
+                <td class="font-bold">Modul Kasir Terpadu & Multi-Payment Gateway</td>
+                <td>• Billing Tagihan Terintegrasi (Klinik + Obat + Resto + Lab)<br>• Multi-Payment (Tunai, QRIS, EDC, Transfer Bank, BPJS/Asuransi, Piutang Pasien)<br>• Cetak Struk Kasir Thermal & Kuitansi Berkop Resmi</td>
+                <td class="text-right font-bold">Rp 2.000.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">5</td>
+                <td class="font-bold">Modul Akuntansi, Saldo Awal & Laporan Keuangan</td>
+                <td>• Auto-Journaling Engine (Double-Entry Balance Otomatis)<br>• Wizard Setup Saldo Awal (Smart Auto-Balancing)<br>• Buku Besar Kronologis (General Ledger)<br>• 5 Laporan Keuangan Resmi (Laba Rugi, Neraca, Arus Kas)<br>• Lembar Cetak Laporan Resmi Berkop Surat & Pengesahan Direktur</td>
+                <td class="text-right font-bold">Rp 3.000.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">6</td>
+                <td class="font-bold">Portal Publik, Performa & Keamanan Sistem</td>
+                <td>• Landing Page Website Profil Klinik & Booking Online<br>• Arsitektur DataTables Server-Side Processing (< 15 ms)<br>• RBAC 10 Peran Pengguna & Audit Trail Logging Lengkap<br>• Menu Interaktif "Apa yang Baru? (What's New)" Berbasis Database</td>
+                <td class="text-right font-bold">Rp 2.000.000,-</td>
+            </tr>
+            <tr>
+                <td class="text-center font-bold">7</td>
+                <td class="font-bold">Infrastruktur Cloud & Domain (Tahun Pertama / Year 1)</td>
+                <td>• Domain Premium Resmi (.id / .co.id) Tahun Pertama<br>• Cloud VPS Server SSD NVMe High Performance (Tahun Pertama)<br>• Konfigurasi SSL Certificate (HTTPS 256-bit Encryption)<br>• Setup Database Engine MySQL & Auto-Backup Scheduler</td>
+                <td class="text-right font-bold">Rp 1.000.000,-</td>
+            </tr>
+            <tr style="background-color: #f0fdf4;">
+                <td colspan="3" class="text-right font-bold" style="font-size: 11pt; color: #0d9f4f;">TOTAL BIAYA PENGEMBANGAN & IMPLEMENTASI (TURNKEY):</td>
+                <td class="text-right font-bold" style="font-size: 11pt; color: #0d9f4f;">Rp 20.000.000,-</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="font-bold" style="font-style: italic;">Terbilang: Dua Puluh Juta Rupiah</p>
+
+    <h3>4. BIAYA OPERASIONAL & PERPANJANGAN TAHUNAN (MULAI TAHUN KE-2 DST)</h3>
+    <div class="highlight-box">
+        <strong>Ketentuan Biaya Perpanjangan Domain & Server Hosting:</strong><br>
+        Biaya investasi awal <strong>Rp 20.000.000,-</strong> sudah <strong>TERMASUK biaya Domain .id dan Cloud Server VPS Hosting untuk Tahun Pertama (1 Tahun Penuh)</strong>.<br>
+        Mulai <strong>Tahun ke-2 (Kedua) dan seterusnya</strong>, pihak klinik hanya dikenakan biaya pemeliharaan infrastruktur tahunan di luar paket 20 juta sebagai berikut:
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Item Pembiayaan Tahunan</th>
+                <th style="width: 20%;" class="text-center">Periode</th>
+                <th style="width: 20%;" class="text-right">Estimasi Biaya</th>
+                <th style="width: 25%;">Keterangan Layanan</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="font-bold">Perpanjangan Domain Premium (.id)</td>
+                <td class="text-center">Per 1 Tahun</td>
+                <td class="text-right font-bold">Rp 250.000,-</td>
+                <td>Registrasi & pengelolaan DNS resmi PANDI</td>
+            </tr>
+            <tr>
+                <td class="font-bold">Perpanjangan Cloud Server VPS NVMe</td>
+                <td class="text-center">Per 1 Tahun</td>
+                <td class="text-right font-bold">Rp 1.250.000,-</td>
+                <td>Dedicated IP, Unlimited Bandwidth, RAM 4GB+, Proteksi DDoS & Uptime 99.9%</td>
+            </tr>
+            <tr>
+                <td class="font-bold">Paket Pemeliharaan & Backup Cloud</td>
+                <td class="text-center">Per 1 Tahun (Opsional)</td>
+                <td class="text-right font-bold">Rp 500.000,-</td>
+                <td>Pemeliharaan berkala, backup database harian terenkripsi ke Cloud Storage</td>
+            </tr>
+            <tr style="background-color: #fefce8;">
+                <td colspan="2" class="text-right font-bold">TOTAL BIAYA PERPANJANGAN TAHUNAN:</td>
+                <td colspan="2" class="font-bold" style="color: #b45309;">Rp 1.500.000 - Rp 2.000.000,- / Tahun</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>5. SKEMA & TAHAPAN PEMBAYARAN (PAYMENT TERMS)</h3>
+    <table class="data-table">
+        <tr>
+            <th style="width: 25%;">Termin Pembayaran</th>
+            <th style="width: 15%;" class="text-center">Persentase</th>
+            <th style="width: 20%;" class="text-right">Nominal (IDR)</th>
+            <th style="width: 40%;">Kondisi Penagihan</th>
+        </tr>
+        <tr>
+            <td class="font-bold">Termin 1 (Uang Muka / DP)</td>
+            <td class="text-center font-bold">40%</td>
+            <td class="text-right font-bold">Rp 8.000.000,-</td>
+            <td>Saat penandatanganan kesepakatan kerjasama, setup VPS & domain.</td>
+        </tr>
+        <tr>
+            <td class="font-bold">Termin 2 (UAT & Deploy)</td>
+            <td class="text-center font-bold">40%</td>
+            <td class="text-right font-bold">Rp 8.000.000,-</td>
+            <td>Setelah seluruh modul selesai diuji coba (User Acceptance Test).</td>
+        </tr>
+        <tr>
+            <td class="font-bold">Termin 3 (Pelunasan)</td>
+            <td class="text-center font-bold">20%</td>
+            <td class="text-right font-bold">Rp 4.000.000,-</td>
+            <td>Setelah pelatihan staf/nakes selesai dan penandatanganan BAST.</td>
+        </tr>
+    </table>
+
+    <h3>6. LAYANAN PURNA JUAL, GARANSI & KEPEMILIKAN</h3>
+    <ul>
+        <li><strong>Garansi Sistem:</strong> Bebas biaya perbaikan kendala teknis (<em>bug/error</em>) selama <strong>6 (enam) bulan</strong> setelah sistem Go-Live.</li>
+        <li><strong>Pelatihan Pengguna (User Training):</strong> Pendampingan operasional untuk seluruh role pengguna (Pendaftaran, Perawat, Dokter, Farmasi, Kasir, Keuangan, dan Manajemen).</li>
+        <li><strong>Dokumentasi Manual:</strong> Buku panduan operasional lengkap (<code>panduan_sistem.md</code> & <code>dokumentasi.md</code>).</li>
+        <li><strong>Hak Milik Penuh (Full Ownership):</strong> Sistem menjadi aset milik klinik seutuhnya tanpa biaya langganan per transaksi atau per user.</li>
+    </ul>
+
+    <h3>7. LEMBAR PENGESAHAN & PENUTUP</h3>
+    <p>Demikian proposal penawaran ini kami sampaikan. Kami berkomitmen memberikan sistem terbaik demi kemajuan pelayanan <strong>Sawamawa Medical Center</strong>.</p>
+
+    <table class="signature-table">
+        <tr>
+            <td style="width: 50%;">
+                <strong>Disetujui Oleh,</strong><br>
+                Pihak Klien / Manajemen Klinik<br><br><br><br><br>
+                <u><strong>( .................................................... )</strong></u><br>
+                Direktur / Pimpinan Sawamawa Medical Center
+            </td>
+            <td style="width: 50%;">
+                <strong>Diajukan Oleh,</strong><br>
+                Tim Pengembang Sistem Informasi<br><br><br><br><br>
+                <u><strong>( .................................................... )</strong></u><br>
+                Lead Developer & System Architect
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

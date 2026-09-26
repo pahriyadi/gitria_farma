@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" width="160" height="50">
+  <defs>
+    <linearGradient id="gradSsl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7e22ce"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Card -->
+  <rect x="1" y="1" width="158" height="48" rx="8" fill="url(#gradSsl)" stroke="#334155" stroke-width="1.5"/>
+  <!-- Left Lock Icon Container -->
+  <circle cx="26" cy="25" r="16" fill="#7e22ce" fill-opacity="0.15" stroke="#c084fc" stroke-width="1"/>
+  <!-- Lock Path -->
+  <path d="M22 22 V19 C22 16.8 23.8 15 26 15 C28.2 15 30 16.8 30 19 V22" fill="none" stroke="#c084fc" stroke-width="2"/>
+  <rect x="20" y="22" width="12" height="11" rx="2.5" fill="url(#lockGrad)"/>
+  <circle cx="26" cy="27" r="1.5" fill="#ffffff"/>
+  <!-- Text Section -->
+  <text x="49" y="19" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="11" font-weight="800" fill="#c084fc" letter-spacing="0.3">256-BIT SSL</text>
+  <text x="49" y="30" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="7.5" font-weight="700" fill="#ffffff" letter-spacing="0.5">TLS 1.3 ENCRYPTION</text>
+  <text x="49" y="40" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="6.5" font-weight="500" fill="#94a3b8">End-to-End Protected</text>
+</svg>
