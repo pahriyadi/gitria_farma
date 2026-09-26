@@ -1,9 +1,0 @@
-- `[x]` Create database table `profit_split_settings` and seed initial values
-- `[x]` Modify `JournalEngine.php` to read and use dynamic values from `profit_split_settings`
-- `[x]` Create `skemaBagiHasil` methods in `Accounting.php` controller
-- `[x]` Create view `app/Views/accounting/skema_bagi_hasil.php` containing:
-  - Form for Clinic Split parameters
-  - Form for Pharmacy Split parameters
-  - Table for viewing/editing Doctor Fees
-- `[x]` Add menu link in the sidebar or relevant accounting layout
-- `[x]` Test functionality and verify changes
