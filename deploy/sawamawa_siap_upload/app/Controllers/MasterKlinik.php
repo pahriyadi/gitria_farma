@@ -8,7 +8,7 @@ class MasterKlinik extends BaseController
 {
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. KATEGORI PELAYANAN (POLI, TINDAKAN)
         $categories = $db->table('categories')->orderBy('id', 'ASC')->get()->getResult();
@@ -137,7 +137,7 @@ class MasterKlinik extends BaseController
      */
     public function manageCategory()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -169,7 +169,7 @@ class MasterKlinik extends BaseController
      */
     public function managePoliklinikBaru()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -212,7 +212,7 @@ class MasterKlinik extends BaseController
      */
     public function manageService()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -255,26 +255,30 @@ class MasterKlinik extends BaseController
      */
     public function manageDoctor()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
             $categoryId = $this->request->getPost('category_id');
             $polyId = ($categoryId == 1) ? $this->request->getPost('polyclinic_id') : null;
             $tindakanId = ($categoryId == 2) ? $this->request->getPost('tindakan_id') : null;
-            $fee = $this->request->getPost('fee_per_pasien') ?: 0.00;
+            $feeType = $this->request->getPost('fee_type') === 'fixed_amount' ? 'fixed_amount' : 'percentage';
+            $fee = (float)($this->request->getPost('fee_per_pasien') ?: 0.00);
+            $prescFeePct = $this->request->getPost('prescription_fee_percent') !== null ? floatval($this->request->getPost('prescription_fee_percent')) : 5.00;
 
             $db->table('doctors')->insert([
-                'nik_employee'   => strtoupper($this->request->getPost('nik_employee')),
-                'name'           => strtoupper($this->request->getPost('name')),
-                'category_id'    => $categoryId,
-                'polyclinic_id'  => $polyId,
-                'tindakan_id'    => $tindakanId,
-                'fee_per_pasien' => $fee,
-                'sip_number'     => $this->request->getPost('sip_number') ?: 'SIP-DEFAULT',
-                'str_number'     => $this->request->getPost('str_number') ?: 'STR-DEFAULT',
-                'str_expiry'     => $this->request->getPost('str_expiry') ?: date('Y-12-31', strtotime('+5 years')),
-                'status'         => $this->request->getPost('status') ?: 'active'
+                'nik_employee'             => strtoupper($this->request->getPost('nik_employee')),
+                'name'                     => strtoupper($this->request->getPost('name')),
+                'category_id'              => $categoryId,
+                'polyclinic_id'            => $polyId,
+                'tindakan_id'              => $tindakanId,
+                'fee_type'                 => $feeType,
+                'fee_per_pasien'           => $fee,
+                'prescription_fee_percent' => $prescFeePct,
+                'sip_number'               => $this->request->getPost('sip_number') ?: 'SIP-DEFAULT',
+                'str_number'               => $this->request->getPost('str_number') ?: 'STR-DEFAULT',
+                'str_expiry'               => $this->request->getPost('str_expiry') ?: date('Y-12-31', strtotime('+5 years')),
+                'status'                   => $this->request->getPost('status') ?: 'active'
             ]);
             session()->setFlashdata('success', 'Data Dokter & Penugasan berhasil disimpan.');
         } elseif ($action === 'update') {
@@ -282,19 +286,23 @@ class MasterKlinik extends BaseController
             $categoryId = $this->request->getPost('category_id');
             $polyId = ($categoryId == 1) ? $this->request->getPost('polyclinic_id') : null;
             $tindakanId = ($categoryId == 2) ? $this->request->getPost('tindakan_id') : null;
-            $fee = $this->request->getPost('fee_per_pasien') ?: 0.00;
+            $feeType = $this->request->getPost('fee_type') === 'fixed_amount' ? 'fixed_amount' : 'percentage';
+            $fee = (float)($this->request->getPost('fee_per_pasien') ?: 0.00);
+            $prescFeePct = $this->request->getPost('prescription_fee_percent') !== null ? floatval($this->request->getPost('prescription_fee_percent')) : 5.00;
 
             $db->table('doctors')->where('id', $id)->update([
-                'nik_employee'   => strtoupper($this->request->getPost('nik_employee')),
-                'name'           => strtoupper($this->request->getPost('name')),
-                'category_id'    => $categoryId,
-                'polyclinic_id'  => $polyId,
-                'tindakan_id'    => $tindakanId,
-                'fee_per_pasien' => $fee,
-                'sip_number'     => $this->request->getPost('sip_number') ?: 'SIP-DEFAULT',
-                'str_number'     => $this->request->getPost('str_number') ?: 'STR-DEFAULT',
-                'str_expiry'     => $this->request->getPost('str_expiry') ?: date('Y-12-31', strtotime('+5 years')),
-                'status'         => $this->request->getPost('status') ?: 'active'
+                'nik_employee'             => strtoupper($this->request->getPost('nik_employee')),
+                'name'                     => strtoupper($this->request->getPost('name')),
+                'category_id'              => $categoryId,
+                'polyclinic_id'            => $polyId,
+                'tindakan_id'              => $tindakanId,
+                'fee_type'                 => $feeType,
+                'fee_per_pasien'           => $fee,
+                'prescription_fee_percent' => $prescFeePct,
+                'sip_number'               => $this->request->getPost('sip_number') ?: 'SIP-DEFAULT',
+                'str_number'               => $this->request->getPost('str_number') ?: 'STR-DEFAULT',
+                'str_expiry'               => $this->request->getPost('str_expiry') ?: date('Y-12-31', strtotime('+5 years')),
+                'status'                   => $this->request->getPost('status') ?: 'active'
             ]);
             session()->setFlashdata('success', 'Data Dokter & Penugasan berhasil diperbarui.');
         } elseif ($action === 'delete') {
@@ -313,7 +321,7 @@ class MasterKlinik extends BaseController
      */
     public function saveDoctorSignature()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('doctor_id');
         $signature = $this->request->getPost('digital_signature');
         $stamp     = $this->request->getPost('stamp_image');
@@ -341,7 +349,7 @@ class MasterKlinik extends BaseController
      */
     public function getTindakanJson()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $parents = $db->table('tindakan')
                       ->select('tindakan.*, categories.name as category_name')
                       ->join('categories', 'categories.id = tindakan.category_id', 'left')
@@ -364,7 +372,7 @@ class MasterKlinik extends BaseController
      */
     public function manageRoom()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -403,7 +411,7 @@ class MasterKlinik extends BaseController
      */
     public function manageBed()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -436,7 +444,7 @@ class MasterKlinik extends BaseController
      */
     public function manageMedicineCategory()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -471,7 +479,7 @@ class MasterKlinik extends BaseController
      */
     public function manageUnit()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -504,7 +512,7 @@ class MasterKlinik extends BaseController
      */
     public function manageConsentTemplate()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -547,7 +555,7 @@ class MasterKlinik extends BaseController
      */
     public function getConsentTemplatesJson()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $templates = $db->table('consent_templates')
                         ->select('consent_templates.*, tindakan.name as tindakan_name')
                         ->join('tindakan', 'tindakan.id = consent_templates.tindakan_id', 'left')
@@ -563,7 +571,7 @@ class MasterKlinik extends BaseController
      */
     public function manageDepartment()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -596,7 +604,7 @@ class MasterKlinik extends BaseController
      */
     public function manageJobPosition()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -633,7 +641,7 @@ class MasterKlinik extends BaseController
      */
     public function manageLabTest()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -674,7 +682,7 @@ class MasterKlinik extends BaseController
      */
     public function manageInsuranceProvider()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -717,7 +725,7 @@ class MasterKlinik extends BaseController
      */
     public function manageDoctorSchedule()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
@@ -756,7 +764,7 @@ class MasterKlinik extends BaseController
      */
     public function manageSupplier()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {

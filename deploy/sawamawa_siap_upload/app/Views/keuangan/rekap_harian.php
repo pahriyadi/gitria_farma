@@ -313,6 +313,82 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
+        <!-- PHARMACY SALES TABLE (OTC & DIRECT PRESCRIPTION) -->
+        <div class="card shadow-sm bg-white mb-5" style="border: 1px solid #b8b8b8;">
+            <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="font-weight-bold text-dark mb-0">
+                        <i class="fas fa-prescription-bottle-alt text-teal mr-2"></i> Rincian Penjualan Apotek Farmasi & Resep (Tanggal: <?= date('d/m/Y', strtotime($date)) ?>)
+                    </h6>
+                    <small class="text-muted">Total Omzet: <strong>Rp <?= number_format($totalPharmacySales ?? 0, 0, ',', '.') ?></strong> | Tusla: <strong>Rp <?= number_format($totalPharmacyTusla ?? 0, 0, ',', '.') ?></strong> | Embalase: <strong>Rp <?= number_format($totalPharmacyEmbalase ?? 0, 0, ',', '.') ?></strong> | Fee Dokter: <strong>Rp <?= number_format($totalPharmacyFeeDoc ?? 0, 0, ',', '.') ?></strong></small>
+                </div>
+                <span class="badge badge-teal font-weight-bold"><?= count($pharmacySales ?? []) ?> Penjualan</span>
+            </div>
+            <div class="card-body p-3">
+                <table class="table table-bordered table-striped table-hover datatable" style="font-size: 13px;">
+                    <thead class="bg-light">
+                        <tr>
+                            <th style="width: 140px;" class="text-center">No. Transaksi</th>
+                            <th style="width: 80px;" class="text-center">Waktu</th>
+                            <th>Pembeli / Pasien</th>
+                            <th>Dokter / Resep</th>
+                            <th class="text-right">Tusla Racik</th>
+                            <th class="text-right">Embalase</th>
+                            <th class="text-right text-success">Grand Total</th>
+                            <th class="text-right text-danger">Fee Dokter</th>
+                            <th class="text-center">Metode</th>
+                            <th class="text-center">Kasir</th>
+                            <th style="width: 70px;" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($pharmacySales)): ?>
+                            <?php foreach ($pharmacySales as $ps): ?>
+                                <?php $psFee = !empty($ps->doctor_id) ? round((float)$ps->total_amount * 0.05, 2) : 0; ?>
+                                <tr>
+                                    <td class="text-center font-weight-bold text-teal"><?= esc($ps->sale_no) ?></td>
+                                    <td class="text-center"><?= date('H:i', strtotime($ps->created_at)) ?> WITA</td>
+                                    <td>
+                                        <strong><?= esc($ps->customer_name ?: 'Pelanggan Umum') ?></strong>
+                                        <small class="text-muted d-block"><?= esc($ps->customer_phone ?: '-') ?></small>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($ps->doctor_id)): ?>
+                                            <span class="badge badge-teal px-2 py-1"><i class="fas fa-user-md mr-1"></i> <?= esc($ps->doctor_name) ?></span>
+                                        <?php else: ?>
+                                            <span class="badge badge-light border text-muted">Bebas (OTC)</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-right text-info font-weight-bold">
+                                        <?= (float)($ps->tusla_amount ?? 0) > 0 ? 'Rp ' . number_format($ps->tusla_amount, 0, ',', '.') : '-' ?>
+                                    </td>
+                                    <td class="text-right text-teal font-weight-bold">
+                                        <?= (float)($ps->embalase_amount ?? 0) > 0 ? 'Rp ' . number_format($ps->embalase_amount, 0, ',', '.') : '-' ?>
+                                    </td>
+                                    <td class="text-right font-weight-bold text-success" style="font-size: 13.5px;">
+                                        Rp <?= number_format($ps->grand_total, 0, ',', '.') ?>
+                                    </td>
+                                    <td class="text-right font-weight-bold text-danger">
+                                        <?= $psFee > 0 ? 'Rp ' . number_format($psFee, 0, ',', '.') : '-' ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-light border text-uppercase"><?= esc($ps->payment_method ?: 'Tunai') ?></span>
+                                    </td>
+                                    <td class="text-center"><?= esc($ps->cashier_name ?: 'Kasir') ?></td>
+                                    <td class="text-center">
+                                        <a href="<?= base_url('apotek/cetak-nota/' . $ps->id) ?>" target="_blank" class="btn btn-outline-dark btn-xs font-weight-bold" title="Cetak Struk/Nota">
+                                            <i class="fas fa-print"></i> Nota
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="11" class="text-center py-4 text-muted">Belum ada transaksi penjualan apotek langsung pada tanggal ini.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
 

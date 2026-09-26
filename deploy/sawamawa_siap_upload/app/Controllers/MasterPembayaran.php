@@ -8,7 +8,7 @@ class MasterPembayaran extends BaseController
 {
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $methods = $db->table('payment_methods')
                       ->orderBy('category', 'ASC')
@@ -27,7 +27,7 @@ class MasterPembayaran extends BaseController
 
     public function save()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $id = $this->request->getPost('id');
         $code = strtolower(trim(preg_replace('/[^a-zA-Z0-9_]/', '_', $this->request->getPost('code') ?? '')));
@@ -73,7 +73,7 @@ class MasterPembayaran extends BaseController
 
     public function toggle($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $row = $db->table('payment_methods')->where('id', $id)->get()->getRow();
         if ($row) {
             $newStatus = $row->is_active == 1 ? 0 : 1;
@@ -89,7 +89,7 @@ class MasterPembayaran extends BaseController
 
     public function delete($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $row = $db->table('payment_methods')->where('id', $id)->get()->getRow();
         if ($row) {
             $db->table('payment_methods')->where('id', $id)->delete();
@@ -100,7 +100,7 @@ class MasterPembayaran extends BaseController
 
     public function getJson()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $methods = $db->table('payment_methods')
                       ->where('is_active', 1)
                       ->orderBy('category', 'ASC')

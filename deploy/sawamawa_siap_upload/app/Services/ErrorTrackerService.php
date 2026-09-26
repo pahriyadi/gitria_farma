@@ -10,7 +10,7 @@ class ErrorTrackerService
     public static function logException(\Throwable $e, string $level = 'ERROR'): bool
     {
         try {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
 
             $message   = $e->getMessage();
             $file      = $e->getFile();
@@ -77,7 +77,7 @@ class ErrorTrackerService
     public static function markResolved(int $id, int $userId = null): bool
     {
         try {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             return $db->table('system_error_logs')
                       ->where('id', $id)
                       ->update([
@@ -96,7 +96,7 @@ class ErrorTrackerService
     public static function clearResolved(): bool
     {
         try {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             return $db->table('system_error_logs')->where('is_resolved', 1)->delete();
         } catch (\Throwable $e) {
             return false;
@@ -109,7 +109,7 @@ class ErrorTrackerService
     public static function clearAll(): bool
     {
         try {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             return $db->table('system_error_logs')->emptyTable();
         } catch (\Throwable $e) {
             return false;

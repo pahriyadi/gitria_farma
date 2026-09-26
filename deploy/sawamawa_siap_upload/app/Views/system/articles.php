@@ -77,7 +77,7 @@
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover datatable-serverside dt-responsive w-100" id="table-articles">
+                    <table class="table table-bordered table-striped table-hover datatable dt-responsive w-100" id="table-articles">
                         <thead class="bg-light">
                             <tr>
                                 <th style="width: 40px;" class="text-center">No</th>

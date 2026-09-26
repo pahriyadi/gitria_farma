@@ -1,87 +1,126 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="card card-outline card-teal shadow">
-            <div class="card-header p-2">
-                <ul class="nav nav-pills" id="masterTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active font-weight-bold" id="cat-tab" data-toggle="tab" href="#cat" role="tab" aria-controls="cat" aria-selected="true">
-                            <i class="fas fa-layer-group mr-1"></i> 1. Kategori Pelayanan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="subcat-tab" data-toggle="tab" href="#subcat" role="tab" aria-controls="subcat" aria-selected="false">
-                            <i class="fas fa-sitemap mr-1"></i> 2. Sub Kategori & Sub Kecil (Tarif)
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="doctor-tab" data-toggle="tab" href="#doctor" role="tab" aria-controls="doctor" aria-selected="false">
-                            <i class="fas fa-user-md mr-1"></i> 3. Dokter & TTD
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="rooms-tab" data-toggle="tab" href="#rooms" role="tab" aria-controls="rooms" aria-selected="false">
-                            <i class="fas fa-door-open mr-1"></i> 4. Ruangan & Bed
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="pharmacy-tab" data-toggle="tab" href="#pharmacy" role="tab" aria-controls="pharmacy" aria-selected="false">
-                            <i class="fas fa-pills mr-1"></i> 5. Kategori & Satuan Obat
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="consent-tab" data-toggle="tab" href="#consent" role="tab" aria-controls="consent" aria-selected="false">
-                            <i class="fas fa-file-contract mr-1"></i> 6. Template Edukasi / Consent
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="hrd-tab" data-toggle="tab" href="#hrd" role="tab" aria-controls="hrd" aria-selected="false">
-                            <i class="fas fa-sitemap mr-1"></i> 7. Departemen & Jabatan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="lab-tab" data-toggle="tab" href="#lab" role="tab" aria-controls="lab" aria-selected="false">
-                            <i class="fas fa-vial mr-1"></i> 8. Uji Laboratorium
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="insurance-tab" data-toggle="tab" href="#insurance" role="tab" aria-controls="insurance" aria-selected="false">
-                            <i class="fas fa-handshake mr-1"></i> 9. Mitra Asuransi
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab" aria-controls="schedule" aria-selected="false">
-                            <i class="fas fa-calendar-alt mr-1"></i> 10. Jadwal Dokter
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="supplier-tab" data-toggle="tab" href="#supplier" role="tab" aria-controls="supplier" aria-selected="false">
-                            <i class="fas fa-truck mr-1"></i> 11. Distributor PBF
-                        </a>
-                    </li>
-                </ul>
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2 align-items-center">
+            <div class="col-sm-7">
+                <h1 class="m-0 text-dark font-weight-bold">
+                    <i class="fas fa-hospital-user text-teal mr-2"></i> Master Data Referensi Klinik
+                </h1>
+                <small class="text-muted">Pusat tata kelola referensi pelayanan medis, tarif tindakan, dokter, ruangan, farmasi, lab, asuransi & PBF</small>
+            </div>
+            <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
+                <span class="badge badge-pill badge-light border text-teal px-3 py-2 font-weight-bold shadow-xs mr-1">
+                    <i class="fas fa-user-md mr-1"></i> <?= count($doctors) ?> Dokter
+                </span>
+                <span class="badge badge-pill badge-light border text-info px-3 py-2 font-weight-bold shadow-xs mr-1">
+                    <i class="fas fa-stethoscope mr-1"></i> <?= count($tindakanList) ?> Tarif Tindakan
+                </span>
+                <span class="badge badge-pill badge-light border text-secondary px-3 py-2 font-weight-bold shadow-xs">
+                    <i class="fas fa-building mr-1"></i> <?= count($rooms) ?> Ruang / <?= count($beds) ?> Bed
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="card card-outline card-teal shadow-sm border-0 mb-4">
+            <div class="card-header p-0 border-bottom-0 bg-light">
+                <div class="master-tabs-scroll-wrapper">
+                    <ul class="nav nav-tabs nav-tabs-modern flex-nowrap" id="masterTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active font-weight-bold py-3 text-truncate" id="cat-tab" data-toggle="tab" href="#cat" role="tab" aria-controls="cat" aria-selected="true">
+                                <i class="fas fa-layer-group text-teal mr-1"></i> 1. Kategori Pelayanan
+                                <span class="badge badge-pill badge-teal ml-1"><?= count($categories) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="subcat-tab" data-toggle="tab" href="#subcat" role="tab" aria-controls="subcat" aria-selected="false">
+                                <i class="fas fa-sitemap text-info mr-1"></i> 2. Sub Kategori & Tarif
+                                <span class="badge badge-pill badge-info ml-1"><?= count($polikliniks) + count($tindakanList) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="doctor-tab" data-toggle="tab" href="#doctor" role="tab" aria-controls="doctor" aria-selected="false">
+                                <i class="fas fa-user-md text-success mr-1"></i> 3. Dokter & Fee Medis
+                                <span class="badge badge-pill badge-success ml-1"><?= count($doctors) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab" aria-controls="schedule" aria-selected="false">
+                                <i class="fas fa-calendar-alt text-teal mr-1"></i> 4. Jadwal Praktik Dokter
+                                <span class="badge badge-pill badge-teal ml-1"><?= count($doctorSchedules) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="rooms-tab" data-toggle="tab" href="#rooms" role="tab" aria-controls="rooms" aria-selected="false">
+                                <i class="fas fa-door-open text-primary mr-1"></i> 5. Ruangan & Bed
+                                <span class="badge badge-pill badge-primary ml-1"><?= count($rooms) ?>/<?= count($beds) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="pharmacy-tab" data-toggle="tab" href="#pharmacy" role="tab" aria-controls="pharmacy" aria-selected="false">
+                                <i class="fas fa-pills text-warning mr-1"></i> 6. Obat & Satuan
+                                <span class="badge badge-pill badge-warning ml-1"><?= count($medicineCategories) ?>/<?= count($units) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="consent-tab" data-toggle="tab" href="#consent" role="tab" aria-controls="consent" aria-selected="false">
+                                <i class="fas fa-file-contract text-danger mr-1"></i> 7. Template Consent
+                                <span class="badge badge-pill badge-danger ml-1"><?= count($consentTemplates) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="hrd-tab" data-toggle="tab" href="#hrd" role="tab" aria-controls="hrd" aria-selected="false">
+                                <i class="fas fa-users text-teal mr-1"></i> 8. Departemen & Jabatan
+                                <span class="badge badge-pill badge-teal ml-1"><?= count($departments) ?>/<?= count($jobPositions) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="lab-tab" data-toggle="tab" href="#lab" role="tab" aria-controls="lab" aria-selected="false">
+                                <i class="fas fa-vial text-purple mr-1"></i> 9. Uji Laboratorium
+                                <span class="badge badge-pill badge-secondary ml-1"><?= count($labTests) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="insurance-tab" data-toggle="tab" href="#insurance" role="tab" aria-controls="insurance" aria-selected="false">
+                                <i class="fas fa-handshake text-info mr-1"></i> 10. Mitra Asuransi
+                                <span class="badge badge-pill badge-info ml-1"><?= count($insuranceProviders) ?></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="supplier-tab" data-toggle="tab" href="#supplier" role="tab" aria-controls="supplier" aria-selected="false">
+                                <i class="fas fa-truck text-dark mr-1"></i> 11. Distributor PBF
+                                <span class="badge badge-pill badge-dark ml-1"><?= count($suppliers) ?></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="card-body">
+            <div class="card-body p-3 p-md-4">
                 <div class="tab-content" id="masterTabContent">
                     
                     <!-- ========================================== -->
                     <!-- TAB 1: KATEGORI PELAYANAN -->
                     <!-- ========================================== -->
                     <div class="tab-pane fade show active" id="cat" role="tabpanel" aria-labelledby="cat-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-layer-group text-teal"></i> TABEL REFERENSI UMUM - KATEGORI PELAYANAN</h5>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                            <div class="mb-2 mb-md-0">
+                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-layer-group text-teal mr-1"></i> TABEL REFERENSI UMUM - KATEGORI PELAYANAN</h5>
                                 <small class="text-muted">Master klasifikasi induk utama pelayanan (POLI, TINDAKAN, dll)</small>
                             </div>
-                            <button class="btn btn-teal font-weight-bold shadow-sm" data-toggle="modal" data-target="#catAddModal">
-                                <i class="fas fa-plus mr-1"></i> Tambah Kategori Pelayanan
-                            </button>
+                            <div>
+                                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#catAddModal">
+                                    <i class="fas fa-plus mr-1"></i> + Tambah Kategori Pelayanan
+                                </button>
+                            </div>
                         </div>
-
-                        <table class="table table-striped table-bordered table-hover datatable">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover datatable w-100" style="font-size: 12px;">
                             <thead class="bg-light">
                                 <tr>
                                     <th style="width: 80px;" class="text-center">ID</th>
@@ -100,7 +139,7 @@
                                             </span>
                                         </td>
                                         <td><?= esc($c->description ?? '-') ?></td>
-                                        <td class="text-center">
+                                        <td class="text-center text-nowrap">
                                             <button class="btn btn-info btn-xs btn-edit-cat" data-id="<?= $c->id ?>" data-name="<?= esc($c->name) ?>" data-desc="<?= esc($c->description) ?>" data-toggle="modal" data-target="#catEditModal">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -115,39 +154,41 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+</div>
+
                     </div>
 
                     <!-- ========================================== -->
                     <!-- TAB 2: SUB KATEGORI & SUB KECIL PELAYANAN -->
                     <!-- ========================================== -->
                     <div class="tab-pane fade" id="subcat" role="tabpanel" aria-labelledby="subcat-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-sitemap text-teal"></i> SUB KATEGORI & SUB KECIL PELAYANAN</h5>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                            <div class="mb-2 mb-md-0">
+                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-sitemap text-teal mr-1"></i> SUB KATEGORI & SUB KECIL PELAYANAN</h5>
                                 <small class="text-muted">Daftar Sub Kategori (Poli / Induk Tindakan) dan Sub Kecil Layanan beserta Tarif</small>
                             </div>
-                            <div>
-                                <button class="btn btn-outline-teal font-weight-bold shadow-sm mr-2" data-toggle="modal" data-target="#polyAddModal">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <button class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm mr-2 mb-1 mb-sm-0" data-toggle="modal" data-target="#polyAddModal">
                                     <i class="fas fa-plus mr-1"></i> + Sub Poli
                                 </button>
-                                <button class="btn btn-teal font-weight-bold shadow-sm" data-toggle="modal" data-target="#serviceAddModal">
+                                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mb-1 mb-sm-0" data-toggle="modal" data-target="#serviceAddModal">
                                     <i class="fas fa-plus mr-1"></i> + Sub Tindakan & Tarif
                                 </button>
                             </div>
                         </div>
-
-                        <table class="table table-bordered table-striped table-hover datatable">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th style="width: 60px;" class="text-center">ID</th>
-                                    <th style="width: 140px;">ID - KATEGORI</th>
-                                    <th>SUB KATEGORI PELAYANAN</th>
-                                    <th>SUB KECIL KATEGORI PELAYANAN</th>
-                                    <th style="width: 160px;" class="text-right">HARGA (TARIF)</th>
-                                    <th style="width: 90px;" class="text-center">STATUS</th>
-                                    <th style="width: 130px;" class="text-center">AKSI</th>
-                                </tr>
-                            </thead>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 12px;">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 50px;" class="text-center">ID</th>
+                                        <th style="width: 110px;">KATEGORI</th>
+                                        <th>SUB KATEGORI</th>
+                                        <th>SUB KECIL / DETAIL</th>
+                                        <th style="width: 140px;" class="text-right">TARIF (RP)</th>
+                                        <th style="width: 80px;" class="text-center">STATUS</th>
+                                        <th style="width: 110px;" class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
                             <tbody>
                                 <!-- 1. POLIKLINIKS (Kategori POLI) -->
                                 <?php foreach ($polikliniks as $p): ?>
@@ -166,7 +207,7 @@
                                                 <?= strtoupper($p->status) ?>
                                             </span>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center text-nowrap">
                                             <button class="btn btn-info btn-xs btn-edit-poly" data-id="<?= $p->id ?>" data-name="<?= esc($p->name) ?>" data-desc="<?= esc($p->description) ?>" data-cat="<?= $p->category_id ?>" data-status="<?= $p->status ?>" data-toggle="modal" data-target="#polyEditModal">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -215,7 +256,7 @@
                                                 <?= strtoupper($t->status) ?>
                                             </span>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="text-center text-nowrap">
                                             <button class="btn btn-info btn-xs btn-edit-service" data-id="<?= $t->id ?>" data-code="<?= esc($t->code) ?>" data-name="<?= esc($t->name) ?>" data-desc="<?= esc($t->description) ?>" data-cat="<?= $t->category_id ?>" data-parent="<?= $t->parent_id ?>" data-price="<?= $t->price ?>" data-status="<?= $t->status ?>" data-toggle="modal" data-target="#serviceEditModal">
                                                 <i class="fas fa-edit"></i> Edit
                                             </button>
@@ -230,36 +271,96 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+</div>
+
                     </div>
 
                     <!-- ========================================== -->
                     <!-- TAB 3: DATA DOKTER & FEE PER PASIEN -->
                     <!-- ========================================== -->
                     <div class="tab-pane fade" id="doctor" role="tabpanel" aria-labelledby="doctor-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-user-md text-teal"></i> DATA DOKTER & FEE PER PASIEN</h5>
-                                <small class="text-muted">Pemetaan Dokter Pelaksana terhadap Kategori, Sub Kategori, dan Hak Komisi Fee Per Pasien</small>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                            <div class="mb-2 mb-md-0">
+                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-user-md text-teal mr-1"></i> MASTER DOKTER, PENUGASAN & FEE MEDIS</h5>
+                                <small class="text-muted">Pusat tata kelola penugasan dokter (Poli/Tindakan), pembagian fee jasa medis (Nominal/Persentase), fee resep obat & TTD digital</small>
                             </div>
-                            <button class="btn btn-teal font-weight-bold shadow-sm" data-toggle="modal" data-target="#doctorAddModal">
-                                <i class="fas fa-plus mr-1"></i> Tambah Penugasan Dokter
-                            </button>
+                            <div class="d-flex flex-wrap align-items-center">
+                                <a href="<?= base_url('keuangan/fee-dokter') ?>" class="btn btn-outline-success btn-sm font-weight-bold shadow-sm mr-2 mb-1 mb-sm-0" title="Buka Rekapitulasi Pembayaran Hak Jasa Medis Dokter">
+                                    <i class="fas fa-money-bill-wave mr-1"></i> Rekap Keuangan Fee
+                                </a>
+                                <a href="#schedule" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm mr-2 mb-1 mb-sm-0 btn-switch-to-schedule" title="Lihat & Atur Jadwal Praktik Dokter">
+                                    <i class="fas fa-calendar-alt mr-1"></i> Jadwal Praktik
+                                </a>
+                                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mb-1 mb-sm-0" data-toggle="modal" data-target="#doctorAddModal">
+                                    <i class="fas fa-plus mr-1"></i> + Tambah Penugasan Dokter
+                                </button>
+                            </div>
                         </div>
 
-                        <table class="table table-bordered table-striped table-hover datatable">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th style="width: 60px;" class="text-center">ID</th>
-                                    <th>NAMA DOKTER</th>
-                                    <th>ID - KATEGORI PELAYANAN</th>
-                                    <th>ID - SUB KATEGORI PELAYANAN</th>
-                                    <th>ID - SUB KECIL PELAYANAN</th>
-                                    <th style="width: 130px;" class="text-right">FEE DOKTER</th>
-                                    <th style="width: 110px;" class="text-center">TTD / STEMPEL</th>
-                                    <th style="width: 80px;" class="text-center">STATUS</th>
-                                    <th style="width: 170px;" class="text-center">AKSI</th>
-                                </tr>
-                            </thead>
+                        <!-- Toolbar Filter Cepat Dokter & Fee -->
+                        <div class="card bg-light border-0 shadow-xs mb-3">
+                            <div class="card-body p-2">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-white font-weight-bold text-muted"><i class="fas fa-filter text-teal mr-1"></i> Kategori</span>
+                                            </div>
+                                            <select id="filter-doc-cat" class="form-control font-weight-bold">
+                                                <option value="">Semua Kategori</option>
+                                                <option value="POLI">1 - POLI</option>
+                                                <option value="TINDAKAN">2 - TINDAKAN</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-white font-weight-bold text-muted"><i class="fas fa-coins text-warning mr-1"></i> Tipe Fee</span>
+                                            </div>
+                                            <select id="filter-doc-fee-type" class="form-control font-weight-bold">
+                                                <option value="">Semua Tipe Fee</option>
+                                                <option value="Nominal Tetap">Nominal Tetap (Rp)</option>
+                                                <option value="Persentase">Persentase (%)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 mb-2 mb-md-0">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text bg-white font-weight-bold text-muted"><i class="fas fa-user-check text-success mr-1"></i> Status</span>
+                                            </div>
+                                            <select id="filter-doc-status" class="form-control font-weight-bold">
+                                                <option value="">Semua Status</option>
+                                                <option value="ACTIVE">ACTIVE</option>
+                                                <option value="INACTIVE">INACTIVE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-6 text-sm-right">
+                                        <button type="button" id="btn-reset-doc-filter" class="btn btn-secondary btn-sm font-weight-bold">
+                                            <i class="fas fa-sync-alt mr-1"></i> Reset Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="table-master-doctors" class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 50px;" class="text-center">ID</th>
+                                        <th style="min-width: 150px;">NAMA DOKTER</th>
+                                        <th style="width: 100px;">KATEGORI</th>
+                                        <th style="min-width: 120px;">SUB KATEGORI</th>
+                                        <th style="min-width: 130px;">SUB KECIL / TINDAKAN</th>
+                                        <th style="width: 130px;" class="text-right">FEE DOKTER</th>
+                                        <th style="width: 100px;" class="text-center">TTD / STEMPEL</th>
+                                        <th style="width: 75px;" class="text-center">STATUS</th>
+                                        <th style="width: 135px;" class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
                             <tbody>
                                 <?php foreach ($doctors as $d): ?>
                                     <tr>
@@ -294,12 +395,25 @@
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="text-right font-weight-bold text-primary">
-                                            <?php if ($d->fee_per_pasien > 0): ?>
-                                                Rp <?= number_format($d->fee_per_pasien, 2, ',', '.') ?>
+                                        <td class="text-right">
+                                            <?php if (($d->fee_type ?? 'percentage') === 'fixed_amount'): ?>
+                                                <span class="badge badge-info font-weight-bold px-2 py-1" style="font-size: 11.5px;">
+                                                    <i class="fas fa-tag mr-1"></i> Rp <?= number_format($d->fee_per_pasien, 0, ',', '.') ?>
+                                                </span>
+                                                <small class="d-block text-muted">Nominal Tetap</small>
+                                            <?php elseif ($d->fee_per_pasien > 0): ?>
+                                                <span class="badge badge-warning text-dark font-weight-bold px-2 py-1" style="font-size: 11.5px;">
+                                                    <i class="fas fa-percent mr-1"></i> <?= (floor($d->fee_per_pasien) == $d->fee_per_pasien) ? (int)$d->fee_per_pasien : number_format($d->fee_per_pasien, 2, '.', '') ?>%
+                                                </span>
+                                                <small class="d-block text-muted">Persentase Layanan</small>
                                             <?php else: ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
+                                            <div class="mt-1">
+                                                <span class="badge badge-light border text-secondary font-weight-normal text-xs" title="Fee Penjualan Resep Obat">
+                                                    Resep: <?= number_format($d->prescription_fee_percent ?? 5.00, 1) ?>%
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             <?php if (!empty($d->digital_signature)): ?>
@@ -316,8 +430,8 @@
                                                 <?= strtoupper($d->status) ?>
                                             </span>
                                         </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-outline-teal btn-xs btn-doc-signature font-weight-bold"
+                                        <td class="text-center text-nowrap">
+                                            <button type="button" class="btn btn-outline-info btn-xs btn-view-doc-schedule font-weight-bold mr-1" data-docname="<?= esc($d->name) ?>" title="Lihat Jadwal Praktik Dokter Ini"><i class="fas fa-calendar-alt"></i></button><button class="btn btn-outline-teal btn-xs btn-doc-signature font-weight-bold"
                                                 data-id="<?= $d->id ?>"
                                                 data-name="<?= esc($d->name) ?>"
                                                 data-sip="<?= esc($d->sip_number) ?>"
@@ -333,7 +447,9 @@
                                                 data-cat="<?= $d->category_id ?>"
                                                 data-poly="<?= $d->polyclinic_id ?>"
                                                 data-tindakan="<?= $d->tindakan_id ?>"
+                                                data-fee-type="<?= $d->fee_type ?? 'percentage' ?>"
                                                 data-fee="<?= $d->fee_per_pasien ?>"
+                                                data-presc-fee="<?= isset($d->prescription_fee_percent) ? $d->prescription_fee_percent : 5.00 ?>"
                                                 data-sip="<?= esc($d->sip_number) ?>" 
                                                 data-str="<?= esc($d->str_number) ?>" 
                                                 data-expiry="<?= $d->str_expiry ?>" 
@@ -354,6 +470,8 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+</div>
+
                     </div>
 
                     <!-- ========================================== -->
@@ -382,7 +500,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-building text-teal mr-1"></i> Daftar Ruangan Klinik</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -431,6 +550,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +562,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-bed text-teal mr-1"></i> Tempat Tidur (Beds)</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>BED</th>
@@ -484,6 +606,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -516,7 +640,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-capsules text-teal mr-1"></i> Golongan &amp; Kategori Farmasi</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -565,6 +690,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +702,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-ruler text-teal mr-1"></i> Satuan Ukuran / UOM</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -612,6 +740,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -633,7 +763,9 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 200px;">JUDUL TEMPLATE</th>
@@ -688,6 +820,8 @@
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+</div>
+
                         </div>
                     </div>
 
@@ -717,7 +851,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-building text-teal mr-1"></i> Departemen / Unit Kerja</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -755,6 +890,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -765,7 +902,8 @@
                                         <h6 class="card-title font-weight-bold text-dark mb-0"><i class="fas fa-user-tag text-teal mr-1"></i> Jabatan / Posisi Kerja</h6>
                                     </div>
                                     <div class="card-body p-2">
-                                        <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -802,6 +940,8 @@
                                                 <?php endforeach; ?>
                                             </tbody>
                                         </table>
+</div>
+
                                     </div>
                                 </div>
                             </div>
@@ -823,7 +963,9 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 100px;">KODE</th>
@@ -884,6 +1026,8 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+</div>
+
                         </div>
                     </div>
 
@@ -902,7 +1046,9 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 120px;">KODE</th>
@@ -961,6 +1107,8 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+</div>
+
                         </div>
                     </div>
 
@@ -968,18 +1116,23 @@
                     <!-- TAB 10: JADWAL PRAKTEK DOKTER              -->
                     <!-- ========================================== -->
                     <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-calendar-alt text-teal"></i> MASTER JADWAL PRAKTEK DOKTER &amp; POLI</h5>
-                                <small class="text-muted">Pengaturan hari dinas dokter, jam praktek, alokasi ruangan, dan kuota maksimal pasien per sesi.</small>
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                            <div class="mb-2 mb-md-0">
+                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-calendar-alt text-teal mr-1"></i> JADWAL PRAKTIK DOKTER</h5>
+                                <small class="text-muted">Pengaturan hari dinas dokter, jam praktik, alokasi ruangan poli, dan kuota maksimal pasien per sesi.</small>
                             </div>
-                            <button class="btn btn-teal font-weight-bold shadow-sm" data-toggle="modal" data-target="#scheduleAddModal">
-                                <i class="fas fa-plus mr-1"></i> + Tambah Jadwal Dokter
-                            </button>
+                            <div class="d-flex flex-wrap align-items-center">
+                                <a href="#doctor" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm mr-2 mb-1 mb-sm-0 btn-switch-to-doctor" title="Kembali ke Master Dokter & Fee">
+                                    <i class="fas fa-user-md mr-1"></i> Master Dokter & Fee
+                                </a>
+                                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mb-1 mb-sm-0" data-toggle="modal" data-target="#scheduleAddModal">
+                                    <i class="fas fa-plus mr-1"></i> + Tambah Jadwal Dokter
+                                </button>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+                            <table id="table-master-schedules" class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>NAMA DOKTER</th>
@@ -1047,7 +1200,9 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 120px;">KODE</th>
@@ -1105,6 +1260,8 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+</div>
+
                         </div>
                     </div>
 
@@ -1420,10 +1577,42 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Fee Per Pasien (Rp)</label>
-                        <input type="number" step="0.01" name="fee_per_pasien" class="form-control" placeholder="100000" value="0.00">
-                        <small class="text-muted">Nominal komisi bagi hasil yang diterima dokter per tindakan/pasien.</small>
+                    <div class="form-group mb-2">
+                        <label class="font-weight-bold">Tipe Fee Jasa Medis Dokter <span class="text-danger">*</span></label>
+                        <select name="fee_type" id="add-doc-fee-type" class="form-control font-weight-bold" onchange="toggleAddDocFeeType()">
+                            <option value="percentage">Persentase (%) dari Total Layanan Medis</option>
+                            <option value="fixed_amount">Nominal Tetap (Rp) per Pasien</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label id="lbl-add-doc-fee" class="font-weight-bold">Fee Jasa Medis (%)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend" id="prep-add-doc-fee" style="display:none;">
+                                        <span class="input-group-text font-weight-bold">Rp</span>
+                                    </div>
+                                    <input type="number" step="any" min="0" name="fee_per_pasien" id="add-doc-fee" class="form-control font-weight-bold" placeholder="66.67" value="66.67">
+                                    <div class="input-group-append" id="app-add-doc-fee">
+                                        <span class="input-group-text font-weight-bold">%</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted" id="hint-add-doc-fee">Tersambung ke [DOCTOR_FEE_PCT] Akun 424 Dokter.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Fee Obat Resep (%)</label>
+                                <div class="input-group">
+                                    <input type="number" step="any" min="0" max="100" name="prescription_fee_percent" class="form-control font-weight-bold" placeholder="5" value="5.00">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text font-weight-bold">%</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Dari total resep obat pasien.</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -1493,9 +1682,42 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Fee Per Pasien (Rp)</label>
-                        <input type="number" step="0.01" name="fee_per_pasien" id="edit-doc-fee" class="form-control" required>
+                    <div class="form-group mb-2">
+                        <label class="font-weight-bold">Tipe Fee Jasa Medis Dokter <span class="text-danger">*</span></label>
+                        <select name="fee_type" id="edit-doc-fee-type" class="form-control font-weight-bold" onchange="toggleEditDocFeeType()">
+                            <option value="percentage">Persentase (%) dari Total Layanan Medis</option>
+                            <option value="fixed_amount">Nominal Tetap (Rp) per Pasien</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label id="lbl-edit-doc-fee" class="font-weight-bold">Fee Jasa Medis (%)</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend" id="prep-edit-doc-fee" style="display:none;">
+                                        <span class="input-group-text font-weight-bold">Rp</span>
+                                    </div>
+                                    <input type="number" step="any" min="0" name="fee_per_pasien" id="edit-doc-fee" class="form-control font-weight-bold" required>
+                                    <div class="input-group-append" id="app-edit-doc-fee">
+                                        <span class="input-group-text font-weight-bold">%</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted" id="hint-edit-doc-fee">Tersambung ke [DOCTOR_FEE_PCT] Akun 424 Dokter.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Fee Obat Resep (%)</label>
+                                <div class="input-group">
+                                    <input type="number" step="any" min="0" max="100" name="prescription_fee_percent" id="edit-doc-presc-fee" class="form-control font-weight-bold" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text font-weight-bold">%</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted">Dari total resep obat pasien.</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -2807,6 +3029,126 @@
 </div>
 <script>
     $(document).ready(function() {
+
+        // =====================================================================
+        // TAB PERSISTENCE VIA HASH & LOCALSTORAGE + SAFE RESIZING
+        // =====================================================================
+        const hash = window.location.hash;
+        const savedTab = localStorage.getItem("sawamawa_master_tab");
+
+        function adjustVisibleMasterTables() {
+            if ($.fn.dataTable) {
+                try {
+                    var tables = $.fn.dataTable.tables({ visible: true, api: true });
+                    if (tables && typeof tables.columns === "function") {
+                        tables.columns.adjust();
+                    }
+                } catch(err) {
+                    try {
+                        $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                    } catch(e) {}
+                }
+            }
+        }
+
+        const activeHash = (hash && $('#masterTab a[href="' + hash + '"]').length) ? hash : ((savedTab && $('#masterTab a[href="' + savedTab + '"]').length) ? savedTab : '');
+
+        if (activeHash && activeHash !== '#cat') {
+            $('#masterTab a[href="' + activeHash + '"]').tab('show');
+            setTimeout(adjustVisibleMasterTables, 60);
+            setTimeout(adjustVisibleMasterTables, 200);
+            setTimeout(adjustVisibleMasterTables, 450);
+        } else {
+            setTimeout(adjustVisibleMasterTables, 100);
+        }
+
+        $('#masterTab a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            const targetHash = e.target.hash;
+            if (history.pushState) {
+                history.pushState(null, null, targetHash);
+            } else {
+                window.location.hash = targetHash;
+            }
+            try { localStorage.setItem("sawamawa_master_tab", targetHash); } catch(err){}
+
+            adjustVisibleMasterTables();
+            setTimeout(adjustVisibleMasterTables, 150);
+            setTimeout(adjustVisibleMasterTables, 350);
+        });
+
+        let dtResizeTimeout;
+        $(window).on('resize', function() {
+            clearTimeout(dtResizeTimeout);
+            dtResizeTimeout = setTimeout(adjustVisibleMasterTables, 150);
+        });
+
+        // =====================================================================
+        // QUICK FILTERS KHUSUS MASTER DOKTER & FEE
+        // =====================================================================
+        function applyDoctorFilters() {
+            if (!$.fn.DataTable.isDataTable('#table-master-doctors')) return;
+            const dt = $('#table-master-doctors').DataTable();
+            
+            const catVal = $('#filter-doc-cat').val();
+            const feeVal = $('#filter-doc-fee-type').val();
+            const statusVal = $('#filter-doc-status').val();
+
+            dt.column(2).search(catVal ? catVal : '', false, false);
+            dt.column(5).search(feeVal ? feeVal : '', false, false);
+            dt.column(7).search(statusVal ? '^' + statusVal + '$' : '', true, false);
+            dt.draw();
+        }
+
+        $('#filter-doc-cat, #filter-doc-fee-type, #filter-doc-status').on('change', function() {
+            applyDoctorFilters();
+        });
+
+        $('#btn-reset-doc-filter').on('click', function() {
+            $('#filter-doc-cat').val('');
+            $('#filter-doc-fee-type').val('');
+            $('#filter-doc-status').val('');
+            if ($.fn.DataTable.isDataTable('#table-master-doctors')) {
+                $('#table-master-doctors').DataTable().search('').columns().search('').draw();
+            }
+        });
+
+        // Pintasan Dari Baris Dokter Langsung Ke Jadwal Praktiknya
+        $(document).on('click', '.btn-view-doc-schedule', function(e) {
+            e.preventDefault();
+            const docName = $(this).data('docname');
+            $('#schedule-tab').tab('show');
+            setTimeout(function() {
+                if ($.fn.DataTable.isDataTable('#table-master-schedules')) {
+                    $('#table-master-schedules').DataTable().search(docName).draw();
+                } else if ($('#schedule table.datatable').length && $.fn.DataTable.isDataTable($('#schedule table.datatable'))) {
+                    $('#schedule table.datatable').DataTable().search(docName).draw();
+                }
+            }, 250);
+        });
+
+        // Pintasan Navigasi Antara Tab Dokter dan Tab Jadwal
+        $(document).on('click', '.btn-switch-to-schedule', function(e) {
+            e.preventDefault();
+            $('#schedule-tab').tab('show');
+        });
+        $(document).on('click', '.btn-switch-to-doctor', function(e) {
+            e.preventDefault();
+            $('#doctor-tab').tab('show');
+        });
+
+        // =====================================================================
+        // ANTI DOUBLE SUBMIT ON ALL MASTER FORMS
+        // =====================================================================
+        $('form[action*="master-klinik"]').on('submit', function() {
+            const activeTab = $('#masterTab a.active').attr('href') || '#cat';
+            try { localStorage.setItem("sawamawa_master_tab", activeTab); } catch(err){}
+
+            const $btn = $(this).find('button[type="submit"]');
+            if ($btn.length) {
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+            }
+        });
+
         // Toggle Category selection in Doctor Add Form
         $('#add-doc-cat').change(function() {
             var val = $(this).val();
@@ -2862,20 +3204,78 @@
             $('#edit-srv-status').val($(this).data('status'));
         });
 
-        // Edit Doctor mapping
+        // Edit Doctor Data
         $('.btn-edit-doctor').click(function() {
-            var catId = $(this).data('cat');
-            $('#edit-doc-id').val($(this).data('id'));
-            $('#edit-doc-nik').val($(this).data('nik'));
-            $('#edit-doc-name').val($(this).data('name'));
-            $('#edit-doc-cat').val(catId).trigger('change');
-            $('#edit-doc-poly').val($(this).data('poly'));
-            $('#edit-doc-tindakan').val($(this).data('tindakan'));
-            $('#edit-doc-fee').val($(this).data('fee'));
-            $('#edit-doc-status').val($(this).data('status'));
+            const id = $(this).data('id');
+            const nik = $(this).data('nik');
+            const name = $(this).data('name');
+            const cat = $(this).data('cat');
+            const poly = $(this).data('poly');
+            const tindakan = $(this).data('tindakan');
+            const feeType = $(this).data('fee-type') || 'percentage';
+            const fee = $(this).data('fee');
+            const prescFee = $(this).data('presc-fee') || '5.00';
+            const sip = $(this).data('sip');
+            const str = $(this).data('str');
+            const exp = $(this).data('expiry');
+            const status = $(this).data('status');
+
+            $('#edit-doc-id').val(id);
+            $('#edit-doc-nik').val(nik);
+            $('#edit-doc-name').val(name);
+            $('#edit-doc-cat').val(cat).trigger('change');
+            
+            // Wait for toggle logic to finish
+            setTimeout(() => {
+                if (cat == 1) $('#edit-doc-poly').val(poly);
+                if (cat == 2) $('#edit-doc-tindakan').val(tindakan);
+            }, 100);
+
+            $('#edit-doc-fee-type').val(feeType);
+            toggleEditDocFeeType();
+            $('#edit-doc-fee').val(fee);
+            $('#edit-doc-presc-fee').val(prescFee);
+            $('#edit-doc-sip').val(sip);
+            $('#edit-doc-str').val(str);
+            $('#edit-doc-exp').val(exp);
+            $('#edit-doc-status').val(status);
         });
 
-                // Edit Room mapping
+        window.toggleAddDocFeeType = function() {
+            const t = $('#add-doc-fee-type').val();
+            if (t === 'fixed_amount') {
+                $('#lbl-add-doc-fee').text('Fee Jasa Medis (Nominal Tetap Rp)');
+                $('#prep-add-doc-fee').show();
+                $('#app-add-doc-fee').hide();
+                $('#add-doc-fee').attr('placeholder', '100000');
+                $('#hint-add-doc-fee').text('Nominal tetap Rp per pasien, dialokasikan langsung ke [DOCTOR_FEE_PCT] Akun 424.');
+            } else {
+                $('#lbl-add-doc-fee').text('Fee Jasa Medis (%)');
+                $('#prep-add-doc-fee').hide();
+                $('#app-add-doc-fee').show();
+                $('#add-doc-fee').attr('placeholder', '66.67');
+                $('#hint-add-doc-fee').text('Persentase dari total jasa medis, dialokasikan ke [DOCTOR_FEE_PCT] Akun 424.');
+            }
+        };
+
+        window.toggleEditDocFeeType = function() {
+            const t = $('#edit-doc-fee-type').val();
+            if (t === 'fixed_amount') {
+                $('#lbl-edit-doc-fee').text('Fee Jasa Medis (Nominal Tetap Rp)');
+                $('#prep-edit-doc-fee').show();
+                $('#app-edit-doc-fee').hide();
+                $('#edit-doc-fee').attr('placeholder', '100000');
+                $('#hint-edit-doc-fee').text('Nominal tetap Rp per pasien, dialokasikan langsung ke [DOCTOR_FEE_PCT] Akun 424.');
+            } else {
+                $('#lbl-edit-doc-fee').text('Fee Jasa Medis (%)');
+                $('#prep-edit-doc-fee').hide();
+                $('#app-edit-doc-fee').show();
+                $('#edit-doc-fee').attr('placeholder', '66.67');
+                $('#hint-edit-doc-fee').text('Persentase dari total jasa medis, dialokasikan ke [DOCTOR_FEE_PCT] Akun 424.');
+            }
+        };
+
+        // Edit Room mapping
         $('.btn-edit-room').click(function() {
             $('#edit-room-id').val($(this).data('id'));
             $('#edit-room-code').val($(this).data('code'));
@@ -2946,7 +3346,7 @@
             $('#edit-job-status').val($(this).data('status'));
         });
 
-                // Edit Lab Test mapping
+        // Edit Lab Test mapping
         $('.btn-edit-lab').click(function() {
             $('#edit-lab-id').val($(this).data('id'));
             $('#edit-lab-code').val($(this).data('code'));
@@ -2997,6 +3397,7 @@
             $('#edit-sup-bankacc').val($(this).data('bankacc'));
             $('#edit-sup-status').val($(this).data('status'));
         });
+
         // =====================================================================
         // DIGITAL SIGNATURE CANVAS FOR DOCTORS
         // =====================================================================
@@ -3152,10 +3553,127 @@
             });
         });
 
-        // Pastikan tabel menyesuaikan ukuran ketika tab diklik
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-            $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
-        });
     });
 </script>
+
+<style>
+.master-tabs-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+.master-tabs-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+.master-tabs-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #20c997;
+    border-radius: 4px;
+}
+.nav-tabs-modern {
+    border-bottom: 2px solid #e9ecef;
+    min-width: 100%;
+}
+.nav-tabs-modern .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+.nav-tabs-modern .nav-link:hover {
+    color: #00796b;
+    border-bottom: 3px solid #b2dfdb;
+    background-color: #f8f9fa;
+}
+.nav-tabs-modern .nav-link.active {
+    color: #00796b !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #ffffff !important;
+}
+.badge-teal {
+    background-color: #20c997;
+    color: #fff;
+}
+.btn-teal {
+    background-color: #20c997;
+    border-color: #20c997;
+    color: #fff;
+}
+.btn-teal:hover {
+    background-color: #17a57a;
+    border-color: #17a57a;
+    color: #fff;
+}
+.btn-outline-teal {
+    color: #20c997;
+    border-color: #20c997;
+}
+.btn-outline-teal:hover {
+    background-color: #20c997;
+    color: #fff;
+}
+.shadow-xs {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.table td, .table th {
+    vertical-align: middle;
+}
+
+/* ========================================================================== */
+/* RESPONSIVE DATATABLES STYLING (FIX TABLE SQUISHING & MOBILE OVERFLOW)       */
+/* ========================================================================== */
+.table-responsive {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border: none;
+    margin-bottom: 0.5rem;
+}
+.table-responsive > .dataTables_wrapper {
+    width: 100% !important;
+}
+.table-responsive table.dataTable {
+    width: 100% !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+.table-responsive .dataTables_wrapper .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: center;
+}
+.table-responsive .dataTables_wrapper .row > [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.table-responsive .dataTables_length label,
+.table-responsive .dataTables_filter label {
+    font-size: 12px;
+    margin-bottom: 0.4rem;
+    display: inline-flex;
+    align-items: center;
+}
+.table-responsive .dataTables_filter label input {
+    margin-left: 0.5rem;
+}
+.table-responsive .dataTables_info,
+.table-responsive .dataTables_paginate {
+    font-size: 12px;
+    margin-top: 0.5rem;
+}
+.table-responsive .dataTables_filter,
+.table-responsive .dataTables_paginate {
+    text-align: right;
+}
+@media (max-width: 767.98px) {
+    .table-responsive .dataTables_filter,
+    .table-responsive .dataTables_paginate,
+    .table-responsive .dataTables_length,
+    .table-responsive .dataTables_info {
+        text-align: left !important;
+    }
+}
+</style>
 <?= $this->endSection() ?>

@@ -13,7 +13,7 @@ class ResetClinicData extends BaseCommand
 
     public function run(array $params)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->query("SET FOREIGN_KEY_CHECKS = 0;");
 
         $tables = [

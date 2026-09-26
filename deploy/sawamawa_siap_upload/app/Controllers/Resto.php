@@ -16,7 +16,7 @@ class Resto extends BaseController
 
     public function pos()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -209,7 +209,7 @@ class Resto extends BaseController
 
     public function dapur()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $kitchenOrderId = $this->request->getPost('kitchen_order_id');
@@ -274,7 +274,7 @@ class Resto extends BaseController
 
     public function cetakNota($orderId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $order = $db->table('restaurant_orders')
                     ->select('restaurant_orders.*, patients.name as patient_name, patients.no_rm, polyclinics.name as polyclinic_name, users.username as cashier_name')

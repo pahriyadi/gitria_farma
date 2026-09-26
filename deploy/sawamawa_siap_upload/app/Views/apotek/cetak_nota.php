@@ -154,11 +154,44 @@
         <td>Kasir/Apoteker</td>
         <td>: <?= esc($sale->cashier_name ?? 'Farmasi') ?></td>
     </tr>
+    <?php if (!empty($sale->doctor_name)): ?>
+    <tr>
+        <td><?= ($sale->prescription_type === 'online') ? 'Dokter Online' : 'Dokter Peresep' ?></td>
+        <td>: <?= esc($sale->doctor_name) ?><?= ($sale->prescription_type === 'online') ? ' (Konsultasi Online)' : '' ?></td>
+    </tr>
+    <?php endif; ?>
     <tr>
         <td>Metode Bayar</td>
         <td>: <?= strtoupper(esc($sale->payment_method)) ?></td>
     </tr>
 </table>
+
+<?php
+// Group items: separate regular items and group racikan items
+$displayItems = [];
+$racikanGroups = [];
+
+foreach ($items as $item) {
+    if (!empty($item->is_racikan)) {
+        $grpKey = !empty($item->racikan_group) ? $item->racikan_group : ($item->racikan_name ?: 'Racikan ' . $item->id);
+        if (!isset($racikanGroups[$grpKey])) {
+            $racikanGroups[$grpKey] = [
+                'name'               => $item->racikan_name ?: 'Obat Racikan Khusus',
+                'dosage_instruction' => $item->dosage_instruction ?: 'Sesuai petunjuk dokter/apoteker',
+                'total_subtotal'     => 0,
+                'count_items'        => 0
+            ];
+        }
+        $racikanGroups[$grpKey]['total_subtotal'] += floatval($item->subtotal);
+        $racikanGroups[$grpKey]['count_items']++;
+        if (!empty($item->dosage_instruction) && empty($racikanGroups[$grpKey]['dosage_instruction'])) {
+            $racikanGroups[$grpKey]['dosage_instruction'] = $item->dosage_instruction;
+        }
+    } else {
+        $displayItems[] = $item;
+    }
+}
+?>
 
 <table class="items-table">
     <thead>
@@ -170,7 +203,8 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($items as $item): ?>
+        <!-- 1. Regular Non-Racikan Items -->
+        <?php foreach ($displayItems as $item): ?>
             <tr>
                 <td colspan="4" style="font-weight: bold; padding-top: 4px;">
                     <?= esc($item->medicine_name) ?>
@@ -184,8 +218,31 @@
                     <?= !empty($item->dosage_instruction) ? esc($item->dosage_instruction) : 'Obat Bebas' ?>
                 </td>
                 <td class="text-center"><?= $item->qty ?> <?= esc($item->unit) ?></td>
-                <td class="text-right"><?= number_format($item->price, 0, ',', '.') ?></td>
+                <td class="text-right">
+                    <?php 
+                    $unitPrice = ($item->price * $item->qty + ($item->tusla ?? 0) + ($item->embalase ?? 0)) / max(1, $item->qty);
+                    echo number_format($unitPrice, 0, ',', '.');
+                    ?>
+                </td>
                 <td class="text-right font-weight-bold"><?= number_format($item->subtotal, 0, ',', '.') ?></td>
+            </tr>
+        <?php endforeach; ?>
+
+        <!-- 2. Racikan Packages (Masked - Komposisi bahan mentah disembunyikan untuk pasien) -->
+        <?php foreach ($racikanGroups as $rg): ?>
+            <tr>
+                <td colspan="4" style="font-weight: bold; padding-top: 4px; color: #004d40;">
+                    <span style="border: 1px solid #004d40; padding: 1px 3px; font-size: 9px; border-radius: 2px;">RACIKAN</span>
+                    <?= esc($rg['name']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td style="color: #444; font-size: 10px; padding-left: 5px;">
+                    <?= esc($rg['dosage_instruction']) ?>
+                </td>
+                <td class="text-center">1 Paket</td>
+                <td class="text-right"><?= number_format($rg['total_subtotal'], 0, ',', '.') ?></td>
+                <td class="text-right font-weight-bold"><?= number_format($rg['total_subtotal'], 0, ',', '.') ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
@@ -193,8 +250,8 @@
 
 <div class="total-section">
     <div class="total-row">
-        <span>Total Kotor:</span>
-        <span>Rp <?= number_format($sale->total_amount, 0, ',', '.') ?></span>
+        <span>Subtotal Obat:</span>
+        <span>Rp <?= number_format($sale->total_amount + ($sale->tusla_amount ?? 0) + ($sale->embalase_amount ?? 0), 0, ',', '.') ?></span>
     </div>
     <?php if ($sale->discount_amount > 0): ?>
         <div class="total-row">

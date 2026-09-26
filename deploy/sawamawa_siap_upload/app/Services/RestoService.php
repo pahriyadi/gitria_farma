@@ -11,7 +11,7 @@ class RestoService
 
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
+        $this->db = \Config\Database::connect('default');
         $this->journalEngine = new JournalEngine();
     }
 

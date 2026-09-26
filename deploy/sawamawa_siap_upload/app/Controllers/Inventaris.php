@@ -11,7 +11,7 @@ class Inventaris extends BaseController
      */
     public function aset()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -162,7 +162,7 @@ class Inventaris extends BaseController
      */
     public function mutasi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $assetId      = intval($this->request->getPost('asset_id'));
         $newLocation  = trim($this->request->getPost('new_location'));
@@ -213,7 +213,7 @@ class Inventaris extends BaseController
      */
     public function servis()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $assetId         = intval($this->request->getPost('asset_id'));
         $serviceDate     = $this->request->getPost('service_date') ?: date('Y-m-d');
@@ -263,7 +263,7 @@ class Inventaris extends BaseController
      */
     public function hitungDepresiasi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $assetId = intval($this->request->getPost('asset_id'));
         $asset = $db->table('inventory_assets')->where('id', $assetId)->get()->getRow();
@@ -317,7 +317,7 @@ class Inventaris extends BaseController
      */
     public function cetakLabel($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $asset = $db->table('inventory_assets')
                     ->select('inventory_assets.*, suppliers.name as supplier_name')
@@ -344,7 +344,7 @@ class Inventaris extends BaseController
      */
     public function cetakLaporan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $assets = $db->table('inventory_assets')
                      ->select('inventory_assets.*, suppliers.name as supplier_name')

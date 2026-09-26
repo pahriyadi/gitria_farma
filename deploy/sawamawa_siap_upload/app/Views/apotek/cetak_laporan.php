@@ -284,6 +284,72 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+        <?php elseif ($reportType === 'penjualan_otc'): ?>
+            <!-- 4. Penjualan Apotek (OTC & Resep Langsung) -->
+            <table class="table table-sm table-items mb-3">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;" class="text-center">NO</th>
+                        <th style="width: 100px;">NO. NOTA</th>
+                        <th style="width: 75px;" class="text-center">TGL</th>
+                        <th>PASIEN / PEMBELI</th>
+                        <th>DOKTER / RESEP</th>
+                        <th style="width: 80px;" class="text-right">OBAT</th>
+                        <th style="width: 65px;" class="text-right">TUSLA</th>
+                        <th style="width: 65px;" class="text-right">EMBALASE</th>
+                        <th style="width: 90px;" class="text-right">TOTAL</th>
+                        <th style="width: 75px;" class="text-right">FEE DOKTER</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                        $sumObat = 0;
+                        $sumTusla = 0;
+                        $sumEmbalase = 0;
+                        $sumGrand = 0;
+                        $sumFeeDoc = 0;
+                    ?>
+                    <?php if (!empty($dataRows)): ?>
+                        <?php $no = 1; foreach ($dataRows as $r): ?>
+                            <?php 
+                                $rObat = (float)$r->grand_total - (float)($r->tusla_amount ?? 0) - (float)($r->embalase_amount ?? 0) + (float)($r->discount_amount ?? 0);
+                                $rFeeDoc = !empty($r->doctor_id) ? round((float)$r->total_amount * 0.05, 2) : 0;
+                                $sumObat += $rObat;
+                                $sumTusla += (float)($r->tusla_amount ?? 0);
+                                $sumEmbalase += (float)($r->embalase_amount ?? 0);
+                                $sumGrand += (float)$r->grand_total;
+                                $sumFeeDoc += $rFeeDoc;
+                            ?>
+                            <tr>
+                                <td class="text-center font-weight-bold"><?= $no++ ?></td>
+                                <td><strong><?= esc($r->sale_no) ?></strong></td>
+                                <td class="text-center"><?= date('d/m/Y', strtotime($r->created_at)) ?></td>
+                                <td><?= esc($r->customer_name ?: 'Pelanggan Umum') ?></td>
+                                <td class="text-sm"><?= esc($r->doctor_name) ?></td>
+                                <td class="text-right">Rp <?= number_format($rObat, 0, ',', '.') ?></td>
+                                <td class="text-right"><?= (float)($r->tusla_amount ?? 0) > 0 ? 'Rp ' . number_format($r->tusla_amount, 0, ',', '.') : '-' ?></td>
+                                <td class="text-right"><?= (float)($r->embalase_amount ?? 0) > 0 ? 'Rp ' . number_format($r->embalase_amount, 0, ',', '.') : '-' ?></td>
+                                <td class="text-right font-weight-bold">Rp <?= number_format($r->grand_total, 0, ',', '.') ?></td>
+                                <td class="text-right text-danger font-weight-bold"><?= $rFeeDoc > 0 ? 'Rp ' . number_format($rFeeDoc, 0, ',', '.') : '-' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10" class="text-center text-muted p-3">Tidak ada data transaksi penjualan apotek pada periode ini.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light font-weight-bold" style="font-size: 12px;">
+                        <td colspan="5" class="text-right">TOTAL KESELURUHAN:</td>
+                        <td class="text-right">Rp <?= number_format($sumObat, 0, ',', '.') ?></td>
+                        <td class="text-right">Rp <?= number_format($sumTusla, 0, ',', '.') ?></td>
+                        <td class="text-right">Rp <?= number_format($sumEmbalase, 0, ',', '.') ?></td>
+                        <td class="text-right text-success" style="font-size: 13px;">Rp <?= number_format($sumGrand, 0, ',', '.') ?></td>
+                        <td class="text-right text-danger">Rp <?= number_format($sumFeeDoc, 0, ',', '.') ?></td>
+                    </tr>
+                </tfoot>
+            </table>
         <?php endif; ?>
 
         <!-- Signatures Block -->

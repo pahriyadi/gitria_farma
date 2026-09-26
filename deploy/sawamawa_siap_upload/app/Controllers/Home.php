@@ -11,7 +11,7 @@ class Home extends BaseController
 
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. Fetch Active Doctors with Polyclinics
         $doctors = $db->table('doctors')
@@ -74,7 +74,7 @@ class Home extends BaseController
 
     public function daftarOnline()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             if (!is_online_registration_open()) {
@@ -232,10 +232,10 @@ class Home extends BaseController
             // 5. Simpan keluhan awal pasien jika ada
             if (!empty($complaints)) {
                 $db->table('triage_records')->insert([
-                    'visit_id'         => $visitId,
-                    'nurse_id'         => 1,
-                    'main_complaint'   => $complaints,
-                    'additional_notes' => 'Pendaftaran Online Mandiri'
+                    'visit_id'    => $visitId,
+                    'complaints'  => $complaints,
+                    'anamnesis'   => 'Pendaftaran Online Mandiri',
+                    'nurse_notes' => 'Pasien mendaftar via formulir online website'
                 ]);
             }
 
@@ -293,7 +293,7 @@ class Home extends BaseController
      */
     public function checkPatientPublic()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $identifier = trim(strip_tags((string)$this->request->getPost('identifier')));
         $dob        = trim(strip_tags((string)$this->request->getPost('dob')));
 
@@ -349,7 +349,7 @@ class Home extends BaseController
 
     public function suksesDaftar($visitId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $visit = $db->table('patient_visits')
                     ->select('patient_visits.*, 
@@ -428,7 +428,7 @@ class Home extends BaseController
      */
     public function berita($slug = null)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if ($slug !== null) {
             $article = $db->table('articles')

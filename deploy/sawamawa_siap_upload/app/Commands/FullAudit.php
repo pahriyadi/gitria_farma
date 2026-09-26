@@ -18,7 +18,7 @@ class FullAudit extends BaseCommand
         CLI::write("==================================================", 'yellow');
 
         $issuesFound = [];
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. AUDIT CONTROLLERS & METHODS DARI ROUTES.PHP
         CLI::write("\n[1/6] Memeriksa Controller & Method Existence dari Routes.php...", 'cyan');

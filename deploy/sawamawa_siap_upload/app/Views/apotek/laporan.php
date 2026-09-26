@@ -48,16 +48,35 @@
         <div class="card card-outline card-teal shadow-sm mb-3">
             <div class="card-body py-3">
                 <form action="<?= base_url('apotek/laporan') ?>" method="get" class="row align-items-end">
-                    <div class="col-md-3 form-group mb-md-0">
-                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Periode Dari Tanggal:</label>
+                    <div class="col-md-2 form-group mb-md-0">
+                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Dari Tanggal:</label>
                         <input type="date" name="start_date" class="form-control form-control-sm font-weight-bold" value="<?= esc($startDate) ?>">
                     </div>
-                    <div class="col-md-3 form-group mb-md-0">
+                    <div class="col-md-2 form-group mb-md-0">
                         <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Sampai Tanggal:</label>
                         <input type="date" name="end_date" class="form-control form-control-sm font-weight-bold" value="<?= esc($endDate) ?>">
                     </div>
-                    <div class="col-md-3 form-group mb-md-0">
-                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Filter Item Obat (Opsional):</label>
+                    <div class="col-md-2 form-group mb-md-0">
+                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Jenis Transaksi:</label>
+                        <select name="sale_type" class="form-control form-control-sm">
+                            <option value="">-- Semua Transaksi --</option>
+                            <option value="resep" <?= $saleType === 'resep' ? 'selected' : '' ?>>Resep Dokter / Poli</option>
+                            <option value="otc" <?= $saleType === 'otc' ? 'selected' : '' ?>>Obat Bebas Non-Resep (OTC)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 form-group mb-md-0">
+                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Dokter Perujuk:</label>
+                        <select name="doctor_id" class="form-control form-control-sm">
+                            <option value="">-- Semua Dokter --</option>
+                            <?php foreach ($doctorsList as $doc): ?>
+                                <option value="<?= $doc->id ?>" <?= $doctorFilter == $doc->id ? 'selected' : '' ?>>
+                                    <?= esc($doc->name) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2 form-group mb-md-0">
+                        <label class="font-weight-bold text-xs text-secondary text-uppercase mb-1">Filter Obat (Opsional):</label>
                         <select name="medicine_id" class="form-control form-control-sm">
                             <option value="">-- Semua Item Obat --</option>
                             <?php foreach ($medicinesList as $med): ?>
@@ -67,9 +86,9 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-3 form-group mb-md-0 d-flex">
-                        <button type="submit" class="btn btn-teal btn-sm font-weight-bold flex-grow-1 mr-1">
-                            <i class="fas fa-filter mr-1"></i> Terapkan Filter
+                    <div class="col-md-2 form-group mb-md-0 d-flex">
+                        <button type="submit" class="btn btn-teal btn-sm font-weight-bold flex-grow-1 mr-1 shadow-sm">
+                            <i class="fas fa-filter mr-1"></i> Filter
                         </button>
                         <a href="<?= base_url('apotek/laporan') ?>" class="btn btn-outline-secondary btn-sm" title="Reset Filter">
                             <i class="fas fa-sync-alt"></i>
@@ -89,13 +108,19 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link font-weight-bold py-3 px-3" id="tab-sales-tab" data-toggle="pill" href="#tab-sales" role="tab" aria-controls="tab-sales" aria-selected="false">
+                            <i class="fas fa-cash-register text-success mr-1"></i> 2. PENJUALAN APOTEK (OTC & RESEP)
+                            <span class="badge badge-success ml-1"><?= count($otcSales) ?></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link font-weight-bold py-3 px-3" id="tab-movements-tab" data-toggle="pill" href="#tab-movements" role="tab" aria-controls="tab-movements" aria-selected="false">
-                            <i class="fas fa-dolly-flatbed text-info mr-1"></i> 2. KARTU STOK & MUTASI OBAT
+                            <i class="fas fa-dolly-flatbed text-info mr-1"></i> 3. KARTU STOK & MUTASI OBAT
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold py-3 px-3" id="tab-expired-tab" data-toggle="pill" href="#tab-expired" role="tab" aria-controls="tab-expired" aria-selected="false">
-                            <i class="fas fa-calendar-times text-warning mr-1"></i> 3. MONITORING KADALUARSA (FEFO)
+                            <i class="fas fa-calendar-times text-warning mr-1"></i> 4. MONITORING KADALUARSA (FEFO)
                             <?php if ($criticalCount > 0): ?>
                                 <span class="badge badge-danger ml-1"><?= $criticalCount ?></span>
                             <?php endif; ?>
@@ -103,7 +128,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold py-3 px-3" id="tab-top-tab" data-toggle="pill" href="#tab-top" role="tab" aria-controls="tab-top" aria-selected="false">
-                            <i class="fas fa-trophy text-teal mr-1"></i> 4. TOP 10 OBAT FAST-MOVING
+                            <i class="fas fa-trophy text-teal mr-1"></i> 5. TOP 10 FAST-MOVING
                         </a>
                     </li>
                 </ul>
@@ -186,7 +211,158 @@
                     </div>
 
                     <!-- ========================================================================= -->
-                    <!-- TAB 2: KARTU STOK & MUTASI OBAT -->
+                    <!-- TAB 2: PENJUALAN APOTEK (OTC & RESEP LANGSUNG) -->
+                    <!-- ========================================================================= -->
+                    <div class="tab-pane fade" id="tab-sales" role="tabpanel" aria-labelledby="tab-sales-tab">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-cash-register text-success mr-1"></i> Rekap Penjualan Apotek (OTC & Resep Langsung)</h5>
+                                <small class="text-muted">Rincian pendapatan farmasi mencakup obat bebas, racikan, jasa tusla, kemasan embalase, dan hak fee dokter.</small>
+                            </div>
+                            <div>
+                                <a href="<?= base_url('apotek/export-penjualan-csv?start_date=' . $startDate . '&end_date=' . $endDate . '&doctor_id=' . $doctorFilter . '&sale_type=' . $saleType) ?>" class="btn btn-outline-success btn-sm font-weight-bold mr-1 shadow-sm">
+                                    <i class="fas fa-file-csv mr-1"></i> Ekspor CSV
+                                </a>
+                                <a href="<?= base_url('apotek/cetak-laporan?type=penjualan_otc&start_date=' . $startDate . '&end_date=' . $endDate . '&doctor_id=' . $doctorFilter . '&sale_type=' . $saleType) ?>" target="_blank" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm">
+                                    <i class="fas fa-print mr-1"></i> Cetak Laporan Penjualan
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- KPI Summary Cards for Sales -->
+                        <div class="row mb-3">
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-light border p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Total Transaksi</small>
+                                    <h5 class="font-weight-bold text-dark mb-0"><?= number_format($otcSummary['count'], 0, ',', '.') ?></h5>
+                                    <small class="text-secondary" style="font-size: 10px;">Struk Penjualan</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-light border p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Net Obat & BMHP</small>
+                                    <h5 class="font-weight-bold text-dark mb-0">Rp <?= number_format($otcSummary['total_obat'], 0, ',', '.') ?></h5>
+                                    <small class="text-secondary" style="font-size: 10px;">Nilai Pokok Item</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-light border p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Tusla (Jasa Racik)</small>
+                                    <h5 class="font-weight-bold text-info mb-0">Rp <?= number_format($otcSummary['total_tusla'], 0, ',', '.') ?></h5>
+                                    <small class="text-secondary" style="font-size: 10px;">Jasa Farmasi</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-light border p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Embalase (Kemasan)</small>
+                                    <h5 class="font-weight-bold text-teal mb-0">Rp <?= number_format($otcSummary['total_embalase'], 0, ',', '.') ?></h5>
+                                    <small class="text-secondary" style="font-size: 10px;">Klip & Pot Salep</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-light border p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-muted text-uppercase font-weight-bold" style="font-size: 10px;">Fee Dokter (Akun 241)</small>
+                                    <h5 class="font-weight-bold text-danger mb-0">Rp <?= number_format($otcSummary['total_fee_doc'], 0, ',', '.') ?></h5>
+                                    <small class="text-secondary" style="font-size: 10px;">5% Resep Dokter</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6 mb-2">
+                                <div class="card bg-teal text-white p-2 text-center h-100 mb-0 shadow-none">
+                                    <small class="text-uppercase font-weight-bold" style="font-size: 10px; opacity: 0.9;">Grand Total Omzet</small>
+                                    <h5 class="font-weight-bold mb-0">Rp <?= number_format($otcSummary['total_grand'], 0, ',', '.') ?></h5>
+                                    <small style="font-size: 10px; opacity: 0.9;">Penerimaan Kasir</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover datatable">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 35px;" class="text-center">NO</th>
+                                        <th style="width: 120px;">NO. TRANSAKSI</th>
+                                        <th style="width: 90px;" class="text-center">WAKTU</th>
+                                        <th>PEMBELI / PASIEN</th>
+                                        <th>DOKTER / RESEP</th>
+                                        <th class="text-right" style="width: 90px;">OBAT</th>
+                                        <th class="text-right" style="width: 80px;">TUSLA</th>
+                                        <th class="text-right" style="width: 80px;">EMBALASE</th>
+                                        <th class="text-right" style="width: 100px;">GRAND TOTAL</th>
+                                        <th class="text-right" style="width: 90px;">FEE DOKTER</th>
+                                        <th style="width: 90px;">KASIR & BAYAR</th>
+                                        <th style="width: 50px;" class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($otcSales)): ?>
+                                        <?php $no = 1; foreach ($otcSales as $os): ?>
+                                            <?php 
+                                                $osObat = (float)$os->grand_total - (float)($os->tusla_amount ?? 0) - (float)($os->embalase_amount ?? 0) + (float)($os->discount_amount ?? 0);
+                                                $osFeeDoc = !empty($os->doctor_id) ? round((float)$os->total_amount * 0.05, 2) : 0;
+                                            ?>
+                                            <tr>
+                                                <td class="text-center font-weight-bold"><?= $no++ ?></td>
+                                                <td>
+                                                    <strong class="text-dark"><?= esc($os->sale_no) ?></strong>
+                                                </td>
+                                                <td class="text-center text-sm">
+                                                    <strong><?= date('d/m/Y', strtotime($os->created_at)) ?></strong><br>
+                                                    <small class="text-muted"><?= date('H:i', strtotime($os->created_at)) ?></small>
+                                                </td>
+                                                <td>
+                                                    <strong class="text-dark"><?= esc($os->customer_name ?: 'Pelanggan Umum') ?></strong><br>
+                                                    <small class="text-muted"><?= esc($os->customer_phone ?: '-') ?></small>
+                                                </td>
+                                                <td>
+                                                    <?php if (!empty($os->doctor_id)): ?>
+                                                        <span class="badge badge-teal px-2 py-1"><i class="fas fa-user-md mr-1"></i> <?= esc($os->doctor_name) ?></span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-light border text-muted">Bebas / OTC (Tanpa Resep)</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td class="text-right">Rp <?= number_format($osObat, 0, ',', '.') ?></td>
+                                                <td class="text-right font-weight-bold text-info">
+                                                    <?= (float)($os->tusla_amount ?? 0) > 0 ? 'Rp ' . number_format($os->tusla_amount, 0, ',', '.') : '-' ?>
+                                                </td>
+                                                <td class="text-right font-weight-bold text-teal">
+                                                    <?= (float)($os->embalase_amount ?? 0) > 0 ? 'Rp ' . number_format($os->embalase_amount, 0, ',', '.') : '-' ?>
+                                                </td>
+                                                <td class="text-right font-weight-bold text-success" style="font-size: 13px;">
+                                                    Rp <?= number_format($os->grand_total, 0, ',', '.') ?>
+                                                </td>
+                                                <td class="text-right font-weight-bold text-danger">
+                                                    <?= $osFeeDoc > 0 ? 'Rp ' . number_format($osFeeDoc, 0, ',', '.') : '-' ?>
+                                                </td>
+                                                <td class="text-sm">
+                                                    <strong><?= esc($os->payment_method ?: 'Tunai') ?></strong><br>
+                                                    <small class="text-muted"><i class="fas fa-user"></i> <?= esc($os->cashier_name ?: 'Kasir') ?></small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="<?= base_url('apotek/cetak-nota/' . $os->id) ?>" target="_blank" class="btn btn-default btn-xs" title="Cetak Nota">
+                                                        <i class="fas fa-print"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-light font-weight-bold">
+                                        <td colspan="5" class="text-right">TOTAL KESELURUHAN PENJUALAN APOTEK:</td>
+                                        <td class="text-right">Rp <?= number_format($otcSummary['total_obat'], 0, ',', '.') ?></td>
+                                        <td class="text-right text-info">Rp <?= number_format($otcSummary['total_tusla'], 0, ',', '.') ?></td>
+                                        <td class="text-right text-teal">Rp <?= number_format($otcSummary['total_embalase'], 0, ',', '.') ?></td>
+                                        <td class="text-right text-success" style="font-size: 14px;">Rp <?= number_format($otcSummary['total_grand'], 0, ',', '.') ?></td>
+                                        <td class="text-right text-danger">Rp <?= number_format($otcSummary['total_fee_doc'], 0, ',', '.') ?></td>
+                                        <td colspan="2"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================================= -->
+                    <!-- TAB 3: KARTU STOK & MUTASI OBAT -->
                     <!-- ========================================================================= -->
                     <div class="tab-pane fade" id="tab-movements" role="tabpanel" aria-labelledby="tab-movements-tab">
                         <div class="d-flex justify-content-between align-items-center mb-3">

@@ -8,7 +8,7 @@ class MasterIcd extends BaseController
 {
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // AJAX Handler untuk DataTables Server-Side ICD-9 (Prosedur Medis)
         if ($this->request->getGet('tab') === 'icd9' && $this->request->getGet('draw')) {
@@ -109,7 +109,7 @@ class MasterIcd extends BaseController
 
     public function saveIcd10()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('id');
 
         $data = [
@@ -139,7 +139,7 @@ class MasterIcd extends BaseController
 
     public function deleteIcd10()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('id');
 
         $db->table('master_icd10')->where('id', $id)->delete();
@@ -150,7 +150,7 @@ class MasterIcd extends BaseController
 
     public function saveIcd9()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('id');
 
         $data = [
@@ -180,7 +180,7 @@ class MasterIcd extends BaseController
 
     public function deleteIcd9()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('id');
 
         $db->table('master_icd9')->where('id', $id)->delete();
@@ -191,7 +191,7 @@ class MasterIcd extends BaseController
 
     public function searchJson()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $type = $this->request->getGet('type') ?: 'icd10';
         $q = trim($this->request->getGet('q') ?? '');
 

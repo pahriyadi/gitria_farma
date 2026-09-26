@@ -11,7 +11,7 @@ class MedicineController extends BaseApiController
      */
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $keyword = $this->request->getGet('q');
         $limit = (int) ($this->request->getGet('limit') ?: 20);
 

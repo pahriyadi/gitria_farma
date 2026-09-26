@@ -440,7 +440,11 @@
 <!-- 1. Top Menubar -->
 <div class="macos-top-menubar">
     <div class="macos-menubar-brand">
-        <i class="fab fa-apple"></i>
+        <?php if (clinic_logo()): ?>
+            <img src="<?= clinic_logo() ?>" alt="Logo" style="height: 18px; max-width: 22px; object-fit: contain; margin-right: 6px;">
+        <?php else: ?>
+            <i class="fas fa-hospital-user mr-1 text-teal"></i>
+        <?php endif; ?>
         <span><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></span>
     </div>
     <div class="macos-menubar-status">

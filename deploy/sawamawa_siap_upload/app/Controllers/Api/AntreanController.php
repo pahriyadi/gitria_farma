@@ -13,7 +13,7 @@ class AntreanController extends BaseApiController
      */
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $today = date('Y-m-d');
 
         $polyclinics = $db->table('polyclinics')

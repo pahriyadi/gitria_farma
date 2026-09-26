@@ -8,7 +8,7 @@ class Dashboard extends BaseController
 {
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         
         $roleName = session('role_name') ?? 'Super Admin';
         $userId   = session('user_id') ?? 1;
@@ -39,7 +39,7 @@ class Dashboard extends BaseController
                     } elseif (in_array($acc->code, ['1-104', '1-105'])) {
                         $totalReceivables += $acc->balance;
                     }
-                } elseif ($acc->type === 'liability' && in_array($acc->code, ['2-101', '2-102'])) {
+                } elseif ($acc->type === 'liability') {
                     $totalPayables += $acc->balance;
                 }
             }

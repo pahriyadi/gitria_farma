@@ -647,7 +647,7 @@ class CreateAllTables extends Migration
                 entry_date DATE NOT NULL,
                 source_module VARCHAR(50) NOT NULL,
                 reference_id INT NULL,
-                description VARCHAR(255) NOT NULL,
+                description TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ");

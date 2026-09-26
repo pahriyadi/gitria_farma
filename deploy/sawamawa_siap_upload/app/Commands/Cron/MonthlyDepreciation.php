@@ -14,7 +14,7 @@ class MonthlyDepreciation extends BaseCommand
     public function run(array $params)
     {
         CLI::write("⏰ Menjalankan Cron: Perhitungan Beban Penyusutan Aset Tetap Bulanan...", 'yellow');
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $assets = $db->table('inventory_assets')
                      ->where('status', 'active')

@@ -10,7 +10,39 @@ class QueueCallService
 
     public function __construct()
     {
-        $this->db = Database::connect();
+        $this->db = Database::connect('default');
+        $this->ensureTableExists();
+    }
+
+    /**
+     * Memastikan tabel queue_call_events selalu tersedia di database hosting.
+     */
+    protected function ensureTableExists(): void
+    {
+        try {
+            if (!$this->db->tableExists('queue_call_events')) {
+                $this->db->query("CREATE TABLE IF NOT EXISTS `queue_call_events` (
+                    `id` INT AUTO_INCREMENT PRIMARY KEY,
+                    `service_type` VARCHAR(50) NOT NULL DEFAULT 'poliklinik',
+                    `service_id` INT NULL,
+                    `counter_name` VARCHAR(100) NOT NULL DEFAULT 'Poliklinik',
+                    `queue_number` VARCHAR(50) NOT NULL,
+                    `patient_name` VARCHAR(150) NOT NULL,
+                    `visit_id` INT NULL,
+                    `call_action` VARCHAR(50) NOT NULL DEFAULT 'call',
+                    `call_priority` INT NOT NULL DEFAULT 1,
+                    `voice_text` TEXT NOT NULL,
+                    `status` ENUM('pending', 'playing', 'played', 'skipped') NOT NULL DEFAULT 'pending',
+                    `caller_user_id` INT NULL,
+                    `caller_name` VARCHAR(100) NULL DEFAULT 'Petugas',
+                    `created_at` DATETIME NULL,
+                    `played_at` DATETIME NULL,
+                    `updated_at` DATETIME NULL,
+                    INDEX `idx_status_created` (`status`, `created_at`),
+                    INDEX `idx_queue_no` (`queue_number`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+            }
+        } catch (\Throwable $e) {}
     }
 
     /**
@@ -28,8 +60,22 @@ class QueueCallService
         $visitId       = !empty($data['visit_id']) ? (int)$data['visit_id'] : null;
         $callAction    = strtolower($data['call_action'] ?? 'call');
         $priority      = isset($data['call_priority']) ? (int)$data['call_priority'] : 1;
-        $callerUserId  = !empty($data['caller_user_id']) ? (int)$data['caller_user_id'] : (session('user_id') ? (int)session('user_id') : null);
-        $callerName    = $data['caller_name'] ?? session('username') ?? 'Petugas';
+        $callerUserId  = !empty($data['caller_user_id']) ? (int)$data['caller_user_id'] : null;
+        $callerName    = $data['caller_name'] ?? 'Petugas';
+
+        try {
+            if (session_status() === PHP_SESSION_ACTIVE || !headers_sent()) {
+                $sess = \Config\Services::session();
+                if (!$callerUserId && $sess && $sess->has('user_id')) {
+                    $callerUserId = (int)$sess->get('user_id');
+                }
+                if ($callerName === 'Petugas' && $sess && $sess->has('username')) {
+                    $callerName = $sess->get('username');
+                }
+            }
+        } catch (\Throwable $e) {
+            // Safe fallback
+        }
 
         // Susun teks narasi panggilan suara terstandar medis Bahasa Indonesia
         $voiceText = $data['voice_text'] ?? $this->buildVoiceText($serviceType, $counterName, $queueNumber, $patientName, $callAction);
@@ -120,17 +166,21 @@ class QueueCallService
 
     /**
      * Mengambil daftar panggilan pending berurutan prioritas.
+     * Mendukung Multi-Display (Smart TV, iPad, Monitor Poliklinik, dll).
      */
     public function getPendingCalls(int $limit = 10, int $lastId = 0): array
     {
-        $since = date('Y-m-d H:i:s', strtotime('-15 minutes'));
+        $since = date('Y-m-d H:i:s', strtotime('-5 minutes'));
 
         $builder = $this->db->table('queue_call_events')
-                            ->where('status', 'pending')
                             ->where('created_at >=', $since);
 
         if ($lastId > 0) {
+            // Display TV / iPad yang sedang berjalan: ambil semua event baru setelah lastId
             $builder->where('id >', $lastId);
+        } else {
+            // Initial poll (TV baru dibuka): hanya ambil event pending / broadcasting agar tidak mengulang riwayat lama
+            $builder->whereIn('status', ['pending', 'broadcasting']);
         }
 
         $events = $builder->orderBy('call_priority', 'ASC')
@@ -212,9 +262,17 @@ class QueueCallService
         } elseif ($serviceType === 'farmasi' || $serviceType === 'apotek') {
             $visitStatus = 'prescription';
             $queueStatus = 'completed';
-        } elseif ($callAction === 'called' || $callAction === 'triage') {
-            $visitStatus = 'called';
-            $queueStatus = 'called';
+        } elseif ($callAction === 'call' || $callAction === 'called') {
+            if ($serviceType === 'triage' || $serviceType === 'ttv') {
+                $visitStatus = 'triage';
+                $queueStatus = 'triage';
+            } else {
+                $visitStatus = 'called';
+                $queueStatus = 'called';
+            }
+        } elseif ($callAction === 'triage') {
+            $visitStatus = 'triage';
+            $queueStatus = 'triage';
         } elseif ($callAction === 'examining') {
             $visitStatus = 'examining';
             $queueStatus = 'examining';
@@ -222,8 +280,8 @@ class QueueCallService
             $visitStatus = 'waiting';
             $queueStatus = 'waiting';
         } else {
-            $visitStatus = $callAction;
-            $queueStatus = $callAction;
+            $visitStatus = 'called';
+            $queueStatus = 'called';
         }
 
         $this->db->table('patient_visits')

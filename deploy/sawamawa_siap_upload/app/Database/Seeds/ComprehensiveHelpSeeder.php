@@ -8,7 +8,7 @@ class ComprehensiveHelpSeeder extends Seeder
 {
     public function run()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $docs = [
             // =========================================================================

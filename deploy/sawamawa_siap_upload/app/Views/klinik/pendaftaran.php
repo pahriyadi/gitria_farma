@@ -24,9 +24,79 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-2 mt-md-0">
-                        <a href="<?= base_url('klinik/kartu-pasien/' . session()->getFlashdata('last_registered_patient_id')) ?>" class="btn btn-teal btn-sm font-weight-bold mr-2">
-                            <i class="fas fa-id-card mr-1"></i> Buka & Kirim Kartu Pasien (JPG / WA)
+                        <button type="button" 
+                                class="btn btn-warning btn-sm font-weight-bold text-dark btn-visit mr-2 shadow-sm" 
+                                data-id="<?= esc(session()->getFlashdata('last_registered_patient_id')) ?>" 
+                                data-name="<?= esc(session()->getFlashdata('last_registered_patient_name')) ?>" 
+                                data-rm="<?= esc(session()->getFlashdata('last_registered_patient_rm')) ?>" 
+                                data-toggle="modal" 
+                                data-target="#visitModal">
+                            <i class="fas fa-calendar-plus mr-1"></i> Daftarkan Kunjungan & Antrean
+                        </button>
+                        <a href="<?= base_url('klinik/kartu-pasien/' . session()->getFlashdata('last_registered_patient_id')) ?>" class="btn btn-outline-teal btn-sm font-weight-bold">
+                            <i class="fas fa-id-card mr-1"></i> Kartu Pasien (JPG / WA)
                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Quick Flash Card & Thermal Ticket Preview for Newly Registered Visit -->
+    <?php if (session()->getFlashdata('visit_ticket')): ?>
+        <?php $vt = session()->getFlashdata('visit_ticket'); ?>
+        <div class="col-md-12 mb-3">
+            <div class="card p-3" style="background:#ffffff; border:1px solid #b8b8b8; border-left:5px solid #0d9488; border-radius:4px; box-shadow:none;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                    <div class="d-flex align-items-center mb-2 mb-md-0">
+                        <span class="d-inline-flex align-items-center justify-content-center mr-3" style="background:#e6fffa; color:#0d9488; width:44px; height:44px; border-radius:50%; font-size:22px; flex-shrink:0;">
+                            <i class="fas fa-ticket-alt"></i>
+                        </span>
+                        <div>
+                            <div class="d-flex align-items-center mb-1 flex-wrap" style="gap:6px;">
+                                <h6 class="font-weight-bold text-dark mb-0" style="font-size:15px;">Kunjungan Berhasil Didaftarkan!</h6>
+                                <span class="badge badge-teal px-2 py-1 font-weight-bold" style="font-size:13px; background:#0d9488; color:#ffffff;">
+                                    Antrean: <?= esc($vt['queue_no']) ?>
+                                </span>
+                                <span class="badge badge-secondary px-2 py-0.5 font-weight-bold" style="font-size:11px;">
+                                    <?= esc($vt['no_visit']) ?>
+                                </span>
+                            </div>
+                            <span class="text-secondary text-xs">
+                                Pasien: <strong><?= esc($vt['patient_name']) ?></strong> (RM: <?= esc($vt['patient_rm']) ?>) &bull; 
+                                Tujuan: <strong><?= esc($vt['poly_name']) ?></strong> &bull; 
+                                Dokter: <strong><?= esc($vt['doctor_name']) ?></strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-2 mt-md-0" style="gap:6px;">
+                        <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#modalQueueTicket">
+                            <i class="fas fa-print mr-1"></i> Cetak Tiket Antrean (58/80mm)
+                        </button>
+                        <?php if (!empty($vt['patient_phone'])): ?>
+                            <?php 
+                                $cleanPhone = preg_replace('/[^0-9]/', '', $vt['patient_phone']);
+                                if (str_starts_with($cleanPhone, '0')) {
+                                    $cleanPhone = '62' . substr($cleanPhone, 1);
+                                }
+                                $clinicName = clinic_setting('clinic_name', 'Sawamawa Medical Center');
+                                $waMsg = rawurlencode("*TIKET ANTREAN PASIEN*\n{$clinicName}\n\n" .
+                                    "Halo Bpk/Ibu *" . $vt['patient_name'] . "*,\n" .
+                                    "Kunjungan Anda berhasil didaftarkan.\n\n" .
+                                    "• *No. Antrean:* " . $vt['queue_no'] . "\n" .
+                                    "• *No. Registrasi:* " . $vt['no_visit'] . "\n" .
+                                    "• *No. Rekam Medis:* " . $vt['patient_rm'] . "\n" .
+                                    "• *Layanan/Poli:* " . $vt['poly_name'] . "\n" .
+                                    "• *Dokter Pemeriksa:* " . $vt['doctor_name'] . "\n" .
+                                    "• *Ruangan:* " . ($vt['room_name'] ?? '-') . "\n" .
+                                    "• *Metode Bayar:* " . strtoupper($vt['payment_method'] ?? 'Umum') . "\n\n" .
+                                    "Silakan menunggu di ruang tunggu hingga nomor antrean Anda dipanggil.\n" .
+                                    "Terima kasih atas kepercayaan Anda.");
+                            ?>
+                            <a href="https://wa.me/<?= $cleanPhone ?>?text=<?= $waMsg ?>" target="_blank" class="btn btn-outline-success btn-sm font-weight-bold" title="Kirim Tiket ke WhatsApp Pasien">
+                                <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -113,6 +183,9 @@
                 <div class="card-tools ml-auto mt-2 mt-sm-0 d-flex align-items-center" style="gap: 6px;">
                     <button type="button" class="btn btn-outline-secondary btn-sm font-weight-bold" data-toggle="modal" data-target="#modalExportPasien" title="Ekspor Database atau Cetak Laporan Pasien">
                         <i class="fas fa-file-export mr-1"></i> Ekspor / Laporan
+                    </button>
+                    <button type="button" class="btn btn-outline-teal btn-sm font-weight-bold btn-new-visit-standalone" data-toggle="modal" data-target="#visitModal" title="Daftarkan Kunjungan & Antrean Pasien">
+                        <i class="fas fa-ticket-alt mr-1"></i> Registrasi Kunjungan Baru
                     </button>
                     <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#registerPatientModal" style="background:#0d9488; color:#ffffff;">
                         <i class="fas fa-user-plus mr-1"></i> Registrasi Pasien Baru
@@ -870,127 +943,349 @@
     </div>
 </div>
 
-<!-- Visit Registration Modal -->
+<!-- Visit Registration Modal (Enhanced Flow) -->
 <div class="modal fade" id="visitModal" tabindex="-1" role="dialog" aria-labelledby="visitModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-teal">
-                <h5 class="modal-title font-weight-bold text-white" id="visitModalLabel"><i class="fas fa-ticket mr-1"></i> Registrasi Kunjungan Baru</h5>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-teal text-white py-2.5">
+                <h5 class="modal-title font-weight-bold text-white mb-0" id="visitModalLabel">
+                    <i class="fas fa-ticket-alt mr-1.5"></i> Registrasi Kunjungan Pasien &amp; Antrean
+                </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('klinik/pendaftaran') ?>" method="post">
+            <form id="form-visit-registration" action="<?= base_url('klinik/pendaftaran') ?>" method="post">
                 <input type="hidden" name="action" value="create_visit">
                 <input type="hidden" name="patient_id" id="modal-patient-id">
                 <?= csrf_field() ?>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Pasien Terpilih</label>
-                        <input type="text" id="modal-patient-name" class="form-control" readonly>
+                <div class="modal-body p-3">
+                    <!-- SECTION 1: SELEKSI PASIEN (DUAL STATE: SELECTED VS LIVE SEARCH) -->
+                    <div class="mb-3">
+                        <!-- State A: Pasien Terpilih (Card Summary) -->
+                        <div id="box-patient-selected" class="p-2.5 rounded border bg-light" style="display:none; border-left: 4px solid #0d9488 !important;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="d-inline-flex align-items-center justify-content-center bg-teal text-white rounded-circle mr-2.5" style="width: 36px; height: 36px; font-size: 16px;">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <div>
+                                        <div class="d-flex align-items-center flex-wrap" style="gap: 5px;">
+                                            <strong class="text-dark font-weight-bold" id="card-patient-name" style="font-size: 14.5px;">-</strong>
+                                            <span class="badge badge-teal font-monospace font-weight-bold" id="card-patient-rm" style="background:#0d9488; color:#fff;">-</span>
+                                            <span id="card-patient-tier-badge"></span>
+                                        </div>
+                                        <div class="text-secondary text-xs mt-0.5">
+                                            <span>NIK: <strong id="card-patient-nik" class="text-dark">-</strong></span> &bull; 
+                                            <span>No. HP: <strong id="card-patient-phone" class="text-dark">-</strong></span> &bull; 
+                                            <span id="card-patient-bpjs-info" class="text-muted">BPJS: -</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary btn-xs font-weight-bold btn-change-patient ml-2" title="Ganti atau cari pasien lain">
+                                    <i class="fas fa-arrows-rotate mr-1"></i> Ganti Pasien
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- State B: Pencarian Pasien Real-Time (Jika belum ada pasien dipilih) -->
+                        <div id="box-patient-search" class="p-2.5 rounded border bg-white shadow-xs">
+                            <label class="font-weight-bold text-dark text-xs mb-1">
+                                <i class="fas fa-search text-teal mr-1"></i> Cari Data Pasien Terdaftar <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-light border-right-0"><i class="fas fa-user-magnifying-glass text-muted"></i></span>
+                                </div>
+                                <input type="text" id="modal-patient-search" class="form-control border-left-0 font-weight-bold" placeholder="Ketik Nama Pasien, No. RM, NIK, atau No. Telp..." autocomplete="off">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" id="btn-clear-patient-search"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                            <!-- Live search dropdown list -->
+                            <div id="patient-search-results-box" class="list-group list-group-flush border rounded mt-1 shadow-sm" style="display:none; max-height: 180px; overflow-y: auto;">
+                                <!-- Item hasil pencarian akan dirender oleh JS -->
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-1.5 text-xs text-muted">
+                                <span>Pilih pasien dari daftar pencarian untuk melanjutkan.</span>
+                                <a href="javascript:void(0)" class="btn-quick-new-patient text-teal font-weight-bold text-decoration-none">
+                                    <i class="fas fa-user-plus mr-0.5"></i> Pasien Baru? Daftar di sini
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Visit Type Category Select -->
-                    <div class="form-group">
-                        <label>Kategori Kunjungan <span class="text-danger">*</span></label>
-                        <select name="visit_type" id="modal-visit-type" class="form-control font-weight-bold" required>
-                            <option value="poli">Pemeriksaan Poliklinik (Spesialis)</option>
-                            <option value="tindakan">Tindakan Medis Langsung (Saja)</option>
-                        </select>
-                    </div>
+                    <!-- SECTION 2: DETAIL LAYANAN & PENJAMIN (GRID 2 KOLOM) -->
+                    <div class="row">
+                        <!-- KOLOM KIRI: TUJUAN LAYANAN & DOKTER -->
+                        <div class="col-md-6 border-right">
+                            <h6 class="font-weight-bold text-teal text-xs text-uppercase mb-2" style="letter-spacing: 0.5px;">
+                                <i class="fas fa-stethoscope mr-1"></i> Tujuan Layanan Medis
+                            </h6>
 
-                    <!-- Polyclinic select (Visible for Poli) -->
-                    <div class="form-group" id="group-polyclinic">
-                        <label>Poliklinik Tujuan <span class="text-danger">*</span></label>
-                        <select name="polyclinic_id" id="modal-polyclinic-id" class="form-control font-weight-bold" required>
-                            <option value="">-- Pilih Poliklinik --</option>
-                            <?php foreach ($polyclinics as $poly): ?>
-                                <?php if ($poly->name !== 'Tindakan Saja'): ?>
-                                    <option value="<?= $poly->id ?>"><?= esc($poly->name) ?></option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                            <!-- Visit Type Category Select -->
+                            <div class="form-group mb-2.5">
+                                <label class="font-weight-bold text-dark text-xs mb-1">Kategori Kunjungan <span class="text-danger">*</span></label>
+                                <select name="visit_type" id="modal-visit-type" class="form-control form-control-sm font-weight-bold">
+                                    <option value="poli">Pemeriksaan Poliklinik (Konsultasi &amp; Rawat Jalan)</option>
+                                    <option value="tindakan">Tindakan Medis Langsung (Saja)</option>
+                                </select>
+                            </div>
 
-                    <!-- Direct medical procedure select (Visible for Tindakan Saja) -->
-                    <div class="form-group" id="group-tindakan" style="display:none;">
-                        <label>Pilihan Tindakan Medis <span class="text-danger">*</span></label>
-                        <select name="service_id" id="modal-service-id" class="form-control select-searchable font-weight-bold" data-search-placeholder="🔍 Ketik nama tindakan medis...">
-                            <option value="">-- Pilih Tindakan Medis --</option>
-                            <?php 
-                            $grouped = [];
-                            foreach ($tindakanServices as $srv) {
-                                if ($srv->price === null) continue; // Header category is not directly selectable
-                                $groupName = $srv->parent_name ?: 'Standalone / Lainnya';
-                                $grouped[$groupName][] = $srv;
-                            }
-                            foreach ($grouped as $group => $items): 
-                            ?>
-                                <optgroup label="<?= esc($group) ?>">
-                                    <?php foreach ($items as $item): ?>
-                                        <option value="<?= $item->id ?>"><?= esc($item->name) ?> (Rp <?= number_format($item->price, 0, ',', '.') ?>)</option>
+                            <!-- Polyclinic select (Visible for Poli) -->
+                            <div class="form-group mb-2.5" id="group-polyclinic">
+                                <label class="font-weight-bold text-dark text-xs mb-1">Poliklinik Tujuan <span class="text-danger">*</span></label>
+                                <select name="polyclinic_id" id="modal-polyclinic-id" class="form-control form-control-sm font-weight-bold">
+                                    <option value="">-- Pilih Poliklinik --</option>
+                                    <?php foreach ($polyclinics as $poly): ?>
+                                        <?php if ($poly->name !== 'Tindakan Saja'): ?>
+                                            <option value="<?= $poly->id ?>"><?= esc($poly->name) ?></option>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
-                                </optgroup>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+                                </select>
+                            </div>
 
-                    <!-- Doctor select (Filtered automatically) -->
-                    <div class="form-group">
-                        <label id="label-doctor">Dokter Pemeriksa <span class="text-danger">*</span></label>
-                        <select name="doctor_id" id="modal-doctor-id" class="form-control select-searchable font-weight-bold" data-search-placeholder="🔍 Ketik nama dokter..." required>
-                            <!-- Options rendered dynamically -->
-                        </select>
-                    </div>
+                            <!-- Direct medical procedure select (Visible for Tindakan Saja) -->
+                            <div class="form-group mb-2.5" id="group-tindakan" style="display:none;">
+                                <label class="font-weight-bold text-dark text-xs mb-1">Pilihan Tindakan Medis <span class="text-danger">*</span></label>
+                                <select name="service_id" id="modal-service-id" class="form-control form-control-sm font-weight-bold">
+                                    <option value="">-- Pilih Tindakan Medis --</option>
+                                    <?php 
+                                    $grouped = [];
+                                    foreach ($tindakanServices as $srv) {
+                                        if ($srv->price === null) continue;
+                                        $groupName = $srv->parent_name ?: 'Standalone / Umum';
+                                        $grouped[$groupName][] = $srv;
+                                    }
+                                    foreach ($grouped as $group => $items): 
+                                    ?>
+                                        <optgroup label="<?= esc($group) ?>">
+                                            <?php foreach ($items as $item): ?>
+                                                <option value="<?= $item->id ?>"><?= esc($item->name) ?> (Rp <?= number_format($item->price, 0, ',', '.') ?>)</option>
+                                            <?php endforeach; ?>
+                                        </optgroup>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
 
-                    <!-- Ruangan Pelayanan / Poli -->
-                    <div class="form-group">
-                        <label>Ruangan Pemeriksaan / Poli <small class="text-muted">(Opsional / Otomatis)</small></label>
-                        <select name="room_id" id="modal-room-id" class="form-control font-weight-bold text-dark">
-                            <option value="">-- Otomatis Sesuai Poli / Tindakan --</option>
-                            <?php if (!empty($rooms)): ?>
-                                <?php foreach ($rooms as $rm): ?>
-                                    <option value="<?= $rm->id ?>"><?= esc($rm->code) ?> - <?= esc($rm->name) ?> (<?= strtoupper($rm->type) ?> - <?= esc($rm->floor) ?>)</option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
+                            <!-- Doctor select (Filtered automatically) -->
+                            <div class="form-group mb-2.5">
+                                <label id="label-doctor" class="font-weight-bold text-dark text-xs mb-1">Dokter Pemeriksa <span class="text-danger">*</span></label>
+                                <select name="doctor_id" id="modal-doctor-id" class="form-control form-control-sm font-weight-bold">
+                                    <!-- Options rendered dynamically -->
+                                </select>
+                                <small id="hint-doctor-sched" class="text-muted text-xs d-block mt-0.5"></small>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Metode Penjamin Bayar <span class="text-danger">*</span></label>
-                        <select name="payment_method" id="modal-payment-method" class="form-control font-weight-bold" required>
-                            <?php if (!empty($paymentMethods)): ?>
-                                <?php foreach ($paymentMethods as $pm): ?>
-                                    <option value="<?= esc($pm->code) ?>">
-                                        <?= esc($pm->name) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <option value="umum">Umum (Mandiri)</option>
-                                <option value="bpjs">Klaim BPJS</option>
-                                <option value="asuransi">Asuransi Swasta</option>
-                            <?php endif; ?>
-                        </select>
-                    </div>
+                            <!-- Ruangan Pelayanan / Poli -->
+                            <div class="form-group mb-2">
+                                <label class="font-weight-bold text-dark text-xs mb-1">Ruangan Layanan / Praktek <small class="text-muted">(Auto-resolve)</small></label>
+                                <select name="room_id" id="modal-room-id" class="form-control form-control-sm font-weight-bold text-dark">
+                                    <option value="">-- Otomatis Sesuai Jadwal / Poli --</option>
+                                    <?php if (!empty($rooms)): ?>
+                                        <?php foreach ($rooms as $rm): ?>
+                                            <option value="<?= $rm->id ?>"><?= esc($rm->code) ?> - <?= esc($rm->name) ?> (<?= strtoupper($rm->type) ?> - <?= esc($rm->floor) ?>)</option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
 
-                    <!-- Dropdown Mitra Asuransi Swasta (Auto-Tampil jika Metode Bayar Asuransi) -->
-                    <div class="form-group" id="grp-modal-insurance" style="display:none;">
-                        <label class="text-teal font-weight-bold"><i class="fas fa-handshake mr-1"></i> Pilih Mitra Asuransi / Penjamin <span class="text-danger">*</span></label>
-                        <select name="insurance_id" id="modal-insurance-id" class="form-control font-weight-bold">
-                            <option value="">-- Pilih Asuransi Rekanan --</option>
-                            <?php if (!empty($insuranceProviders)): ?>
-                                <?php foreach ($insuranceProviders as $ip): ?>
-                                    <option value="<?= $ip->id ?>"><?= esc($ip->code) ?> - <?= esc($ip->name) ?> (<?= strtoupper($ip->type) ?>)</option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
+                        <!-- KOLOM KANAN: PENJAMIN BAYAR & ANAMNESA AWAL -->
+                        <div class="col-md-6">
+                            <h6 class="font-weight-bold text-teal text-xs text-uppercase mb-2" style="letter-spacing: 0.5px;">
+                                <i class="fas fa-wallet mr-1"></i> Penjamin &amp; Keluhan Awal
+                            </h6>
+
+                            <!-- Metode Bayar -->
+                            <div class="form-group mb-2.5">
+                                <label class="font-weight-bold text-dark text-xs mb-1">Metode Penjamin Bayar <span class="text-danger">*</span></label>
+                                <select name="payment_method" id="modal-payment-method" class="form-control form-control-sm font-weight-bold">
+                                    <option value="umum">🟢 Umum (Mandiri / Bayar Sendiri)</option>
+                                    <option value="bpjs">🟢 Klaim BPJS Kesehatan</option>
+                                    <option value="asuransi">🔵 Asuransi Swasta / Korporasi</option>
+                                </select>
+                            </div>
+
+                            <!-- Field Tambahan BPJS (Jika Memilih BPJS) -->
+                            <div class="form-group mb-2.5" id="grp-modal-bpjs" style="display:none;">
+                                <label class="font-weight-bold text-teal text-xs mb-1">
+                                    <i class="fas fa-id-card mr-1"></i> Nomor Kartu BPJS Pasien
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="bpjs_number" id="modal-bpjs-number" class="form-control font-weight-bold font-monospace" placeholder="13 digit No. Kartu BPJS" maxlength="20">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text bg-light text-success font-weight-bold text-xs"><i class="fas fa-check-circle mr-1"></i> Valid</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted text-xs">Nomor kartu ini akan otomatis disinkronkan ke profil pasien.</small>
+                            </div>
+
+                            <!-- Dropdown Mitra Asuransi Swasta (Jika Memilih Asuransi) -->
+                            <div class="form-group mb-2.5" id="grp-modal-insurance" style="display:none;">
+                                <label class="text-teal font-weight-bold text-xs mb-1"><i class="fas fa-handshake mr-1"></i> Mitra Asuransi Penjamin <span class="text-danger">*</span></label>
+                                <select name="insurance_id" id="modal-insurance-id" class="form-control form-control-sm font-weight-bold">
+                                    <option value="">-- Pilih Asuransi Rekanan --</option>
+                                    <?php if (!empty($insuranceProviders)): ?>
+                                        <?php foreach ($insuranceProviders as $ip): ?>
+                                            <option value="<?= $ip->id ?>"><?= esc($ip->code) ?> - <?= esc($ip->name) ?> (<?= strtoupper($ip->type) ?>)</option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+
+                            <!-- Keluhan Utama / Anamnesa Awal Registrasi (Flow ke RME) -->
+                            <div class="form-group mb-2">
+                                <label class="font-weight-bold text-dark text-xs mb-1">
+                                    <i class="fas fa-notes-medical text-teal mr-1"></i> Keluhan Utama / Alasan Kunjungan <small class="text-muted">(Anamnesa Awal)</small>
+                                </label>
+                                <textarea name="complaint" id="modal-complaint" class="form-control form-control-sm" rows="3" placeholder="Contoh: Demam 2 hari naik turun, batuk berdahak, pemeriksaan gula darah rutin, kontrol jahitan..."></textarea>
+                                <small class="text-muted text-xs d-block mt-0.5">
+                                    <i class="fas fa-link text-teal mr-0.5"></i> Terintegrasi otomatis ke RME SOAP dokter pemeriksa.
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-teal font-weight-bold"><i class="fas fa-paper-plane"></i> Kirim ke Antrean</button>
+                <div class="modal-footer bg-light py-2 px-3 d-flex justify-content-between align-items-center">
+                    <div class="text-muted text-xs">
+                        <i class="fas fa-info-circle mr-1 text-teal"></i> Nomor antrean &amp; billing draft akan digenerate otomatis.
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary btn-sm font-weight-bold mr-1" data-dismiss="modal">Batal</button>
+                        <button type="submit" id="btn-submit-visit" class="btn btn-teal btn-sm font-weight-bold px-3 shadow-sm">
+                            <i class="fas fa-paper-plane mr-1"></i> Kirim ke Antrean &amp; Cetak Tiket
+                        </button>
+                    </div>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cetak Tiket Antrean Termal (Standard 58mm / 80mm Layout) -->
+<div class="modal fade" id="modalQueueTicket" tabindex="-1" role="dialog" aria-labelledby="modalQueueTicketLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document" style="max-width: 380px;">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-teal text-white py-2">
+                <h6 class="modal-title font-weight-bold mb-0 text-white" id="modalQueueTicketLabel">
+                    <i class="fas fa-ticket-alt mr-1"></i> Tiket Antrean Pasien
+                </h6>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3 bg-light">
+                <!-- PRINTABLE THERMAL SLIP CONTAINER -->
+                <div id="thermal-ticket-slip" class="p-3 bg-white border rounded shadow-xs" style="font-family: 'Courier New', Courier, monospace; color: #111827; font-size: 13px; line-height: 1.35;">
+                    <div class="text-center pb-2 border-bottom border-dark">
+                        <div class="font-weight-bold" style="font-size: 15px; text-transform: uppercase;">
+                            <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>
+                        </div>
+                        <div style="font-size: 10px;" class="text-muted">
+                            <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa')) ?>
+                        </div>
+                        <div style="font-size: 9.5px;" class="text-muted">
+                            Telp: <?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?>
+                        </div>
+                    </div>
+
+                    <div class="text-center py-2">
+                        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">NOMOR ANTREAN</div>
+                        <div id="slip-queue-no" class="font-weight-bold" style="font-size: 38px; line-height: 1.1; margin: 4px 0; color: #0d9488;">
+                            <?= esc($vt['queue_no'] ?? 'A-001') ?>
+                        </div>
+                        <div id="slip-poly-name" class="font-weight-bold text-uppercase" style="font-size: 13px;">
+                            <?= esc($vt['poly_name'] ?? 'POLIKLINIK') ?>
+                        </div>
+                    </div>
+
+                    <div class="border-top border-bottom py-2 my-1" style="font-size: 11px; border-style: dashed !important; border-color: #9ca3af !important;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 75px;">No. Visit</td>
+                                <td style="width: 8px;">:</td>
+                                <td class="font-weight-bold" id="slip-no-visit"><?= esc($vt['no_visit'] ?? '-') ?></td>
+                            </tr>
+                            <tr>
+                                <td>No. RM</td>
+                                <td>:</td>
+                                <td class="font-weight-bold" id="slip-patient-rm"><?= esc($vt['patient_rm'] ?? '-') ?></td>
+                            </tr>
+                            <tr>
+                                <td>Nama</td>
+                                <td>:</td>
+                                <td class="font-weight-bold" id="slip-patient-name"><?= esc($vt['patient_name'] ?? '-') ?></td>
+                            </tr>
+                            <tr>
+                                <td>Dokter</td>
+                                <td>:</td>
+                                <td id="slip-doctor-name"><?= esc($vt['doctor_name'] ?? '-') ?></td>
+                            </tr>
+                            <tr>
+                                <td>Ruang</td>
+                                <td>:</td>
+                                <td id="slip-room-name"><?= esc($vt['room_name'] ?? '-') ?></td>
+                            </tr>
+                            <tr>
+                                <td>Penjamin</td>
+                                <td>:</td>
+                                <td class="text-uppercase" id="slip-payment-method"><?= esc($vt['payment_method'] ?? 'UMUM') ?></td>
+                            </tr>
+                            <?php if (!empty($vt['complaint']) && $vt['complaint'] !== '-'): ?>
+                            <tr>
+                                <td>Keluhan</td>
+                                <td>:</td>
+                                <td id="slip-complaint"><?= esc($vt['complaint']) ?></td>
+                            </tr>
+                            <?php endif; ?>
+                            <tr>
+                                <td>Waktu</td>
+                                <td>:</td>
+                                <td id="slip-time"><?= esc($vt['created_at'] ?? date('Y-m-d H:i')) ?></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="text-center pt-2" style="font-size: 9.5px;">
+                        <div class="font-weight-bold">Simpan struk ini sebagai bukti antrean.</div>
+                        <div class="text-muted">Perhatikan nomor panggilan pada layar monitor / pengeras suara.</div>
+                        <div class="mt-1 text-muted" style="letter-spacing: 2px;">* * * * *</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-2 bg-white d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                <div class="d-flex" style="gap: 5px;">
+                    <?php if (!empty($vt['patient_phone'])): ?>
+                    <?php 
+                        $cleanPhone = preg_replace('/[^0-9]/', '', $vt['patient_phone']);
+                        if (str_starts_with($cleanPhone, '0')) {
+                            $cleanPhone = '62' . substr($cleanPhone, 1);
+                        }
+                        $clinicName = clinic_setting('clinic_name', 'Sawamawa Medical Center');
+                        $waMsg = rawurlencode("*TIKET ANTREAN PASIEN*\n{$clinicName}\n\n" .
+                            "Halo Bpk/Ibu *" . $vt['patient_name'] . "*,\n" .
+                            "Kunjungan Anda berhasil didaftarkan.\n\n" .
+                            "• *No. Antrean:* " . $vt['queue_no'] . "\n" .
+                            "• *No. Registrasi:* " . $vt['no_visit'] . "\n" .
+                            "• *No. Rekam Medis:* " . $vt['patient_rm'] . "\n" .
+                            "• *Layanan/Poli:* " . $vt['poly_name'] . "\n" .
+                            "• *Dokter Pemeriksa:* " . $vt['doctor_name'] . "\n" .
+                            "• *Ruangan:* " . ($vt['room_name'] ?? '-') . "\n" .
+                            "• *Metode Bayar:* " . strtoupper($vt['payment_method'] ?? 'Umum') . "\n\n" .
+                            "Silakan menunggu di ruang tunggu hingga nomor antrean Anda dipanggil.\n" .
+                            "Terima kasih atas kepercayaan Anda.");
+                    ?>
+                    <a href="https://wa.me/<?= $cleanPhone ?>?text=<?= $waMsg ?>" target="_blank" class="btn btn-outline-success btn-sm font-weight-bold" title="Kirim ke WhatsApp Pasien">
+                        <i class="fab fa-whatsapp"></i> WA
+                    </a>
+                    <?php endif; ?>
+                    <button type="button" class="btn btn-teal btn-sm font-weight-bold" onclick="printThermalSlip();">
+                        <i class="fas fa-print mr-1"></i> Cetak Struk
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1723,16 +2018,45 @@
             }
         });
 
-        // Delegated Event Handler: Tombol Kunjungan Pasien
-        $(document).on('click', '.btn-visit', function() {
-            const id = $(this).data('id');
-            const name = $(this).data('name');
-            const rm = $(this).data('rm');
-            const bpjs = $(this).data('bpjs');
-            const insurance = $(this).data('insurance');
+        // =========================================================================
+        // REGISTRASI KUNJUNGAN BARU & SISTEM TIKET ANTREAN
+        // =========================================================================
+        const allDoctorSchedules = <?= json_encode($doctorSchedules ?? []) ?>;
+        const daysMap = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        const todayName = daysMap[new Date().getDay()];
+        let patientSearchTimer = null;
 
+        // Auto-show thermal queue ticket modal if session flashdata is present
+        <?php if (session()->getFlashdata('visit_ticket')): ?>
+            setTimeout(function() {
+                $('#modalQueueTicket').modal('show');
+            }, 300);
+        <?php endif; ?>
+
+        // Helper: Format Tampilan Pasien Terpilih pada Modal Kunjungan
+        function setPatientInVisitModal(id, name, rm, nik, phone, tier, bpjs, insurance) {
             $('#modal-patient-id').val(id);
-            $('#modal-patient-name').val(name + ' (' + rm + ')');
+            $('#card-patient-name').text(name || '-');
+            $('#card-patient-rm').text(rm || '-');
+            $('#card-patient-nik').text(nik || '-');
+            $('#card-patient-phone').text(phone || '-');
+
+            const tierLower = (tier || 'regular').toLowerCase();
+            let tierBadge = '<span class="badge badge-light border text-muted ml-1" style="font-size:10px;">Reguler</span>';
+            if (tierLower === 'gold') {
+                tierBadge = '<span class="badge badge-warning ml-1" style="font-size:10px;"><i class="fas fa-crown mr-0.5"></i>Gold</span>';
+            } else if (tierLower === 'vip' || tierLower === 'platinum') {
+                tierBadge = '<span class="badge badge-dark ml-1" style="font-size:10px;"><i class="fas fa-gem mr-0.5"></i>VIP</span>';
+            }
+            $('#card-patient-tier-badge').html(tierBadge);
+
+            if (bpjs && bpjs.toString().trim() !== '') {
+                $('#card-patient-bpjs-info').html('BPJS: <strong class="text-success font-monospace">' + bpjs + '</strong>');
+                $('#modal-bpjs-number').val(bpjs);
+            } else {
+                $('#card-patient-bpjs-info').text('BPJS: Belum terdaftar');
+                $('#modal-bpjs-number').val('');
+            }
 
             if (insurance) {
                 $('#modal-payment-method').val('asuransi').trigger('change');
@@ -1743,41 +2067,235 @@
                 $('#modal-payment-method').val('umum').trigger('change');
             }
 
+            // Transisi Tampilan: Sembunyikan search box, tampilkan card terpilih
+            $('#box-patient-search').hide();
+            $('#patient-search-results-box').empty().hide();
+            $('#box-patient-selected').slideDown(150);
+        }
+
+        // Live Search Autocomplete Pasien di dalam Visit Modal
+        $('#modal-patient-search').on('input', function() {
+            clearTimeout(patientSearchTimer);
+            const q = $(this).val().trim();
+            const $results = $('#patient-search-results-box');
+
+            if (q.length === 0) {
+                $results.empty().hide();
+                return;
+            }
+
+            $results.html('<div class="p-2 text-center text-muted text-xs"><i class="fas fa-spinner fa-spin mr-1"></i> Mencari pasien terdaftar...</div>').show();
+
+            patientSearchTimer = setTimeout(function() {
+                $.ajax({
+                    url: '<?= base_url('klinik/search-patients-ajax') ?>',
+                    type: 'GET',
+                    data: { q: q },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res && res.status === 'success' && res.data && res.data.length > 0) {
+                            let html = '';
+                            res.data.forEach(function(p) {
+                                const tLower = (p.membership_tier || 'regular').toLowerCase();
+                                let tBadge = '<span class="badge badge-light border text-muted" style="font-size:10px;">Reguler</span>';
+                                if (tLower === 'gold') {
+                                    tBadge = '<span class="badge badge-warning" style="font-size:10px;"><i class="fas fa-crown mr-0.5"></i>Gold</span>';
+                                } else if (tLower === 'vip' || tLower === 'platinum') {
+                                    tBadge = '<span class="badge badge-dark" style="font-size:10px;"><i class="fas fa-gem mr-0.5"></i>VIP</span>';
+                                }
+
+                                const safeName = $('<div>').text(p.name).html();
+                                const safeRm = $('<div>').text(p.no_rm).html();
+                                const safeNik = $('<div>').text(p.nik || '-').html();
+                                const safePhone = $('<div>').text(p.phone || '-').html();
+                                const safeBpjs = $('<div>').text(p.bpjs_number || '').html();
+
+                                html += `
+                                    <a href="javascript:void(0)" class="list-group-item list-group-item-action py-2 px-3 btn-select-search-patient"
+                                       data-id="${p.id}"
+                                       data-name="${safeName}"
+                                       data-rm="${safeRm}"
+                                       data-nik="${safeNik}"
+                                       data-phone="${safePhone}"
+                                       data-tier="${p.membership_tier || 'regular'}"
+                                       data-bpjs="${safeBpjs}"
+                                       data-insurance="${p.insurance_provider_id || ''}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong class="text-dark">${safeName}</strong>
+                                                <span class="badge badge-teal ml-1" style="background:#0d9488; color:#fff;">${safeRm}</span>
+                                                ${tBadge}
+                                            </div>
+                                            <small class="text-secondary">
+                                                ${p.phone ? '<i class="fab fa-whatsapp text-success mr-1"></i>' + safePhone : (p.nik ? 'NIK: ' + safeNik : '')}
+                                            </small>
+                                        </div>
+                                    </a>
+                                `;
+                            });
+                            $results.html(html).show();
+                        } else {
+                            $results.html(`
+                                <div class="p-2.5 text-center text-muted text-xs">
+                                    <i class="fas fa-circle-exclamation text-warning mr-1"></i> Pasien tidak ditemukan.
+                                    <div class="mt-1">
+                                        <a href="javascript:void(0)" class="btn-quick-new-patient text-teal font-weight-bold">
+                                            <i class="fas fa-user-plus mr-0.5"></i> Klik di sini untuk mendaftarkan pasien baru
+                                        </a>
+                                    </div>
+                                </div>
+                            `).show();
+                        }
+                    },
+                    error: function() {
+                        $results.html('<div class="p-2 text-center text-danger text-xs">Gagal melakukan pencarian. Silakan periksa koneksi.</div>').show();
+                    }
+                });
+            }, 250);
+        });
+
+        // Event saat hasil pencarian pasien diklik
+        $(document).on('click', '.btn-select-search-patient', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const rm = $(this).data('rm');
+            const nik = $(this).data('nik');
+            const phone = $(this).data('phone');
+            const tier = $(this).data('tier') || 'regular';
+            const bpjs = $(this).data('bpjs') || '';
+            const insurance = $(this).data('insurance') || '';
+
+            setPatientInVisitModal(id, name, rm, nik, phone, tier, bpjs, insurance);
+        });
+
+        // Tombol Ganti Pasien
+        $(document).on('click', '.btn-change-patient', function() {
+            $('#modal-patient-id').val('');
+            $('#box-patient-selected').hide();
+            $('#box-patient-search').slideDown(150);
+            $('#modal-patient-search').val('').focus();
+            $('#patient-search-results-box').empty().hide();
+        });
+
+        // Tombol Bersihkan Input Pencarian
+        $('#btn-clear-patient-search').on('click', function() {
+            $('#modal-patient-search').val('').focus();
+            $('#patient-search-results-box').empty().hide();
+        });
+
+        // Tombol Quick Link ke Registrasi Pasien Baru
+        $(document).on('click', '.btn-quick-new-patient', function() {
+            $('#visitModal').modal('hide');
+            setTimeout(function() {
+                $('#registerPatientModal').modal('show');
+            }, 400);
+        });
+
+        // Tombol "Registrasi Kunjungan Baru" Mandiri di Toolbar Header
+        $(document).on('click', '.btn-new-visit-standalone', function() {
+            $('#modal-patient-id').val('');
+            $('#box-patient-selected').hide();
+            $('#box-patient-search').show();
+            $('#modal-patient-search').val('');
+            $('#patient-search-results-box').empty().hide();
+            $('#modal-complaint').val('');
+            $('#modal-visit-type').val('poli').trigger('change');
+            $('#modal-payment-method').val('umum').trigger('change');
+        });
+
+        // Delegated Event Handler: Tombol Kunjungan Pasien dari Baris Tabel
+        $(document).on('click', '.btn-visit', function() {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const rm = $(this).data('rm');
+            const nik = $(this).data('nik') || '-';
+            const phone = $(this).data('phone') || '-';
+            const tier = $(this).data('tier') || 'regular';
+            const bpjs = $(this).data('bpjs') || '';
+            const insurance = $(this).data('insurance') || '';
+
+            setPatientInVisitModal(id, name, rm, nik, phone, tier, bpjs, insurance);
             $('#modal-visit-type').val('poli').trigger('change');
         });
 
-        // Handler when Visit Type is changed
-        $('#modal-visit-type').change(function() {
-            const type = $(this).val();
-            if (type === 'poli') {
+        // Event Hook: Setiap kali modal Registrasi Kunjungan Baru dibuka
+        $('#visitModal').on('show.bs.modal', function() {
+            const $btn = $('#btn-submit-visit');
+            $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Kirim ke Antrean &amp; Cetak Tiket');
+
+            const currentPid = $('#modal-patient-id').val();
+            if (currentPid && currentPid.trim() !== '') {
+                $('#box-patient-selected').show();
+                $('#box-patient-search').hide();
+            } else {
+                $('#box-patient-selected').hide();
+                $('#box-patient-search').show();
+                setTimeout(function() {
+                    $('#modal-patient-search').focus();
+                }, 300);
+            }
+
+            if (!$('#modal-visit-type').val()) {
+                $('#modal-visit-type').val('poli');
+            }
+            if (!$('#modal-polyclinic-id').val()) {
+                const firstPoly = $('#modal-polyclinic-id option[value!=""]:first').val();
+                if (firstPoly) {
+                    $('#modal-polyclinic-id').val(firstPoly);
+                }
+            }
+
+            if ($('#modal-visit-type').val() === 'poli') {
                 $('#group-polyclinic').show();
-                $('#modal-polyclinic-id').prop('required', true);
                 $('#group-tindakan').hide();
-                $('#modal-service-id').prop('required', false).val('');
+                $('#modal-service-id').val('');
                 $('#label-doctor').html('Dokter Pemeriksa <span class="text-danger">*</span>');
                 filterDoctorsByPolyclinic();
             } else {
                 $('#group-polyclinic').hide();
-                $('#modal-polyclinic-id').prop('required', false).val('');
                 $('#group-tindakan').show();
-                $('#modal-service-id').prop('required', true);
                 $('#label-doctor').html('Dokter Pelaksana / PJ Tindakan <span class="text-danger">*</span>');
-                loadAllDoctors();
+                filterDoctorsByTindakan();
             }
         });
 
-        const allDoctorSchedules = <?= json_encode($doctorSchedules ?? []) ?>;
-        const daysMap = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-        const todayName = daysMap[new Date().getDay()];
+        $('#visitModal').on('hidden.bs.modal', function() {
+            const $btn = $('#btn-submit-visit');
+            $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Kirim ke Antrean &amp; Cetak Tiket');
+            $('#patient-search-results-box').empty().hide();
+        });
 
+        // Handler saat Visit Type Berubah (Poli vs Tindakan Medis)
+        $('#modal-visit-type').change(function() {
+            const type = $(this).val();
+            if (type === 'poli') {
+                $('#group-polyclinic').slideDown(150);
+                $('#group-tindakan').slideUp(150);
+                $('#modal-service-id').val('');
+                $('#label-doctor').html('Dokter Pemeriksa <span class="text-danger">*</span>');
+                filterDoctorsByPolyclinic();
+            } else {
+                $('#group-polyclinic').slideUp(150);
+                $('#group-tindakan').slideDown(150);
+                $('#label-doctor').html('Dokter Pelaksana / PJ Tindakan <span class="text-danger">*</span>');
+                filterDoctorsByTindakan();
+            }
+        });
+
+        // Handler saat Penjamin Bayar Berubah (Umum vs BPJS vs Asuransi)
         $('#modal-payment-method').change(function() {
             const val = $(this).val();
             if (val === 'asuransi') {
                 $('#grp-modal-insurance').slideDown(200);
-                $('#modal-insurance-id').prop('required', true);
+                $('#grp-modal-bpjs').slideUp(200);
+            } else if (val === 'bpjs') {
+                $('#grp-modal-bpjs').slideDown(200);
+                $('#grp-modal-insurance').slideUp(200);
+                $('#modal-insurance-id').val('');
             } else {
                 $('#grp-modal-insurance').slideUp(200);
-                $('#modal-insurance-id').prop('required', false).val('');
+                $('#grp-modal-bpjs').slideUp(200);
+                $('#modal-insurance-id').val('');
             }
         });
 
@@ -1797,92 +2315,209 @@
             }
         });
 
+        // Filter Dokter Berdasarkan Poliklinik & Jadwal Praktek Hari Ini
         function filterDoctorsByPolyclinic() {
-            const polyId = $('#modal-polyclinic-id').val();
+            let polyId = $('#modal-polyclinic-id').val();
             const docSelect = $('#modal-doctor-id');
+            const hintSched = $('#hint-doctor-sched');
             docSelect.empty();
+            hintSched.empty();
+
+            if (!polyId) {
+                const firstPoly = $('#modal-polyclinic-id option[value!=""]:first').val();
+                if (firstPoly) {
+                    $('#modal-polyclinic-id').val(firstPoly);
+                    polyId = firstPoly;
+                }
+            }
 
             if (!polyId) {
                 docSelect.append('<option value="">-- Pilih Poliklinik Terlebih Dahulu --</option>');
                 return;
             }
 
-            const docs = allDoctors.filter(d => d.polyclinic_id == polyId || (d.category_id == 1 && !d.polyclinic_id));
+            let docs = allDoctors.filter(d => (d.polyclinic_id == polyId || (d.category_id == 1 && !d.polyclinic_id)) && (d.status === 'active' || !d.status));
+            
+            // Fallback: Jika tidak ada dokter khusus poli ini, tampilkan semua dokter aktif
+            if (docs.length === 0) {
+                docs = allDoctors.filter(d => d.status === 'active' || !d.status);
+            }
 
             if (docs.length === 0) {
-                docSelect.append('<option value="">Tidak ada dokter aktif di poli ini</option>');
+                docSelect.append('<option value="">Tidak ada dokter aktif</option>');
             } else {
-                docSelect.append('<option value="">-- Pilih Dokter --</option>');
                 let autoSelectedRoom = null;
-                let autoSelectedDocId = null;
+                let autoSelectedDocId = docs[0].id;
+                let activeTodayCount = 0;
 
                 docs.forEach(d => {
                     const schedToday = allDoctorSchedules.find(s => s.doctor_id == d.id && s.day_of_week === todayName);
                     let badgeSched = '';
                     let roomIdAttr = '';
                     if (schedToday) {
-                        badgeSched = ` (⭐ Praktek Hari Ini: ${schedToday.start_time.substring(0,5)}-${schedToday.end_time.substring(0,5)} | Kuota: ${schedToday.max_quota})`;
+                        badgeSched = ` (⭐ Praktek Hari Ini: ${schedToday.start_time.substring(0,5)}-${schedToday.end_time.substring(0,5)})`;
                         if (schedToday.room_id) {
                             roomIdAttr = schedToday.room_id;
                             autoSelectedRoom = schedToday.room_id;
                         }
-                        if (!autoSelectedDocId) autoSelectedDocId = d.id;
+                        autoSelectedDocId = d.id;
+                        activeTodayCount++;
                     }
                     docSelect.append(`<option value="${d.id}" data-room="${roomIdAttr}">${d.name}${badgeSched}</option>`);
                 });
 
-                if (docs.length === 1) {
-                    docSelect.val(docs[0].id).trigger('change');
-                } else if (autoSelectedDocId) {
+                if (autoSelectedDocId) {
                     docSelect.val(autoSelectedDocId).trigger('change');
                 }
 
                 if (autoSelectedRoom) {
                     $('#modal-room-id').val(autoSelectedRoom);
                 }
+
+                if (activeTodayCount > 0) {
+                    hintSched.html(`<i class="fas fa-calendar-check text-success mr-1"></i> Terdapat <strong>${activeTodayCount} dokter</strong> berjadwal praktek hari ini (${todayName}).`);
+                } else {
+                    hintSched.html(`<i class="fas fa-clock text-muted mr-1"></i> Dokter jaga poliklinik siap melayani.`);
+                }
             }
         }
 
+        // Filter Dokter Berdasarkan Tindakan Medis
         function filterDoctorsByTindakan() {
             const serviceId = $('#modal-service-id').val();
             const docSelect = $('#modal-doctor-id');
+            const hintSched = $('#hint-doctor-sched');
             docSelect.empty();
+            hintSched.empty();
 
             if (!serviceId) {
                 loadAllDoctors();
                 return;
             }
 
-            const docs = allDoctors.filter(d => d.tindakan_id == serviceId || d.category_id == 2);
+            let docs = allDoctors.filter(d => (d.tindakan_id == serviceId || d.category_id == 2) && (d.status === 'active' || !d.status));
+            if (docs.length === 0) {
+                docs = allDoctors.filter(d => d.status === 'active' || !d.status);
+            }
 
             if (docs.length === 0) {
-                loadAllDoctors();
-            } else if (docs.length === 1) {
-                docSelect.append('<option value="' + docs[0].id + '" selected>' + docs[0].name + '</option>');
+                docSelect.append('<option value="">Tidak ada dokter aktif</option>');
             } else {
-                docSelect.append('<option value="">-- Pilih Dokter Pelaksana --</option>');
-                docs.forEach(d => {
+                docs.forEach((d) => {
                     docSelect.append('<option value="' + d.id + '">' + d.name + (d.fee_per_pasien > 0 ? ' (Fee: Rp ' + Number(d.fee_per_pasien).toLocaleString('id-ID') + ')' : '') + '</option>');
                 });
+                docSelect.val(docs[0].id).trigger('change');
             }
         }
 
         function loadAllDoctors() {
             const docSelect = $('#modal-doctor-id');
             docSelect.empty();
-            const docs = allDoctors.filter(d => d.category_id == 2 || !d.category_id);
+            let docs = allDoctors.filter(d => d.status === 'active' || !d.status);
 
             if (docs.length === 0) {
-                docSelect.append('<option value="">Tidak ada dokter/pelaksana aktif</option>');
-            } else if (docs.length === 1) {
-                docSelect.append('<option value="' + docs[0].id + '" selected>' + docs[0].name + '</option>');
+                docSelect.append('<option value="">Tidak ada dokter aktif</option>');
             } else {
-                docSelect.append('<option value="">-- Pilih Dokter Pelaksana --</option>');
                 docs.forEach(d => {
                     docSelect.append('<option value="' + d.id + '">' + d.name + (d.fee_per_pasien > 0 ? ' (Fee: Rp ' + Number(d.fee_per_pasien).toLocaleString('id-ID') + ')' : '') + '</option>');
                 });
+                docSelect.val(docs[0].id).trigger('change');
             }
         }
+
+        // Submit Listener: Validasi Eksplisit & Anti Double-Submit
+        $('#form-visit-registration').on('submit', function(e) {
+            const patientId = $('#modal-patient-id').val();
+            if (!patientId || patientId.trim() === '') {
+                e.preventDefault();
+                alert('Data Pasien belum dipilih. Silakan cari dan pilih pasien terlebih dahulu dari kotak pencarian di atas.');
+                $('#modal-patient-search').focus();
+                return false;
+            }
+
+            const visitType = $('#modal-visit-type').val() || 'poli';
+            if (visitType === 'poli') {
+                const polyId = $('#modal-polyclinic-id').val();
+                if (!polyId) {
+                    e.preventDefault();
+                    alert('Silakan pilih Poliklinik Tujuan terlebih dahulu.');
+                    $('#modal-polyclinic-id').focus();
+                    return false;
+                }
+            } else {
+                const serviceId = $('#modal-service-id').val();
+                if (!serviceId) {
+                    e.preventDefault();
+                    alert('Silakan pilih Tindakan Medis terlebih dahulu.');
+                    $('#modal-service-id').focus();
+                    return false;
+                }
+            }
+
+            const docId = $('#modal-doctor-id').val();
+            if (!docId) {
+                e.preventDefault();
+                alert('Silakan pilih Dokter Pemeriksa terlebih dahulu.');
+                $('#modal-doctor-id').focus();
+                return false;
+            }
+
+            const paymentMethod = $('#modal-payment-method').val();
+            if (paymentMethod === 'asuransi') {
+                const insId = $('#modal-insurance-id').val();
+                if (!insId) {
+                    e.preventDefault();
+                    alert('Silakan pilih Mitra Asuransi Rekanan.');
+                    $('#modal-insurance-id').focus();
+                    return false;
+                }
+            }
+
+            // Kunci tombol submit & beri feedback visual loading
+            $('#btn-submit-visit').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Mendaftarkan Antrean &amp; Billing...');
+            return true;
+        });
+
+        // Isolated Thermal Slip Printing Handler
+        window.printThermalSlip = function() {
+            const content = document.getElementById('thermal-ticket-slip');
+            if (!content) {
+                window.print();
+                return;
+            }
+            const win = window.open('', '_blank', 'width=450,height=600');
+            win.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Tiket Antrean Pasien</title>
+                    <style>
+                        @page { size: 80mm auto; margin: 0; }
+                        body {
+                            font-family: 'Courier New', Courier, monospace;
+                            margin: 3mm;
+                            padding: 0;
+                            font-size: 12px;
+                            color: #000;
+                            background: #fff;
+                        }
+                        table { width: 100%; border-collapse: collapse; }
+                        td { padding: 2px 0; vertical-align: top; font-size: 11px; }
+                        .text-center { text-align: center; }
+                        .font-weight-bold { font-weight: bold; }
+                        .border-bottom { border-bottom: 1px solid #000; }
+                        .border-top { border-top: 1px dashed #000; }
+                        .text-uppercase { text-transform: uppercase; }
+                        .text-muted { color: #555; }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    ${content.innerHTML}
+                </body>
+                </html>
+            `);
+            win.document.close();
+        };
 
         // =========================================================================
         // DIGITAL SIGNATURE CANVAS INITIALIZER (FOR TOUCHSCREEN, IPAD, & MOUSE)
@@ -2246,6 +2881,13 @@
                         $('#modal-payment-method').val('umum').trigger('change');
                     }
 
+                    if (!$('#modal-polyclinic-id').val()) {
+                        const firstPoly = $('#modal-polyclinic-id option[value!=""]:first').val();
+                        if (firstPoly) {
+                            $('#modal-polyclinic-id').val(firstPoly);
+                        }
+                    }
+
                     $('#modal-visit-type').val('poli').trigger('change');
                     $('#visitModal').modal('show');
                 });
@@ -2328,6 +2970,13 @@
                         $('#modal-payment-method').val('umum').trigger('change');
                     }
 
+                    if (!$('#modal-polyclinic-id').val()) {
+                        const firstPoly = $('#modal-polyclinic-id option[value!=""]:first').val();
+                        if (firstPoly) {
+                            $('#modal-polyclinic-id').val(firstPoly);
+                        }
+                    }
+
                     $('#modal-visit-type').val('poli').trigger('change');
                     $('#visitModal').modal('show');
                 });
@@ -2367,6 +3016,14 @@
                     `);
                 } else {
                     const initDate = initial.visit_date ? new Date(initial.visit_date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '-';
+                    let l2BillBadge = '';
+                    if (initial.billing) {
+                        const isPaid2 = (initial.billing.status === 'paid' || initial.billing.is_paid == 1);
+                        const payMethodName2 = initial.billing.payment_method ? ` (${initial.billing.payment_method.toUpperCase()})` : '';
+                        l2BillBadge = isPaid2 
+                            ? `<span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i>Lunas (Rp ${Number(initial.billing.grand_total).toLocaleString('id-ID')})${payMethodName2}</span>`
+                            : `<span class="badge badge-warning text-dark"><i class="fas fa-clock mr-1"></i>Belum Lunas</span>`;
+                    }
                     l2Container.html(`
                         <div class="alert alert-light border p-2.5 mb-3 d-flex justify-content-between align-items-center flex-wrap">
                             <div>
@@ -2375,7 +3032,8 @@
                             </div>
                             <div>
                                 <span class="badge badge-info mr-1">${initial.polyclinic_name || initial.tindakan_name || 'Poliklinik'}</span>
-                                <span class="badge badge-dark">Dokter DPJP: ${initial.doctor_name || 'Dokter Jaga'}</span>
+                                <span class="badge badge-dark mr-1">Dokter DPJP: ${initial.doctor_name || 'Dokter Jaga'}</span>
+                                ${l2BillBadge}
                             </div>
                         </div>
 
@@ -2497,9 +3155,11 @@
 
                         let billBadge = '';
                         if (v.billing) {
-                            billBadge = v.billing.is_paid == 1 
-                                ? `<span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i>Lunas (Rp ${Number(v.billing.grand_total).toLocaleString('id-ID')})</span>`
-                                : `<span class="badge badge-warning text-dark"><i class="fas fa-clock mr-1"></i>Belum Lunas</span>`;
+                            const isPaid = (v.billing.status === 'paid' || v.billing.is_paid == 1);
+                            const payMethodName = v.billing.payment_method ? ` (${v.billing.payment_method.toUpperCase()})` : '';
+                            billBadge = isPaid 
+                                ? `<span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i>Lunas (Rp ${Number(v.billing.grand_total).toLocaleString('id-ID')})${payMethodName}</span>`
+                                : `<span class="badge badge-warning text-dark"><i class="fas fa-clock mr-1"></i>Belum Lunas (Rp ${Number(v.billing.grand_total).toLocaleString('id-ID')})</span>`;
                         }
 
                         const visitCard = `

@@ -18,6 +18,7 @@ class DoctorModel extends Model
         'polyclinic_id',
         'tindakan_id',
         'fee_per_pasien',
+        'prescription_fee_percent',
         'sip_number',
         'str_number',
         'str_expiry',
@@ -29,9 +30,10 @@ class DoctorModel extends Model
     protected $createdField  = 'created_at';
 
     protected $validationRules = [
-        'name'           => 'required|min_length[2]|max_length[100]',
-        'fee_per_pasien' => 'permit_empty|numeric',
-        'status'         => 'in_list[active,inactive]',
+        'name'                     => 'required|min_length[2]|max_length[100]',
+        'fee_per_pasien'           => 'permit_empty|numeric',
+        'prescription_fee_percent' => 'permit_empty|numeric',
+        'status'                   => 'in_list[active,inactive]',
     ];
 
     protected $validationMessages = [

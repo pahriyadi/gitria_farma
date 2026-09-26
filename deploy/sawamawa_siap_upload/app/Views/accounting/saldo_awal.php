@@ -1,6 +1,44 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+<!-- Quick Switcher Tabs -->
+<div class="mb-3">
+    <div class="accounting-tabs-scroll-wrapper">
+        <ul class="nav nav-tabs-modern">
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
+                    <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
+                    <i class="fas fa-book-journal-whills mr-1"></i> 2. Buku Mutasi Akun
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
+                    <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/coa') ?>">
+                    <i class="fas fa-book-bookmark mr-1"></i> 4. Bagan Akun (COA)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/aturan-jurnal') ?>">
+                    <i class="fas fa-sliders mr-1"></i> 5. Template &amp; Aturan Jurnal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/saldo-awal') ?>">
+                    <i class="fas fa-scale-balanced mr-1"></i> 6. Saldo Awal
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div class="row">
     <!-- Kolom Kiri: Form Setup Saldo Awal Seluruh Akun -->
     <div class="col-md-8">
@@ -184,7 +222,7 @@
     </div>
 
     <!-- Kolom Kanan: Status Keseimbangan & Riwayat Saldo Awal -->
-    <div class="col-md-4">
+    <div class="col-md-4" style="position: sticky; top: 15px; align-self: flex-start;">
         <!-- Card Ringkasan Keseimbangan (Balance Checker) -->
         <div class="card p-3 mb-3">
             <h6 class="font-weight-bold text-dark mb-2 pb-2 border-bottom">
@@ -275,6 +313,14 @@
         // Auto-select nominal saat fokus agar mudah diedit / ditimpa
         $('.input-asset-calc, .input-liability-calc, .input-equity-calc').on('focus', function() {
             $(this).select();
+        });
+
+        // Anti double submission
+        $('#form-saldo-awal').on('submit', function() {
+            var btn = $(this).find('button[type="submit"]');
+            if (btn.length && !btn.prop('disabled')) {
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan Saldo Awal...');
+            }
         });
     });
 </script>

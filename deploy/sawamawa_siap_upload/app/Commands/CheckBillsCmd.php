@@ -13,7 +13,7 @@ class CheckBillsCmd extends BaseCommand
 
     public function run(array $params)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $billings = $db->table('billing_transactions bt')
                        ->select('bt.*, pv.no_visit, p.name as patient_name, p.no_rm, pv.status as visit_status')
                        ->join('patient_visits pv', 'pv.id = bt.visit_id', 'left')

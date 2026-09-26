@@ -410,15 +410,23 @@
                                          </div>
                                      </div>
 
-                                     <!-- Baris 3: Jam Kedatangan & Tombol Batal -->
+                                     <!-- Baris 3: Jam Kedatangan & Tombol Panggil Aksi -->
                                      <div class="d-flex justify-content-between align-items-center mt-2 pt-1 border-top" style="border-top-color: #f1f5f9 !important;">
                                          <small class="text-muted" style="font-size: 10px;">
                                              <i class="fas fa-user-doctor text-secondary mr-1"></i><?= esc($v->doctor_name ?? 'Dokter Jaga') ?>
                                          </small>
                                          
-                                         <button type="button" class="btn btn-outline-danger btn-xs py-0 px-2 font-weight-bold btn-sidebar-cancel-queue" data-id="<?= $v->id ?>" data-name="<?= esc($v->patient_name) ?>" data-queue="<?= esc($v->queue_no) ?>" title="Batalkan antrean konsultasi" style="font-size: 10.5px; height: 22px; line-height: 20px; border-radius: 4px;">
-                                             <i class="fas fa-times mr-1"></i> Batal
-                                         </button>
+                                         <div class="d-flex align-items-center" style="gap: 3px;">
+                                             <button type="button" class="btn btn-teal btn-xs py-0 px-2 font-weight-bold btn-sidebar-call-voice" title="Panggil Pasien ke Ruang Periksa Dokter" style="font-size: 10px; height: 22px; line-height: 20px; border-radius: 4px;">
+                                                 <i class="fas fa-volume-high mr-1"></i> Panggil
+                                             </button>
+                                             <button type="button" class="btn btn-outline-warning text-dark btn-xs py-0 px-2 font-weight-bold btn-sidebar-start-ttv" title="Panggil ke Ruang TTV Perawat" style="font-size: 10px; height: 22px; line-height: 20px; border-radius: 4px;">
+                                                 <i class="fas fa-heartbeat mr-1"></i> TTV
+                                             </button>
+                                             <button type="button" class="btn btn-outline-danger btn-xs py-0 px-1 font-weight-bold btn-sidebar-cancel-queue" data-id="<?= $v->id ?>" data-name="<?= esc($v->patient_name) ?>" data-queue="<?= esc($v->queue_no) ?>" title="Batalkan antrean konsultasi" style="font-size: 10px; height: 22px; line-height: 20px; border-radius: 4px;">
+                                                 <i class="fas fa-times"></i>
+                                             </button>
+                                         </div>
                                      </div>
                                  </div>
                             <?php endforeach; ?>
@@ -1519,7 +1527,12 @@
             currentDoctorName = doctor;
 
             $('#welcome-pane').hide();
-            $('#workspace-card').show();
+            $('#workspace-card').fadeIn(200);
+            if ($(window).width() < 992) {
+                $('html, body').animate({
+                    scrollTop: $('#workspace-card').offset().top - 70
+                }, 300);
+            }
             $('.input-visit-id').val(id);
             
             // Labels
@@ -1670,6 +1683,14 @@
         $(document).on('click', '.visit-item', function(e) {
             e.preventDefault();
             window.selectSoapPatient($(this));
+        });
+
+        // Keyboard navigation (Enter / Space)
+        $(document).on('keydown', '.visit-item', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.selectSoapPatient($(this));
+            }
         });
 
         // Trigger Sync SATUSEHAT Kemenkes RI (AJAX)
@@ -2067,9 +2088,28 @@
         });
 
         // 1. Core Function to Call Patient to Doctor's Room
+        // 1. Core Function to Call Patient to Doctor's Room
         window.callPatientToDoctor = function(visitId, queueNo, patientName, targetName) {
+            // Auto-select first queue item if none is currently selected
             if (!visitId || !queueNo) {
-                alert('Pilih salah satu antrean pasien di sebelah kiri terlebih dahulu.');
+                const $targetItem = $('.visit-item.active').length ? $('.visit-item.active') : $('.visit-item:visible').first();
+                if ($targetItem.length) {
+                    window.selectSoapPatient($targetItem);
+                    visitId = $targetItem.data('id');
+                    queueNo = $targetItem.data('queue');
+                    patientName = $targetItem.data('name');
+                    const doctor = $targetItem.data('doctor');
+                    const poly = $targetItem.data('poly');
+                    const tindakan = $targetItem.data('tindakan');
+                    targetName = (tindakan && tindakan !== '-') ? 'Ruang Tindakan ' + tindakan : 'Poliklinik ' + poly;
+                    if (doctor && doctor !== '-') targetName += ' (' + doctor + ')';
+                }
+            }
+
+            if (!visitId || !queueNo) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.info('Tidak ada antrean pasien yang menunggu saat ini.', 'ℹ Antrean Kosong');
+                }
                 return;
             }
 
@@ -2089,8 +2129,6 @@
                         toastr.success('Nomor antrean <strong>' + queueNo + ' (' + patientName + ')</strong> dipanggil ke ' + destination + '.', '📢 Panggilan Pasien Dokter');
                     }
                 });
-            } else if (typeof callPatientVoice === 'function') {
-                callPatientVoice(queueNo, patientName, destination);
             }
 
             $('#tab-btn-soap').trigger('click');
@@ -2098,8 +2136,21 @@
 
         // 2. Core Function to Start TTV and Call Display
         window.startTtvAndCallDisplay = function(visitId, queueNo, patientName, targetName) {
+            // Auto-select first queue item if none is currently selected
             if (!visitId || !queueNo) {
-                alert('Pilih salah satu antrean pasien di sebelah kiri terlebih dahulu.');
+                const $targetItem = $('.visit-item.active').length ? $('.visit-item.active') : $('.visit-item:visible').first();
+                if ($targetItem.length) {
+                    window.selectSoapPatient($targetItem);
+                    visitId = $targetItem.data('id');
+                    queueNo = $targetItem.data('queue');
+                    patientName = $targetItem.data('name');
+                }
+            }
+
+            if (!visitId || !queueNo) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.info('Tidak ada antrean pasien yang menunggu saat ini.', 'ℹ Antrean Kosong');
+                }
                 return;
             }
 
@@ -2119,8 +2170,6 @@
                         toastr.success('Nomor antrean <strong>' + queueNo + ' (' + patientName + ')</strong> dipanggil ke Ruang TTV.', '📢 Panggilan Pasien Perawat');
                     }
                 });
-            } else if (typeof callPatientVoice === 'function') {
-                callPatientVoice(queueNo, patientName, destination);
             }
 
             $('#tab-btn-triage').trigger('click');
@@ -2156,19 +2205,45 @@
 
         // Header Action Buttons
         $('#btn-header-call-doctor').click(function() {
-            const visitId = $('.input-visit-id').val();
-            const targetName = (currentDoctorName && currentDoctorName !== '-') ? (currentTargetName + ' (' + currentDoctorName + ')') : currentTargetName;
-            window.callPatientToDoctor(visitId, currentQueueNo, currentPatientName, targetName);
+            let visitId = $('.input-visit-id').val();
+            let queueNo = currentQueueNo;
+            let patientName = currentPatientName;
+            let targetName = (currentDoctorName && currentDoctorName !== '-') ? (currentTargetName + ' (' + currentDoctorName + ')') : currentTargetName;
+
+            if (!visitId || !queueNo) {
+                const $targetItem = $('.visit-item.active').length ? $('.visit-item.active') : $('.visit-item:visible').first();
+                if ($targetItem.length) {
+                    window.selectSoapPatient($targetItem);
+                    visitId = $targetItem.data('id');
+                    queueNo = $targetItem.data('queue');
+                    patientName = $targetItem.data('name');
+                    const doctor = $targetItem.data('doctor');
+                    const poly = $targetItem.data('poly');
+                    const tindakan = $targetItem.data('tindakan');
+                    targetName = (tindakan && tindakan !== '-') ? 'Ruang Tindakan ' + tindakan : 'Poliklinik ' + poly;
+                    if (doctor && doctor !== '-') targetName += ' (' + doctor + ')';
+                }
+            }
+
+            window.callPatientToDoctor(visitId, queueNo, patientName, targetName);
         });
 
-        $('#btn-header-call-ttv').click(function() {
-            const visitId = $('.input-visit-id').val();
-            window.startTtvAndCallDisplay(visitId, currentQueueNo, currentPatientName, 'Ruang Pemeriksaan Tanda Vital Perawat');
-        });
+        $('#btn-header-call-ttv, #btn-triage-call-voice').click(function() {
+            let visitId = $('.input-visit-id').val();
+            let queueNo = currentQueueNo;
+            let patientName = currentPatientName;
 
-        $('#btn-triage-call-voice').click(function() {
-            const visitId = $('.input-visit-id').val();
-            window.startTtvAndCallDisplay(visitId, currentQueueNo, currentPatientName, 'Ruang Pemeriksaan Tanda Vital Perawat');
+            if (!visitId || !queueNo) {
+                const $targetItem = $('.visit-item.active').length ? $('.visit-item.active') : $('.visit-item:visible').first();
+                if ($targetItem.length) {
+                    window.selectSoapPatient($targetItem);
+                    visitId = $targetItem.data('id');
+                    queueNo = $targetItem.data('queue');
+                    patientName = $targetItem.data('name');
+                }
+            }
+
+            window.startTtvAndCallDisplay(visitId, queueNo, patientName, 'Ruang Pemeriksaan Tanda Vital Perawat');
         });
 
         // Click Batalkan Antrean from SOAP sidebar queue item

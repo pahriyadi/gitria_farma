@@ -14,7 +14,7 @@ class Auth extends BaseController
         }
 
         if (strtolower($this->request->getMethod()) === 'post') {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             $ip = $this->request->getIPAddress();
 
             // 1. Brute Force Protection (Rate Limiting via Session / Time Lock)
@@ -157,7 +157,7 @@ class Auth extends BaseController
     {
         $session = session();
         if ($session->get('logged_in')) {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             $db->table('audit_logs')->insert([
                 'user_id'    => $session->get('user_id'),
                 'action'     => 'LOGOUT',

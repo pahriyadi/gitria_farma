@@ -17,7 +17,7 @@ class TestModelsValidation extends BaseCommand
         CLI::write("📦 PENGUJIAN CI4 NATIVE MODELS & BUILT-IN VALIDATION ENGINE", 'yellow');
         CLI::write("==================================================================", 'yellow');
 
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $allTables = $db->listTables();
         CLI::write("Daftar tabel database: " . implode(', ', $allTables) . "\n", 'white');
 

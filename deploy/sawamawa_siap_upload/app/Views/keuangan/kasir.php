@@ -62,6 +62,9 @@
                 <small class="text-muted">Proses pelunasan tagihan rawat jalan, resep obat farmasi, resto gizi, dan cetak kwitansi resmi</small>
             </div>
             <div>
+                <a href="<?= base_url('klinik/pendaftaran') ?>" class="btn btn-teal font-weight-bold shadow-sm mr-2">
+                    <i class="fas fa-user-plus mr-1"></i> Pendaftaran Pasien & Kunjungan
+                </a>
                 <a href="<?= base_url('keuangan/rekap-harian') ?>" class="btn btn-outline-teal font-weight-bold shadow-sm mr-2">
                     <i class="fas fa-calendar-check mr-1"></i> Rekap Kasir & Tutup Shift
                 </a>
@@ -138,7 +141,10 @@
                                                 </div>
                                             <?php else: ?>
                                                 <?php foreach ($billings as $b): ?>
-                                                    <a href="#" class="list-group-item list-group-item-action bill-item" 
+                                                    <div class="list-group-item list-group-item-action bill-item" 
+                                                       role="button"
+                                                       tabindex="0"
+                                                       style="cursor: pointer;"
                                                        data-id="<?= $b->id ?>" 
                                                        data-name="<?= esc($b->patient_name) ?>" 
                                                        data-rm="<?= esc($b->no_rm) ?>" 
@@ -166,7 +172,7 @@
                                                             <small class="text-secondary"><?= esc($b->no_visit) ?></small>
                                                             <span class="font-weight-bold text-success">Rp <?= number_format($b->grand_total, 0, ',', '.') ?></span>
                                                         </div>
-                                                    </a>
+                                                    </div>
                                                 <?php endforeach; ?>
                                             <?php endif; ?>
                                         </div>
@@ -770,8 +776,14 @@
         const grand = parseFloat($item.data('grand')) || 0;
 
         $('#welcome-pane').hide();
-        $('#settlement-card').show();
+        $('#settlement-card').fadeIn(200);
         $('#modal-billing-id').val(id);
+
+        if ($(window).width() < 992) {
+            $('html, body').animate({
+                scrollTop: $('#settlement-card').offset().top - 70
+            }, 300);
+        }
         
         // Labels
         $('#lbl-patient').text(name || 'Pasien');
@@ -838,6 +850,14 @@
         $(document).on('click', '.bill-item', function(e) {
             e.preventDefault();
             window.selectCashierBillItem($(this));
+        });
+
+        // Keyboard navigation (Enter / Space)
+        $(document).on('keydown', '.bill-item', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.selectCashierBillItem($(this));
+            }
         });
 
         // Discount input event

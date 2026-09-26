@@ -234,7 +234,30 @@ function terbilangAngka($angka) {
             </thead>
             <tbody>
                 <?php if (!empty($details)): ?>
-                    <?php $no = 1; foreach ($details as $item): ?>
+                    <?php 
+                    $no = 1;
+                    $nonRacikan = [];
+                    $groupedRacikan = [];
+
+                    foreach ($details as $item) {
+                        if (!empty($item->is_racikan) || !empty($item->racikan_name) || !empty($item->parent_racikan_id)) {
+                            $rName = !empty($item->racikan_name) ? $item->racikan_name : 'Obat Racikan Khusus';
+                            if (!isset($groupedRacikan[$rName])) {
+                                $groupedRacikan[$rName] = [
+                                    'name'     => $rName,
+                                    'type'     => 'obat',
+                                    'subtotal' => 0,
+                                    'qty'      => 1
+                                ];
+                            }
+                            $groupedRacikan[$rName]['subtotal'] += floatval($item->subtotal);
+                        } else {
+                            $nonRacikan[] = $item;
+                        }
+                    }
+                    ?>
+                    <!-- Regular Non-Racikan Items -->
+                    <?php foreach ($nonRacikan as $item): ?>
                         <tr>
                             <td class="text-center font-weight-bold"><?= $no++ ?></td>
                             <td>
@@ -248,6 +271,23 @@ function terbilangAngka($angka) {
                             <td class="text-center font-weight-bold"><?= esc($item->qty) ?></td>
                             <td class="text-right"><?= number_format($item->price, 0, ',', '.') ?></td>
                             <td class="text-right font-weight-bold"><?= number_format($item->subtotal, 0, ',', '.') ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                    <!-- Grouped Racikan Items (Bahan mentah dirahasiakan untuk pasien) -->
+                    <?php foreach ($groupedRacikan as $gr): ?>
+                        <tr>
+                            <td class="text-center font-weight-bold"><?= $no++ ?></td>
+                            <td>
+                                <span class="badge badge-dark mr-1" style="font-size: 9px;"><i class="fas fa-mortar-pestle mr-1"></i>RACIKAN</span>
+                                <strong class="text-dark"><?= esc($gr['name']) ?></strong>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge badge-info" style="font-size: 10px;">OBAT</span>
+                            </td>
+                            <td class="text-center font-weight-bold">1 Paket</td>
+                            <td class="text-right"><?= number_format($gr['subtotal'], 0, ',', '.') ?></td>
+                            <td class="text-right font-weight-bold"><?= number_format($gr['subtotal'], 0, ',', '.') ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

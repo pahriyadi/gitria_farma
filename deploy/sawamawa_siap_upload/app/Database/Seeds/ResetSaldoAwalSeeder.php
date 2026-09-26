@@ -8,7 +8,7 @@ class ResetSaldoAwalSeeder extends Seeder
 {
     public function run()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         
         $oldOpeningJournals = $db->table('journal_entries')->where('source_module', 'Saldo Awal')->get()->getResult();
         if (!empty($oldOpeningJournals)) {

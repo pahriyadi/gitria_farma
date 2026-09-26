@@ -14,7 +14,7 @@ class DailyClosing extends BaseCommand
     public function run(array $params)
     {
         CLI::write("⏰ Menjalankan Cron: Penutupan Buku Kasir & Rekonsiliasi Harian...", 'yellow');
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $today = date('Y-m-d');
 
         // Total Pendapatan Kasir Hari Ini

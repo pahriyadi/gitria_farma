@@ -16,7 +16,7 @@ class Keuangan extends BaseController
 
     public function kasir()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $billingId     = $this->request->getPost('billing_id');
@@ -149,28 +149,100 @@ class Keuangan extends BaseController
 
                 // 1a. Jurnal Pendapatan Layanan Medis & Tindakan Klinik (Per-Item Tindakan/Jasa)
                 if ($bill->total_services > 0) {
+                    $docFeeMedisPct = 66.67; // default
+                    $docFeeMedisNominal = null;
+                    $primaryDoc = null;
+                    $doctorRow = null;
+
+                    if ($visit && $visit->doctor_id) {
+                        $primaryDoc = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                        $doctorRow = $primaryDoc;
+                        if ($primaryDoc) {
+                            // Cari penugasan spesifik dokter untuk poli kunjungan saat ini
+                            if (!empty($visit->polyclinic_id)) {
+                                $matchPoli = $db->table('doctors')
+                                                ->where('nik_employee', $primaryDoc->nik_employee)
+                                                ->where('polyclinic_id', $visit->polyclinic_id)
+                                                ->get()
+                                                ->getRow();
+                                if ($matchPoli && (float)$matchPoli->fee_per_pasien > 0) {
+                                    $doctorRow = $matchPoli;
+                                }
+                            }
+                        }
+                        if ($doctorRow && isset($doctorRow->fee_per_pasien) && (float)$doctorRow->fee_per_pasien > 0) {
+                            if (($doctorRow->fee_type ?? 'percentage') === 'fixed_amount') {
+                                $docFeeMedisNominal = (float)$doctorRow->fee_per_pasien;
+                            } else {
+                                $docFeeMedisPct = (float)$doctorRow->fee_per_pasien;
+                            }
+                        }
+                    }
+
+                    // Format dokter: Dr. NamaDokter
+                    $docName = $doctorRow ? $doctorRow->name : ($primaryDoc ? $primaryDoc->name : '');
+                    $docTag = '';
+                    if (!empty($docName)) {
+                        $cleanDoc = (stripos($docName, 'dr') === 0 || stripos($docName, 'Dr') === 0) ? $docName : ('Dr. ' . $docName);
+                        $docTag = ' (' . $cleanDoc . ')';
+                    }
+
                     $medisList = [];
                     foreach ($allBillDetails as $bd) {
                         if ($bd->item_type === 'medis') {
-                            $medisList[] = $bd->item_name . ' (' . (int)$bd->qty . 'x @Rp ' . number_format($bd->price, 0, ',', '.') . ')';
+                            $medisList[] = $bd->item_name;
                         }
                     }
-                    $medisSummary = !empty($medisList) ? implode(', ', $medisList) : 'Jasa Konsultasi / Tindakan Medis';
-                    $descMedis = "Pendapatan Layanan Medis Klinik - {$bill->billing_no} ({$patientTag}): {$medisSummary}";
-                    $this->journalEngine->postJournal('CLINIC_PAYMENT', $billingId, $bill->total_services, $descMedis, $paymentMethod, 'Kasir Utama');
+                    $medisSummary = !empty($medisList) ? implode(', ', $medisList) : 'Konsultasi & Tindakan Medis Dokter';
+                    $descMedis = "Pendapatan Layanan Medis - {$bill->billing_no} ({$pName}): {$medisSummary}{$docTag}";
+
+                    $this->journalEngine->postClinicSplitJournal($billingId, $bill->total_services, $descMedis, $paymentMethod, $docFeeMedisPct, 'Kasir Utama', $docFeeMedisNominal);
                 }
 
-                // 1b. Jurnal Pendapatan Farmasi & Penjualan Obat (Per-Item Obat & Qty)
-                if ($bill->total_medicines > 0) {
+                // 1b. Jurnal Pendapatan Farmasi & Penjualan Obat (Split Journal Perakun Sesuai Skema Klien)
+                // Jika pasien memiliki e-resep yang harus disiapkan dan diambil di Apotek/Farmasi,
+                // penjurnalan PENJUALAN_OBAT_RESEP akan otomatis dibukukan saat penyerahan obat selesai di Modul Farmasi.
+                // Jika tidak ada antrean resep farmasi (misal obat bebas langsung di kasir), dijurnal langsung di sini.
+                if ($bill->total_medicines > 0 && !$hasWaitingPrescription) {
                     $obatList = [];
+                    $totalTusla = 0;
+                    $totalEmbalase = 0;
+                    $calcMedTotal = 0;
                     foreach ($allBillDetails as $bd) {
                         if ($bd->item_type === 'obat') {
-                            $obatList[] = $bd->item_name . ' (' . (int)$bd->qty . 'x @Rp ' . number_format($bd->price, 0, ',', '.') . ')';
+                            $itemLabel = (!empty($bd->is_racikan) && !empty($bd->racikan_name)) ? ('[Racikan] ' . $bd->racikan_name) : $bd->item_name;
+                            
+                            $tuslaVal = isset($bd->tusla) ? (float)$bd->tusla : 0;
+                            $embalaseVal = isset($bd->embalase) ? (float)$bd->embalase : 0;
+                            $totalTusla += $tuslaVal;
+                            $totalEmbalase += $embalaseVal;
+                            $calcMedTotal += (float)$bd->subtotal;
+                            
+                            $priceStr = number_format($bd->price * $bd->qty, 0, ',', '.');
+                            $tuslaStr = number_format($tuslaVal, 0, ',', '.');
+                            $embalaseStr = number_format($embalaseVal, 0, ',', '.');
+                            
+                            $obatList[] = $itemLabel . ' (' . (int)$bd->qty . 'x) (Rp ' . $priceStr . ') | tusla (Rp ' . $tuslaStr . ') | embarse (Rp ' . $embalaseStr . ')';
                         }
                     }
-                    $obatSummary = !empty($obatList) ? implode(', ', $obatList) : 'e-Resep Obat';
+
+                    $actualMedAmount = $calcMedTotal > 0 ? $calcMedTotal : (float)$bill->total_medicines;
+                    
+                    $obatSummary = !empty($obatList) ? "\n" . implode(", \n", array_unique($obatList)) : 'e-Resep Obat';
+                    if (!empty($obatList)) {
+                        $obatSummary .= ",\ntotal tusla : Rp " . number_format($totalTusla, 0, ',', '.') . "\ntotal embarse : Rp " . number_format($totalEmbalase, 0, ',', '.');
+                    }
                     $descObat = "Pendapatan Farmasi & Resep Obat - {$bill->billing_no} ({$patientTag}): {$obatSummary}";
-                    $this->journalEngine->postJournal('PHARMACY_SALE', $billingId, $bill->total_medicines, $descObat, $paymentMethod, 'Kasir Utama');
+
+                    $docFeePct = 5.00;
+                    if ($visit && $visit->doctor_id) {
+                        $doctorRow = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                        if ($doctorRow && isset($doctorRow->prescription_fee_percent)) {
+                            $docFeePct = (float)$doctorRow->prescription_fee_percent;
+                        }
+                    }
+
+                    $this->journalEngine->postPharmacySplitJournal('resep', $billingId, $actualMedAmount, $descObat, $paymentMethod, $docFeePct, 'Apotek (Obat Resep)');
                 }
 
                 // 1c. Jurnal Pendapatan Resto & Nutrisi (Per-Item Menu)
@@ -186,22 +258,15 @@ class Keuangan extends BaseController
                     $this->journalEngine->postJournal('RESTO_SALE', $billingId, $bill->total_restaurant, $descResto, $paymentMethod, 'Kasir Utama');
                 }
 
-                // 2. Calculate Doctor Commissions (Fee Per Pasien)
-                if ($bill->visit_id) {
+                // 2. Insert Fee Transactions for Payroll / HRD (No Journal)
+                if ($bill->visit_id && $bill->total_services > 0) {
                     $visit = $db->table('patient_visits')->where('id', $bill->visit_id)->get()->getRow();
                     if ($visit && $visit->doctor_id) {
                         $doctor = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
-                        $details = $db->table('billing_details')
-                                      ->where('billing_id', $billingId)
-                                      ->where('item_type', 'medis')
-                                      ->get()
-                                      ->getResult();
-
-                        $totalDoctorFee = 0;
-
-                        // Prioritize doctor's direct fee_per_pasien if set > 0
                         if ($doctor && (float)$doctor->fee_per_pasien > 0) {
-                            $totalDoctorFee = (float) $doctor->fee_per_pasien;
+                            $docPct = (float)$doctor->fee_per_pasien;
+                            $totalDoctorFee = round(($bill->total_services * ($docPct / 100.0)), 2);
+                            
                             $db->table('fee_transactions')->insert([
                                 'visit_id'    => $bill->visit_id,
                                 'doctor_id'   => $visit->doctor_id,
@@ -209,40 +274,6 @@ class Keuangan extends BaseController
                                 'amount'      => $totalDoctorFee,
                                 'created_at'  => date('Y-m-d H:i:s')
                             ]);
-                        } else {
-                            foreach ($details as $det) {
-                                $feeAmount = 0;
-                                $tindakan = $db->table('tindakan')->where('name', $det->item_name)->get()->getRow();
-                                if ($tindakan) {
-                                    $rule = $db->table('fee_rules')
-                                              ->where('service_id', $tindakan->id)
-                                              ->where('status', 'active')
-                                              ->get()
-                                              ->getRow();
-
-                                    if ($rule) {
-                                        if ($rule->percentage > 0) {
-                                            $feeAmount = ($rule->percentage / 100) * (float)$det->subtotal;
-                                        } elseif ($rule->flat_fee > 0) {
-                                            $feeAmount = (float)$rule->flat_fee;
-                                        }
-                                        if ($feeAmount > 0) {
-                                            $db->table('fee_transactions')->insert([
-                                                'visit_id'    => $bill->visit_id,
-                                                'doctor_id'   => $visit->doctor_id,
-                                                'fee_rule_id' => $rule->id,
-                                                'amount'      => $feeAmount,
-                                                'created_at'  => date('Y-m-d H:i:s')
-                                            ]);
-                                            $totalDoctorFee += $feeAmount;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if ($totalDoctorFee > 0) {
-                            $this->journalEngine->postJournal('FEE_EXPENSE', $billingId, $totalDoctorFee, "Beban Komisi Dokter " . ($doctor ? $doctor->name : 'ID ' . $visit->doctor_id) . " Kunjungan " . ($visit->no_visit ?? '-'), 'tunai', 'Kasir Utama');
                         }
                     }
                 }
@@ -438,7 +469,7 @@ class Keuangan extends BaseController
      */
     public function batalTagihan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $billingId = $this->request->getPost('billing_id');
         $cancelReason = trim($this->request->getPost('cancel_reason') ?: 'Dibatalkan oleh kasir');
 
@@ -523,7 +554,7 @@ class Keuangan extends BaseController
      */
     public function voidTransaksi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $txId = $this->request->getPost('transaction_id');
         $voidReason = trim($this->request->getPost('void_reason') ?: 'Pembatalan/Void pembayaran oleh kasir');
 
@@ -620,7 +651,7 @@ class Keuangan extends BaseController
      */
     public function cetakKwitansi($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $receipt = $db->table('cash_transactions')
                       ->select('cash_transactions.*, 
@@ -678,7 +709,7 @@ class Keuangan extends BaseController
      */
     public function getBillingDetails($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $bill = $db->table('billing_transactions bt')
                    ->select('bt.*, pv.no_visit, p.name as patient_name, p.no_rm, pv.status as visit_status')
                    ->join('patient_visits pv', 'pv.id = bt.visit_id', 'left')
@@ -708,7 +739,7 @@ class Keuangan extends BaseController
      */
     public function rekapHarian()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $date = $this->request->getGet('date') ?: date('Y-m-d');
 
         // 1. Transactions on date
@@ -773,25 +804,53 @@ class Keuangan extends BaseController
             $totalExpenses += (float)$exp->amount;
         }
 
-        // 4. Main Cash Register Info
+        // 4. Pharmacy OTC & Direct Prescription Sales on date
+        $pharmacySales = $db->table('pharmacy_sales')
+                            ->select('pharmacy_sales.*, COALESCE(doctors.name, "Non-Resep / Umum") as doctor_name, users.username as cashier_name')
+                            ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                            ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                            ->where('DATE(pharmacy_sales.created_at)', $date)
+                            ->orderBy('pharmacy_sales.id', 'DESC')
+                            ->get()->getResult();
+
+        $totalPharmacySales    = 0;
+        $totalPharmacyTusla    = 0;
+        $totalPharmacyEmbalase = 0;
+        $totalPharmacyFeeDoc   = 0;
+
+        foreach ($pharmacySales as $ps) {
+            $totalPharmacySales    += (float)$ps->grand_total;
+            $totalPharmacyTusla    += (float)($ps->tusla_amount ?? 0);
+            $totalPharmacyEmbalase += (float)($ps->embalase_amount ?? 0);
+            if (!empty($ps->doctor_id)) {
+                $totalPharmacyFeeDoc += round((float)$ps->total_amount * 0.05, 2);
+            }
+        }
+
+        // 5. Main Cash Register Info
         $register = $db->table('cash_registers')->where('id', 1)->get()->getRow();
         $regBalance = $register ? (float)$register->balance : 0.0;
 
         $data = [
-            'title'           => 'Rekap Penerimaan Kasir & Laporan Shift',
-            'active_menu'     => 'keuangan-rekap',
-            'date'            => $date,
-            'transactions'    => $transactions,
-            'expenses'        => $expenses,
-            'totalCollected'  => $totalCollected,
-            'totalCash'       => $totalCash,
-            'totalQris'       => $totalQris,
-            'totalBank'       => $totalBank,
-            'totalServices'   => $totalServices,
-            'totalMedicines'  => $totalMedicines,
-            'totalRestaurant' => $totalRestaurant,
-            'totalExpenses'   => $totalExpenses,
-            'regBalance'      => $regBalance
+            'title'                 => 'Rekap Penerimaan Kasir & Laporan Shift',
+            'active_menu'           => 'keuangan-rekap',
+            'date'                  => $date,
+            'transactions'          => $transactions,
+            'expenses'              => $expenses,
+            'totalCollected'        => $totalCollected,
+            'totalCash'             => $totalCash,
+            'totalQris'             => $totalQris,
+            'totalBank'             => $totalBank,
+            'totalServices'         => $totalServices,
+            'totalMedicines'        => $totalMedicines,
+            'totalRestaurant'       => $totalRestaurant,
+            'totalExpenses'         => $totalExpenses,
+            'pharmacySales'         => $pharmacySales,
+            'totalPharmacySales'    => $totalPharmacySales,
+            'totalPharmacyTusla'    => $totalPharmacyTusla,
+            'totalPharmacyEmbalase' => $totalPharmacyEmbalase,
+            'totalPharmacyFeeDoc'   => $totalPharmacyFeeDoc,
+            'regBalance'            => $regBalance
         ];
 
         return view('keuangan/rekap_harian', $data);
@@ -802,7 +861,7 @@ class Keuangan extends BaseController
      */
     public function cetakRekapHarian()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $date = $this->request->getGet('date') ?: date('Y-m-d');
 
         $transactions = $db->table('cash_transactions')
@@ -879,7 +938,7 @@ class Keuangan extends BaseController
      */
     public function transaksi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -1053,7 +1112,7 @@ class Keuangan extends BaseController
      */
     public function transferKas()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->transStart();
 
         $fromAccId = intval($this->request->getPost('from_account_id'));
@@ -1173,7 +1232,7 @@ class Keuangan extends BaseController
      */
     public function pemasukanLain()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->transStart();
 
         $targetAccId  = intval($this->request->getPost('target_account_id')) ?: 1; // default Kas Kasir 1-101
@@ -1257,7 +1316,7 @@ class Keuangan extends BaseController
      */
     public function setSaldoAwalKas()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->transStart();
 
         $accountId  = intval($this->request->getPost('account_id'));
@@ -1355,7 +1414,7 @@ class Keuangan extends BaseController
     // =========================================================================
     public function agingReport()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. Piutang Pasien / Asuransi (Billing Transactions Unpaid)
         $piutangList = $db->table('billing_transactions')
@@ -1423,25 +1482,70 @@ class Keuangan extends BaseController
     // =========================================================================
     public function feeDokter()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. All Doctors with Fee Config
         $allDoctors = $db->table('doctors')->where('status', 'active')->orderBy('name', 'ASC')->get()->getResult();
 
-        // 2. Calculate Unpaid Doctor Fees from Patient Visits
-        $unpaidDoctors = $db->table('doctors')
-                            ->select('doctors.id as doctor_id, 
-                                      doctors.name as doctor_name, 
-                                      COALESCE(doctors.fee_per_pasien, 0) as fee_per_pasien, 
-                                      COALESCE(polikliniks.name, polyclinics.name, "Poli Umum") as poly_name, 
-                                      COUNT(patient_visits.id) as patient_count, 
-                                      (COUNT(patient_visits.id) * COALESCE(doctors.fee_per_pasien, 0)) as total_earned')
-                            ->join('polikliniks', 'polikliniks.id = doctors.polyclinic_id', 'left')
-                            ->join('polyclinics', 'polyclinics.id = doctors.polyclinic_id', 'left')
-                            ->join('patient_visits', 'patient_visits.doctor_id = doctors.id AND patient_visits.status = "completed"', 'left')
-                            ->where('doctors.status', 'active')
-                            ->groupBy('doctors.id')
-                            ->get()->getResult();
+        // 2. Calculate Doctor Fees (Poli Medical Fees + Pharmacy Prescription Fees)
+        $unpaidDoctors = [];
+        foreach ($allDoctors as $doc) {
+            // A. Patient Visits in Polyclinic
+            $visitRow = $db->table('patient_visits')
+                           ->select('COUNT(id) as patient_count')
+                           ->where('doctor_id', $doc->id)
+                           ->where('status', 'completed')
+                           ->get()->getRow();
+            $patientCount = (int)($visitRow->patient_count ?? 0);
+            $feePerPasien = (float)($doc->fee_per_pasien ?? 0);
+            $medicalEarned = $patientCount * $feePerPasien;
+
+            // B. Pharmacy Prescription Sales (5% of Medicine Sales)
+            $rxSalesRow = $db->table('pharmacy_sales')
+                             ->select('COUNT(id) as rx_count, SUM(total_amount) as total_rx_sales')
+                             ->where('doctor_id', $doc->id)
+                             ->get()->getRow();
+            $rxCount     = (int)($rxSalesRow->rx_count ?? 0);
+            $totalRxSales= (float)($rxSalesRow->total_rx_sales ?? 0);
+            $pharmacyFee = round($totalRxSales * 0.05, 2);
+
+            // C. Total Already Settled / Paid
+            $settleRow = $db->table('doctor_fee_settlements')
+                            ->select('SUM(total_amount) as total_paid')
+                            ->where('doctor_id', $doc->id)
+                            ->where('status', 'paid')
+                            ->get()->getRow();
+            $totalPaid = (float)($settleRow->total_paid ?? 0);
+
+            // D. Balances
+            $grossEarned = $medicalEarned + $pharmacyFee;
+            $unpaidBalance = max(0, $grossEarned - $totalPaid);
+
+            // Get poly name
+            $poly = $db->table('polyclinics')->where('id', $doc->polyclinic_id)->get()->getRow();
+            if (!$poly) {
+                $poly = $db->table('polikliniks')->where('id', $doc->polyclinic_id)->get()->getRow();
+            }
+            $polyName = $poly ? $poly->name : 'Poli Umum';
+
+            $docObj = (object)[
+                'doctor_id'      => $doc->id,
+                'doctor_name'    => $doc->name,
+                'poly_name'      => $polyName,
+                'fee_per_pasien' => $feePerPasien,
+                'patient_count'  => $patientCount,
+                'medical_earned' => $medicalEarned,
+                'rx_count'       => $rxCount,
+                'total_rx_sales' => $totalRxSales,
+                'pharmacy_fee'   => $pharmacyFee,
+                'gross_earned'   => $grossEarned,
+                'total_paid'     => $totalPaid,
+                'unpaid_balance' => $unpaidBalance,
+                'total_earned'   => $unpaidBalance > 0 ? $unpaidBalance : $grossEarned
+            ];
+
+            $unpaidDoctors[] = $docObj;
+        }
 
         // 3. Paid Settlements History
         $settlements = $db->table('doctor_fee_settlements')
@@ -1463,17 +1567,19 @@ class Keuangan extends BaseController
 
     public function bayarFeeDokter()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->transStart();
 
-        $doctorId      = (int)$this->request->getPost('doctor_id');
-        $periodStart   = $this->request->getPost('period_start');
-        $periodEnd     = $this->request->getPost('period_end');
-        $totalActions  = (int)$this->request->getPost('total_actions');
-        $totalAmount   = (float)$this->request->getPost('total_amount');
-        $paymentMethod = $this->request->getPost('payment_method') ?: 'Transfer Bank';
-        $notes         = trim($this->request->getPost('notes') ?: 'Pembayaran Fee Jasa Medis Dokter');
-        $userId        = session()->get('user_id') ?: 1;
+        $doctorId        = (int)$this->request->getPost('doctor_id');
+        $periodStart     = $this->request->getPost('period_start') ?: date('Y-m-01');
+        $periodEnd       = $this->request->getPost('period_end') ?: date('Y-m-d');
+        $totalActions    = (int)$this->request->getPost('total_actions');
+        $totalAmount     = (float)$this->request->getPost('total_amount');
+        $medicalPortion  = (float)($this->request->getPost('medical_portion') ?? 0);
+        $pharmacyPortion = (float)($this->request->getPost('pharmacy_portion') ?? 0);
+        $paymentMethod   = $this->request->getPost('payment_method') ?: 'Transfer Bank';
+        $notes           = trim($this->request->getPost('notes') ?: 'Pembayaran Fee Jasa Medis & Resep Dokter');
+        $userId          = session()->get('user_id') ?: 1;
 
         if ($doctorId <= 0 || $totalAmount <= 0) {
             session()->setFlashdata('error', 'Data dokter atau nominal fee tidak valid.');
@@ -1486,18 +1592,27 @@ class Keuangan extends BaseController
             return redirect()->to(base_url('keuangan/fee-dokter'));
         }
 
+        // If portions not explicitly specified, divide logically
+        if ($medicalPortion <= 0 && $pharmacyPortion <= 0) {
+            $medicalPortion = $totalAmount;
+        }
+
         $today = date('Ymd');
         $settlementNo = 'SETTLE-DOC-' . $today . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
 
         // Account mapping
-        // Debit: Beban Jasa Medis Dokter (5-103 / Beban Operasional)
-        $expenseAcc = $db->table('accounts')->where('code', '5-103')->orWhere('type', 'expense')->orderBy('code', 'ASC')->get()->getRow();
-        $expenseAccId = $expenseAcc ? $expenseAcc->id : 13;
+        // Account for Medical Fee Expense (6-102 Beban Komisi & Jasa Medis Dokter or 5-103)
+        $medicalAcc = $db->table('accounts')->where('code', '6-102')->orWhere('code', '5-103')->get()->getRow();
+        $medicalAccId = $medicalAcc ? $medicalAcc->id : 14;
+
+        // Account for Pharmacy Prescription Liability (241 Utang Fee Dokter Resep)
+        $pharmacyAcc = $db->table('accounts')->where('code', '241')->get()->getRow();
+        $pharmacyAccId = $pharmacyAcc ? $pharmacyAcc->id : 32;
 
         // Credit: Kas Tunai (1-101) or Bank (1-102)
         $cashAcc = ($paymentMethod === 'Kas Tunai')
-            ? $db->table('accounts')->where('code', '1-101')->orWhere('type', 'asset')->orderBy('code', 'ASC')->get()->getRow()
-            : $db->table('accounts')->where('code', '1-102')->orWhere('type', 'asset')->orderBy('code', 'ASC')->get()->getRow();
+            ? $db->table('accounts')->where('code', '1-101')->orWhere('code', '1111')->get()->getRow()
+            : $db->table('accounts')->where('code', '1-102')->orWhere('code', '112')->get()->getRow();
         $cashAccId = $cashAcc ? $cashAcc->id : 1;
 
         // Create Journal Entry
@@ -1505,16 +1620,42 @@ class Keuangan extends BaseController
         $db->table('journal_entries')->insert([
             'journal_no'    => $journalNo,
             'entry_date'    => date('Y-m-d'),
-            'source_module' => 'Jasa Medis',
+            'source_module' => 'Jasa Medis & Resep',
             'reference_id'  => $doctorId,
-            'description'   => "Pembayaran Fee Dokter [{$doctor->name}] Periode {$periodStart} s/d {$periodEnd}: Rp " . number_format($totalAmount, 0, ',', '.') . " ({$notes})",
+            'description'   => "Pelunasan Fee Dokter [{$doctor->name}] Periode {$periodStart} s/d {$periodEnd}: Total Rp " . number_format($totalAmount, 0, ',', '.') . " [Poli: Rp " . number_format($medicalPortion, 0, ',', '.') . ", Resep 241: Rp " . number_format($pharmacyPortion, 0, ',', '.') . "] ({$notes})",
             'created_at'    => date('Y-m-d H:i:s')
         ]);
         $journalId = $db->insertID();
 
-        // Double-entry: Debit Expense, Credit Cash/Bank
-        $db->table('journal_entry_details')->insert(['journal_id' => $journalId, 'account_id' => $expenseAccId, 'debit' => $totalAmount, 'credit' => 0.00]);
-        $db->table('journal_entry_details')->insert(['journal_id' => $journalId, 'account_id' => $cashAccId, 'debit' => 0.00, 'credit' => $totalAmount]);
+        // Double-entry Details
+        if ($medicalPortion > 0) {
+            $db->table('journal_entry_details')->insert([
+                'journal_id' => $journalId, 
+                'account_id' => $medicalAccId, 
+                'debit'      => $medicalPortion, 
+                'credit'     => 0.00
+            ]);
+            $db->query("UPDATE accounts SET balance = balance + {$medicalPortion} WHERE id = {$medicalAccId}");
+        }
+
+        if ($pharmacyPortion > 0) {
+            $db->table('journal_entry_details')->insert([
+                'journal_id' => $journalId, 
+                'account_id' => $pharmacyAccId, 
+                'debit'      => $pharmacyPortion, 
+                'credit'     => 0.00
+            ]);
+            $db->query("UPDATE accounts SET balance = balance - {$pharmacyPortion} WHERE id = {$pharmacyAccId}");
+        }
+
+        // Credit to Cash / Bank
+        $db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId, 
+            'account_id' => $cashAccId, 
+            'debit'      => 0.00, 
+            'credit'     => $totalAmount
+        ]);
+        $db->query("UPDATE accounts SET balance = balance - {$totalAmount} WHERE id = {$cashAccId}");
 
         // Insert Settlement Record
         $db->table('doctor_fee_settlements')->insert([
@@ -1527,7 +1668,7 @@ class Keuangan extends BaseController
             'payment_method' => $paymentMethod,
             'status'         => 'paid',
             'paid_at'        => date('Y-m-d H:i:s'),
-            'notes'          => $notes,
+            'notes'          => $notes . ($pharmacyPortion > 0 ? " (Termasuk Fee Resep Apotek Rp " . number_format($pharmacyPortion, 0, ',', '.') . ")" : ""),
             'journal_id'     => $journalId,
             'created_by'     => $userId,
             'created_at'     => date('Y-m-d H:i:s'),
@@ -1539,7 +1680,7 @@ class Keuangan extends BaseController
         if ($db->transStatus() === false) {
             session()->setFlashdata('error', 'Gagal memproses pembayaran fee dokter.');
         } else {
-            session()->setFlashdata('success', "Pembayaran Jasa Medis {$doctor->name} sebesar Rp " . number_format($totalAmount, 0, ',', '.') . " berhasil diselesaikan! No Settlement: {$settlementNo}, Jurnal: {$journalNo}");
+            session()->setFlashdata('success', "Pembayaran Fee Dokter {$doctor->name} sebesar Rp " . number_format($totalAmount, 0, ',', '.') . " berhasil diselesaikan! No Settlement: {$settlementNo}, Jurnal: {$journalNo}");
         }
 
         return redirect()->to(base_url('keuangan/fee-dokter'));
@@ -1550,7 +1691,7 @@ class Keuangan extends BaseController
      */
     public function eksporExcelMultisheet()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
         $endDate   = $this->request->getGet('end_date') ?: date('Y-m-d');

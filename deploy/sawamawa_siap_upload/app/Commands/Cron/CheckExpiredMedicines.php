@@ -14,7 +14,7 @@ class CheckExpiredMedicines extends BaseCommand
     public function run(array $params)
     {
         CLI::write("⏰ Menjalankan Cron: Pemindaian Obat Mendekati Kadaluarsa...", 'yellow');
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $today = date('Y-m-d');
         $ninetyDays = date('Y-m-d', strtotime('+90 days'));

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base-url" content="<?= rtrim(base_url(), '/') ?>">
+    <meta name="csrf-token-name" content="<?= csrf_token() ?>">
+    <meta name="csrf-hash" content="<?= csrf_hash() ?>">
     <meta name="csrf-name" content="<?= csrf_token() ?>">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
+    <script>window.BASE_URL = "<?= rtrim(base_url(), '/') ?>";</script>
     <title><?= esc($title ?? 'Layar Display TV Antrean & Informasi - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
 
     <?php if (clinic_favicon()): ?>
@@ -669,17 +673,150 @@
     </div>
 </div>
 
-<!-- FLOATING CONTROLS (PILIH MEDIA, TEST SUARA & FULLSCREEN) -->
+
+
+<!-- FLOATING CONTROLS (PILIH MEDIA, SETTING SUARA, TEST SUARA & FULLSCREEN) -->
 <div class="floating-controls">
     <button type="button" class="btn-float-action" data-toggle="modal" data-target="#modalMediaSettings">
-        <i class="fas fa-photo-film text-warning"></i> Pilih Opsi Iklan TV
+        <i class="fas fa-photo-film text-warning"></i> Opsi Iklan TV
+    </button>
+    <button type="button" class="btn-float-action" data-toggle="modal" data-target="#modalVoiceSettings">
+        <i class="fas fa-sliders-h text-info"></i> Pengaturan Suara & Redaksi
     </button>
     <button type="button" class="btn-float-action" onclick="testDisplayVoice();">
-        <i class="fas fa-volume-up text-info"></i> Tes Suara
+        <i class="fas fa-volume-up text-teal"></i> Tes Suara
     </button>
     <button type="button" class="btn-float-action" onclick="toggleFullScreen();">
         <i class="fas fa-expand text-success"></i> Fullscreen TV
     </button>
+</div>
+
+<!-- MODAL: PENGATURAN SUARA, INTONASI & REDAKSI KALIMAT TV -->
+<div class="modal fade" id="modalVoiceSettings" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content modal-content-dark shadow-lg">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title font-weight-bold text-white">
+                    <i class="fas fa-sliders-h text-info mr-2"></i> Pengaturan Suara, Intonasi & Redaksi Panggilan TV
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-pills nav-pills-custom mb-3" id="voiceTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pill-intonasi-tab" data-toggle="pill" href="#tab-intonasi" role="tab">
+                            <i class="fas fa-microphone-lines mr-1"></i> 1. Intonasi & Karakter Suara
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pill-redaksi-tab" data-toggle="pill" href="#tab-redaksi" role="tab">
+                            <i class="fas fa-comment-dots mr-1"></i> 2. Redaksi Kalimat Pemanggilan
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="voiceTabContent">
+                    <!-- Tab 1: Intonasi & Audio -->
+                    <div class="tab-pane fade show active" id="tab-intonasi" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-white mb-1">
+                                    <i class="fas fa-gauge-high mr-1 text-warning"></i> Kecepatan Bicara (Speed):
+                                    <span class="badge badge-warning ml-1" id="val-rate-lbl">0.95x</span>
+                                </label>
+                                <input type="range" class="custom-range" id="input_voice_rate" min="0.7" max="1.3" step="0.05" value="0.95">
+                                <small class="text-muted d-block">Geser ke kanan untuk lebih cepat/lincah (Rekomendasi: <strong>0.95x - 1.05x</strong>)</small>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-white mb-1">
+                                    <i class="fas fa-wave-square mr-1 text-teal"></i> Nada / Intonasi (Pitch):
+                                    <span class="badge badge-teal ml-1 text-dark" id="val-pitch-lbl">1.0x</span>
+                                </label>
+                                <input type="range" class="custom-range" id="input_voice_pitch" min="0.8" max="1.3" step="0.05" value="1.0">
+                                <small class="text-muted d-block">Geser ke kanan untuk nada lebih cerah, ke kiri untuk nada lebih berat.</small>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-white mb-1">
+                                    <i class="fas fa-user mr-1 text-info"></i> Karakter Suara:
+                                </label>
+                                <select class="form-control bg-dark text-white border-secondary" id="input_voice_gender">
+                                    <option value="female">👩 Suara Wanita (Indonesia - Ramah & Elegan)</option>
+                                    <option value="male">👨 Suara Pria (Indonesia - Wibawa & Jelas)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label class="font-weight-bold text-white mb-1">
+                                    <i class="fas fa-bell mr-1 text-success"></i> Nada Dering Bel (Chime):
+                                </label>
+                                <select class="form-control bg-dark text-white border-secondary" id="input_voice_chime">
+                                    <option value="hospital_2tone">🔔 2-Tone Hospital Chime (Ting... Tong...)</option>
+                                    <option value="airport_3tone">✈️ 3-Tone Airport Chime (Do-Mi-Sol)</option>
+                                    <option value="soft_bell">🛎️ Soft Bell Modern</option>
+                                    <option value="none">🔕 Tanpa Bel (Langsung Bicara)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="p-3 mt-2 rounded bg-dark border border-secondary d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="font-weight-bold text-white d-block"><i class="fas fa-volume-high text-warning mr-1"></i> Uji Coba Suara Langsung</span>
+                                <small class="text-muted">Dengarkan hasil konfigurasi intonasi sebelum diterapkan.</small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-info font-weight-bold px-3" id="btn-preview-voice">
+                                <i class="fas fa-play mr-1"></i> Putar Contoh Suara
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Template Redaksi Kalimat -->
+                    <div class="tab-pane fade" id="tab-redaksi" role="tabpanel">
+                        <div class="alert alert-dark border-secondary py-2 px-3 text-xs mb-3">
+                            <i class="fas fa-info-circle text-teal mr-1"></i> <strong>Variabel Otomatis:</strong> Gunakan <code>{nomor}</code> untuk nomor antrean, <code>{nama}</code> untuk nama pasien, dan <code>{tujuan}</code> untuk nama poli / dokter / ruangan.
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="font-weight-bold text-white text-xs mb-1">🩺 Panggilan Dokter Poliklinik:</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" id="input_tpl_poli" value="Nomor antrean {nomor}, atas nama {nama}, silakan masuk ke Ruang {tujuan}. Terima kasih.">
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="font-weight-bold text-white text-xs mb-1">💓 Pemeriksaan Tanda Vital Perawat (TTV):</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" id="input_tpl_ttv" value="Nomor antrean {nomor}, atas nama {nama}, silakan menuju ke {tujuan}. Terima kasih.">
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="font-weight-bold text-white text-xs mb-1">💳 Panggilan Kasir Pembayaran:</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" id="input_tpl_kasir" value="Nomor antrean {nomor}, atas nama {nama}, pemeriksaan dokter telah selesai. Silakan menuju ke Kasir Pembayaran untuk administrasi. Terima kasih.">
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-white text-xs mb-1">💊 Panggilan Farmasi & Apotek:</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" id="input_tpl_farmasi" value="Nomor antrean {nomor}, atas nama {nama}, transaksi pembayaran telah selesai. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat. Terima kasih.">
+                        </div>
+
+                        <div class="mt-3 text-right">
+                            <button type="button" class="btn btn-xs btn-outline-secondary text-white" id="btn-reset-voice-tpl">
+                                <i class="fas fa-undo mr-1"></i> Reset ke Kalimat Standar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary justify-content-between">
+                <button type="button" class="btn btn-secondary font-weight-bold" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-success font-weight-bold px-4" id="btn-save-voice-settings">
+                    <i class="fas fa-check-circle mr-1"></i> Simpan & Terapkan
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- MODAL: PENGATURAN PILIHAN MEDIA IKLAN TV -->
@@ -809,6 +946,7 @@
     // 2. FULLSCREEN & AUDIO ACTIVATION
     function activateTvMode() {
         audioUnlocked = true;
+        $('#fullscreen-prompt-modal').fadeOut(350);
         
         // Request Fullscreen
         const elem = document.documentElement;
@@ -820,18 +958,24 @@
             elem.msRequestFullscreen();
         }
 
-        // Resume Audio Context
+        // Resume Audio Context & Unlock Web Speech Engine
         try {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (AudioCtx) {
-                const ctx = new AudioCtx();
-                ctx.resume();
+            window.VCM.unlockAudio();
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+                // Play silent utterance on user gesture to wake up iOS speech audio pipeline
+                const silentUtt = new SpeechSynthesisUtterance('');
+                silentUtt.volume = 0;
+                window.speechSynthesis.speak(silentUtt);
+            }
+            if (typeof window.VCM.startIosKeepAlive === 'function') {
+                window.VCM.startIosKeepAlive();
             }
         } catch (e) {}
 
-        // Play chime & hide modal
+        // Play chime konfirmasi audio aktif
         playHospitalChime(function() {
-            $('#fullscreen-prompt-modal').fadeOut(350);
+            console.log('[TV Display] Audio pipeline fully active and unlocked.');
         });
 
         // Trigger local video play if in video mode
@@ -916,13 +1060,25 @@
         if (sType === 'kasir') {
             label = 'MENUJU KASIR';
             dest = 'Kasir Pembayaran';
+            iconCls = 'fa-cash-register';
         } else if (sType === 'farmasi' || sType === 'apotek') {
             label = 'AMBIL OBAT DI APOTEK';
             dest = 'Loket Farmasi dan Apotek';
+            iconCls = 'fa-prescription-bottle-medical';
         } else if (sType === 'completed') {
             label = 'PELAYANAN SELESAI';
             dest = 'Selesai Dilayani';
             iconCls = 'fa-check-circle';
+        } else if (sType === 'triage' || sType === 'ttv') {
+            label = 'PEMERIKSAAN TANDA VITAL (TTV)';
+            dest = dest || 'Ruang Pemeriksaan Tanda Vital Perawat';
+            iconCls = 'fa-heart-pulse';
+        } else if (sType === 'poliklinik' || sType === 'poli') {
+            label = 'PANGGILAN PEMERIKSAAN DOKTER';
+            iconCls = 'fa-user-md';
+        } else if (sType === 'tindakan') {
+            label = 'PANGGILAN RUANG TINDAKAN';
+            iconCls = 'fa-syringe';
         }
 
         $('#hero-call-card').addClass('is-calling');
@@ -970,12 +1126,28 @@
 
                     if (calledQueues.length > 0) {
                         const topCall = calledQueues[0];
-                        const targetName = (topCall.visit_type === 'tindakan')
-                            ? 'Ruang Tindakan ' + (topCall.tindakan_name || topCall.service_name || 'Medis')
-                            : 'Poliklinik ' + (topCall.polyclinic_name || topCall.poly_name || 'Umum');
+                        const isTtv = (topCall.status === 'triage');
+                        const targetName = isTtv
+                            ? 'Ruang Pemeriksaan Tanda Vital Perawat'
+                            : ((topCall.visit_type === 'tindakan')
+                                ? 'Ruang Tindakan ' + (topCall.tindakan_name || topCall.service_name || 'Medis')
+                                : 'Poliklinik ' + (topCall.polyclinic_name || topCall.poly_name || 'Umum'));
+
+                        const callKey = topCall.id + '_' + topCall.status + '_' + (topCall.call_time || '');
+                        if (!seenCalledQueueIds.has(callKey)) {
+                            seenCalledQueueIds.add(callKey);
+                            if (isTtv) {
+                                window.VCM.callToTtv(topCall.queue_number, topCall.patient_name);
+                            } else {
+                                window.VCM.callPatient(topCall.queue_number, topCall.patient_name, targetName);
+                            }
+                        }
+
+                        const label = isTtv ? 'PEMERIKSAAN TANDA VITAL (TTV)' : 'PANGGILAN PEMERIKSAAN DOKTER';
+                        const iconCls = isTtv ? 'fa-heart-pulse' : 'fa-user-md';
 
                         $('#hero-call-card').addClass('is-calling');
-                        $('#hero-label-text').html('<i class="fas fa-volume-high text-warning mr-1"></i> ANTRIAN TERPANGGIL');
+                        $('#hero-label-text').html('<i class="fas ' + iconCls + ' text-warning mr-1 animate__animated animate__heartBeat animate__infinite"></i> ' + label);
                         $('#hero-queue-num').text(topCall.queue_number || '--');
                         $('#hero-patient-name').text(topCall.patient_name || 'Pasien');
                         $('#hero-destination').html('<i class="fas fa-door-open mr-1 text-warning"></i> Silakan menuju ke <strong>' + targetName + '</strong>');
@@ -1058,6 +1230,79 @@
             }
         });
     }
+
+    // 8. LOGIKA PENGATURAN SUARA, INTONASI & REDAKSI KALIMAT
+    function initVoiceSettingsForm() {
+        const s = window.VCM.getSettings();
+        $('#input_voice_rate').val(s.rate || 0.95);
+        $('#val-rate-lbl').text((s.rate || 0.95) + 'x');
+        $('#input_voice_pitch').val(s.pitch || 1.0);
+        $('#val-pitch-lbl').text((s.pitch || 1.0) + 'x');
+        $('#input_voice_gender').val(s.gender || 'female');
+        $('#input_voice_chime').val(s.chimeType || 'hospital_2tone');
+
+        $('#input_tpl_poli').val(s.template_poli || 'Nomor antrean {nomor}, atas nama {nama}, silakan masuk ke Ruang {tujuan}. Terima kasih.');
+        $('#input_tpl_ttv').val(s.template_ttv || 'Nomor antrean {nomor}, atas nama {nama}, silakan menuju ke {tujuan}. Terima kasih.');
+        $('#input_tpl_kasir').val(s.template_kasir || 'Nomor antrean {nomor}, atas nama {nama}, pemeriksaan dokter telah selesai. Silakan menuju ke Kasir Pembayaran untuk administrasi. Terima kasih.');
+        $('#input_tpl_farmasi').val(s.template_farmasi || 'Nomor antrean {nomor}, atas nama {nama}, transaksi pembayaran telah selesai. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat. Terima kasih.');
+    }
+
+    $('#input_voice_rate').on('input change', function() {
+        $('#val-rate-lbl').text($(this).val() + 'x');
+    });
+
+    $('#input_voice_pitch').on('input change', function() {
+        $('#val-pitch-lbl').text($(this).val() + 'x');
+    });
+
+    $('#btn-preview-voice').on('click', function() {
+        activateTvMode();
+        const testRate = parseFloat($('#input_voice_rate').val()) || 0.95;
+        const testPitch = parseFloat($('#input_voice_pitch').val()) || 1.0;
+        const testGender = $('#input_voice_gender').val() || 'female';
+        const testChime = $('#input_voice_chime').val() || 'hospital_2tone';
+
+        const tpl = $('#input_tpl_poli').val() || 'Nomor antrean {nomor}, atas nama {nama}, silakan masuk ke Ruang {tujuan}. Terima kasih.';
+        const previewText = tpl.replace(/{nomor}/gi, 'A, satu').replace(/{nama}/gi, 'Budi Santoso').replace(/{tujuan}/gi, 'Poliklinik Umum');
+
+        window.VCM.testVoice({
+            rate: testRate,
+            pitch: testPitch,
+            gender: testGender,
+            chimeType: testChime,
+            text: previewText
+        });
+    });
+
+    $('#btn-reset-voice-tpl').on('click', function() {
+        $('#input_tpl_poli').val('Nomor antrean {nomor}, atas nama {nama}, silakan masuk ke Ruang {tujuan}. Terima kasih.');
+        $('#input_tpl_ttv').val('Nomor antrean {nomor}, atas nama {nama}, silakan menuju ke {tujuan}. Terima kasih.');
+        $('#input_tpl_kasir').val('Nomor antrean {nomor}, atas nama {nama}, pemeriksaan dokter telah selesai. Silakan menuju ke Kasir Pembayaran untuk administrasi. Terima kasih.');
+        $('#input_tpl_farmasi').val('Nomor antrean {nomor}, atas nama {nama}, transaksi pembayaran telah selesai. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat. Terima kasih.');
+    });
+
+    $('#btn-save-voice-settings').on('click', function() {
+        const newSettings = {
+            rate: parseFloat($('#input_voice_rate').val()) || 0.95,
+            pitch: parseFloat($('#input_voice_pitch').val()) || 1.0,
+            gender: $('#input_voice_gender').val() || 'female',
+            chimeType: $('#input_voice_chime').val() || 'hospital_2tone',
+            template_poli: $('#input_tpl_poli').val().trim(),
+            template_ttv: $('#input_tpl_ttv').val().trim(),
+            template_kasir: $('#input_tpl_kasir').val().trim(),
+            template_farmasi: $('#input_tpl_farmasi').val().trim()
+        };
+
+        window.VCM.setSettings(newSettings);
+        $('#modalVoiceSettings').modal('hide');
+        
+        // Putar notifikasi suara singkat
+        window.VCM.announce('Pengaturan suara dan redaksi berhasil disimpan.');
+    });
+
+    $('#modalVoiceSettings').on('show.bs.modal', function() {
+        initVoiceSettingsForm();
+    });
 
     // Inisialisasi Server Voice Queue Polling (Anti-Collision Audio Dispatcher)
     window.VCM.startServerPolling(2000);

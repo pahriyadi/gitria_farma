@@ -8,7 +8,7 @@ class AuditTrailBackfillSeeder extends Seeder
 {
     public function run()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $fields = $db->getFieldNames('audit_logs');
         if (!in_array('user_agent', $fields)) {

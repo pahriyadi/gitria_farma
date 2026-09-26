@@ -11,7 +11,7 @@ class Help extends BaseController
      */
     public function index()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $workflows = $db->table('system_documentations')
                         ->where('category', 'workflow')
@@ -61,7 +61,7 @@ class Help extends BaseController
      */
     public function save()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $id = $this->request->getPost('id');
 
         $category   = trim($this->request->getPost('category')) ?: 'workflow';
@@ -142,7 +142,7 @@ class Help extends BaseController
      */
     public function delete($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->table('system_documentations')->where('id', $id)->delete();
         session()->setFlashdata('success', 'Panduan / Alur sistem berhasil dihapus!');
         return redirect()->to(base_url('bantuan'));
@@ -153,7 +153,7 @@ class Help extends BaseController
      */
     public function toggle($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $row = $db->table('system_documentations')->where('id', $id)->get()->getRow();
         if ($row) {
             $newStatus = $row->is_published ? 0 : 1;
@@ -171,7 +171,7 @@ class Help extends BaseController
      */
     public function cetak()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $workflows = $db->table('system_documentations')->where('category', 'workflow')->where('is_published', 1)->orderBy('order_num', 'ASC')->get()->getResult();
         $roleGuides = $db->table('system_documentations')->where('category', 'role_guide')->where('is_published', 1)->orderBy('order_num', 'ASC')->get()->getResult();
         $faqs = $db->table('system_documentations')->where('category', 'faq')->where('is_published', 1)->orderBy('order_num', 'ASC')->get()->getResult();

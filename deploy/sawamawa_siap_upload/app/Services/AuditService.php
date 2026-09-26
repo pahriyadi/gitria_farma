@@ -10,7 +10,7 @@ class AuditService
     public static function log(string $action, string $module, string $description, ?string $tableName = '', ?int $recordId = 0, $oldVal = null, $newVal = null): bool
     {
         try {
-            $db = \Config\Database::connect();
+            $db = \Config\Database::connect('default');
             $request = service('request');
             $userId = session()->get('user_id') ?: 1;
 

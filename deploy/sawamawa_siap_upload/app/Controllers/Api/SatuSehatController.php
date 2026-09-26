@@ -10,7 +10,7 @@ class SatuSehatController extends BaseApiController
      */
     public function encounter($visitId = null)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $visit = $db->table('patient_visits')
                     ->select('patient_visits.*, patients.name as patient_name, patients.nik, doctors.name as doctor_name, doctors.sip_number, polyclinics.name as poly_name')

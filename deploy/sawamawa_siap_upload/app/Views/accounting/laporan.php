@@ -2,24 +2,41 @@
 
 <?= $this->section('content') ?>
 <!-- Quick Switcher Tabs -->
-<div class="mb-3 d-flex align-items-center justify-content-between">
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a class="nav-link font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
-                <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum Konsolidasian
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
-                <i class="fas fa-book-journal-whills mr-1"></i> 2. Jurnal Mutasi per Akun (Buku Pembantu)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
-                <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan Standar BI & SAK
-            </a>
-        </li>
-    </ul>
+<div class="mb-3">
+    <div class="accounting-tabs-scroll-wrapper">
+        <ul class="nav nav-tabs-modern">
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
+                    <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
+                    <i class="fas fa-book-journal-whills mr-1"></i> 2. Buku Mutasi Akun
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
+                    <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/coa') ?>">
+                    <i class="fas fa-book-bookmark mr-1"></i> 4. Bagan Akun (COA)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/aturan-jurnal') ?>">
+                    <i class="fas fa-sliders mr-1"></i> 5. Template &amp; Aturan Jurnal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/saldo-awal') ?>">
+                    <i class="fas fa-scale-balanced mr-1"></i> 6. Saldo Awal
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <!-- Bar Filter Periode & Cetak Laporan -->

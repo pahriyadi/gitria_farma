@@ -8,7 +8,7 @@ class UpdateV270Seeder extends Seeder
 {
     public function run()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. Insert or update system_updates for v2.7.0
         $existingUpdate = $db->table('system_updates')->where('version', 'v2.7.0')->get()->getRow();

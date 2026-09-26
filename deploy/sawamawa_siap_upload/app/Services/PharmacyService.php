@@ -11,7 +11,7 @@ class PharmacyService
 
     public function __construct()
     {
-        $this->db = \Config\Database::connect();
+        $this->db = \Config\Database::connect('default');
         $this->journalEngine = new JournalEngine();
     }
 
@@ -50,6 +50,8 @@ class PharmacyService
             $action = $details['action'] ?? 'internal';
             $qty = intval($details['qty'] ?? 1);
             $itemDiscount = floatval($details['discount'] ?? 0);
+            $itemTusla = floatval($details['tusla'] ?? 0);
+            $itemEmbalase = floatval($details['embalase'] ?? 0);
 
             if ($action === 'internal') {
                 // Dispensed from internal pharmacy stock
@@ -106,13 +108,15 @@ class PharmacyService
                          ->where('medicine_id', $medId)
                          ->update([
                              'discount' => $itemDiscount,
+                             'tusla'    => $itemTusla,
+                             'embalase' => $itemEmbalase,
                              'status'   => 'served'
                          ]);
 
                 // Update or Insert in billing_details with per-item discount
                 if ($bill && $med) {
                     $price = $med->price;
-                    $subtotal = max(0, ($qty * $price) - $itemDiscount);
+                    $subtotal = max(0, ($qty * $price) + $itemTusla + $itemEmbalase - $itemDiscount);
 
                     $existingBillItem = $this->db->table('billing_details')
                                                  ->where('billing_id', $bill->id)
@@ -128,6 +132,8 @@ class PharmacyService
                                      'qty'      => $qty,
                                      'price'    => $price,
                                      'discount' => $itemDiscount,
+                                     'tusla'    => $itemTusla,
+                                     'embalase' => $itemEmbalase,
                                      'subtotal' => $subtotal
                                  ]);
                     } else {
@@ -138,6 +144,8 @@ class PharmacyService
                             'qty'        => $qty,
                             'price'      => $price,
                             'discount'   => $itemDiscount,
+                            'tusla'      => $itemTusla,
+                            'embalase'   => $itemEmbalase,
                             'subtotal'   => $subtotal
                         ]);
                     }
@@ -151,6 +159,8 @@ class PharmacyService
                          ->where('medicine_id', $medId)
                          ->update([
                              'discount' => 0.00,
+                             'tusla'    => 0.00,
+                             'embalase' => 0.00,
                              'status'   => $statusVal
                          ]);
 
@@ -181,7 +191,7 @@ class PharmacyService
                 if ($d->item_type === 'medis') {
                     $totalServices += $d->subtotal;
                 } elseif ($d->item_type === 'obat') {
-                    $totalMedicines += ($d->qty * $d->price); // Gross medicines
+                    $totalMedicines += (($d->qty * $d->price) + ($d->tusla ?? 0) + ($d->embalase ?? 0)); // Gross medicines + fees
                     $totalDiscounts += ($d->discount ?? 0);   // Discounts from pharmacy
                 } elseif ($d->item_type === 'resto') {
                     $totalRestaurant += $d->subtotal;
@@ -202,6 +212,11 @@ class PharmacyService
                          'status'           => $targetBillingStatus,
                          'updated_at'       => date('Y-m-d H:i:s')
                      ]);
+
+            // Update in-memory $bill object properties
+            $bill->total_medicines = $totalMedicines;
+            $bill->grand_total = $grandTotal;
+            $bill->total_services = $totalServices;
         }
 
         // 3. Selesaikan Status e-Resep & Catat Timestamp Penyerahan Obat (SLA)
@@ -226,6 +241,63 @@ class PharmacyService
                 'status'  => 'error',
                 'message' => 'Gagal memproses penyiapan resep obat.'
             ];
+        }
+
+        // 5. Penjurnalan Otomatis Selesai Ambil Obat di Farmasi (Template PENJUALAN_OBAT_RESEP)
+        if ($bill && (float)$bill->total_medicines > 0) {
+            try {
+                $visit = $this->db->table('patient_visits')->where('id', $prescription->visit_id)->get()->getRow();
+                $patient = ($visit && $visit->patient_id) ? $this->db->table('patients')->where('id', $visit->patient_id)->get()->getRow() : null;
+                $queue = $this->db->table('queue_numbers')->where('visit_id', $prescription->visit_id)->get()->getRow();
+
+                $pName = $patient ? $patient->name : 'Pasien Umum';
+                $qCode = $queue ? ($queue->queue_no ?: ($visit ? $visit->no_visit : '')) : ($visit ? $visit->no_visit : '');
+                $patientTag = $pName . ($qCode ? ' / ' . $qCode : '');
+
+                $allBillDetails = $this->db->table('billing_details')
+                                           ->where('billing_id', $bill->id)
+                                           ->where('item_type', 'obat')
+                                           ->get()->getResult();
+
+                $obatList = [];
+                $totalTusla = 0;
+                $totalEmbalase = 0;
+                $calcMedTotal = 0;
+                foreach ($allBillDetails as $bd) {
+                    $itemLabel = (!empty($bd->is_racikan) && !empty($bd->racikan_name)) ? ('[Racikan] ' . $bd->racikan_name) : $bd->item_name;
+                    $tuslaVal = isset($bd->tusla) ? (float)$bd->tusla : 0;
+                    $embalaseVal = isset($bd->embalase) ? (float)$bd->embalase : 0;
+                    $totalTusla += $tuslaVal;
+                    $totalEmbalase += $embalaseVal;
+                    $calcMedTotal += (float)$bd->subtotal;
+                    
+                    $priceStr = number_format($bd->price * $bd->qty, 0, ',', '.');
+                    $tuslaStr = number_format($tuslaVal, 0, ',', '.');
+                    $embalaseStr = number_format($embalaseVal, 0, ',', '.');
+                    $obatList[] = $itemLabel . ' (' . (int)$bd->qty . 'x) (Rp ' . $priceStr . ') | tusla (Rp ' . $tuslaStr . ') | embarse (Rp ' . $embalaseStr . ')';
+                }
+
+                $pharmAmount = $calcMedTotal > 0 ? $calcMedTotal : (float)$bill->total_medicines;
+
+                $obatSummary = !empty($obatList) ? "\n" . implode(", \n", array_unique($obatList)) : 'e-Resep Obat';
+                if (!empty($obatList)) {
+                    $obatSummary .= ",\ntotal tusla : Rp " . number_format($totalTusla, 0, ',', '.') . "\ntotal embarse : Rp " . number_format($totalEmbalase, 0, ',', '.');
+                }
+                $descObat = "Pendapatan Farmasi & Resep Obat - {$bill->billing_no} ({$patientTag}): {$obatSummary}";
+
+                $docFeePct = 5.00;
+                if ($visit && $visit->doctor_id) {
+                    $doctorRow = $this->db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                    if ($doctorRow && isset($doctorRow->prescription_fee_percent)) {
+                        $docFeePct = (float)$doctorRow->prescription_fee_percent;
+                    }
+                }
+
+                $payMethod = !empty($bill->payment_method) ? $bill->payment_method : 'tunai';
+                $this->journalEngine->postPharmacySplitJournal('resep', $bill->id, $pharmAmount, $descObat, $payMethod, $docFeePct, 'Apotek (Obat Resep)');
+            } catch (\Throwable $e) {
+                log_message('error', 'Gagal membukukan jurnal farmasi resep: ' . $e->getMessage());
+            }
         }
 
         // Trigger Event Hook Penyerahan e-Resep
@@ -259,13 +331,18 @@ class PharmacyService
      */
     public function processDirectSale(array $payload)
     {
-        $customerName  = trim($payload['customer_name'] ?? 'Pelanggan Umum');
-        $customerPhone = trim($payload['customer_phone'] ?? '');
-        $paymentMethod = $payload['payment_method'] ?? 'tunai';
-        $paidAmount    = floatval($payload['paid_amount'] ?? 0);
-        $notes         = trim($payload['notes'] ?? '');
-        $cashierId     = intval($payload['cashier_id'] ?? (session('user_id') ?: 1));
-        $items         = $payload['items'] ?? [];
+        $customerName     = trim($payload['customer_name'] ?? 'Pelanggan Umum');
+        $customerPhone    = trim($payload['customer_phone'] ?? '');
+        $paymentMethod    = $payload['payment_method'] ?? 'tunai';
+        $paidAmount       = floatval($payload['paid_amount'] ?? 0);
+        $notes            = trim($payload['notes'] ?? '');
+        $cashierId        = intval($payload['cashier_id'] ?? (session('user_id') ?: 1));
+        $doctorId         = !empty($payload['doctor_id']) ? intval($payload['doctor_id']) : null;
+        $doctorFeeNominal = floatval($payload['doctor_fee_nominal'] ?? 0);
+        $prescriptionType = $payload['prescription_type'] ?? 'bebas';
+        $tuslaAmount      = floatval($payload['tusla_amount'] ?? 0);
+        $embalaseAmount   = floatval($payload['embalase_amount'] ?? 0);
+        $items            = $payload['items'] ?? [];
 
         if (empty($items) || !is_array($items)) {
             return [
@@ -301,6 +378,11 @@ class PharmacyService
             $qty = intval($item['qty'] ?? 1);
             $discount = floatval($item['discount'] ?? 0);
             $dosage = trim($item['dosage_instruction'] ?? '');
+            $isRacikan = !empty($item['is_racikan']) ? 1 : 0;
+            $racikanName = trim($item['racikan_name'] ?? '');
+            $racikanGroup = trim($item['racikan_group'] ?? '');
+            $itemTusla = floatval($item['tusla'] ?? 0);
+            $itemEmbalase = floatval($item['embalase'] ?? 0);
 
             if ($medId <= 0 || $qty <= 0) continue;
 
@@ -308,7 +390,7 @@ class PharmacyService
             if (!$med) continue;
 
             $unitPrice = floatval($med->price);
-            $itemSubtotal = max(0, ($unitPrice * $qty) - $discount);
+            $itemSubtotal = max(0, ($unitPrice * $qty) - $discount + $itemTusla + $itemEmbalase);
 
             // Validate Batch Stock
             $batch = null;
@@ -343,10 +425,15 @@ class PharmacyService
                 'qty'                => $qty,
                 'price'              => $unitPrice,
                 'discount'           => $discount,
+                'tusla'              => $itemTusla,
+                'embalase'           => $itemEmbalase,
                 'subtotal'           => $itemSubtotal,
                 'dosage_instruction' => $dosage,
                 'medicine_name'      => $med->name,
-                'unit'               => $med->unit
+                'unit'               => $med->unit,
+                'is_racikan'         => $isRacikan,
+                'racikan_name'       => $racikanName,
+                'racikan_group'      => $racikanGroup
             ];
         }
 
@@ -358,25 +445,30 @@ class PharmacyService
             ];
         }
 
-        $grandTotal = max(0, $totalGross - $totalDiscount);
+        $grandTotal = max(0, ($totalGross - $totalDiscount) + $tuslaAmount + $embalaseAmount);
         $changeAmount = max(0, $paidAmount - $grandTotal);
 
         // 2. Insert Sale Record
         $saleData = [
-            'sale_no'         => $saleNo,
-            'customer_name'   => $customerName ?: 'Pelanggan Umum',
-            'customer_phone'  => $customerPhone,
-            'sale_date'       => date('Y-m-d'),
-            'total_amount'    => $totalGross,
-            'discount_amount' => $totalDiscount,
-            'grand_total'     => $grandTotal,
-            'payment_method'  => $paymentMethod,
-            'paid_amount'     => $paidAmount,
-            'change_amount'   => $changeAmount,
-            'cashier_id'      => $cashierId,
-            'notes'           => $notes,
-            'created_at'      => date('Y-m-d H:i:s'),
-            'updated_at'      => date('Y-m-d H:i:s')
+            'sale_no'           => $saleNo,
+            'prescription_type' => $prescriptionType,
+            'customer_name'     => $customerName ?: 'Pelanggan Umum',
+            'customer_phone'    => $customerPhone,
+            'sale_date'         => date('Y-m-d'),
+            'total_amount'      => $totalGross,
+            'discount_amount'   => $totalDiscount,
+            'tusla_amount'      => $tuslaAmount,
+            'embalase_amount'   => $embalaseAmount,
+            'grand_total'       => $grandTotal,
+            'payment_method'    => $paymentMethod,
+            'paid_amount'       => $paidAmount,
+            'change_amount'     => $changeAmount,
+            'cashier_id'         => $cashierId,
+            'doctor_id'          => $doctorId,
+            'doctor_fee_nominal' => $doctorFeeNominal,
+            'notes'              => $notes,
+            'created_at'        => date('Y-m-d H:i:s'),
+            'updated_at'        => date('Y-m-d H:i:s')
         ];
         $this->db->table('pharmacy_sales')->insert($saleData);
         $saleId = $this->db->insertID();
@@ -387,15 +479,20 @@ class PharmacyService
                 'sale_id'            => $saleId,
                 'medicine_id'        => $pi['medicine_id'],
                 'batch_id'           => $pi['batch_id'],
+                'is_racikan'         => $pi['is_racikan'],
+                'racikan_name'       => $pi['racikan_name'],
+                'racikan_group'      => $pi['racikan_group'],
                 'qty'                => $pi['qty'],
                 'price'              => $pi['price'],
                 'discount'           => $pi['discount'],
+                'tusla'              => $pi['tusla'],
+                'embalase'           => $pi['embalase'],
                 'subtotal'           => $pi['subtotal'],
                 'dosage_instruction' => $pi['dosage_instruction'],
                 'created_at'         => date('Y-m-d H:i:s')
             ]);
 
-            // Deduct Stock
+            // Deduct Stock in medicine_batches
             $batch = $this->db->table('medicine_batches')->where('id', $pi['batch_id'])->get()->getRow();
             $newStock = $batch ? max(0, $batch->stock - $pi['qty']) : 0;
             $this->db->table('medicine_batches')->where('id', $pi['batch_id'])->update(['stock' => $newStock]);
@@ -431,24 +528,63 @@ class PharmacyService
             $this->db->table('cash_registers')->where('id', $activeRegister->id)->set('balance', 'balance + ' . floatval($grandTotal), false)->update();
         }
 
-        // Rincian item obat bebas untuk keterangan jurnal akuntansi
+        // Rincian item untuk summary jurnal
         $itemNames = [];
-        foreach ($items as $it) {
-            $m = $this->db->table('medicines')->where('id', $it['medicine_id'])->get()->getRow();
-            if ($m) {
-                $itemNames[] = $m->name . ' (' . (int)$it['qty'] . 'x @Rp ' . number_format($m->price, 0, ',', '.') . ')';
+        foreach ($processedItems as $it) {
+            $label = $it['is_racikan'] && !empty($it['racikan_name']) ? ('[Racikan] ' . $it['racikan_name']) : $it['medicine_name'];
+            $priceStr = number_format($it['price'] * $it['qty'], 0, ',', '.');
+            $tuslaStr = number_format($it['tusla'], 0, ',', '.');
+            $embalaseStr = number_format($it['embalase'], 0, ',', '.');
+            
+            $itemNames[] = $label . ' (' . (int)$it['qty'] . 'x) (Rp ' . $priceStr . ') | tusla (Rp ' . $tuslaStr . ') | embarse (Rp ' . $embalaseStr . ')';
+        }
+        $itemsSummary = !empty($itemNames) ? "\n" . implode(", \n", $itemNames) : 'Penjualan Farmasi';
+        $itemsSummary .= ",\ntotal tusla : Rp " . number_format($tuslaAmount, 0, ',', '.') . "\ntotal embarse : Rp " . number_format($embalaseAmount, 0, ',', '.');
+
+        // Auto-Posting Split Journal (Jurnal Umum Perakun Berimbang)
+        $docFeePct = 5.00;
+        $docName = '';
+        if ($doctorId) {
+            $docRow = $this->db->table('doctors')->where('id', $doctorId)->get()->getRow();
+            if ($docRow) {
+                $docName = $docRow->name;
+                if (isset($docRow->prescription_fee_percent)) {
+                    $docFeePct = (float)$docRow->prescription_fee_percent;
+                }
             }
         }
-        $itemsSummary = !empty($itemNames) ? implode(', ', $itemNames) : 'Obat Bebas';
 
-        // Auto-Posting Double-Entry Accounting Journal
-        $this->journalEngine->postJournal(
-            'PHARMACY_SALE',
+        $docTag = '';
+        if (!empty($docName)) {
+            $cleanDoc = (stripos($docName, 'dr') === 0 || stripos($docName, 'Dr') === 0) ? $docName : ('Dr. ' . $docName);
+            $docTag = ' (' . $cleanDoc . ')';
+        }
+
+        if ($prescriptionType === 'online' || $prescriptionType === 'konsul_online') {
+            $saleJournalType = 'online';
+            $sourceModule    = 'Kasir Apotek (Konsultasi Online)';
+            $descPrefix      = 'Pendapatan Konsultasi Online Apotek';
+        } elseif ($prescriptionType === 'resep' || $prescriptionType === 'racikan' || $doctorId) {
+            $saleJournalType = 'resep';
+            $sourceModule    = 'Kasir Apotek (Obat Resep)';
+            $descPrefix      = 'Pendapatan Resep Obat Apotek';
+        } else {
+            $saleJournalType = 'bebas';
+            $sourceModule    = 'Kasir Apotek (Obat Bebas)';
+            $descPrefix      = 'Pendapatan Penjualan Obat Bebas';
+        }
+
+        $journalDesc = "{$descPrefix} - {$saleNo} ({$customerName}): {$itemsSummary}{$docTag}";
+
+        $this->journalEngine->postPharmacySplitJournal(
+            $saleJournalType,
             $saleId,
             $grandTotal,
-            'Pendapatan Penjualan Obat Bebas Apotek - ' . $saleNo . ' (' . $customerName . '): ' . $itemsSummary,
+            $journalDesc,
             $paymentMethod,
-            'Farmasi Apotek'
+            $docFeePct,
+            $sourceModule,
+            $doctorFeeNominal
         );
 
         $this->db->transComplete();

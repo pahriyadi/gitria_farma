@@ -233,40 +233,50 @@
         if (!_voices.length) loadVoices();
         
         const idVoices = _voices.filter(v => 
-            v.lang === 'id-ID' || v.lang === 'id_ID' || 
-            (v.lang && v.lang.toLowerCase().startsWith('id')) ||
-            (v.name && v.name.toLowerCase().includes('indonesia'))
+            (v.lang && (v.lang.startsWith('id') || v.lang.startsWith('in') || v.lang.includes('ID') || v.lang.includes('IND')))
         );
 
-        if (preferredGender === 'male') {
-            const male = idVoices.find(v => {
-                const n = v.name.toLowerCase();
-                return n.includes('male') || n.includes('pria') || n.includes('laki') || 
-                       n.includes('andika') || n.includes('ardi') || n.includes('david') || n.includes('budi');
-            });
-            if (male) return male;
-        } else if (preferredGender === 'female') {
-            const female = idVoices.find(v => {
-                const n = v.name.toLowerCase();
-                return n.includes('female') || n.includes('wanita') || n.includes('perempuan') || 
-                       n.includes('gadis') || n.includes('damayanti') || n.includes('siti') || n.includes('putri');
-            });
-            if (female) return female;
+        if (idVoices.length > 0) {
+            if (preferredGender === 'male') {
+                const male = idVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('male') || n.includes('pria') || n.includes('laki') || 
+                           n.includes('andika') || n.includes('ardi') || n.includes('david') || n.includes('budi');
+                });
+                if (male) return male;
+            } else if (preferredGender === 'female') {
+                const female = idVoices.find(v => {
+                    const n = v.name.toLowerCase();
+                    return n.includes('female') || n.includes('wanita') || n.includes('perempuan') || 
+                           n.includes('gadis') || n.includes('damayanti') || n.includes('siti') || n.includes('putri') || n.includes('google');
+                });
+                if (female) return female;
+            }
+            return idVoices[0];
         }
 
-        return idVoices[0] || _voices.find(v => v.lang.startsWith('id')) || null;
+        // Fallback jika iPad/browser tidak punya voice pack id-ID lokal: cari voice default browser
+        return _voices.find(v => v.default) || _voices[0] || null;
     }
 
     function speakRaw(text, settings, onEnd) {
         if (!('speechSynthesis' in window)) { onEnd && onEnd(); return; }
 
+        // Resume semua audio pipeline sebelum berbicara (kritis untuk iOS/iPad)
         try {
             if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+            if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+        } catch (e) {}
+
+        // Resume Web Audio Context jika suspended (iOS/Android Chrome)
+        try {
+            const ctx = getAudioContext();
+            if (ctx && ctx.state === 'suspended') ctx.resume();
         } catch (e) {}
 
         const utt   = new SpeechSynthesisUtterance(text);
         utt.lang    = 'id-ID';
-        utt.rate    = parseFloat(settings.rate)   || 0.85;
+        utt.rate    = parseFloat(settings.rate)   || 0.95;
         utt.volume  = parseFloat(settings.volume) || 1.0;
 
         const gender = settings.gender || 'female';
@@ -276,7 +286,6 @@
         // Dynamic Pitch tuning berdasarkan karakter suara
         let basePitch = parseFloat(settings.pitch) || 1.0;
         if (gender === 'male' && (!voice || !voice.name.toLowerCase().includes('male'))) {
-            // Jika browser tidak punya suara pria khusus, turunkan pitch secara akustik
             basePitch = Math.max(0.75, basePitch * 0.85);
         } else if (gender === 'female' && (!voice || !voice.name.toLowerCase().includes('female'))) {
             basePitch = Math.min(1.25, basePitch * 1.05);
@@ -284,9 +293,11 @@
         utt.pitch = basePitch;
 
         let finished = false;
+        let retried  = false;
         const done = () => {
             if (finished) return;
             finished = true;
+            _speechFailCount = 0;
             window._activeSpeechUtterance = null;
             window._vcmActiveUtt = null;
             onEnd && onEnd();
@@ -294,15 +305,38 @@
 
         utt.onend   = done;
         utt.onerror = (e) => {
-            console.warn('[VCM] Speech error:', e ? e.error : 'unknown');
-            done();
+            const errType = e ? e.error : 'unknown';
+            console.warn('[VCM] Speech error:', errType);
+            // Retry sekali jika interrupted atau network error (iOS bug)
+            if (!retried && (errType === 'interrupted' || errType === 'canceled' || errType === 'audio-busy')) {
+                retried = true;
+                _speechFailCount++;
+                console.info('[VCM] Retrying speech after error...');
+                setTimeout(() => {
+                    try {
+                        window.speechSynthesis.cancel();
+                        const retryUtt = new SpeechSynthesisUtterance(text);
+                        retryUtt.lang  = utt.lang;
+                        retryUtt.rate  = utt.rate;
+                        retryUtt.pitch = utt.pitch;
+                        retryUtt.volume = utt.volume;
+                        if (voice) retryUtt.voice = voice;
+                        retryUtt.onend   = done;
+                        retryUtt.onerror = () => done();
+                        window._vcmActiveUtt = retryUtt;
+                        window.speechSynthesis.speak(retryUtt);
+                    } catch(re) { done(); }
+                }, 250);
+            } else {
+                done();
+            }
         };
 
         // Garbage collection retention
         window._activeSpeechUtterance = utt;
         window._vcmActiveUtt = utt;
 
-        // Jeda 50ms untuk kesiapan audio pipeline Chromium
+        // Jeda 80ms untuk kesiapan audio pipeline Chromium / iOS WebKit
         setTimeout(() => {
             try {
                 if (window.speechSynthesis.paused) window.speechSynthesis.resume();
@@ -311,7 +345,7 @@
                 console.warn('[VCM] speak execution failed:', err);
                 done();
             }
-        }, 50);
+        }, 80);
     }
 
     /* =========================================================================
@@ -320,7 +354,7 @@
     function getDefaultSettings() {
         const metaGender = document.querySelector('meta[name="voice-gender"]')?.getAttribute('content') || 'female';
         const metaChime  = document.querySelector('meta[name="voice-chime"]')?.getAttribute('content') || 'hospital_2tone';
-        const metaRate   = parseFloat(document.querySelector('meta[name="voice-rate"]')?.getAttribute('content') || '0.85');
+        const metaRate   = parseFloat(document.querySelector('meta[name="voice-rate"]')?.getAttribute('content') || '0.95');
         const metaPitch  = parseFloat(document.querySelector('meta[name="voice-pitch"]')?.getAttribute('content') || '1.0');
         const metaVolume = parseFloat(document.querySelector('meta[name="voice-volume"]')?.getAttribute('content') || '1.0');
 
@@ -330,8 +364,25 @@
             rate: metaRate,
             pitch: metaPitch,
             volume: metaVolume,
-            autoChime: metaChime !== 'none'
+            autoChime: metaChime !== 'none',
+            template_poli: 'Nomor antrean {nomor}, atas nama {nama}, silakan masuk ke Ruang {tujuan}. Terima kasih.',
+            template_ttv: 'Nomor antrean {nomor}, atas nama {nama}, silakan menuju ke {tujuan}. Terima kasih.',
+            template_kasir: 'Nomor antrean {nomor}, atas nama {nama}, pemeriksaan dokter telah selesai. Silakan menuju ke Kasir Pembayaran untuk administrasi. Terima kasih.',
+            template_farmasi: 'Nomor antrean {nomor}, atas nama {nama}, transaksi pembayaran telah selesai. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat. Terima kasih.'
         };
+    }
+
+    function renderVoiceTemplate(template, queueNo, patientName, targetName) {
+        const spokenQ = formatQueueNo(queueNo);
+        const tpl = template || 'Nomor antrean {nomor}, atas nama {nama}, silakan menuju ke {tujuan}. Terima kasih.';
+        return tpl
+            .replace(/{nomor}/gi, spokenQ)
+            .replace(/{no_antrean}/gi, spokenQ)
+            .replace(/{nama}/gi, patientName)
+            .replace(/{patient_name}/gi, patientName)
+            .replace(/{tujuan}/gi, targetName)
+            .replace(/{counter}/gi, targetName)
+            .replace(/{ruangan}/gi, targetName);
     }
 
     function loadSettings() {
@@ -343,7 +394,11 @@
     }
 
     function saveSettings(s) {
-        try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
+        try { 
+            const current = loadSettings();
+            const merged = Object.assign({}, current, s);
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged)); 
+        } catch (e) {}
     }
 
     function loadLog() {
@@ -395,8 +450,19 @@
     let _safetyTimer = null;
     let _currentSpeakingItem = null;
 
+    // iOS Audio Keep-Alive
+    let _iosKeepAliveTimer = null;
+    let _speechFailCount = 0; // Track consecutive speech failures for retry logic
+
     /* =========================================================================
        7. CROSS-TAB BROADCAST CHANNEL (Leader Election)
+       ========================================================================= */
+    function isDisplayScreen() {
+        return window.location.pathname.includes('/display') || document.getElementById('hero-call-card') !== null;
+    }
+
+    /* =========================================================================
+       7. CROSS-TAB SYNC (BroadcastChannel API)
        ========================================================================= */
     let _broadcastChannel = null;
     try {
@@ -405,9 +471,12 @@
             _broadcastChannel.onmessage = (event) => {
                 const data = event.data;
                 if (!data) return;
-                if (data.type === 'VCM_CALL_ENQUEUED') {
-                    // Update counter badge if on other tabs
-                    updateBadge();
+                updateBadge();
+                if (data.type === 'VCM_SERVER_CALL' || data.type === 'VCM_CALL_ENQUEUED') {
+                    // Hanya Layar Display TV yang memutar audio saat menerima siaran
+                    if (isDisplayScreen() && data.item) {
+                        enqueue(data.item);
+                    }
                 }
             };
         }
@@ -578,7 +647,7 @@
         updateBadge();
 
         if (_broadcastChannel) {
-            _broadcastChannel.postMessage({ type: 'VCM_CALL_ENQUEUED', label: item.label });
+            _broadcastChannel.postMessage({ type: 'VCM_CALL_ENQUEUED', label: item.label, item: item });
         }
 
         if (!_isPlaying) {
@@ -594,18 +663,109 @@
     let _seenServerEventIds = new Set();
 
     function getBaseUrl() {
-        const base = document.querySelector('meta[name="base-url"]')?.getAttribute('content')
-                  || window.location.origin + (window.location.pathname.startsWith('/sawamawamedicalcenter.id') ? '/sawamawamedicalcenter.id' : '');
-        return base.replace(/\/+$/, '');
+        const origin = window.location.origin;
+        const pathname = window.location.pathname;
+
+        const metaBase = document.querySelector('meta[name="base-url"]')?.getAttribute('content');
+        if (metaBase) {
+            try {
+                const parsed = new URL(metaBase);
+                // Jika metaBase mengarah ke localhost tapi browser sedang membuka domain lain (hosting), gunakan origin hosting
+                if ((parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') && origin && !origin.includes('localhost') && !origin.includes('127.0.0.1')) {
+                    let subPath = '';
+                    if (pathname.includes('/sawamawamedicalcenter.id/public')) subPath = '/sawamawamedicalcenter.id/public';
+                    else if (pathname.startsWith('/sawamawamedicalcenter.id')) subPath = '/sawamawamedicalcenter.id';
+                    return (origin + subPath).replace(/\/+$/, '');
+                }
+                return metaBase.replace(/\/+$/, '');
+            } catch(e) {
+                return metaBase.replace(/\/+$/, '');
+            }
+        }
+
+        if (typeof window.BASE_URL !== 'undefined' && window.BASE_URL) {
+            try {
+                const parsed = new URL(window.BASE_URL);
+                if ((parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') && origin && !origin.includes('localhost') && !origin.includes('127.0.0.1')) {
+                    return origin.replace(/\/+$/, '');
+                }
+                return window.BASE_URL.replace(/\/+$/, '');
+            } catch(e) {
+                return window.BASE_URL.replace(/\/+$/, '');
+            }
+        }
+
+        if (pathname.includes('/sawamawamedicalcenter.id/public')) {
+            return (origin + '/sawamawamedicalcenter.id/public').replace(/\/+$/, '');
+        }
+        if (pathname.startsWith('/sawamawamedicalcenter.id')) {
+            return (origin + '/sawamawamedicalcenter.id').replace(/\/+$/, '');
+        }
+        return origin.replace(/\/+$/, '');
+    }
+
+    function getCsrfData() {
+        const tokenName = document.querySelector('meta[name="csrf-token-name"]')?.getAttribute('content') 
+                       || document.querySelector('meta[name="csrf-name"]')?.getAttribute('content') 
+                       || 'csrf_test_name';
+        const hash = document.querySelector('meta[name="csrf-hash"]')?.getAttribute('content') 
+                  || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+                  || '';
+        return { name: tokenName, hash: hash };
     }
 
     function triggerServerCall(params, callback) {
-        const url = getBaseUrl() + '/api/sync/voice-call-trigger';
-        const csrfTokenName = document.querySelector('meta[name="csrf-token-name"]')?.getAttribute('content') || 'csrf_test_name';
-        const csrfHash = document.querySelector('meta[name="csrf-hash"]')?.getAttribute('content') || '';
+        if (!params || !params.queue_number) {
+            callback && callback('No queue number provided', null);
+            return;
+        }
 
-        const payload = Object.assign({}, params);
-        if (csrfHash) payload[csrfTokenName] = csrfHash;
+        const sType = String(params.service_type || '').toLowerCase();
+        const qNo   = String(params.queue_number).trim();
+        const pName = String(params.patient_name || 'Pasien').trim();
+        const cName = String(params.counter_name || params.target_name || 'Ruang Pelayanan').trim();
+        const spokenQ = formatQueueNo(qNo);
+
+        const s = loadSettings();
+        let voiceText = '';
+        if (sType === 'triage' || sType === 'ttv') {
+            voiceText = renderVoiceTemplate(s.template_ttv, qNo, pName, cName);
+        } else if (sType === 'kasir') {
+            voiceText = renderVoiceTemplate(s.template_kasir, qNo, pName, cName);
+        } else if (sType === 'farmasi' || sType === 'apotek') {
+            voiceText = renderVoiceTemplate(s.template_farmasi, qNo, pName, cName);
+        } else if (sType === 'completed') {
+            voiceText = `Nomor antrean ${spokenQ}, atas nama ${pName}, penyerahan obat telah selesai. Terima kasih banyak atas kunjungan Anda di Sawamawa Medical Center, semoga lekas sembuh.`;
+        } else {
+            voiceText = renderVoiceTemplate(s.template_poli, qNo, pName, cName);
+        }
+
+        const callItem = {
+            text: voiceText,
+            priority: parseInt(params.call_priority || 1, 10),
+            key: `call_${qNo}_${Date.now()}`,
+            label: `${qNo} — ${pName} (${cName})`,
+            queueNo: qNo,
+            patientName: pName,
+            targetName: cName,
+            serviceType: sType || 'poliklinik',
+            ts: Date.now()
+        };
+
+        // 1. Putar Audio Langsung di Halaman Pemanggil (Immediate Feedback)
+        enqueue(callItem);
+
+        // 2. Kirim Sinyal Siaran Real-Time ke Layar Display TV via BroadcastChannel (0ms)
+        if (_broadcastChannel) {
+            _broadcastChannel.postMessage({ type: 'VCM_SERVER_CALL', item: callItem });
+        }
+
+        // 3. Kirim Sinyal Sinkronisasi ke Server Backend untuk Layar Display TV / iPad di perangkat lain
+        const url = getBaseUrl() + '/api/sync/voice-call-trigger';
+        const csrf = getCsrfData();
+
+        const payload = Object.assign({}, params, { voice_text: voiceText });
+        if (csrf.hash) payload[csrf.name] = csrf.hash;
 
         if (typeof window.jQuery !== 'undefined') {
             window.jQuery.ajax({
@@ -613,13 +773,12 @@
                 type: 'POST',
                 data: payload,
                 dataType: 'json',
+                global: false,
                 success: function (res) {
                     callback && callback(null, res);
                 },
                 error: function (xhr, status, error) {
-                    console.warn('[VCM] Failed to push call to server:', error);
-                    // Fallback to local audio immediately
-                    window.VCM.callPatient(params.queue_number, params.patient_name, params.counter_name || params.target_name);
+                    console.warn('[VCM] Push call to server returned error:', error);
                     callback && callback(error, null);
                 }
             });
@@ -633,7 +792,6 @@
             .then(res => callback && callback(null, res))
             .catch(err => {
                 console.warn('[VCM] Fetch error:', err);
-                window.VCM.callPatient(params.queue_number, params.patient_name, params.counter_name || params.target_name);
                 callback && callback(err, null);
             });
         }
@@ -642,18 +800,23 @@
     function sendServerAck(eventId, action = 'played') {
         if (!eventId) return;
         const url = getBaseUrl() + '/api/sync/voice-call-ack';
+        const csrf = getCsrfData();
+        const payload = { event_id: eventId, action: action };
+        if (csrf.hash) payload[csrf.name] = csrf.hash;
+
         if (typeof window.jQuery !== 'undefined') {
             window.jQuery.ajax({
                 url: url,
                 type: 'POST',
-                data: { event_id: eventId, action: action },
-                dataType: 'json'
+                data: payload,
+                dataType: 'json',
+                global: false
             });
         } else {
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ event_id: eventId, action: action })
+                body: JSON.stringify(payload)
             }).catch(() => {});
         }
     }
@@ -661,7 +824,10 @@
     function pollServerQueue() {
         const url = getBaseUrl() + '/api/sync/voice-queue?last_id=' + _lastSeenServerEventId;
         fetch(url, { cache: 'no-store' })
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.json();
+            })
             .then(res => {
                 if (res && res.status === 'success' && Array.isArray(res.data) && res.data.length > 0) {
                     res.data.forEach(ev => {
@@ -670,6 +836,17 @@
 
                         if (_seenServerEventIds.has(id)) return;
                         _seenServerEventIds.add(id);
+
+                        console.info('[VCM Poll] Event baru dari server → id=' + id + ', no=' + ev.queue_number + ', pasien=' + ev.patient_name);
+
+                        // Auto-unlock audio sebelum enqueue (kritis untuk iOS/iPad)
+                        try {
+                            if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+                                window.speechSynthesis.resume();
+                            }
+                            const ctx = getAudioContext();
+                            if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+                        } catch(e) {}
 
                         enqueue({
                             text: ev.voice_text,
@@ -687,11 +864,12 @@
                 }
             })
             .catch(err => {
-                // Silently ignore network dropouts during polling
+                // Log polling errors agar mudah di-debug
+                console.warn('[VCM Poll] Error polling voice-queue:', err.message || err);
             });
     }
 
-    function startServerPolling(intervalMs = 2500) {
+    function startServerPolling(intervalMs = 2000) {
         stopServerPolling();
         pollServerQueue();
         _pollingTimer = setInterval(pollServerQueue, intervalMs);
@@ -702,6 +880,38 @@
         if (_pollingTimer) {
             clearInterval(_pollingTimer);
             _pollingTimer = null;
+        }
+    }
+
+    /**
+     * iOS Audio Keep-Alive: Mencegah iOS Safari mematikan audio pipeline setelah idle.
+     * Memutar utterance kosong setiap 14 detik agar speechSynthesis tetap aktif.
+     */
+    function startIosKeepAlive() {
+        if (_iosKeepAliveTimer) return;
+        _iosKeepAliveTimer = setInterval(() => {
+            if (_isPlaying) return; // Sudah ada audio berjalan
+            if (!('speechSynthesis' in window)) return;
+            try {
+                // Resume audio context jika suspended
+                const ctx = getAudioContext();
+                if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+                // Speak utterance kosong/silent untuk menjaga iOS audio pipeline tetap hidup
+                if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+                const keepAliveUtt = new SpeechSynthesisUtterance('\u200B'); // Zero-width space
+                keepAliveUtt.volume = 0;
+                keepAliveUtt.rate   = 2.0;
+                keepAliveUtt.lang   = 'id-ID';
+                window.speechSynthesis.speak(keepAliveUtt);
+            } catch(e) {}
+        }, 14000); // Setiap 14 detik (iOS suspend setelah ~30 detik idle)
+        console.log('[VCM] iOS Audio Keep-Alive started (interval: 14s)');
+    }
+
+    function stopIosKeepAlive() {
+        if (_iosKeepAliveTimer) {
+            clearInterval(_iosKeepAliveTimer);
+            _iosKeepAliveTimer = null;
         }
     }
 
@@ -719,6 +929,17 @@
             queueNo     = String(queueNo || 'A-001').trim();
             patientName = String(patientName || 'Pasien').trim();
             targetName  = String(targetName || 'Ruang Pemeriksaan Dokter').trim();
+
+            if (!isDisplayScreen() && !eventId) {
+                triggerServerCall({
+                    service_type: 'poliklinik',
+                    counter_name: targetName,
+                    queue_number: queueNo,
+                    patient_name: patientName,
+                    call_priority: priority
+                });
+                return;
+            }
 
             const spokenQueue = formatQueueNo(queueNo);
             const text = `Nomor antrean ${spokenQueue}, atas nama ${patientName}, silakan menuju ke ${targetName}. Terima kasih.`;
@@ -749,6 +970,16 @@
          * Panggilan Triage & Tanda Vital Perawat
          */
         callToTtv(queueNo, patientName, priority = PRIORITY.NORMAL) {
+            if (!isDisplayScreen()) {
+                triggerServerCall({
+                    service_type: 'triage',
+                    counter_name: 'Ruang Pemeriksaan Tanda Vital Perawat',
+                    queue_number: queueNo,
+                    patient_name: patientName,
+                    call_priority: priority
+                });
+                return;
+            }
             this.callPatient(queueNo, patientName, 'Ruang Pemeriksaan Tanda Vital Perawat', priority);
         },
 
@@ -758,6 +989,17 @@
         callToCashier(queueNo, patientName, priority = PRIORITY.NORMAL) {
             queueNo     = String(queueNo || 'A-001').trim();
             patientName = String(patientName || 'Pasien').trim();
+
+            if (!isDisplayScreen()) {
+                triggerServerCall({
+                    service_type: 'kasir',
+                    counter_name: 'Kasir Pembayaran',
+                    queue_number: queueNo,
+                    patient_name: patientName,
+                    call_priority: priority
+                });
+                return;
+            }
 
             const spokenQueue = formatQueueNo(queueNo);
             const text = `Nomor antrean ${spokenQueue}, atas nama ${patientName}, pemeriksaan dokter telah selesai. Silakan menuju ke Kasir Pembayaran untuk administrasi. Terima kasih.`;
@@ -782,6 +1024,17 @@
             queueNo     = String(queueNo || 'A-001').trim();
             patientName = String(patientName || 'Pasien').trim();
 
+            if (!isDisplayScreen()) {
+                triggerServerCall({
+                    service_type: 'farmasi',
+                    counter_name: 'Loket Farmasi dan Apotek',
+                    queue_number: queueNo,
+                    patient_name: patientName,
+                    call_priority: priority
+                });
+                return;
+            }
+
             const spokenQueue = formatQueueNo(queueNo);
             const text = `Nomor antrean ${spokenQueue}, atas nama ${patientName}, transaksi pembayaran telah selesai. Terima kasih. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat.`;
 
@@ -804,6 +1057,17 @@
         callCompleted(queueNo, patientName, priority = PRIORITY.URGENT) {
             queueNo     = String(queueNo || 'A-001').trim();
             patientName = String(patientName || 'Pasien').trim();
+
+            if (!isDisplayScreen()) {
+                triggerServerCall({
+                    service_type: 'completed',
+                    counter_name: 'Selesai',
+                    queue_number: queueNo,
+                    patient_name: patientName,
+                    call_priority: priority
+                });
+                return;
+            }
 
             const clinicName = document.querySelector('meta[name="clinic-name"]')?.getAttribute('content') || 'Sawamawa Medical Center';
             const spokenQueue = formatQueueNo(queueNo);
@@ -853,6 +1117,14 @@
 
         stopServerPolling() {
             stopServerPolling();
+        },
+
+        startIosKeepAlive() {
+            startIosKeepAlive();
+        },
+
+        stopIosKeepAlive() {
+            stopIosKeepAlive();
         },
 
         unlockAudio() {

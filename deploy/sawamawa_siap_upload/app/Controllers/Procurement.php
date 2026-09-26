@@ -19,7 +19,7 @@ class Procurement extends BaseController
      */
     public function po()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -389,7 +389,7 @@ class Procurement extends BaseController
      */
     public function supplier()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $action = $this->request->getPost('action');
 
         if ($action === 'add') {
@@ -471,7 +471,7 @@ class Procurement extends BaseController
      */
     public function cetakPr($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $pr = $db->table('purchase_requests')
                  ->select('purchase_requests.*, suppliers.name as supplier_name, suppliers.code as supplier_code,
@@ -520,7 +520,7 @@ class Procurement extends BaseController
      */
     public function cetakPo($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $po = $db->table('purchase_orders')
                  ->select('purchase_orders.*, suppliers.name as supplier_name, suppliers.code as supplier_code,
@@ -559,7 +559,7 @@ class Procurement extends BaseController
      */
     public function cetakGrn($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $grn = $db->table('goods_receipts')
                   ->select('goods_receipts.*, purchase_orders.po_no, purchase_orders.order_date,
@@ -597,7 +597,7 @@ class Procurement extends BaseController
      */
     public function getPrDetailsJson($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $pr = $db->table('purchase_requests')
                  ->select('purchase_requests.*, suppliers.name as supplier_name')
@@ -624,7 +624,7 @@ class Procurement extends BaseController
      */
     public function getPoDetailsJson($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $po = $db->table('purchase_orders')
                  ->select('purchase_orders.*, suppliers.name as supplier_name, purchase_requests.request_no')
@@ -652,7 +652,7 @@ class Procurement extends BaseController
      */
     public function approval()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $requestId = $this->request->getPost('request_id');

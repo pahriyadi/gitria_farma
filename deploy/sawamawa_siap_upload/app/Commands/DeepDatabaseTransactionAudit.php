@@ -17,7 +17,7 @@ class DeepDatabaseTransactionAudit extends BaseCommand
         CLI::write("🏥 AUDIT MENYELURUH TRANSAKSI BASIS DATA & INTEGRITAS SISTEM", 'yellow');
         CLI::write("==================================================================", 'yellow');
 
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $totalPassed = 0;
         $totalTests  = 6;
 

@@ -17,7 +17,7 @@ class TestNewFeatures extends BaseCommand
         CLI::write("🛡️ PENGUJIAN RUNTIME MODUL ERROR TRACKER & SCALING", 'yellow');
         CLI::write("==================================================", 'yellow');
 
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. Test ErrorTrackerService
         CLI::write("\n[1/5] Menguji ErrorTrackerService::logException()...", 'cyan');

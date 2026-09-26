@@ -16,7 +16,7 @@ class Apotek extends BaseController
 
     public function resep()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $prescriptionId = $this->request->getPost('prescription_id');
@@ -106,11 +106,68 @@ class Apotek extends BaseController
             $prescriptionDetails[$p->id] = $details;
         }
 
+        // Fetch completed prescriptions history with billing & items summary
+        $completedPrescriptions = $db->table('prescriptions')
+                                     ->select('prescriptions.*, 
+                                               patient_visits.no_visit, 
+                                               patient_visits.visit_date,
+                                               patients.name as patient_name, 
+                                               patients.no_rm, 
+                                               patients.gender,
+                                               patients.date_of_birth,
+                                               COALESCE(doctors.name, users.username, "Dokter Pemeriksa") as doctor_name,
+                                               COALESCE(bt.status, "open") as billing_status,
+                                               COALESCE(bt.billing_no, "-") as billing_no,
+                                               (CASE WHEN bt.status = "paid" THEN 1 ELSE 0 END) as is_paid,
+                                               bt.payment_method,
+                                               bt.id as billing_id,
+                                               bt.grand_total as billing_grand_total,
+                                               bt.total_medicines as billing_total_medicines,
+                                               ct.receipt_no')
+                                     ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
+                                     ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
+                                     ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
+                                     ->join('users', 'users.id = prescriptions.doctor_id', 'left')
+                                     ->join('billing_transactions bt', 'bt.visit_id = prescriptions.visit_id', 'left')
+                                     ->join('cash_transactions ct', 'ct.billing_id = bt.id', 'left')
+                                     ->where('prescriptions.status', 'completed')
+                                     ->orderBy('prescriptions.dispensed_at', 'DESC')
+                                     ->limit(150)
+                                     ->get()
+                                     ->getResult();
+
+        foreach ($completedPrescriptions as &$cp) {
+            $cDetails = $db->table('prescription_details')
+                           ->select('prescription_details.*, medicines.name as medicine_name')
+                           ->join('medicines', 'medicines.id = prescription_details.medicine_id', 'left')
+                           ->where('prescription_id', $cp->id)
+                           ->get()
+                           ->getResult();
+
+            $cp->details = $cDetails;
+            $cp->item_count = count($cDetails);
+
+            $summaryParts = [];
+            $totalGross = 0; $totalTusla = 0; $totalEmbalase = 0; $totalDisc = 0;
+            foreach ($cDetails as $cd) {
+                $summaryParts[] = $cd->medicine_name . ' (' . (int)$cd->qty . 'x)';
+                $totalGross += ($cd->qty * $cd->price);
+                $totalTusla += (float)($cd->tusla ?? 0);
+                $totalEmbalase += (float)($cd->embalase ?? 0);
+                $totalDisc += (float)($cd->discount ?? 0);
+            }
+            $cp->items_summary = implode(', ', $summaryParts);
+            $cp->calculated_total = max(0, $totalGross + $totalTusla + $totalEmbalase - $totalDisc);
+            $cp->total_tusla = $totalTusla;
+            $cp->total_embalase = $totalEmbalase;
+        }
+
         $data = [
-            'title'         => 'Tebus e-Resep Pasien',
-            'active_menu'   => 'apotek-resep',
-            'prescriptions' => $prescriptions,
-            'details'       => $prescriptionDetails
+            'title'                  => 'Tebus e-Resep Pasien',
+            'active_menu'            => 'apotek-resep',
+            'prescriptions'          => $prescriptions,
+            'details'                => $prescriptionDetails,
+            'completedPrescriptions' => $completedPrescriptions
         ];
 
         return view('apotek/resep', $data);
@@ -118,7 +175,7 @@ class Apotek extends BaseController
 
     public function stok()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -430,7 +487,7 @@ class Apotek extends BaseController
 
     public function cetakEtiket($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // Query prescription either by prescription ID or visit ID
         $prescription = $db->table('prescriptions')
@@ -472,9 +529,242 @@ class Apotek extends BaseController
         return view('apotek/cetak_etiket', $data);
     }
 
+    /**
+     * AJAX Endpoint: Ambil rincian lengkap e-resep (Item obat, dosis, tusla, embalase, dan status bayar)
+     */
+    public function getPrescriptionDetailJson($id)
+    {
+        $db = \Config\Database::connect('default');
+        $prescription = $db->table('prescriptions')
+                           ->select('prescriptions.*, 
+                                     patient_visits.no_visit, 
+                                     patient_visits.visit_date,
+                                     patients.name as patient_name, 
+                                     patients.no_rm, 
+                                     patients.gender,
+                                     patients.date_of_birth,
+                                     patients.phone,
+                                     patients.address,
+                                     COALESCE(doctors.name, users.username, "Dokter Pemeriksa") as doctor_name,
+                                     COALESCE(bt.status, "open") as billing_status,
+                                     COALESCE(bt.billing_no, "-") as billing_no,
+                                     (CASE WHEN bt.status = "paid" THEN 1 ELSE 0 END) as is_paid,
+                                     bt.payment_method,
+                                     bt.id as billing_id,
+                                     bt.grand_total as billing_grand_total,
+                                     bt.total_medicines as billing_total_medicines,
+                                     ct.receipt_no')
+                           ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
+                           ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
+                           ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
+                           ->join('users', 'users.id = prescriptions.doctor_id', 'left')
+                           ->join('billing_transactions bt', 'bt.visit_id = prescriptions.visit_id', 'left')
+                           ->join('cash_transactions ct', 'ct.billing_id = bt.id', 'left')
+                           ->where('prescriptions.id', $id)
+                           ->get()
+                           ->getRow();
+
+        if (!$prescription) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Resep tidak ditemukan.']);
+        }
+
+        $details = $db->table('prescription_details')
+                      ->select('prescription_details.*, medicines.name as medicine_name, medicines.unit')
+                      ->join('medicines', 'medicines.id = prescription_details.medicine_id', 'left')
+                      ->where('prescription_id', $prescription->id)
+                      ->get()
+                      ->getResult();
+
+        $totalGross = 0; $totalTusla = 0; $totalEmbalase = 0; $totalDiscount = 0;
+        foreach ($details as &$d) {
+            $d->batches = $db->table('medicine_batches')
+                             ->where('medicine_id', $d->medicine_id)
+                             ->where('stock >', 0)
+                             ->orderBy('expired_date', 'ASC')
+                             ->get()
+                             ->getResult();
+
+            $d->subtotal = max(0, ($d->qty * $d->price) + ($d->tusla ?? 0) + ($d->embalase ?? 0) - ($d->discount ?? 0));
+            $totalGross += ($d->qty * $d->price);
+            $totalTusla += (float)($d->tusla ?? 0);
+            $totalEmbalase += (float)($d->embalase ?? 0);
+            $totalDiscount += (float)($d->discount ?? 0);
+        }
+
+        $grandTotal = max(0, $totalGross + $totalTusla + $totalEmbalase - $totalDiscount);
+
+        return $this->response->setJSON([
+            'status'         => 'success',
+            'prescription'   => $prescription,
+            'details'        => $details,
+            'summary'        => [
+                'total_gross'    => $totalGross,
+                'total_tusla'    => $totalTusla,
+                'total_embalase' => $totalEmbalase,
+                'total_discount' => $totalDiscount,
+                'grand_total'    => $grandTotal,
+            ]
+        ]);
+    }
+
+    /**
+     * Cetak Struk / Nota Termal e-Resep Pasien (Format 80mm / 58mm POS Printer)
+     */
+    public function cetakStrukResep($id)
+    {
+        $db = \Config\Database::connect('default');
+
+        $prescription = $db->table('prescriptions')
+                           ->select('prescriptions.*, 
+                                     patient_visits.no_visit, 
+                                     patient_visits.visit_date,
+                                     patients.name as patient_name, 
+                                     patients.no_rm, 
+                                     patients.date_of_birth,
+                                     patients.gender,
+                                     COALESCE(doctors.name, users.username, "Dokter Pemeriksa") as doctor_name,
+                                     COALESCE(bt.billing_no, "-") as billing_no,
+                                     COALESCE(bt.status, "open") as billing_status,
+                                     COALESCE(bt.payment_method, "tunai") as payment_method,
+                                     bt.grand_total as billing_grand_total,
+                                     bt.total_medicines as billing_total_medicines,
+                                     ct.receipt_no')
+                           ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
+                           ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
+                           ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
+                           ->join('users', 'users.id = prescriptions.doctor_id', 'left')
+                           ->join('billing_transactions bt', 'bt.visit_id = prescriptions.visit_id', 'left')
+                           ->join('cash_transactions ct', 'ct.billing_id = bt.id', 'left')
+                           ->where('prescriptions.id', $id)
+                           ->orWhere('prescriptions.visit_id', $id)
+                           ->get()
+                           ->getRow();
+
+        if (!$prescription) {
+            session()->setFlashdata('error', 'Data resep tidak ditemukan.');
+            return redirect()->to(base_url('apotek/resep'));
+        }
+
+        $details = $db->table('prescription_details')
+                      ->select('prescription_details.*, medicines.name as medicine_name, medicines.unit')
+                      ->join('medicines', 'medicines.id = prescription_details.medicine_id', 'left')
+                      ->where('prescription_id', $prescription->id)
+                      ->get()
+                      ->getResult();
+
+        $totalGross = 0; $totalTusla = 0; $totalEmbalase = 0; $totalDisc = 0;
+        foreach ($details as &$d) {
+            $d->subtotal = max(0, ($d->qty * $d->price) + ($d->tusla ?? 0) + ($d->embalase ?? 0) - ($d->discount ?? 0));
+            $totalGross += ($d->qty * $d->price);
+            $totalTusla += (float)($d->tusla ?? 0);
+            $totalEmbalase += (float)($d->embalase ?? 0);
+            $totalDisc += (float)($d->discount ?? 0);
+        }
+
+        $grandTotal = max(0, $totalGross + $totalTusla + $totalEmbalase - $totalDisc);
+
+        $data = [
+            'title'        => 'Struk e-Resep ' . ($prescription->patient_name ?? ''),
+            'prescription' => $prescription,
+            'details'      => $details,
+            'summary'      => [
+                'total_gross'    => $totalGross,
+                'total_tusla'    => $totalTusla,
+                'total_embalase' => $totalEmbalase,
+                'total_discount' => $totalDisc,
+                'grand_total'    => $grandTotal
+            ]
+        ];
+
+        return view('apotek/cetak_struk_resep', $data);
+    }
+
+    /**
+     * Cetak Kwitansi Resmi Pembayaran Resep Obat Pasien (Format Dokumen Resmi Siap Cetak A4 / Letter)
+     */
+    public function cetakKwitansiResep($id)
+    {
+        $db = \Config\Database::connect('default');
+
+        $prescription = $db->table('prescriptions')
+                           ->select('prescriptions.*, 
+                                     patient_visits.no_visit, 
+                                     patient_visits.visit_date,
+                                     patients.name as patient_name, 
+                                     patients.no_rm, 
+                                     patients.nik,
+                                     patients.phone,
+                                     patients.address,
+                                     patients.date_of_birth,
+                                     patients.gender,
+                                     polyclinics.name as poly_name,
+                                     COALESCE(doctors.name, users.username, "Dokter Pemeriksa") as doctor_name,
+                                     bt.id as billing_id,
+                                     COALESCE(bt.billing_no, "-") as billing_no,
+                                     COALESCE(bt.status, "open") as billing_status,
+                                     COALESCE(bt.payment_method, "tunai") as payment_method,
+                                     bt.grand_total as billing_grand_total,
+                                     bt.total_medicines as billing_total_medicines,
+                                     ct.receipt_no,
+                                     ct.amount as cash_amount,
+                                     ct.paid_amount,
+                                     ct.change_amount,
+                                     cashier.username as cashier_name')
+                           ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
+                           ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
+                           ->join('polyclinics', 'polyclinics.id = patient_visits.polyclinic_id', 'left')
+                           ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
+                           ->join('users', 'users.id = prescriptions.doctor_id', 'left')
+                           ->join('billing_transactions bt', 'bt.visit_id = prescriptions.visit_id', 'left')
+                           ->join('cash_transactions ct', 'ct.billing_id = bt.id', 'left')
+                           ->join('users cashier', 'cashier.id = ct.cashier_id', 'left')
+                           ->where('prescriptions.id', $id)
+                           ->orWhere('prescriptions.visit_id', $id)
+                           ->get()
+                           ->getRow();
+
+        if (!$prescription) {
+            session()->setFlashdata('error', 'Data resep tidak ditemukan.');
+            return redirect()->to(base_url('apotek/resep'));
+        }
+
+        $details = $db->table('prescription_details')
+                      ->select('prescription_details.*, medicines.name as medicine_name, medicines.unit')
+                      ->join('medicines', 'medicines.id = prescription_details.medicine_id', 'left')
+                      ->where('prescription_id', $prescription->id)
+                      ->get()
+                      ->getResult();
+
+        $totalGross = 0; $totalTusla = 0; $totalEmbalase = 0; $totalDisc = 0;
+        foreach ($details as &$d) {
+            $d->subtotal = max(0, ($d->qty * $d->price) + ($d->tusla ?? 0) + ($d->embalase ?? 0) - ($d->discount ?? 0));
+            $totalGross += ($d->qty * $d->price);
+            $totalTusla += (float)($d->tusla ?? 0);
+            $totalEmbalase += (float)($d->embalase ?? 0);
+            $totalDisc += (float)($d->discount ?? 0);
+        }
+
+        $grandTotal = max(0, $totalGross + $totalTusla + $totalEmbalase - $totalDisc);
+
+        $data = [
+            'title'        => 'Kwitansi Resep ' . ($prescription->patient_name ?? ''),
+            'prescription' => $prescription,
+            'details'      => $details,
+            'summary'      => [
+                'total_gross'    => $totalGross,
+                'total_tusla'    => $totalTusla,
+                'total_embalase' => $totalEmbalase,
+                'total_discount' => $totalDisc,
+                'grand_total'    => $grandTotal
+            ]
+        ];
+
+        return view('apotek/cetak_kwitansi_resep', $data);
+    }
+
     public function opname()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $notes = $this->request->getPost('notes');
@@ -630,7 +920,7 @@ class Apotek extends BaseController
 
     public function cetakOpname($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $opname = $db->table('stock_opnames')
                      ->select('stock_opnames.*, users.username as staff_name')
@@ -663,11 +953,13 @@ class Apotek extends BaseController
 
     public function laporan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
-        $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
-        $endDate   = $this->request->getGet('end_date') ?: date('Y-m-d');
-        $medFilter = $this->request->getGet('medicine_id');
+        $startDate   = $this->request->getGet('start_date') ?: date('Y-m-01');
+        $endDate     = $this->request->getGet('end_date') ?: date('Y-m-d');
+        $medFilter   = $this->request->getGet('medicine_id');
+        $doctorFilter= $this->request->getGet('doctor_id');
+        $saleType    = $this->request->getGet('sale_type'); // 'otc', 'resep', or empty=all
 
         // 1. Tab 1: Mutasi & Kartu Stok Obat
         $movementsBuilder = $db->table('stock_movements')
@@ -681,11 +973,10 @@ class Apotek extends BaseController
         if (!empty($medFilter)) {
             $movementsBuilder->where('stock_movements.medicine_id', $medFilter);
         }
-
         $movements = $movementsBuilder->orderBy('stock_movements.id', 'DESC')->get()->getResult();
 
-        // 2. Tab 2: Laporan Pemakaian & Penjualan Obat (Resep Terlayani)
-        $dispensed = $db->table('prescription_details')
+        // 2. Tab 2: Laporan Pemakaian & Penjualan Obat (Resep Terlayani dari Klinik)
+        $dispensedBuilder = $db->table('prescription_details')
                         ->select('prescription_details.*, 
                                   prescriptions.created_at as dispensed_date,
                                   medicines.code as medicine_code,
@@ -702,10 +993,12 @@ class Apotek extends BaseController
                         ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
                         ->where('DATE(prescriptions.created_at) >=', $startDate)
                         ->where('DATE(prescriptions.created_at) <=', $endDate)
-                        ->where('prescription_details.status', 'served')
-                        ->orderBy('prescriptions.id', 'DESC')
-                        ->get()
-                        ->getResult();
+                        ->where('prescription_details.status', 'served');
+
+        if (!empty($doctorFilter)) {
+            $dispensedBuilder->where('prescriptions.doctor_id', $doctorFilter);
+        }
+        $dispensed = $dispensedBuilder->orderBy('prescriptions.id', 'DESC')->get()->getResult();
 
         $totalDispensedQty = 0;
         $totalDispensedAmount = 0;
@@ -720,8 +1013,7 @@ class Apotek extends BaseController
                             ->join('medicines', 'medicines.id = medicine_batches.medicine_id')
                             ->where('medicine_batches.stock >', 0)
                             ->orderBy('medicine_batches.expired_date', 'ASC')
-                            ->get()
-                            ->getResult();
+                            ->get()->getResult();
 
         $criticalCount = 0;
         $warningCount = 0;
@@ -730,19 +1022,10 @@ class Apotek extends BaseController
             $expTimestamp = strtotime($eb->expired_date);
             $daysLeft = ceil(($expTimestamp - $now) / 86400);
             $eb->days_left = $daysLeft;
-
-            if ($daysLeft <= 0) {
-                $eb->risk_status = 'expired';
-                $criticalCount++;
-            } elseif ($daysLeft <= 30) {
-                $eb->risk_status = 'critical';
-                $criticalCount++;
-            } elseif ($daysLeft <= 90) {
-                $eb->risk_status = 'warning';
-                $warningCount++;
-            } else {
-                $eb->risk_status = 'safe';
-            }
+            if ($daysLeft <= 0)        { $eb->risk_status = 'expired';  $criticalCount++; }
+            elseif ($daysLeft <= 30)   { $eb->risk_status = 'critical'; $criticalCount++; }
+            elseif ($daysLeft <= 90)   { $eb->risk_status = 'warning';  $warningCount++;  }
+            else                       { $eb->risk_status = 'safe'; }
         }
 
         // 4. Tab 4: Top 10 Fast-Moving Medicines
@@ -752,11 +1035,57 @@ class Apotek extends BaseController
                            ->where('prescription_details.status', 'served')
                            ->groupBy('medicines.id')
                            ->orderBy('total_qty', 'DESC')
-                           ->limit(10)
-                           ->get()
-                           ->getResult();
+                           ->limit(10)->get()->getResult();
 
-        // Master Medicines List for dropdown filter
+        // 5. Tab 5: Penjualan Apotek OTC (pharmacy_sales) — dengan breakdown Tusla, Embalase, Fee Dokter
+        $otcSalesBuilder = $db->table('pharmacy_sales')
+                              ->select('pharmacy_sales.*, 
+                                        COALESCE(doctors.name, "") as doctor_name,
+                                        users.username as cashier_name')
+                              ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                              ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                              ->where('DATE(pharmacy_sales.created_at) >=', $startDate)
+                              ->where('DATE(pharmacy_sales.created_at) <=', $endDate);
+
+        if (!empty($saleType) && $saleType === 'otc') {
+            $otcSalesBuilder->where('pharmacy_sales.doctor_id IS NULL');
+        } elseif (!empty($saleType) && $saleType === 'resep') {
+            $otcSalesBuilder->where('pharmacy_sales.doctor_id IS NOT NULL');
+        }
+        if (!empty($doctorFilter)) {
+            $otcSalesBuilder->where('pharmacy_sales.doctor_id', $doctorFilter);
+        }
+
+        $otcSales = $otcSalesBuilder->orderBy('pharmacy_sales.id', 'DESC')->get()->getResult();
+
+        $otcSummary = [
+            'total_sales'    => 0,
+            'total_obat'     => 0,
+            'total_tusla'    => 0,
+            'total_embalase' => 0,
+            'total_discount' => 0,
+            'total_grand'    => 0,
+            'total_fee_doc'  => 0,
+            'count'          => count($otcSales),
+        ];
+        foreach ($otcSales as $os) {
+            $otcSummary['total_sales']    += (float)$os->total_amount;
+            $otcSummary['total_tusla']    += (float)($os->tusla_amount ?? 0);
+            $otcSummary['total_embalase'] += (float)($os->embalase_amount ?? 0);
+            $otcSummary['total_discount'] += (float)($os->discount_amount ?? 0);
+            $otcSummary['total_grand']    += (float)$os->grand_total;
+            // Estimate fee dokter 5% if has doctor
+            if (!empty($os->doctor_id)) {
+                $otcSummary['total_fee_doc'] += round((float)$os->total_amount * 0.05, 2);
+            }
+        }
+        $otcSummary['total_obat'] = $otcSummary['total_grand']
+                                  - $otcSummary['total_tusla']
+                                  - $otcSummary['total_embalase']
+                                  + $otcSummary['total_discount'];
+
+        // Doctors list for filter dropdown
+        $doctorsList   = $db->table('doctors')->where('status', 'active')->orderBy('name', 'ASC')->get()->getResult();
         $medicinesList = $db->table('medicines')->where('status', 'active')->orderBy('name', 'ASC')->get()->getResult();
 
         $data = [
@@ -765,6 +1094,8 @@ class Apotek extends BaseController
             'startDate'            => $startDate,
             'endDate'              => $endDate,
             'medFilter'            => $medFilter,
+            'doctorFilter'         => $doctorFilter,
+            'saleType'             => $saleType,
             'movements'            => $movements,
             'dispensed'            => $dispensed,
             'totalDispensedQty'    => $totalDispensedQty,
@@ -773,7 +1104,10 @@ class Apotek extends BaseController
             'criticalCount'        => $criticalCount,
             'warningCount'         => $warningCount,
             'topMedicines'         => $topMedicines,
-            'medicinesList'        => $medicinesList
+            'medicinesList'        => $medicinesList,
+            'doctorsList'          => $doctorsList,
+            'otcSales'             => $otcSales,
+            'otcSummary'           => $otcSummary,
         ];
 
         return view('apotek/laporan', $data);
@@ -781,7 +1115,7 @@ class Apotek extends BaseController
 
     public function cetakLaporan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $type      = $this->request->getGet('type') ?: 'pemakaian';
         $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
@@ -835,6 +1169,31 @@ class Apotek extends BaseController
                            ->getResult();
         }
 
+        // 5. OTC Pharmacy Sales Report
+        if ($type === 'penjualan_otc') {
+            $doctorFilter = $this->request->getGet('doctor_id');
+            $saleType     = $this->request->getGet('sale_type');
+
+            $reportTitle = 'Laporan Penjualan Apotek (OTC & Resep Langsung)';
+            $salesBuilder = $db->table('pharmacy_sales')
+                               ->select('pharmacy_sales.*, COALESCE(doctors.name, "Non-Resep / Umum") as doctor_name, users.username as cashier_name')
+                               ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                               ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                               ->where('DATE(pharmacy_sales.created_at) >=', $startDate)
+                               ->where('DATE(pharmacy_sales.created_at) <=', $endDate);
+
+            if (!empty($saleType) && $saleType === 'otc') {
+                $salesBuilder->where('pharmacy_sales.doctor_id IS NULL');
+            } elseif (!empty($saleType) && $saleType === 'resep') {
+                $salesBuilder->where('pharmacy_sales.doctor_id IS NOT NULL');
+            }
+            if (!empty($doctorFilter)) {
+                $salesBuilder->where('pharmacy_sales.doctor_id', $doctorFilter);
+            }
+
+            $dataRows = $salesBuilder->orderBy('pharmacy_sales.id', 'DESC')->get()->getResult();
+        }
+
         $data = [
             'title'       => $reportTitle,
             'reportType'  => $type,
@@ -846,29 +1205,139 @@ class Apotek extends BaseController
         return view('apotek/cetak_laporan', $data);
     }
 
+    public function exportPenjualanCsv()
+    {
+        $db = \Config\Database::connect('default');
+
+        $startDate    = $this->request->getGet('start_date') ?: date('Y-m-01');
+        $endDate      = $this->request->getGet('end_date') ?: date('Y-m-d');
+        $doctorFilter = $this->request->getGet('doctor_id');
+        $saleType     = $this->request->getGet('sale_type');
+
+        $salesBuilder = $db->table('pharmacy_sales')
+                           ->select('pharmacy_sales.*, COALESCE(doctors.name, "Non-Resep / Bebas") as doctor_name, users.username as cashier_name')
+                           ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                           ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                           ->where('DATE(pharmacy_sales.created_at) >=', $startDate)
+                           ->where('DATE(pharmacy_sales.created_at) <=', $endDate);
+
+        if (!empty($saleType) && $saleType === 'otc') {
+            $salesBuilder->where('pharmacy_sales.doctor_id IS NULL');
+        } elseif (!empty($saleType) && $saleType === 'resep') {
+            $salesBuilder->where('pharmacy_sales.doctor_id IS NOT NULL');
+        }
+        if (!empty($doctorFilter)) {
+            $salesBuilder->where('pharmacy_sales.doctor_id', $doctorFilter);
+        }
+
+        $sales = $salesBuilder->orderBy('pharmacy_sales.id', 'DESC')->get()->getResult();
+
+        $filename = 'Laporan_Penjualan_Apotek_' . $startDate . '_sd_' . $endDate . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+        // UTF-8 BOM for Excel compatibility
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        // Header Row
+        fputcsv($output, [
+            'No',
+            'No. Transaksi',
+            'Tanggal & Waktu',
+            'Nama Pembeli / Pasien',
+            'No. WhatsApp',
+            'Dokter Perujuk',
+            'Kasir / Petugas',
+            'Metode Pembayaran',
+            'Total Obat (Rp)',
+            'Tusla Jasa Racik (Rp)',
+            'Embalase Kemasan (Rp)',
+            'Diskon (Rp)',
+            'Grand Total (Rp)',
+            'Estimasi Fee Dokter 5% (Rp)',
+            'Status Pembayaran'
+        ]);
+
+        $no = 1;
+        foreach ($sales as $s) {
+            $totalObat = (float)$s->grand_total - (float)($s->tusla_amount ?? 0) - (float)($s->embalase_amount ?? 0) + (float)($s->discount_amount ?? 0);
+            $feeDokter = !empty($s->doctor_id) ? round((float)$s->total_amount * 0.05, 2) : 0;
+
+            fputcsv($output, [
+                $no++,
+                $s->sale_no,
+                date('d/m/Y H:i', strtotime($s->created_at)),
+                $s->customer_name ?: 'Pelanggan Umum',
+                $s->customer_phone ?: '-',
+                $s->doctor_name,
+                $s->cashier_name ?: 'Kasir',
+                $s->payment_method ?: 'Tunai',
+                $totalObat,
+                (float)($s->tusla_amount ?? 0),
+                (float)($s->embalase_amount ?? 0),
+                (float)($s->discount_amount ?? 0),
+                (float)$s->grand_total,
+                $feeDokter,
+                $s->payment_status ?: 'paid'
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+
     // =========================================================================
     // MODUL PENJUALAN OBAT BEBAS / NON-RESEP (WALK-IN OTC SALES)
     // =========================================================================
     public function penjualan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
-            $customerName  = $this->request->getPost('customer_name');
-            $customerPhone = $this->request->getPost('customer_phone');
-            $paymentMethod = $this->request->getPost('payment_method');
-            $paidAmount    = floatval($this->request->getPost('paid_amount'));
-            $notes         = $this->request->getPost('notes');
-            $rawItems      = $this->request->getPost('items'); // Array of items
+            $customerName     = $this->request->getPost('customer_name');
+            $customerPhone    = $this->request->getPost('customer_phone');
+            $paymentMethod    = $this->request->getPost('payment_method');
+            $paidAmount       = floatval($this->request->getPost('paid_amount'));
+            $notes            = $this->request->getPost('notes');
+            $rawDoctorId      = $this->request->getPost('doctor_id');
+            $doctorId         = null;
+            $doctorMode       = null;
+            if (!empty($rawDoctorId)) {
+                if (strpos($rawDoctorId, ':') !== false) {
+                    [$docIdPart, $docModePart] = explode(':', $rawDoctorId, 2);
+                    $doctorId = intval($docIdPart) ?: null;
+                    $doctorMode = $docModePart;
+                } else {
+                    $doctorId = intval($rawDoctorId) ?: null;
+                }
+            }
+
+            $prescriptionType = $this->request->getPost('prescription_type') ?: 'bebas';
+            if ($doctorMode === 'online') {
+                $prescriptionType = 'online';
+            }
+            $doctorFeeNominal = floatval($this->request->getPost('doctor_fee_nominal') ?: 0);
+            $tuslaAmount      = floatval($this->request->getPost('tusla_amount') ?: 0);
+            $embalaseAmount   = floatval($this->request->getPost('embalase_amount') ?: 0);
+            $rawItems         = $this->request->getPost('items'); // Array of items
 
             $payload = [
-                'customer_name'  => $customerName,
-                'customer_phone' => $customerPhone,
-                'payment_method' => $paymentMethod,
-                'paid_amount'    => $paidAmount,
-                'notes'          => $notes,
-                'cashier_id'     => session('user_id') ?: 1,
-                'items'          => $rawItems
+                'customer_name'      => $customerName,
+                'customer_phone'     => $customerPhone,
+                'payment_method'     => $paymentMethod,
+                'paid_amount'        => $paidAmount,
+                'doctor_id'          => $doctorId,
+                'doctor_fee_nominal' => $doctorFeeNominal,
+                'prescription_type'  => $prescriptionType,
+                'tusla_amount'       => $tuslaAmount,
+                'embalase_amount'    => $embalaseAmount,
+                'notes'              => $notes,
+                'cashier_id'         => session('user_id') ?: 1,
+                'items'              => $rawItems
             ];
 
             $res = $this->pharmacyService->processDirectSale($payload);
@@ -906,8 +1375,10 @@ class Apotek extends BaseController
 
         // Recent sales history
         $recentSales = $db->table('pharmacy_sales')
-                          ->select('pharmacy_sales.*, users.username as cashier_name')
+                          ->select('pharmacy_sales.*, users.username as cashier_name, doctors.name as doctor_name')
                           ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                          ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                          ->orderBy('pharmacy_sales.created_at', 'DESC')
                           ->orderBy('pharmacy_sales.id', 'DESC')
                           ->limit(50)
                           ->get()
@@ -926,32 +1397,232 @@ class Apotek extends BaseController
                        ->get()
                        ->getResult();
 
+        $doctors = $db->table('doctors')
+                      ->where('status', 'active')
+                      ->orderBy('name', 'ASC')
+                      ->get()
+                      ->getResult();
+
+        $activePending = $db->table('pharmacy_pending_prescriptions')
+                            ->where('status', 'pending')
+                            ->orderBy('id', 'DESC')
+                            ->get()
+                            ->getResult();
+
         $data = [
-            'title'          => 'Penjualan Obat Bebas (Non-Resep)',
+            'title'          => 'Penjualan Obat Bebas & Kasir Apotek',
             'active_menu'    => 'apotek-penjualan',
             'medicines'      => $medicines,
             'batchesMap'     => $batchesMap,
             'recentSales'    => $recentSales,
             'paymentMethods' => $paymentMethods,
-            'patients'       => $patients
+            'patients'       => $patients,
+            'doctors'        => $doctors,
+            'activePending'  => $activePending
         ];
 
         return view('apotek/penjualan_langsung', $data);
     }
 
-    public function cetakNota($saleId)
+    /**
+     * AJAX: Ambil Detail Rincian Item Penjualan Kasir Apotek
+     */
+    public function ajaxSaleDetail($saleId)
     {
-        $db = \Config\Database::connect();
-
+        $db = \Config\Database::connect('default');
         $sale = $db->table('pharmacy_sales')
-                   ->select('pharmacy_sales.*, users.username as cashier_name')
+                   ->select('pharmacy_sales.*, users.username as cashier_name, doctors.name as doctor_name')
                    ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                   ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
                    ->where('pharmacy_sales.id', $saleId)
                    ->get()
                    ->getRow();
 
         if (!$sale) {
-            return redirect()->to(base_url('apotek/penjualan'))->with('error', 'Nota penjualan obat bebas tidak ditemukan.');
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Data penjualan tidak ditemukan.']);
+        }
+
+        $items = $db->table('pharmacy_sale_details')
+                    ->select('pharmacy_sale_details.*, medicines.name as medicine_name, medicines.unit, medicine_batches.batch_no')
+                    ->join('medicines', 'medicines.id = pharmacy_sale_details.medicine_id', 'left')
+                    ->join('medicine_batches', 'medicine_batches.id = pharmacy_sale_details.batch_id', 'left')
+                    ->where('pharmacy_sale_details.sale_id', $saleId)
+                    ->get()
+                    ->getResult();
+
+        // Cari jurnal umum terkait
+        $journal = $db->table('journal_entries')
+                      ->where('reference_id', $saleId)
+                      ->like('source_module', 'Apotek')
+                      ->get()
+                      ->getRow();
+
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'sale'    => $sale,
+            'items'   => $items,
+            'journal' => $journal
+        ]);
+    }
+
+    /**
+     * AJAX: Simpan Draf Resep / Hold Cart Sementara (Pending Resep)
+     */
+    public function ajaxPendingSave()
+    {
+        $db = \Config\Database::connect('default');
+        $customerName   = trim($this->request->getPost('customer_name') ?: 'Pelanggan Umum');
+        $customerPhone  = trim($this->request->getPost('customer_phone') ?: '');
+        $patientId      = $this->request->getPost('patient_id') ?: null;
+        $doctorId       = $this->request->getPost('doctor_id') ?: null;
+        $sourceType     = $this->request->getPost('source_type') ?: 'otc';
+        $notes          = trim($this->request->getPost('notes') ?: '');
+        $tuslaAmount    = floatval($this->request->getPost('tusla_amount') ?: 0);
+        $embalaseAmount = floatval($this->request->getPost('embalase_amount') ?: 0);
+        $totalAmount    = floatval($this->request->getPost('total_amount') ?: 0);
+        $itemsJson      = $this->request->getPost('items_json');
+
+        $pendingNo = 'PND-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
+
+        $db->table('pharmacy_pending_prescriptions')->insert([
+            'pending_no'      => $pendingNo,
+            'customer_name'   => $customerName,
+            'customer_phone'  => $customerPhone,
+            'patient_id'      => $patientId,
+            'doctor_id'       => $doctorId,
+            'source_type'     => $sourceType,
+            'payload_json'    => is_string($itemsJson) ? $itemsJson : json_encode($itemsJson),
+            'total_amount'    => $totalAmount,
+            'tusla_amount'    => $tuslaAmount,
+            'embalase_amount' => $embalaseAmount,
+            'status'          => 'pending',
+            'cashier_id'      => session('user_id') ?: 1,
+            'notes'           => $notes,
+            'created_at'      => date('Y-m-d H:i:s'),
+            'updated_at'      => date('Y-m-d H:i:s')
+        ]);
+
+        return $this->response->setJSON([
+            'status'     => 'success',
+            'pending_id' => $db->insertID(),
+            'pending_no' => $pendingNo,
+            'message'    => "Resep/transaksi berhasil ditahan sementara (No. Pending: {$pendingNo}). Antrean kasir dapat dilanjutkan."
+        ]);
+    }
+
+    /**
+     * AJAX: Ambil Daftar Resep Tertunda (Pending)
+     */
+    public function ajaxPendingList()
+    {
+        $db = \Config\Database::connect('default');
+        $rows = $db->table('pharmacy_pending_prescriptions')
+                   ->where('status', 'pending')
+                   ->orderBy('id', 'DESC')
+                   ->get()
+                   ->getResult();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data'   => $rows
+        ]);
+    }
+
+    /**
+     * AJAX: Buka Kembali Resep Tertunda (Resume Pending)
+     */
+    public function ajaxPendingResume($id)
+    {
+        $db = \Config\Database::connect('default');
+        $row = $db->table('pharmacy_pending_prescriptions')->where('id', $id)->get()->getRow();
+        if (!$row) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Draf resep pending tidak ditemukan.']);
+        }
+
+        $items = json_decode($row->payload_json, true) ?: [];
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data'   => $row,
+            'items'  => $items
+        ]);
+    }
+
+    /**
+     * AJAX: Batalkan / Hapus Resep Tertunda
+     */
+    public function ajaxPendingDelete($id)
+    {
+        $db = \Config\Database::connect('default');
+        $db->table('pharmacy_pending_prescriptions')->where('id', $id)->update([
+            'status'     => 'cancelled',
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Resep pending berhasil dibatalkan.'
+        ]);
+    }
+
+    /**
+     * AJAX: Ambil Resep Sebelumnya (Repeat Prescription / History Copy)
+     */
+    public function ajaxPastPrescriptions()
+    {
+        $db = \Config\Database::connect('default');
+        $query = trim($this->request->getGet('q') ?? '');
+        $patientId = intval($this->request->getGet('patient_id') ?? 0);
+
+        $builder = $db->table('prescriptions p')
+                      ->select('p.id as presc_id, p.created_at, p.tusla_amount, p.embalase_amount,
+                                pv.no_visit, pt.id as patient_id, pt.name as patient_name, pt.no_rm,
+                                d.id as doctor_id, COALESCE(d.name, "Dokter Pemeriksa") as doctor_name')
+                      ->join('patient_visits pv', 'pv.id = p.visit_id', 'left')
+                      ->join('patients pt', 'pt.id = pv.patient_id', 'left')
+                      ->join('doctors d', 'd.id = p.doctor_id', 'left');
+
+        if ($patientId > 0) {
+            $builder->where('pt.id', $patientId);
+        } elseif (!empty($query)) {
+            $builder->groupStart()
+                    ->like('pt.name', $query)
+                    ->orLike('pt.no_rm', $query)
+                    ->orLike('pv.no_visit', $query)
+                    ->groupEnd();
+        }
+        $prescriptions = $builder->orderBy('p.id', 'DESC')->limit(25)->get()->getResult();
+
+        foreach ($prescriptions as &$p) {
+            $items = $db->table('prescription_details pd')
+                        ->select('pd.*, m.name as medicine_name, m.code as medicine_code, m.price, m.unit')
+                        ->join('medicines m', 'm.id = pd.medicine_id', 'left')
+                        ->where('pd.prescription_id', $p->presc_id)
+                        ->get()
+                        ->getResult();
+            $p->items = $items;
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data'   => $prescriptions
+        ]);
+    }
+
+    public function cetakNota($saleId)
+    {
+        $db = \Config\Database::connect('default');
+
+        $sale = $db->table('pharmacy_sales')
+                   ->select('pharmacy_sales.*, users.username as cashier_name, doctors.name as doctor_name')
+                   ->join('users', 'users.id = pharmacy_sales.cashier_id', 'left')
+                   ->join('doctors', 'doctors.id = pharmacy_sales.doctor_id', 'left')
+                   ->where('pharmacy_sales.id', $saleId)
+                   ->get()
+                   ->getRow();
+
+        if (!$sale) {
+            return redirect()->to(base_url('apotek/penjualan'))->with('error', 'Nota penjualan obat tidak ditemukan.');
         }
 
         $items = $db->table('pharmacy_sale_details')
@@ -963,7 +1634,7 @@ class Apotek extends BaseController
                     ->getResult();
 
         $data = [
-            'title' => 'Nota Penjualan Obat Bebas - ' . $sale->sale_no,
+            'title' => 'Nota Penjualan Obat - ' . $sale->sale_no,
             'sale'  => $sale,
             'items' => $items
         ];
@@ -976,7 +1647,7 @@ class Apotek extends BaseController
     // =========================================================================
     public function kartuStok()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         
         $medicines = $db->table('medicines')
                         ->select('medicines.*, COALESCE(SUM(medicine_batches.stock), 0) as stock')
@@ -1141,7 +1812,7 @@ class Apotek extends BaseController
      */
     public function gudang()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         // 1. List all warehouses
         $warehouses = $db->table('pharmacy_warehouses')->orderBy('id', 'ASC')->get()->getResult();
@@ -1233,7 +1904,7 @@ class Apotek extends BaseController
      */
     public function transferStok()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $sourceWhId = intval($this->request->getPost('source_warehouse_id'));
         $targetWhId = intval($this->request->getPost('target_warehouse_id'));
@@ -1370,7 +2041,7 @@ class Apotek extends BaseController
      */
     public function cetakSuratMutasi($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $transfer = $db->table('stock_transfers')
                        ->select('stock_transfers.*, 
@@ -1415,7 +2086,7 @@ class Apotek extends BaseController
      */
     public function getWarehouseStockJson($warehouseId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $stocks = $db->table('warehouse_stock')
                      ->select('warehouse_stock.*, 
                                medicines.name as medicine_name, 

@@ -11,7 +11,7 @@ class HRD extends BaseController
      */
     public function pegawai()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -137,7 +137,7 @@ class HRD extends BaseController
      */
     public function generatePayroll()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $month       = intval($this->request->getPost('period_month') ?: date('n'));
         $year        = intval($this->request->getPost('period_year') ?: date('Y'));
@@ -266,7 +266,7 @@ class HRD extends BaseController
      */
     public function bayarPayroll()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $payrollId = intval($this->request->getPost('payroll_id'));
         $payroll = $db->table('payrolls')->where('id', $payrollId)->get()->getRow();
@@ -351,7 +351,7 @@ class HRD extends BaseController
      */
     public function cetakSlipGaji($itemId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $item = $db->table('payroll_items')
                    ->select('payroll_items.*, employees.name as employee_name, employees.nip, employees.position, employees.department,
@@ -381,7 +381,7 @@ class HRD extends BaseController
      */
     public function cetakRekapPayroll($payrollId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $payroll = $db->table('payrolls')->where('id', $payrollId)->get()->getRow();
         if (!$payroll) {
@@ -411,7 +411,7 @@ class HRD extends BaseController
      */
     public function getPegawaiJson($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $emp = $db->table('employees')->where('id', $id)->get()->getRow();
         if (!$emp) {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Pegawai tidak ditemukan']);
@@ -424,7 +424,7 @@ class HRD extends BaseController
      */
     public function absensi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $filterDate = $this->request->getGet('date') ?: date('Y-m-d');
         $filterDept = $this->request->getGet('department') ?: '';
@@ -519,7 +519,7 @@ class HRD extends BaseController
      */
     public function checkIn()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $employeeId = intval($this->request->getPost('employee_id'));
         $shiftId    = intval($this->request->getPost('shift_id'));
@@ -590,7 +590,7 @@ class HRD extends BaseController
      */
     public function checkOut()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $employeeId = intval($this->request->getPost('employee_id'));
         $date       = $this->request->getPost('date') ?: date('Y-m-d');
@@ -641,7 +641,7 @@ class HRD extends BaseController
      */
     public function ajukanCuti()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $employeeId = intval($this->request->getPost('employee_id'));
         $leaveType  = $this->request->getPost('leave_type') ?: 'izin';
@@ -673,7 +673,7 @@ class HRD extends BaseController
      */
     public function approvalCuti()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $leaveId = intval($this->request->getPost('leave_id'));
         $action  = $this->request->getPost('action'); // approve / reject
@@ -750,7 +750,7 @@ class HRD extends BaseController
      */
     public function manageShift()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $shiftId   = intval($this->request->getPost('shift_id'));
         $shiftCode = trim($this->request->getPost('shift_code'));
@@ -789,7 +789,7 @@ class HRD extends BaseController
      */
     public function cetakRekapAbsensi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $month = intval($this->request->getGet('month') ?: date('n'));
         $year  = intval($this->request->getGet('year') ?: date('Y'));
@@ -828,7 +828,7 @@ class HRD extends BaseController
     // =========================================================================
     public function kpi()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $selectedMonth = $this->request->getGet('month') ?: date('Y-m');
 
         // 1. Doctor KPI: Patients examined, prescriptions issued, estimated fee

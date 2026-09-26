@@ -16,12 +16,12 @@ class Klinik extends BaseController
 
     public function pendaftaran()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
 
-            if ($action === 'create_patient') {
+            if ($action === 'create_patient' || $action === 'register_patient') {
                 $patientData = [
                     'nik'           => $this->request->getPost('nik'),
                     'name'          => $this->request->getPost('name'),
@@ -99,13 +99,26 @@ class Klinik extends BaseController
                 $polyclinicId = $this->request->getPost('polyclinic_id');
                 $doctorId = $this->request->getPost('doctor_id');
                 $serviceId = $this->request->getPost('service_id');
-                $paymentMethod = $this->request->getPost('payment_method');
+                $paymentMethod = $this->request->getPost('payment_method') ?: 'umum';
                 $roomId = $this->request->getPost('room_id') ?: null;
                 $insuranceId = $this->request->getPost('insurance_id') ?: null;
+                $complaint = $this->request->getPost('complaint');
+                $bpjsNumber = trim((string)$this->request->getPost('bpjs_number'));
 
-                $res = $this->clinicService->createVisit($patientId, $polyclinicId, $doctorId, $paymentMethod, $visitType, $serviceId, $roomId, $insuranceId);
+                if (!$patientId) {
+                    session()->setFlashdata('error', 'Data Pasien belum dipilih. Silakan pilih atau cari pasien terlebih dahulu.');
+                    return redirect()->to(base_url('klinik/pendaftaran'));
+                }
+
+                $res = $this->clinicService->createVisit($patientId, $polyclinicId, $doctorId, $paymentMethod, $visitType, $serviceId, $roomId, $insuranceId, $complaint);
                 if ($res['status'] === 'success') {
+                    // Update nomor BPJS pasien jika diisi
+                    if ($paymentMethod === 'bpjs' && !empty($bpjsNumber)) {
+                        $db->table('patients')->where('id', $patientId)->update(['bpjs_number' => $bpjsNumber]);
+                    }
+
                     session()->setFlashdata('success', $res['message'] . ' No Antrean: ' . $res['queue_no'] . ' (' . $res['no_visit'] . ')');
+                    session()->setFlashdata('visit_ticket', $res);
                 } else {
                     session()->setFlashdata('error', $res['message']);
                 }
@@ -159,6 +172,9 @@ class Klinik extends BaseController
                                     data-id="' . $p->id . '" 
                                     data-name="' . esc($p->name) . '" 
                                     data-rm="' . esc($p->no_rm) . '" 
+                                    data-nik="' . esc($p->nik ?? '') . '" 
+                                    data-phone="' . esc($p->phone ?? '') . '" 
+                                    data-tier="' . esc($p->membership_tier ?? 'regular') . '" 
                                     data-bpjs="' . esc($p->bpjs_number ?? '') . '"
                                     data-insurance="' . esc($p->insurance_provider_id ?? '') . '"
                                     data-toggle="modal" 
@@ -321,11 +337,45 @@ class Klinik extends BaseController
     }
 
     /**
+     * AJAX Live Search Pasien untuk Form Cepat / Registrasi Kunjungan
+     */
+    public function searchPatientsAjax()
+    {
+        $db = \Config\Database::connect('default');
+        $q = trim((string)$this->request->getGet('q'));
+
+        if (strlen($q) < 1) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data'   => []
+            ]);
+        }
+
+        $patients = $db->table('patients')
+                       ->select('id, no_rm, nik, name, gender, phone, address, bpjs_number, membership_tier, insurance_provider_id')
+                       ->groupStart()
+                           ->like('name', $q)
+                           ->orLike('no_rm', $q)
+                           ->orLike('nik', $q)
+                           ->orLike('phone', $q)
+                       ->groupEnd()
+                       ->orderBy('id', 'DESC')
+                       ->limit(20)
+                       ->get()
+                       ->getResult();
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'data'   => $patients
+        ]);
+    }
+
+    /**
      * Manajemen Antrean Pasien Rawat Jalan & Tindakan Medis
      */
     public function antrean()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -561,7 +611,7 @@ class Klinik extends BaseController
 
     public function soap()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -641,6 +691,34 @@ class Klinik extends BaseController
                         ]);
                     }
 
+                    // Sinkronisasi TTV Otomatis (Jika Dokter Mengisi TTV Langsung)
+                    $bp = $this->request->getPost('blood_pressure');
+                    $temp = $this->request->getPost('temperature');
+                    $pulse = $this->request->getPost('pulse');
+                    $resp = $this->request->getPost('respiration');
+                    $weight = $this->request->getPost('weight');
+                    $height = $this->request->getPost('height');
+
+                    if (!empty($bp) || !empty($temp) || !empty($pulse) || !empty($resp) || !empty($weight) || !empty($height)) {
+                        $existingTriage = $db->table('triage_records')->where('visit_id', $visitId)->get()->getRow();
+                        $triageUpdate = [];
+                        if ($bp !== null && $bp !== '') $triageUpdate['blood_pressure'] = $bp;
+                        if ($temp !== null && $temp !== '') $triageUpdate['temperature'] = $temp;
+                        if ($pulse !== null && $pulse !== '') $triageUpdate['pulse'] = $pulse;
+                        if ($resp !== null && $resp !== '') $triageUpdate['respiration'] = $resp;
+                        if ($weight !== null && $weight !== '') $triageUpdate['weight'] = $weight;
+                        if ($height !== null && $height !== '') $triageUpdate['height'] = $height;
+
+                        if (!empty($triageUpdate)) {
+                            if ($existingTriage) {
+                                $db->table('triage_records')->where('visit_id', $visitId)->update($triageUpdate);
+                            } else {
+                                $triageUpdate['visit_id'] = $visitId;
+                                $db->table('triage_records')->insert($triageUpdate);
+                            }
+                        }
+                    }
+
                     // 1. Pastikan transaksi billing (billing_transactions) SELALU ada untuk visit ini
                     $bill = $db->table('billing_transactions')->where('visit_id', $visitId)->get()->getRow();
                     if (!$bill) {
@@ -683,9 +761,14 @@ class Klinik extends BaseController
                     if ($hasMedisDetail == 0) {
                         $visitObj = $db->table('patient_visits')->where('id', $visitId)->get()->getRow();
                         $polyObj  = $visitObj ? $db->table('polyclinics')->where('id', $visitObj->polyclinic_id)->get()->getRow() : null;
-                        $polyName = $polyObj ? $polyObj->name : 'Poli';
+                        $polyName = $polyObj ? trim($polyObj->name) : 'Poli';
+                        if ($polyName === 'Tindakan Saja' || stripos($polyName, 'Tindakan') !== false) {
+                            $serviceItemName = 'Konsultasi & Tindakan Medis Dokter';
+                        } else {
+                            $serviceItemName = 'Konsultasi & Pemeriksaan ' . $polyName;
+                        }
                         
-                        $consultPrice = 50000;
+                        $consultPrice = 150000;
                         $consultSvc = $db->table('services')
                                          ->select('services.id, services.name, service_prices.price')
                                          ->join('service_prices', 'service_prices.service_id = services.id')
@@ -700,7 +783,7 @@ class Klinik extends BaseController
                         $db->table('billing_details')->insert([
                             'billing_id' => $bill->id,
                             'item_type'  => 'medis',
-                            'item_name'  => 'Konsultasi & Pemeriksaan ' . $polyName,
+                            'item_name'  => $serviceItemName,
                             'qty'        => 1,
                             'price'      => $consultPrice,
                             'discount'   => 0.00,
@@ -1160,7 +1243,7 @@ class Klinik extends BaseController
      */
     public function kartuPasien($patientId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $patient = $db->table('patients')->where('id', $patientId)->get()->getRow();
         if (!$patient) {
             session()->setFlashdata('error', 'Data pasien tidak ditemukan.');
@@ -1181,7 +1264,7 @@ class Klinik extends BaseController
      */
     public function getPatientRmeHistoryJson($patientId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $patient = $db->table('patients')->where('id', $patientId)->get()->getRow();
         if (!$patient) {
@@ -1294,7 +1377,7 @@ class Klinik extends BaseController
             // Diagnosa ICD-10 deskripsi
             if (!empty($v->icd10_code)) {
                 $icd10 = $db->table('master_icd10')->where('code', $v->icd10_code)->get()->getRow();
-                $v->icd10_desc = $icd10 ? $icd10->description_id : '';
+                $v->icd10_desc = $icd10 ? ($icd10->name_id ?? $icd10->name_en ?? '') : '';
             } else {
                 $v->icd10_desc = '';
             }
@@ -1302,13 +1385,16 @@ class Klinik extends BaseController
             // Prosedur ICD-9 deskripsi
             if (!empty($v->icd9_code)) {
                 $icd9 = $db->table('master_icd9')->where('code', $v->icd9_code)->get()->getRow();
-                $v->icd9_desc = $icd9 ? $icd9->description_id : '';
+                $v->icd9_desc = $icd9 ? ($icd9->name_id ?? $icd9->name_en ?? '') : '';
             } else {
                 $v->icd9_desc = '';
             }
 
             // Billing Kasir
             $bill = $db->table('billing_transactions')->where('visit_id', $v->id)->get()->getRow();
+            if ($bill) {
+                $bill->is_paid = ($bill->status === 'paid') ? 1 : 0;
+            }
             $v->billing = $bill;
         }
 
@@ -1377,7 +1463,7 @@ class Klinik extends BaseController
      */
     public function detailPasien($patientId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $patient = $db->table('patients')->where('id', $patientId)->get()->getRow();
 
         if (!$patient) {
@@ -1452,7 +1538,7 @@ class Klinik extends BaseController
      */
     public function saveInformedConsent()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $patientId = $this->request->getPost('patient_id');
         $visitId   = $this->request->getPost('visit_id') ?: null;
         $doctorId  = $this->request->getPost('doctor_id') ?: null;
@@ -1496,7 +1582,7 @@ class Klinik extends BaseController
      */
     public function deleteInformedConsent($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $db->table('medical_informed_consents')->where('id', $id)->delete();
         return $this->response->setJSON(['status' => 'success', 'message' => 'Dokumen persetujuan tindakan berhasil dihapus']);
     }
@@ -1506,7 +1592,7 @@ class Klinik extends BaseController
      */
     public function cetakInformedConsent($consentId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $consent = $db->table('medical_informed_consents')
                       ->select('medical_informed_consents.*, patients.name as patient_name, patients.no_rm, patients.nik, patients.gender, patients.date_of_birth, patients.address, patients.phone, doctors.name as doctor_name,
                                 doctors.sip_number as doctor_sip,
@@ -1546,7 +1632,7 @@ class Klinik extends BaseController
      */
     public function saveMedicalPhoto()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $patientId = $this->request->getPost('patient_id');
         $visitId   = $this->request->getPost('visit_id') ?: null;
         $category  = $this->request->getPost('category') ?: 'before';
@@ -1616,7 +1702,7 @@ class Klinik extends BaseController
      */
     public function deleteMedicalPhoto($id)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $row = $db->table('medical_photos')->where('id', $id)->get()->getRow();
         if ($row && !empty($row->photo_path) && file_exists(FCPATH . $row->photo_path)) {
             @unlink(FCPATH . $row->photo_path);
@@ -1630,7 +1716,7 @@ class Klinik extends BaseController
      */
     public function cetakRingkasanRme($patientId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $patient = $db->table('patients')->where('id', $patientId)->get()->getRow();
         if (!$patient) {
             session()->setFlashdata('error', 'Data pasien tidak ditemukan.');
@@ -1691,7 +1777,7 @@ class Klinik extends BaseController
 
             if (!empty($v->icd10_code)) {
                 $icd = $db->table('master_icd10')->where('code', $v->icd10_code)->get()->getRow();
-                $v->icd10_desc = $icd ? $icd->description_id : '';
+                $v->icd10_desc = $icd ? ($icd->name_id ?? $icd->name_en ?? '') : '';
             } else {
                 $v->icd10_desc = '';
             }
@@ -1731,7 +1817,7 @@ class Klinik extends BaseController
      */
     public function exportPasienExcel()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $builder = $db->table('patients');
 
@@ -1838,7 +1924,7 @@ class Klinik extends BaseController
      */
     public function cetakLaporanPasien()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $builder = $db->table('patients');
 
@@ -1899,7 +1985,7 @@ class Klinik extends BaseController
     // =========================================================================
     public function surat()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -2020,7 +2106,7 @@ class Klinik extends BaseController
 
     public function cetakSurat($letterId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $letter = $db->table('medical_letters')
                      ->select('medical_letters.*, 
@@ -2063,7 +2149,7 @@ class Klinik extends BaseController
     // =========================================================================
     public function lab()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         if (strtolower($this->request->getMethod()) === 'post') {
             $action = $this->request->getPost('action');
@@ -2166,7 +2252,7 @@ class Klinik extends BaseController
 
     public function cetakLab($labId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $lab = $db->table('lab_results')
                   ->select('lab_results.*, 
@@ -2205,7 +2291,7 @@ class Klinik extends BaseController
     // =========================================================================
     public function display()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $polyclinics = $db->table('polyclinics')
                           ->where('status', 'active')
@@ -2256,7 +2342,7 @@ class Klinik extends BaseController
      */
     public function saveTvMedia()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $mediaType = $this->request->getPost('media_type') ?: 'slideshow';
         $youtubeId = trim((string)$this->request->getPost('youtube_id'));
         $videoUrl  = trim((string)$this->request->getPost('video_url'));
@@ -2324,7 +2410,7 @@ class Klinik extends BaseController
      */
     public function kiosk()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $polyclinics = $db->table('polikliniks')->where('status', 'active')->orderBy('id', 'ASC')->get()->getResult();
         $doctors = $db->table('doctors')->where('status', 'active')->orderBy('id', 'ASC')->get()->getResult();
@@ -2363,7 +2449,7 @@ class Klinik extends BaseController
      */
     public function kioskCheckPatient()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $rawKeyword = trim((string)$this->request->getPost('keyword'));
 
         if (empty($rawKeyword)) {
@@ -2505,7 +2591,7 @@ class Klinik extends BaseController
      */
     public function kioskRegisterVisit()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $patientId     = (int)$this->request->getPost('patient_id');
         $visitType     = $this->request->getPost('visit_type') ?: 'poli';
@@ -2591,7 +2677,7 @@ class Klinik extends BaseController
      */
     public function kioskRegisterNewPatient()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $patientData = [
             'nik'             => trim((string)$this->request->getPost('nik')),
@@ -2691,7 +2777,7 @@ class Klinik extends BaseController
     // =========================================================================
     public function laporan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
         $endDate   = $this->request->getGet('end_date') ?: date('Y-m-d');
@@ -2939,7 +3025,7 @@ class Klinik extends BaseController
 
     public function cetakLaporan()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
 
         $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
         $endDate   = $this->request->getGet('end_date') ?: date('Y-m-d');
@@ -3127,7 +3213,7 @@ class Klinik extends BaseController
     // =========================================================================
     public function saveOdontogram()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         
         $patientId = $this->request->getPost('patient_id');
         $visitId   = $this->request->getPost('visit_id') ?: null;
@@ -3182,7 +3268,7 @@ class Klinik extends BaseController
 
     public function getOdontogramJson($patientId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $records = $db->table('odontograms')
                       ->where('patient_id', $patientId)
                       ->get()
@@ -3214,7 +3300,7 @@ class Klinik extends BaseController
      */
     private function processDeleteQueue(int $queueId)
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         
         // Cari data antrean beserta metadata pasien & kunjungan
         $queue = $db->table('queue_numbers')
@@ -3354,7 +3440,7 @@ class Klinik extends BaseController
      */
     public function toggleOnlineRegistration()
     {
-        $db = \Config\Database::connect();
+        $db = \Config\Database::connect('default');
         $newStatus = $this->request->getPost('status') === 'true' ? 'true' : 'false';
 
         $exists = $db->table('system_settings')->where('setting_key', 'online_registration_active')->countAllResults();
@@ -3373,6 +3459,114 @@ class Klinik extends BaseController
         session()->setFlashdata('success', "Status pendaftaran online publik berhasil {$statusText}.");
 
         return redirect()->back();
+    }
+
+    /**
+     * Universal macOS Spotlight Global Search (Pasien & Fitur Sistem)
+     * POST api/spotlight-search
+     */
+    public function spotlightSearch()
+    {
+        $db = \Config\Database::connect('default');
+        $rawKeyword = trim((string)($this->request->getPost('keyword') ?: $this->request->getGet('keyword') ?: ($this->request->getJSON(true)['keyword'] ?? '')));
+
+        if (empty($rawKeyword) || strlen($rawKeyword) < 2) {
+            return $this->response->setJSON([
+                'status'   => 'success',
+                'patients' => [],
+                'menus'    => []
+            ]);
+        }
+
+        // 1. Parsing jika hasil scan QR berformat: SAWAMAWA|RM-000001|Nama|NIK
+        $keyword = $rawKeyword;
+        if (str_contains($rawKeyword, '|')) {
+            $parts = explode('|', $rawKeyword);
+            $keyword = trim($parts[1] ?? $parts[0]);
+        }
+
+        $cleanDigits = preg_replace('/[^0-9]/', '', $keyword);
+        $possibleRms = [$keyword];
+        if (!empty($cleanDigits) && strlen($cleanDigits) <= 6) {
+            $possibleRms[] = 'RM-' . str_pad($cleanDigits, 6, '0', STR_PAD_LEFT);
+            $possibleRms[] = 'RM' . str_pad($cleanDigits, 6, '0', STR_PAD_LEFT);
+            $possibleRms[] = str_pad($cleanDigits, 6, '0', STR_PAD_LEFT);
+        }
+
+        // Cari Pasien (Exact Match prioritized, then LIKE Match)
+        $patients = $db->table('patients')
+                       ->groupStart()
+                           ->whereIn('no_rm', $possibleRms)
+                           ->orLike('name', $keyword)
+                           ->orLike('no_rm', $keyword)
+                           ->orLike('nik', $keyword)
+                           ->orLike('phone', $keyword)
+                       ->groupEnd()
+                       ->limit(8)
+                       ->get()
+                       ->getResult();
+
+        $patientResults = [];
+        foreach ($patients as $p) {
+            $dob = $p->date_of_birth ? date('d/m/Y', strtotime($p->date_of_birth)) : '-';
+            $age = $p->date_of_birth ? (date('Y') - date('Y', strtotime($p->date_of_birth))) : 0;
+            $patientResults[] = [
+                'id'       => $p->id,
+                'no_rm'    => $p->no_rm,
+                'name'     => $p->name,
+                'nik'      => $p->nik ?: '-',
+                'gender'   => strtoupper($p->gender ?? 'L'),
+                'dob'      => $dob,
+                'age'      => $age,
+                'phone'    => $p->phone ?: '-',
+                'address'  => $p->address ?: '-',
+                'soap_url' => base_url('klinik/soap?patient_id=' . $p->id),
+                'pendaftaran_url' => base_url('klinik/pendaftaran?search=' . urlencode($p->no_rm)),
+                'resep_url' => base_url('apotek/resep?patient_id=' . $p->id),
+                'kasir_url' => base_url('keuangan/kasir?patient_id=' . $p->id),
+                'kartu_url' => base_url('klinik/kartu-pasien/' . $p->id)
+            ];
+        }
+
+        // 2. Cari Navigasi Menu / Fitur Sistem
+        $allMenus = [
+            ['title' => 'Pendaftaran & Antrean Pasien', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/pendaftaran'), 'icon' => 'fa-user-plus', 'tags' => 'daftar antrean registrasi pasien baru rujukan'],
+            ['title' => 'RME SOAP & Rekam Medis', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/soap'), 'icon' => 'fa-notes-medical', 'tags' => 'soap rme rekam medis diagnosa icd anamnesa resep dokter'],
+            ['title' => 'Pemeriksaan Laboratorium', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/lab'), 'icon' => 'fa-flask', 'tags' => 'lab darah urine tes laboratorium specimen'],
+            ['title' => 'Surat Sakit & Rujukan', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/surat'), 'icon' => 'fa-file-medical', 'tags' => 'surat sehat surat sakit rujukan rs'],
+            ['title' => 'Pelayanan E-Resep Obat', 'module' => 'Farmasi & Apotek', 'url' => base_url('apotek/resep'), 'icon' => 'fa-file-prescription', 'tags' => 'resep racikan obat farmasi apotek dispensing'],
+            ['title' => 'Kasir Apotek (OTC Bebas)', 'module' => 'Farmasi & Apotek', 'url' => base_url('apotek/penjualan'), 'icon' => 'fa-cart-shopping', 'tags' => 'kasir obat bebas otc apotek penjualan langsung nota'],
+            ['title' => 'Stok Obat & FEFO', 'module' => 'Farmasi & Apotek', 'url' => base_url('apotek/stok'), 'icon' => 'fa-pills', 'tags' => 'stok obat fefo exp expired batch harga obat'],
+            ['title' => 'Gudang & Mutasi Obat', 'module' => 'Farmasi & Apotek', 'url' => base_url('apotek/gudang'), 'icon' => 'fa-warehouse', 'tags' => 'gudang mutasi transfer obat bhp'],
+            ['title' => 'Kasir Pembayaran Pasien', 'module' => 'Keuangan & Kasir', 'url' => base_url('keuangan/kasir'), 'icon' => 'fa-cash-register', 'tags' => 'kasir bayar billing invoice kwitansi rawat jalan'],
+            ['title' => 'Rekap Kasir & Tutup Shift', 'module' => 'Keuangan & Kasir', 'url' => base_url('keuangan/shift'), 'icon' => 'fa-receipt', 'tags' => 'shift tutup kas rekap uang kasir'],
+            ['title' => 'Rekapitulasi Fee Dokter', 'module' => 'Keuangan & Kasir', 'url' => base_url('keuangan/fee-dokter'), 'icon' => 'fa-user-doctor', 'tags' => 'fee dokter jasa medis komisi bagi hasil'],
+            ['title' => 'Jurnal Umum Transaksi', 'module' => 'Akuntansi', 'url' => base_url('accounting/jurnal'), 'icon' => 'fa-book', 'tags' => 'jurnal umum debet kredit memorial transaksi akuntansi'],
+            ['title' => 'Buku Mutasi Akun (Buku Besar)', 'module' => 'Akuntansi', 'url' => base_url('accounting/buku-besar'), 'icon' => 'fa-book-open', 'tags' => 'buku besar ledger mutasi rekening coa'],
+            ['title' => 'Laporan Keuangan', 'module' => 'Akuntansi', 'url' => base_url('accounting/laporan'), 'icon' => 'fa-chart-line', 'tags' => 'laba rugi neraca arus kas financial report'],
+            ['title' => 'Bagan Akun (COA)', 'module' => 'Akuntansi', 'url' => base_url('accounting/coa'), 'icon' => 'fa-book-bookmark', 'tags' => 'coa bagan akun kode akun rekening aktiva pasiva modal pendapatan beban'],
+            ['title' => 'Template & Aturan Jurnal', 'module' => 'Akuntansi', 'url' => base_url('accounting/aturan-jurnal'), 'icon' => 'fa-sliders', 'tags' => 'aturan jurnal template otomatisasi mapping pos'],
+            ['title' => 'Master Referensi Klinik', 'module' => 'Sistem & Pengaturan', 'url' => base_url('system/master-klinik'), 'icon' => 'fa-hospital-user', 'tags' => 'master klinik dokter tarif jadwal ruangan tindakan poli'],
+            ['title' => 'Katalog Diagnosa ICD-10', 'module' => 'Sistem & Pengaturan', 'url' => base_url('system/master-icd'), 'icon' => 'fa-book-medical', 'tags' => 'icd10 kode diagnosa penyakit'],
+            ['title' => 'Pengaturan Dasar Klinik & Branding', 'module' => 'Sistem & Pengaturan', 'url' => base_url('system/settings'), 'icon' => 'fa-sliders', 'tags' => 'pengaturan sistem logo stempel faskes whatsapp display tv'],
+            ['title' => 'Pengguna & Hak Akses (RBAC)', 'module' => 'Sistem & Pengaturan', 'url' => base_url('system/users'), 'icon' => 'fa-users-gear', 'tags' => 'pengguna user role akses rbac password'],
+            ['title' => 'Layar Antrean TV Display', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/display'), 'icon' => 'fa-tv', 'tags' => 'tv display antrean layar panggil'],
+            ['title' => 'Mesin Kiosk APM Mandiri', 'module' => 'Pelayanan Medis', 'url' => base_url('klinik/kiosk'), 'icon' => 'fa-desktop', 'tags' => 'kiosk apm anjungan mandiri']
+        ];
+
+        $matchedMenus = [];
+        $lowKey = strtolower($keyword);
+        foreach ($allMenus as $m) {
+            if (str_contains(strtolower($m['title']), $lowKey) || str_contains(strtolower($m['module']), $lowKey) || str_contains(strtolower($m['tags']), $lowKey)) {
+                $matchedMenus[] = $m;
+            }
+        }
+
+        return $this->response->setJSON([
+            'status'   => 'success',
+            'patients' => $patientResults,
+            'menus'    => array_slice($matchedMenus, 0, 6)
+        ]);
     }
 
     /**

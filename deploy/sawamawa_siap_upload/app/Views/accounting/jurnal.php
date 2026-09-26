@@ -2,29 +2,46 @@
 
 <?= $this->section('content') ?>
 <!-- Quick Switcher Tabs -->
-<div class="mb-3 d-flex align-items-center justify-content-between">
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
-                <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum Konsolidasian
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
-                <i class="fas fa-book-journal-whills mr-1"></i> 2. Jurnal Mutasi per Akun (Buku Pembantu & Saldo Berjalan)
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
-                <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan
-            </a>
-        </li>
-    </ul>
-    <div class="d-flex align-items-center">
-        <button class="btn btn-outline-teal btn-sm font-weight-bold mr-2 shadow-none" type="button" data-toggle="collapse" data-target="#guideDoubleEntry" aria-expanded="true" aria-controls="guideDoubleEntry">
+<div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="accounting-tabs-scroll-wrapper">
+        <ul class="nav nav-tabs-modern">
+            <li class="nav-item">
+                <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
+                    <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
+                    <i class="fas fa-book-journal-whills mr-1"></i> 2. Buku Mutasi Akun
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
+                    <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/coa') ?>">
+                    <i class="fas fa-book-bookmark mr-1"></i> 4. Bagan Akun (COA)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/aturan-jurnal') ?>">
+                    <i class="fas fa-sliders mr-1"></i> 5. Template &amp; Aturan Jurnal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/saldo-awal') ?>">
+                    <i class="fas fa-scale-balanced mr-1"></i> 6. Saldo Awal
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="d-flex align-items-center mt-2 mt-md-0">
+        <button class="btn btn-outline-teal btn-sm font-weight-bold mr-2 shadow-xs" type="button" data-toggle="collapse" data-target="#guideDoubleEntry" aria-expanded="true" aria-controls="guideDoubleEntry">
             <i class="fas fa-book-open-reader mr-1"></i> <span id="guideBtnText">Panduan Cara Baca Jurnal</span>
         </button>
-        <button class="btn btn-teal btn-sm font-weight-bold shadow-none" data-toggle="modal" data-target="#journalModal">
+        <button class="btn btn-teal btn-sm font-weight-bold shadow-xs" data-toggle="modal" data-target="#journalModal">
             <i class="fas fa-plus mr-1"></i> Input Jurnal Manual
         </button>
     </div>
@@ -109,28 +126,40 @@
     <div class="col-md-12">
         <div class="card card-outline card-teal shadow-none bg-white" style="border: 1px solid #b8b8b8;">
             <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
-                <h6 class="card-title font-weight-bold text-dark mb-0">
-                    <i class="fas fa-file-lines text-teal mr-1"></i> Buku Jurnal Umum Konsolidasian &amp; Penyesuaian
-                </h6>
-                <span class="text-muted text-xs">Pencatatan double-entry otomatis</span>
+                <div class="d-flex align-items-center">
+                    <h6 class="card-title font-weight-bold text-dark mb-0 mr-3">
+                        <i class="fas fa-file-lines text-teal mr-1"></i> Buku Jurnal Umum Konsolidasian &amp; Penyesuaian
+                    </h6>
+                    <span class="text-muted text-xs d-none d-md-inline">Pencatatan double-entry otomatis</span>
+                </div>
+                <div class="card-tools d-flex align-items-center">
+                    <button type="button" id="btnExportExcel" class="btn btn-outline-success btn-xs font-weight-bold px-2 py-1 mr-2 shadow-sm" title="Ekspor ke Excel (.xls)">
+                        <i class="fas fa-file-excel mr-1 text-success"></i> Ekspor Excel
+                    </button>
+                    <button type="button" id="btnExportPdf" class="btn btn-outline-danger btn-xs font-weight-bold px-2 py-1 shadow-sm" title="Cetak / Simpan PDF (A4 Landscape)">
+                        <i class="fas fa-file-pdf mr-1 text-danger"></i> Ekspor PDF
+                    </button>
+                </div>
             </div>
             <div class="card-body p-3">
-                <table id="table-jurnal" class="table table-bordered table-striped datatable-serverside text-dark" style="width: 100%; font-size: 13px;">
-                    <thead class="bg-light">
-                        <tr>
-                            <th style="width: 95px;">Tanggal</th>
-                            <th style="width: 160px;">No Jurnal &amp; Modul</th>
-                            <th>Keterangan / Uraian Transaksi</th>
-                            <th style="width: 270px;">Rekening Akun (COA) &amp; Rincian</th>
-                            <th style="width: 140px;" class="text-right text-success"><i class="fas fa-arrow-circle-down mr-1"></i>Debet (Masuk)</th>
-                            <th style="width: 140px;" class="text-right text-danger"><i class="fas fa-arrow-circle-up mr-1"></i>Kredit (Keluar)</th>
-                            <th style="width: 130px;" class="text-right bg-light text-teal font-weight-bold">Sisa Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Baris tabel diisi secara instan oleh DataTables Server-Side Processing -->
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table id="table-jurnal" class="table table-bordered table-striped datatable-serverside text-dark w-100" style="font-size: 13px;">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="width: 120px;" class="text-center"><i class="far fa-calendar-alt text-teal mr-1"></i>Tanggal &amp; Waktu</th>
+                                <th style="width: 160px;">No Jurnal &amp; Modul</th>
+                                <th>Keterangan / Uraian Transaksi</th>
+                                <th style="width: 270px;">Rekening Akun (COA) &amp; Rincian</th>
+                                <th style="width: 140px;" class="text-right text-success"><i class="fas fa-arrow-circle-down mr-1"></i>Debet (Masuk)</th>
+                                <th style="width: 140px;" class="text-right text-danger"><i class="fas fa-arrow-circle-up mr-1"></i>Kredit (Keluar)</th>
+                                <th style="width: 130px;" class="text-right bg-light text-teal font-weight-bold">Sisa Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Baris tabel diisi secara instan oleh DataTables Server-Side Processing -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -146,7 +175,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('accounting/jurnal') ?>" method="post">
+            <form action="<?= base_url('accounting/jurnal') ?>" method="post" id="form-add-jurnal">
                 <?= csrf_field() ?>
                 <div class="modal-body">
                     <div class="row">
@@ -314,6 +343,44 @@
         $('#filter_source_module').change(function() {
             tableJurnal.ajax.reload();
         });
+
+        // Safe column adjustment on resize
+        var resizeTimer;
+        $(window).on('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (tableJurnal) tableJurnal.columns.adjust();
+            }, 200);
+        });
+
+        // Anti-double submission for forms
+        $('#form-add-jurnal, #form-edit-jurnal').on('submit', function() {
+            var btn = $(this).find('button[type="submit"]');
+            if (btn.length && !btn.prop('disabled')) {
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+            }
+        });
+
+        function getExportParams() {
+            var params = new URLSearchParams();
+            var mod = $('#filter_source_module').val();
+            var start = $('#filter_start_date').val();
+            var end = $('#filter_end_date').val();
+            if (mod) params.append('source_module', mod);
+            if (start) params.append('start_date', start);
+            if (end) params.append('end_date', end);
+            return params.toString();
+        }
+
+        $('#btnExportExcel').click(function() {
+            var q = getExportParams();
+            window.location.href = '<?= base_url('accounting/jurnal/export-excel') ?>' + (q ? '?' + q : '');
+        });
+
+        $('#btnExportPdf').click(function() {
+            var q = getExportParams();
+            window.open('<?= base_url('accounting/jurnal/export-pdf') ?>' + (q ? '?' + q : ''), '_blank');
+        });
     });
 
     function editJurnal(id) {
@@ -350,3 +417,4 @@
     }
 </script>
 <?= $this->endSection() ?>
+
