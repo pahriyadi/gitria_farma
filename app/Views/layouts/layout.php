@@ -2343,10 +2343,74 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             updateActiveNavLinks(window.location.href);
         });
 
-        window.navigateSpa = function(url, pushHistory) {
+        // =========================================================================
+        // GLOBAL FORCE UPDATE & SYSTEM CACHE PURGE CONTROLLER
+        // =========================================================================
+        window.forceUpdateSystem = function(silent, callback) {
+            if (silent === undefined) silent = false;
+            try {
+                // 1. Bersihkan Service Worker Cache Storage jika ada
+                if ('caches' in window) {
+                    caches.keys().then(function(names) {
+                        for (let name of names) {
+                            caches.delete(name);
+                        }
+                    });
+                }
+
+                // 2. Bersihkan SessionStorage & LocalStorage non-esensial (pertahankan tema, sidebar state & audio)
+                const preserveKeys = [
+                    'sawamawa_admin_theme',
+                    'sawamawa_sidebar_state',
+                    'sidebar_scroll_pos',
+                    'vcm_settings',
+                    'offline_draft_prescriptions'
+                ];
+                
+                // Bersihkan sessionStorage non-kritis
+                for (let i = sessionStorage.length - 1; i >= 0; i--) {
+                    const k = sessionStorage.key(i);
+                    if (k && !preserveKeys.includes(k)) {
+                        sessionStorage.removeItem(k);
+                    }
+                }
+
+                // 3. Bersihkan DataTables cached state
+                if ($.fn.DataTable) {
+                    $('.dataTable, table[id]').each(function() {
+                        if ($.fn.DataTable.isDataTable(this)) {
+                            try {
+                                $(this).DataTable().state.clear();
+                            } catch(e) {}
+                        }
+                    });
+                }
+
+                // 4. Jika bukan mode senyap (silent), tampilkan feedback visual & reload halaman penuh
+                if (!silent) {
+                    if (typeof toastr !== 'undefined') {
+                        toastr.info('Membersihkan cache aplikasi dan memuat versi terbaru...', '🔄 Perbarui Sistem', { timeOut: 1200 });
+                    }
+                    setTimeout(function() {
+                        const cleanUrl = new URL(window.location.href);
+                        cleanUrl.searchParams.set('_v', Date.now());
+                        window.location.href = cleanUrl.toString();
+                    }, 400);
+                } else if (typeof callback === 'function') {
+                    callback();
+                }
+            } catch(e) {
+                if (!silent) {
+                    window.location.reload(true);
+                }
+            }
+        };
+
+        window.navigateSpa = function(url, pushHistory, forceBypassCache) {
             if (pushHistory === undefined) pushHistory = true;
+            if (forceBypassCache === undefined) forceBypassCache = true;
             if (!url || url === '#' || url.startsWith('javascript:')) return;
-            if (url === window.location.href) return;
+            if (url === window.location.href && !forceBypassCache) return;
 
             const $prog = $('#spa-progressbar');
             $prog.css({ width: '25%', opacity: 1 });
@@ -2354,11 +2418,14 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             const $wrapper = $('.content-wrapper');
             $wrapper.css({ opacity: 0.5, transition: 'opacity 0.12s ease' });
 
-            // Clean up open modal backdrops or active select dropdowns
+            // Clean up open modal backdrops or active select dropdowns & tooltips
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
             $('.select2-container--open').remove();
             $('.macos-select-wrapper.is-open').removeClass('is-open');
+            if ($.fn.tooltip) {
+                $('[data-toggle="tooltip"], [title]').tooltip('dispose');
+            }
 
             // Destroy existing DataTables cleanly to prevent "Cannot reinitialise DataTable"
             if ($.fn.DataTable) {
@@ -2371,12 +2438,30 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 });
             }
 
+            // Bersihkan cache temporary sebelum render halaman baru
+            if (forceBypassCache && typeof window.forceUpdateSystem === 'function') {
+                window.forceUpdateSystem(true);
+            }
+
             $prog.css({ width: '60%' });
 
+            // Bentuk fetchUrl dengan timestamp parameter agar browser dan proxy tidak melayani cache basi
+            let fetchUrl = url;
+            try {
+                const u = new URL(url, window.location.origin);
+                u.searchParams.set('_ts', Date.now());
+                fetchUrl = u.toString();
+            } catch(e) {}
+
             $.ajax({
-                url: url,
+                url: fetchUrl,
                 type: 'GET',
-                cache: true,
+                cache: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                },
                 success: function(html) {
                     $prog.css({ width: '90%' });
 
@@ -2463,7 +2548,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             if (href.includes(window.location.origin) || href.startsWith('/') || href.startsWith('./') || !href.includes('://')) {
                 if (!href.includes('logout') && !href.includes('export') && !href.includes('cetak') && !href.includes('pdf')) {
                     e.preventDefault();
-                    window.navigateSpa(href, true);
+                    window.navigateSpa(href, true, true);
                 }
             }
         });
