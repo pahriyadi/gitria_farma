@@ -28,7 +28,8 @@ class Keuangan extends BaseController
             $db->transStart();
 
             try {
-                $bill = $db->table('billing_transactions')->where('id', $billingId)->get()->getRow();
+                $billQ = $db->table('billing_transactions')->where('id', $billingId)->get();
+                $bill = ($billQ && is_object($billQ)) ? $billQ->getRow() : null;
                 if (!$bill || $bill->status === 'paid') {
                     session()->setFlashdata('error', 'Tagihan tidak ditemukan atau sudah dibayar.');
                     return redirect()->to(base_url('keuangan/kasir'));
@@ -55,20 +56,21 @@ class Keuangan extends BaseController
 
                 // Generate Receipt Number (RCP-YYYYMMDD-XXXX)
                 $today = date('Ymd');
-                $lastReceipt = $db->table('cash_transactions')
+                $lastReceiptQ = $db->table('cash_transactions')
                                    ->where('DATE(created_at)', date('Y-m-d'))
                                    ->orderBy('id', 'DESC')
                                    ->limit(1)
-                                   ->get()
-                                   ->getRow();
+                                   ->get();
+                $lastReceipt = ($lastReceiptQ && is_object($lastReceiptQ)) ? $lastReceiptQ->getRow() : null;
                 $nextNum = 1;
-                if ($lastReceipt && preg_match('/RCP-\d+-(\d+)/', $lastReceipt->receipt_no, $matches)) {
+                if ($lastReceipt && !empty($lastReceipt->receipt_no) && preg_match('/RCP-\d+-(\d+)/', $lastReceipt->receipt_no, $matches)) {
                     $nextNum = intval($matches[1]) + 1;
                 }
                 $receiptNo = 'RCP-' . $today . '-' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
 
                 // Default Cash Register id=1 (Main Register)
-                $register = $db->table('cash_registers')->where('id', 1)->get()->getRow();
+                $regQ = $db->table('cash_registers')->where('id', 1)->get();
+                $register = ($regQ && is_object($regQ)) ? $regQ->getRow() : null;
                 if (!$register) {
                     $db->table('cash_registers')->insert([
                         'id'      => 1,
@@ -110,11 +112,11 @@ class Keuangan extends BaseController
                 // Update Patient Visit Status: jika ada resep menunggu, arahkan ke 'prescription' (ambil obat); jika tidak, 'completed'
                 $hasWaitingPrescription = false;
                 if ($bill->visit_id) {
-                    $presc = $db->table('prescriptions')
-                                ->where('visit_id', $bill->visit_id)
-                                ->where('status', 'waiting')
-                                ->get()
-                                ->getRow();
+                    $prescQ = $db->table('prescriptions')
+                                 ->where('visit_id', $bill->visit_id)
+                                 ->where('status', 'waiting')
+                                 ->get();
+                    $presc = ($prescQ && is_object($prescQ)) ? $prescQ->getRow() : null;
                     if ($presc) {
                         $hasWaitingPrescription = true;
                     }
@@ -136,16 +138,20 @@ class Keuangan extends BaseController
                 }
 
                 // 1. Post Journals Automatically via Journal Engine dengan Rincian Per-Item
-                $visit = $bill->visit_id ? $db->table('patient_visits')->where('id', $bill->visit_id)->get()->getRow() : null;
-                $patient = ($visit && $visit->patient_id) ? $db->table('patients')->where('id', $visit->patient_id)->get()->getRow() : null;
-                $queue = $bill->visit_id ? $db->table('queue_numbers')->where('visit_id', $bill->visit_id)->get()->getRow() : null;
+                $visitQ = $bill->visit_id ? $db->table('patient_visits')->where('id', $bill->visit_id)->get() : null;
+                $visit = ($visitQ && is_object($visitQ)) ? $visitQ->getRow() : null;
+                $patientQ = ($visit && $visit->patient_id) ? $db->table('patients')->where('id', $visit->patient_id)->get() : null;
+                $patient = ($patientQ && is_object($patientQ)) ? $patientQ->getRow() : null;
+                $queueQ = $bill->visit_id ? $db->table('queue_numbers')->where('visit_id', $bill->visit_id)->get() : null;
+                $queue = ($queueQ && is_object($queueQ)) ? $queueQ->getRow() : null;
 
                 $pName = $patient ? $patient->name : 'Pasien Umum';
                 $qCode = $queue ? ($queue->queue_no ?: ($visit ? $visit->no_visit : '')) : ($visit ? $visit->no_visit : '');
                 $patientTag = $pName . ($qCode ? ' / ' . $qCode : '');
 
                 // Ambil seluruh rincian tagihan per kategori
-                $allBillDetails = $db->table('billing_details')->where('billing_id', $billingId)->get()->getResult();
+                $allBillDetailsQ = $db->table('billing_details')->where('billing_id', $billingId)->get();
+                $allBillDetails = ($allBillDetailsQ && is_object($allBillDetailsQ)) ? $allBillDetailsQ->getResult() : [];
 
                 // 1a. Jurnal Pendapatan Layanan Medis & Tindakan Klinik (Per-Item Tindakan/Jasa)
                 if ($bill->total_services > 0) {
@@ -155,16 +161,17 @@ class Keuangan extends BaseController
                     $doctorRow = null;
 
                     if ($visit && $visit->doctor_id) {
-                        $primaryDoc = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                        $primaryDocQ = $db->table('doctors')->where('id', $visit->doctor_id)->get();
+                        $primaryDoc = ($primaryDocQ && is_object($primaryDocQ)) ? $primaryDocQ->getRow() : null;
                         $doctorRow = $primaryDoc;
                         if ($primaryDoc) {
                             // Cari penugasan spesifik dokter untuk poli kunjungan saat ini
                             if (!empty($visit->polyclinic_id)) {
-                                $matchPoli = $db->table('doctors')
-                                                ->where('nik_employee', $primaryDoc->nik_employee)
-                                                ->where('polyclinic_id', $visit->polyclinic_id)
-                                                ->get()
-                                                ->getRow();
+                                $matchPoliQ = $db->table('doctors')
+                                                 ->where('nik_employee', $primaryDoc->nik_employee)
+                                                 ->where('polyclinic_id', $visit->polyclinic_id)
+                                                 ->get();
+                                $matchPoli = ($matchPoliQ && is_object($matchPoliQ)) ? $matchPoliQ->getRow() : null;
                                 if ($matchPoli && (float)$matchPoli->fee_per_pasien > 0) {
                                     $doctorRow = $matchPoli;
                                 }
@@ -236,7 +243,8 @@ class Keuangan extends BaseController
 
                     $docFeePct = 5.00;
                     if ($visit && $visit->doctor_id) {
-                        $doctorRow = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                        $docQ = $db->table('doctors')->where('id', $visit->doctor_id)->get();
+                        $doctorRow = ($docQ && is_object($docQ)) ? $docQ->getRow() : null;
                         if ($doctorRow && isset($doctorRow->prescription_fee_percent)) {
                             $docFeePct = (float)$doctorRow->prescription_fee_percent;
                         }
@@ -260,9 +268,11 @@ class Keuangan extends BaseController
 
                 // 2. Insert Fee Transactions for Payroll / HRD (No Journal)
                 if ($bill->visit_id && $bill->total_services > 0) {
-                    $visit = $db->table('patient_visits')->where('id', $bill->visit_id)->get()->getRow();
+                    $vQ = $db->table('patient_visits')->where('id', $bill->visit_id)->get();
+                    $visit = ($vQ && is_object($vQ)) ? $vQ->getRow() : null;
                     if ($visit && $visit->doctor_id) {
-                        $doctor = $db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow();
+                        $docQ = $db->table('doctors')->where('id', $visit->doctor_id)->get();
+                        $doctor = ($docQ && is_object($docQ)) ? $docQ->getRow() : null;
                         if ($doctor && (float)$doctor->fee_per_pasien > 0) {
                             $docPct = (float)$doctor->fee_per_pasien;
                             $totalDoctorFee = round(($bill->total_services * ($docPct / 100.0)), 2);
@@ -309,8 +319,10 @@ class Keuangan extends BaseController
                         'sender_name'      => 'Kasir Utama'
                     ]);
 
-                    $patientObj = $visit ? $db->table('patients')->where('id', $visit->patient_id)->get()->getRow() : null;
-                    $queueObj = $db->table('queue_numbers')->where('visit_id', $bill->visit_id)->get()->getRow();
+                    $patQ = ($visit && $visit->patient_id) ? $db->table('patients')->where('id', $visit->patient_id)->get() : null;
+                    $patientObj = ($patQ && is_object($patQ)) ? $patQ->getRow() : null;
+                    $qQ = $bill->visit_id ? $db->table('queue_numbers')->where('visit_id', $bill->visit_id)->get() : null;
+                    $queueObj = ($qQ && is_object($qQ)) ? $qQ->getRow() : null;
                     $qNum = $queueObj ? ($queueObj->queue_no ?: ($visit->no_visit ?? 'A-001')) : ($visit->no_visit ?? 'A-001');
                     $patientName = $patientObj ? $patientObj->name : 'Pasien';
 
@@ -481,7 +493,8 @@ class Keuangan extends BaseController
         $db->transStart();
 
         try {
-            $bill = $db->table('billing_transactions')->where('id', $billingId)->get()->getRow();
+            $billQ = $db->table('billing_transactions')->where('id', $billingId)->get();
+            $bill = ($billQ && is_object($billQ)) ? $billQ->getRow() : null;
             if (!$bill) {
                 session()->setFlashdata('error', 'Data tagihan tidak ditemukan.');
                 return redirect()->to(base_url('keuangan/kasir'));
@@ -566,7 +579,8 @@ class Keuangan extends BaseController
         $db->transStart();
 
         try {
-            $tx = $db->table('cash_transactions')->where('id', $txId)->get()->getRow();
+            $txQ = $db->table('cash_transactions')->where('id', $txId)->get();
+            $tx = ($txQ && is_object($txQ)) ? $txQ->getRow() : null;
             if (!$tx) {
                 session()->setFlashdata('error', 'Transaksi pembayaran tidak ditemukan.');
                 return redirect()->to(base_url('keuangan/kasir'));
@@ -574,7 +588,8 @@ class Keuangan extends BaseController
 
             // 1. Kurangi saldo kas register jika pembayaran tunai
             if ($tx->payment_method === 'tunai' || $tx->payment_method === 'cash') {
-                $reg = $db->table('cash_registers')->where('id', $tx->cash_register_id ?: 1)->get()->getRow();
+                $regQ = $db->table('cash_registers')->where('id', $tx->cash_register_id ?: 1)->get();
+                $reg = ($regQ && is_object($regQ)) ? $regQ->getRow() : null;
                 if ($reg) {
                     $newBalance = max(0, (float)$reg->balance - (float)$tx->amount);
                     $db->table('cash_registers')->where('id', $reg->id)->update(['balance' => $newBalance]);
@@ -583,7 +598,8 @@ class Keuangan extends BaseController
 
             // 2. Batalkan status billing_transactions
             if ($tx->billing_id) {
-                $bill = $db->table('billing_transactions')->where('id', $tx->billing_id)->get()->getRow();
+                $billQ = $db->table('billing_transactions')->where('id', $tx->billing_id)->get();
+                $bill = ($billQ && is_object($billQ)) ? $billQ->getRow() : null;
                 $db->table('billing_transactions')
                    ->where('id', $tx->billing_id)
                    ->update([

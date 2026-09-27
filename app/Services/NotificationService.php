@@ -182,11 +182,11 @@ class NotificationService
         
         // Jika ada key, periksa apakah notifikasi serupa sudah ada dalam 2 jam terakhir
         if ($key) {
-            $existing = $this->db->table('system_notifications')
+            $exQ = $this->db->table('system_notifications')
                                  ->where('notification_key', $key)
                                  ->where('created_at >=', date('Y-m-d H:i:s', strtotime('-2 hours')))
-                                 ->get()
-                                 ->getRow();
+                                 ->get();
+            $existing = ($exQ && is_object($exQ)) ? $exQ->getRow() : null;
             if ($existing) {
                 // Update timestamp dan message
                 $this->db->table('system_notifications')->where('id', $existing->id)->update([
@@ -222,7 +222,8 @@ class NotificationService
      */
     public function isRuleActive($ruleCode)
     {
-        $rule = $this->db->table('notification_rules')->where('rule_code', $ruleCode)->get()->getRow();
+        $rQ = $this->db->table('notification_rules')->where('rule_code', $ruleCode)->get();
+        $rule = ($rQ && is_object($rQ)) ? $rQ->getRow() : null;
         return $rule ? (bool)$rule->is_active : true;
     }
 
@@ -235,7 +236,7 @@ class NotificationService
 
         // 1. DETEKSI JURNAL TIDAK BALANCE (CRITICAL ALERT)
         if ($this->isRuleActive('ACCT_UNBALANCED_JOURNAL')) {
-            $unbalanced = $this->db->query("
+            $unQ = $this->db->query("
                 SELECT je.id, je.journal_no, je.entry_date, je.description, 
                        SUM(jed.debit) as total_debit, 
                        SUM(jed.credit) as total_credit,
@@ -245,7 +246,8 @@ class NotificationService
                 GROUP BY je.id, je.journal_no, je.entry_date, je.description
                 HAVING diff > 0.01
                 LIMIT 5
-            ")->getResult();
+            ");
+            $unbalanced = ($unQ && is_object($unQ)) ? $unQ->getResult() : [];
 
             if (!empty($unbalanced)) {
                 $count = count($unbalanced);
@@ -391,11 +393,11 @@ class NotificationService
      */
     public function markAsRead($notificationId, $userId)
     {
-        $existing = $this->db->table('system_notification_reads')
+        $exQ = $this->db->table('system_notification_reads')
                              ->where('notification_id', $notificationId)
                              ->where('user_id', $userId)
-                             ->get()
-                             ->getRow();
+                             ->get();
+        $existing = ($exQ && is_object($exQ)) ? $exQ->getRow() : null;
         if (!$existing) {
             $this->db->table('system_notification_reads')->insert([
                 'notification_id' => $notificationId,

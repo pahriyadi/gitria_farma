@@ -16,10 +16,12 @@ class JournalEngine
      */
     public function getAccountId($code, $fallback = null)
     {
-        $row = $this->db->table('accounts')->where('code', $code)->get()->getRow();
+        $q = $this->db->table('accounts')->where('code', $code)->get();
+        $row = ($q && is_object($q)) ? $q->getRow() : null;
         if ($row) return (int) $row->id;
         if ($fallback) {
-            $rowFallback = $this->db->table('accounts')->where('code', $fallback)->get()->getRow();
+            $qFallback = $this->db->table('accounts')->where('code', $fallback)->get();
+            $rowFallback = ($qFallback && is_object($qFallback)) ? $qFallback->getRow() : null;
             if ($rowFallback) return (int) $rowFallback->id;
         }
         return null;
@@ -45,8 +47,24 @@ class JournalEngine
     public function generateJournalNo()
     {
         $today = date('Ymd');
-        $maxRow = $this->db->query("SELECT MAX(CAST(SUBSTRING_INDEX(journal_no, '-', -1) AS UNSIGNED)) as max_seq FROM journal_entries WHERE journal_no LIKE 'JV-{$today}-%'")->getRow();
-        $nextNum = ($maxRow && $maxRow->max_seq) ? ((int)$maxRow->max_seq + 1) : 1;
+        $nextNum = 1;
+
+        try {
+            $q = $this->db->table('journal_entries')
+                          ->like('journal_no', 'JV-' . $today . '-', 'after')
+                          ->orderBy('id', 'DESC')
+                          ->limit(1)
+                          ->get();
+            $lastEntry = ($q && is_object($q)) ? $q->getRow() : null;
+            if ($lastEntry && !empty($lastEntry->journal_no)) {
+                if (preg_match('/JV-\d+-(\d+)/', $lastEntry->journal_no, $matches)) {
+                    $nextNum = intval($matches[1]) + 1;
+                }
+            }
+        } catch (\Throwable $e) {
+            $nextNum = (int) date('His');
+        }
+
         return 'JV-' . $today . '-' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
     }
 
@@ -55,16 +73,18 @@ class JournalEngine
      */
     protected function applyBalanceMovement($accountId, $debit, $credit)
     {
-        $acc = $this->db->table('accounts')->where('id', $accountId)->get()->getRow();
+        if (!$accountId) return;
+        $q = $this->db->table('accounts')->where('id', $accountId)->get();
+        $acc = ($q && is_object($q)) ? $q->getRow() : null;
         if (!$acc) return;
 
         $net = 0;
-        if ($acc->normal_balance === 'debit') {
+        if (isset($acc->normal_balance) && $acc->normal_balance === 'debit') {
             $net = $debit - $credit;
         } else {
             $net = $credit - $debit;
         }
-        $newBal = $acc->balance + $net;
+        $newBal = (float)($acc->balance ?? 0) + $net;
         $this->db->table('accounts')->where('id', $accountId)->update(['balance' => $newBal]);
     }
 
@@ -82,10 +102,10 @@ class JournalEngine
         }
 
         // 1. Fetch account mapping
-        $mapping = $this->db->table('transaction_account_mappings')
-                            ->where('transaction_type', $transactionType)
-                            ->get()
-                            ->getRow();
+        $mappingQ = $this->db->table('transaction_account_mappings')
+                             ->where('transaction_type', $transactionType)
+                             ->get();
+        $mapping = ($mappingQ && is_object($mappingQ)) ? $mappingQ->getRow() : null;
 
         if (!$mapping) {
             $fallbacks = [
@@ -205,15 +225,15 @@ class JournalEngine
         }
 
         if ($referenceId) {
-            $existing = $this->db->table('journal_entries')
+            $exQ = $this->db->table('journal_entries')
                                  ->where('source_module', $sourceModule)
                                  ->where('reference_id', $referenceId)
-                                 ->get()
-                                 ->getRow();
+                                 ->get();
+            $existing = ($exQ && is_object($exQ)) ? $exQ->getRow() : null;
             if ($existing) {
                 return [
                     'status'     => 'success',
-                    'journal_no' => $existing->journal_no,
+                    'journal_no' => $existing->journal_no ?? '',
                     'message'    => 'Jurnal penjualan obat sudah pernah dibukukan sebelumnya.'
                 ];
             }
@@ -226,20 +246,20 @@ class JournalEngine
         }
 
         // 3. Try to load dynamic rules from database
-        $dbCategory = $this->db->table('journal_categories')
+        $catQ = $this->db->table('journal_categories')
                                ->where('category_code', $categoryCode)
                                ->where('is_active', 1)
-                               ->get()
-                               ->getRow();
+                               ->get();
+        $dbCategory = ($catQ && is_object($catQ)) ? $catQ->getRow() : null;
 
         $dbRules = [];
         if ($dbCategory) {
-            $dbRules = $this->db->table('journal_category_rules')
+            $rulesQ = $this->db->table('journal_category_rules')
                                 ->where('category_id', $dbCategory->id)
                                 ->where('is_active', 1)
                                 ->orderBy('sort_order', 'ASC')
-                                ->get()
-                                ->getResult();
+                                ->get();
+            $dbRules = ($rulesQ && is_object($rulesQ)) ? $rulesQ->getResult() : [];
         }
 
         // 4. Calculate Credits Allocation per type
@@ -474,16 +494,16 @@ class JournalEngine
         if ($amount <= 0) return ['status' => 'error', 'message' => 'Amount must be greater than zero.'];
 
         if ($referenceId) {
-            $existing = $this->db->table('journal_entries')
+            $exQ = $this->db->table('journal_entries')
                                  ->where('source_module', $sourceModule)
                                  ->where('reference_id', $referenceId)
                                  ->like('description', 'Pendapatan Layanan Medis')
-                                 ->get()
-                                 ->getRow();
+                                 ->get();
+            $existing = ($exQ && is_object($exQ)) ? $exQ->getRow() : null;
             if ($existing) {
                 return [
                     'status'     => 'success',
-                    'journal_no' => $existing->journal_no,
+                    'journal_no' => $existing->journal_no ?? '',
                     'message'    => 'Jurnal layanan klinik sudah pernah dibukukan sebelumnya.'
                 ];
             }
@@ -497,20 +517,20 @@ class JournalEngine
 
         // 2. Fetch Category RAWAT_JALAN_POLI
         $categoryCode = 'RAWAT_JALAN_POLI';
-        $dbCategory = $this->db->table('journal_categories')
+        $catQ = $this->db->table('journal_categories')
                                ->where('category_code', $categoryCode)
                                ->where('is_active', 1)
-                               ->get()
-                               ->getRow();
+                               ->get();
+        $dbCategory = ($catQ && is_object($catQ)) ? $catQ->getRow() : null;
 
         $dbRules = [];
         if ($dbCategory) {
-            $dbRules = $this->db->table('journal_category_rules')
+            $rulesQ = $this->db->table('journal_category_rules')
                                 ->where('category_id', $dbCategory->id)
                                 ->where('is_active', 1)
                                 ->orderBy('sort_order', 'ASC')
-                                ->get()
-                                ->getResult();
+                                ->get();
+            $dbRules = ($rulesQ && is_object($rulesQ)) ? $rulesQ->getResult() : [];
         }
 
         $credits = [];
@@ -695,10 +715,10 @@ class JournalEngine
     public function syncUnpostedTransactions()
     {
         // 1. Sync Paid Resto Orders
-        $paidRestoOrders = $this->db->table('restaurant_orders')
-                                    ->where('payment_status', 'paid')
-                                    ->get()
-                                    ->getResult();
+        $paidRestoOrdersQ = $this->db->table('restaurant_orders')
+                                     ->where('payment_status', 'paid')
+                                     ->get();
+        $paidRestoOrders = ($paidRestoOrdersQ && is_object($paidRestoOrdersQ)) ? $paidRestoOrdersQ->getResult() : [];
 
         foreach ($paidRestoOrders as $ro) {
             $exists = $this->db->table('journal_entries')
@@ -706,12 +726,12 @@ class JournalEngine
                                ->where('reference_id', $ro->id)
                                ->countAllResults();
             if ($exists === 0 && floatval($ro->grand_total) > 0) {
-                $details = $this->db->table('restaurant_order_details rod')
-                                    ->select('rod.qty, rod.price, rm.name')
-                                    ->join('restaurant_menus rm', 'rm.id = rod.menu_id', 'left')
-                                    ->where('rod.order_id', $ro->id)
-                                    ->get()
-                                    ->getResult();
+                $detailsQ = $this->db->table('restaurant_order_details rod')
+                                     ->select('rod.qty, rod.price, rm.name')
+                                     ->join('restaurant_menus rm', 'rm.id = rod.menu_id', 'left')
+                                     ->where('rod.order_id', $ro->id)
+                                     ->get();
+                $details = ($detailsQ && is_object($detailsQ)) ? $detailsQ->getResult() : [];
                 $itemStrs = [];
                 foreach ($details as $d) {
                     $itemStrs[] = ($d->name ?: 'Item') . ' (' . (int)$d->qty . 'x @Rp ' . number_format($d->price, 0, ',', '.') . ')';
@@ -730,10 +750,10 @@ class JournalEngine
         }
 
         // 2. Sync OTC Pharmacy Sales (Direct Sales) using Split Journal Engine
-        $otcSales = $this->db->table('pharmacy_sales')
-                             ->where('grand_total >', 0)
-                             ->get()
-                             ->getResult();
+        $otcSalesQ = $this->db->table('pharmacy_sales')
+                              ->where('grand_total >', 0)
+                              ->get();
+        $otcSales = ($otcSalesQ && is_object($otcSalesQ)) ? $otcSalesQ->getResult() : [];
 
         foreach ($otcSales as $os) {
             $rawType = $os->prescription_type ?? 'bebas';
@@ -760,12 +780,12 @@ class JournalEngine
                                ->countAllResults();
 
             if ($exists === 0 && floatval($os->grand_total) > 0) {
-                $details = $this->db->table('pharmacy_sale_details psd')
-                                    ->select('psd.qty, psd.price, psd.tusla, psd.embalase, m.name')
-                                    ->join('medicines m', 'm.id = psd.medicine_id', 'left')
-                                    ->where('psd.sale_id', $os->id)
-                                    ->get()
-                                    ->getResult();
+                $detailsQ = $this->db->table('pharmacy_sale_details psd')
+                                     ->select('psd.qty, psd.price, psd.tusla, psd.embalase, m.name')
+                                     ->join('medicines m', 'm.id = psd.medicine_id', 'left')
+                                     ->where('psd.sale_id', $os->id)
+                                     ->get();
+                $details = ($detailsQ && is_object($detailsQ)) ? $detailsQ->getResult() : [];
                 $itemStrs = [];
                 $totalTusla = 0;
                 $totalEmbalase = 0;
@@ -787,7 +807,8 @@ class JournalEngine
                 $docFeePct = 5.00;
                 $docName = '';
                 if (!empty($os->doctor_id)) {
-                    $docRow = $this->db->table('doctors')->where('id', $os->doctor_id)->get()->getRow();
+                    $docQ = $this->db->table('doctors')->where('id', $os->doctor_id)->get();
+                    $docRow = ($docQ && is_object($docQ)) ? $docQ->getRow() : null;
                     if ($docRow) {
                         $docName = $docRow->name;
                         if (isset($docRow->prescription_fee_percent)) {

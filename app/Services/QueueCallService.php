@@ -291,7 +291,8 @@ class QueueCallService
                      'updated_at' => $now
                  ]);
 
-        $qn = $this->db->table('queue_numbers')->where('visit_id', $visitId)->get()->getRow();
+        $qnQ = $this->db->table('queue_numbers')->where('visit_id', $visitId)->get();
+        $qn = ($qnQ && is_object($qnQ)) ? $qnQ->getRow() : null;
         if ($qn) {
             $this->db->table('queue_numbers')
                      ->where('id', $qn->id)
