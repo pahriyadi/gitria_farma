@@ -37,11 +37,14 @@ $RECYCLE.BIN/
 .Trash-*
 
 #-------------------------
-# Environment Files
+# Environment & Sensitive Files
 #-------------------------
 # These should never be under version control,
 # as it poses a security risk.
 .env
+.env.*
+!.env.example
+.agents/mcp_config.json
 .vagrant
 Vagrantfile
 
