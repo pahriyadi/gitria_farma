@@ -15,13 +15,14 @@
    - 6.2 [Pelayanan Medis & Rekam Medis Elektronik (RME)](#62-pelayanan-medis--rekam-medis-elektronik-rme)
    - 6.3 [Master Data Referensi & Tarif Bertingkat](#63-master-data-referensi--tarif-bertingkat)
    - 6.4 [Farmasi & Apotek Terpadu (Multi-Batch Tracking)](#64-farmasi--apotek-terpadu-multi-batch-tracking)
-   - 6.5 [Restoran Sehat & Kitchen Display System (KDS)](#65-restoran-sehat--kitchen-display-system-kds)
-   - 6.6 [Kasir Terpadu & Multi-Metode Pembayaran](#66-kasir-terpadu--multi-metode-pembayaran)
-   - 6.7 [Keuangan, Kas & Bank](#67-keuangan-kas--bank)
-   - 6.8 [Akuntansi, Setup Saldo Awal & Laporan Keuangan](#68-akuntansi-setup-saldo-awal--laporan-keuangan)
-   - 6.9 [Pengadaan (Procurement) & Approval Workflow](#69-pengadaan-procurement--approval-workflow)
-   - 6.10 [Inventaris Aset & HRD Kepegawaian](#610-inventaris-aset--hrd-kepegawaian)
-   - 6.11 [Administrasi Sistem, Audit Trail & Database Management](#611-administrasi-sistem-audit-trail--database-management)
+   - 6.5 [Unit Bisnis Distributor & Farmasi Grosir (B2B)](#65-unit-bisnis-distributor--farmasi-grosir-b2b)
+   - 6.6 [Restoran Sehat & Kitchen Display System (KDS)](#66-restoran-sehat--kitchen-display-system-kds)
+   - 6.7 [Kasir Terpadu & Multi-Metode Pembayaran](#67-kasir-terpadu--multi-metode-pembayaran)
+   - 6.8 [Keuangan, Kas & Bank](#68-keuangan-kas--bank)
+   - 6.9 [Akuntansi, Setup Saldo Awal & Laporan Keuangan](#69-akuntansi-setup-saldo-awal--laporan-keuangan)
+   - 6.10 [Pengadaan (Procurement) & Approval Workflow](#610-pengadaan-procurement--approval-workflow)
+   - 6.11 [Inventaris Aset & HRD Kepegawaian](#611-inventaris-aset--hrd-kepegawaian)
+   - 6.12 [Administrasi Sistem, Audit Trail & Database Management](#612-administrasi-sistem-audit-trail--database-management)
 7. [Implementasi DataTables Server-Side Processing](#7-implementasi-datatables-server-side-processing)
 8. [Arsitektur Keamanan & Proteksi Data Medis](#8-arsitektur-keamanan--proteksi-data-medis)
 9. [Log Rilis Pembaruan Sistem (Changelog & Milestone)](#9-log-rilis-pembaruan-sistem-changelog--milestone)
@@ -180,43 +181,57 @@ Database terdiri dari 35+ tabel relasional dengan integritas kunci asing (*forei
 * **Peringatan Stok Kritis**: Notifikasi badge otomatis jika stok berada di bawah batas minimum (*reorder point*).
 * **Dispensing Resep & Penjualan Bebas (OTC)**: Pemrosesan resep elektronik dokter dan penjualan obat bebas tanpa resep.
 
-### 6.5. Restoran Sehat & Kitchen Display System (KDS)
+### 6.5. Unit Bisnis Distributor & Farmasi Grosir (B2B)
+* **Dashboard Analitik Distributor**: KPI omset harian/bulanan, piutang aktif, peringatan piutang jatuh tempo (*overdue*), dan valuasi stok gudang B2B.
+* **Kasir & Faktur Grosir B2B (`INV-DIST-YYYYMMDD-XXXX`)**:
+  * Transaksi penjualan partai besar/grosir untuk apotek mitra, klinik rekanan, RS, dan toko obat.
+  * Pengecekan limit kredit dan sisa plafon pelanggan B2B secara real-time.
+  * Dukungan metode pembayaran tunai/transfer atau kredit berjangka (Termin TOP 7, 14, 30, 60 hari).
+  * Cetak Faktur Penjualan Grosir resmi dan Surat Jalan / Delivery Order (DO) ber-Kop Surat.
+* **Master Pelanggan Grosir**: Pencatatan legalitas izin apotek/SIA/SIPA/NPWP, limit kredit, dan kontak penanggung jawab.
+* **Stok & Batch Distributor**: Manajemen katalog obat distributor, penetapan harga grosir vs harga modal, dan kartu stok mutasi.
+* **Transfer Stok Antar Gudang (`TRF-DIST-YYYYMMDD-XXXX`)**: Mutasi transfer keluar/masuk dari Gudang Induk Logistik ke Unit Distributor.
+* **Manajemen Piutang Usaha & Pembayaran (`PAY-DIST-YYYYMMDD-XXXX`)**: Klasifikasi *Aging Schedule* (0-30, 31-60, >60 hari), pembayaran bertahap/lunas, dan cetak bukti kuitansi bayar.
+* **Retur Penjualan Grosir (`RET-DIST-YYYYMMDD-XXXX`)**: Penanganan barang retur, pemulihan stok obat, penyesuaian piutang, dan auto-reversing jurnal HPP.
+* **Laporan Laba Rugi Mandiri Unit Distributor**: Laporan P&L khusus unit bisnis B2B (Penjualan 4-104, Retur 4-304, HPP 5-104).
+
+### 6.6. Restoran Sehat & Kitchen Display System (KDS)
 * **Touchscreen POS Kasir**: Desain kasir layar sentuh dengan filter kategori menu, open table bill, dan split payment.
 * **Kitchen Display System (KDS)**: Tampilan layar monitor dapur untuk koki/chef dengan status pesanan realtime (*Menunggu -> Dimasak -> Siap Saji*).
 * **Resep Diet Pasien**: Dokter spesialis gizi dapat mengirimkan rujukan paket makanan sehat langsung ke sistem kasir/dapur resto.
 
-### 6.6. Kasir Terpadu & Multi-Metode Pembayaran
+### 6.7. Kasir Terpadu & Multi-Metode Pembayaran
 * **Kalkulasi Tagihan Terpusat**: Menggabungkan seluruh tagihan medis, tindakan, resep obat apotek, dan pesanan resto dalam satu invoice.
 * **Multi-Payment**: Mendukung kombinasi pembayaran (misal: sebagian BPJS/Asuransi, sisanya Tunai/QRIS).
 * **Cetak Struk & Kuitansi**: Format cetak struk thermal 58mm/80mm dan kuitansi resmi ukuran A4/A5.
 
-### 6.7. Keuangan, Kas & Bank
+### 6.8. Keuangan, Kas & Bank
 * **Manajemen Kas & Bank**: Pencatatan kas kecil kasir (*cash float*), rekening bank operasional, kas masuk, kas keluar, dan transfer antar-rekening.
 * **Rekap Shift Kasir**: Rekonsiliasi fisik kas kasir saat pergantian shift atau tutup buku harian.
 * **Monitoring Piutang & Utang**: Pelacakan klaim piutang BPJS/Asuransi serta sisa hutang ke supplier pengadaan obat.
 
-### 6.8. Akuntansi, Setup Saldo Awal & Laporan Keuangan
+### 6.9. Akuntansi, Setup Saldo Awal & Laporan Keuangan
 * **Setup Saldo Awal (Smart Auto-Balancing)**:
   * Wizard penetapan saldo awal kas kasir, bank, persediaan apotek & resto, aset medis, hutang usaha, dan ekuitas.
   * **Auto-Balancing Cerdas**: Selisih aktiva dan pasiva otomatis diseimbangkan ke akun **Modal Awal Disetor (3-101)** sehingga neraca selalu 100% *Balance*.
   * Otomatis membukukan Jurnal Saldo Awal (`JV-SALDOAWAL-YYYYMMDD`) dan menyinkronkan saldo kasir `cash_registers`.
 * **5 Laporan Keuangan Komprehensif**:
-  1. *Laporan Laba Rugi Komprehensif (Income Statement)*: Pendapatan klinik, apotek, resto, HPP bahan baku, beban operasional, payroll nakes, hingga Laba/Rugi Bersih berjalan.
+  1. *Laporan Laba Rugi Komprehensif (Income Statement)*: Pendapatan klinik, apotek retail, distributor grosir, resto, HPP bahan baku, beban operasional, payroll nakes, hingga Laba/Rugi Bersih berjalan.
   2. *Laporan Neraca Posisi Keuangan (Balance Sheet)*: Sisi Aktiva vs Pasiva dengan indikator status *Balanced Badge*.
   3. *Laporan Arus Kas (Cash Flow Statement)*: Arus kas masuk/keluar dari aktivitas operasional.
-  4. *Rekapitulasi Kontribusi Omset Unit Bisnis*: Grafik dan ringkasan persentase omset Poli vs Apotek vs Resto vs Lab.
+  4. *Rekapitulasi Kontribusi Omset Unit Bisnis*: Grafik dan ringkasan persentase omset Poli vs Apotek vs Distributor vs Resto vs Lab.
   5. *Buku Besar Kronologis (General Ledger)*: Melacak seluruh mutasi debit/kredit per rekening COA.
 * **Format Cetak Laporan Keuangan Resmi**: Format berstandar audit dengan Kop Surat Resmi Klinik, Periode Laporan, dan Kolom Pengesahan Tanda Tangan Direktur & Kepala Keuangan.
 
-### 6.9. Pengadaan (Procurement) & Approval Workflow
+### 6.10. Pengadaan (Procurement) & Approval Workflow
 * **Purchase Order (PO)**: Pengajuan pengadaan obat ke supplier farmasi.
 * **Multi-Level Approval**: Alur persetujuan bertingkat (*Diajukan -> Diverifikasi Kepala Bagian -> Disetujui Direktur*).
 
-### 6.10. Inventaris Aset & HRD Kepegawaian
+### 6.11. Inventaris Aset & HRD Kepegawaian
 * **Inventaris & Aset**: Pencatatan aset medis dan non-medis beserta perhitungan depresiasi penyusutan bulanan otomatis ke jurnal akuntansi.
 * **Pegawai & Payroll**: Data nakes/staf, jadwal shift, presensi kehadiran, dan slip gaji terintegrasi bagi hasil jasa medis dokter.
 
-### 6.11. Administrasi Sistem, Audit Trail & Database Management
+### 6.12. Administrasi Sistem, Audit Trail & Database Management
 * **Audit Trail Logs**: Mencatat seluruh aktivitas user, modul, jenis aksi (LOGIN, CREATE, UPDATE, DELETE), IP address, dan user agent.
 * **Backup & Database Management**: Pembuatan SQL dump database sekali klik, pembersihan data sampah, dan optimalisasi tabel MySQL.
 * **Menu "Apa yang Baru?" (What's New)**: Halaman timeline pembaruan fitur untuk memudahkan pemantauan versi sistem.

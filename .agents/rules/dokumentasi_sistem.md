@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # 📋 DOKUMENTASI SISTEM ERP GITRIA FARMA - SAWAMAWA MEDICAL CENTER
 
 ## 📌 Ringkasan Eksekutif
@@ -6,14 +10,14 @@
 
 ### Keunggulan Utama:
 - ✅ **Klinik Digital Penuh** (Pendaftaran → Triase → SOAP → e-Resep → Lab → Billing → Penyerahan Obat)
-- ✅ **Farmasi Multi-Gudang** (Gudang Induk + Depo Apotek + Mutasi Transfer Otomatis)
-- ✅ **Distributor & Farmasi Grosir B2B** (Faktur B2B, Plafon Kredit, Termin TOP, Surat Jalan, Retur, Laba Rugi Mandiri)
+- ✅ **Farmasi Multi-Gudang & Multi-Batch** (Gudang Induk + Depo Apotek + Depo Rawat Inap + Mutasi Transfer Otomatis)
+- ✅ **Distributor & Farmasi Grosir B2B** (Faktur B2B, Plafon Kredit, Termin TOP, Surat Jalan, Retur, Laba Rugi Grosir Mandiri)
 - ✅ **Akuntansi Double-Entry** (Chart of Accounts → Jurnal Otomatis `JournalEngine` → Laporan Keuangan 5 Pilar)
 - ✅ **Real-Time LiveSync** (Zero-Reload JSON Polling untuk Antrean, Resep, Kasir, Dapur, Lab)
-- ✅ **Voice Calling System** (Text-to-Speech Anti-Collision untuk Antrean)
-- ✅ **Multi-Display** (Display TV Antrean + Kiosk Mandiri + Kitchen Display System)
+- ✅ **Voice Calling System** (Text-to-Speech Anti-Collision dengan Web Speech API)
+- ✅ **Multi-Display** (Display TV Antrean Klinik + Kiosk Mandiri APM + Kitchen Display System)
 - ✅ **RBAC Granular** (16 Role + 75+ Permission + Audit Trail Komprehensif)
-- ✅ **SATUSEHAT Ready** (Endpoint FHIR R4 untuk Integrasi Kemenkes)
+- ✅ **SATUSEHAT Ready** (Endpoint FHIR R4 untuk Integrasi Kemenkes RI)
 
 ---
 
@@ -42,7 +46,7 @@
 
 ---
 
-## 📊 STRUKTUR DATABASE (111 Tabel)
+## 📊 STRUKTUR DATABASE (111 Tabel Terintegrasi)
 
 ### 🏥 Modul Klinik & Rekam Medis (16 tabel)
 `patients`, `patient_visits`, `medical_records`, `triage_records`, `queue_numbers`, `queue_call_events`, `lab_results`, `lab_tests`, `medical_letters`, `medical_informed_consents`, `medical_photos`, `odontograms`, `polyclinics`, `doctors`, `doctor_schedules`, `nurses`
@@ -89,7 +93,7 @@
 | 4 | **Dokter** | SOAP, ICD, e-Resep | Pemeriksaan klinis, diagnosa, tindakan, rujukan lab, resep |
 | 5 | **Farmasi/Apoteker** | Resep, Stok, Batch | Dispensing resep, kartu stok, penjualan OTC |
 | 6 | **Kasir/Billing** | Kasir Klinik, Rekap | Penerimaan pembayaran, cetak kuitansi, rekap shift |
-| 7 | **Distributor / Grosir** | POS B2B, Piutang, DO | Faktur partai besar, monitoring plafon kredit, surat jalan, retur |
+| 7 | **Distributor / Grosir** | B2B POS, Piutang, DO | Faktur partai besar, monitoring plafon kredit, surat jalan, retur |
 | 8 | **Kasir Resto/Waiter** | POS Resto, Meja | Pemesanan menu, pembagian meja, open bill |
 | 9 | **Chef/Dapur** | Kitchen Display System | Pemantauan tiket pesanan dapur realtime |
 | 10 | **Keuangan/Akuntan** | Kas, Jurnal, Laporan | Manajemen arus kas, posting jurnal, 5 laporan keuangan |
@@ -162,12 +166,13 @@ sawamawamedicalcenter.id/
 ├── app/
 │   ├── Commands/              # CLI commands (Spark)
 │   ├── Config/
-│   │   ├── Routes.php         # 279 baris rute
+│   │   ├── Routes.php         # 350 baris rute
 │   │   ├── Filters.php        # HTTP filter bindings
 │   │   └── Events.php         # Event-driven hooks
-│   ├── Controllers/           # 18 Controllers + 5 API
+│   ├── Controllers/           # 19 Controllers + 5 API
 │   │   ├── Accounting.php     # Akuntansi & Laporan
-│   │   ├── Apotek.php         # Farmasi & Stok
+│   │   ├── Apotek.php         # Farmasi & Stok Retail
+│   │   ├── Distributor.php    # Distributor & Grosir B2B
 │   │   ├── Auth.php           # Login & Session
 │   │   ├── Dashboard.php      # Executive Dashboard
 │   │   ├── Klinik.php         # Pendaftaran, SOAP
@@ -178,14 +183,12 @@ sawamawamedicalcenter.id/
 │   │   ├── LiveSync.php       # Real-Time JSON
 │   │   └── Api/              # REST API Controllers
 │   ├── Filters/               # 3 HTTP Filters
-│   │   ├── AuthFilter.php
-│   │   ├── ApiKeyFilter.php
-│   │   └── AuditTrailFilter.php
 │   ├── Helpers/
 │   │   └── setting_helper.php # DataTable Server-Side
 │   ├── Models/                # 33 Eloquent Models
-│   ├── Services/              # 10 Service Engines
+│   ├── Services/              # 11 Service Engines
 │   │   ├── JournalEngine.php
+│   │   ├── DistributorService.php
 │   │   ├── ApprovalEngine.php
 │   │   ├── PharmacyService.php
 │   │   ├── ClinicService.php
@@ -195,6 +198,7 @@ sawamawamedicalcenter.id/
 │   ├── Views/                 # Blade Templates
 │   │   ├── accounting/        # 6 views
 │   │   ├── apotek/           # 12 views
+│   │   ├── distributor/      # 11 views (Dashboard, POS, Stok, Piutang, Retur, DO)
 │   │   ├── klinik/           # 16 views
 │   │   ├── keuangan/         # 7 views
 │   │   ├── resto/            # 6 views
@@ -205,16 +209,8 @@ sawamawamedicalcenter.id/
 │   └── dumps/                 # SQL Backups
 ├── docs/
 │   ├── DOKUMENTASI_SISTEM_LENGKAP.md
-│   ├── system_guide/dokumentasi.md
-│   └── proposals/
+│   └── system_guide/
 ├── public/
-│   ├── assets/
-│   │   ├── css/
-│   │   ├── js/
-│   │   └── uploads/
-│   └── index.php              # Entry point
-├── .env                       # Environment config
-├── composer.json              # PHP dependencies
 └── README.md
 ```
 
@@ -326,355 +322,3 @@ sawamawamedicalcenter.id/
 - Error Tracker terpusat (deduplicated hash) & Slow Query Monitor
 - Backup database dump SQL sekali klik
 - Pusat Bantuan interaktif & dokumentasi alur kerja sistem
-
----
-
-## 🎨 FITUR DESAIN UI/UX
-
-### Paper White Design System
-- Latar belakang putih murni (#ffffff)
-- Pembatas garis tegas (#b8b8b8) tanpa shadow berat
-- Warna aksen hijau Sawamawa (#0d9f4f / #20c997)
-- Tipografi modern: Inter/Roboto dengan kontras tinggi
-- Tabel garis pemisah tegas, header abu-abu, hover smooth
-- Responsif & ringan (tidak membebani browser)
-
-### Zero-Reload SPA Navigation
-- Navigasi antar modul tanpa reload page
-- Navbar Quick Bar untuk sub-menu modul
-- URL sync via `window.history.pushState`
-- DataTable destroy/reinit otomatis saat navigasi
-- Modal cleanup & dropdown close
-
-### Multi-Theme Engine
-- Paper White (Default)
-- macOS Big Sur
-- Modern Emerald
-- Windows XP Klasik (Retro)
-- Theme persistence via localStorage
-
-### Real-Time Components
-- **Live Antrean Display**: Refresh 2-5 detik via AJAX polling
-- **Voice Calling**: Text-to-Speech Bahasa Indonesia, anti-collision
-- **Chime Audio**: Oscillator-based sound (2-tone hospital bell)
-- **Network Status**: Indicator koneksi internet realtime
-- **Offline Draft Mode**: Queue transaksi offline kemudian sync
-
----
-
-## 🔐 KEAMANAN & PROTEKSI DATA MEDIS
-
-### Autentikasi & Otorisasi
-- Session-based authentication dengan RBAC
-- Password hashing BCrypt/Argon2 (PHP 8.2+)
-- API Key filter untuk endpoint REST API
-
-### Proteksi Serangan Siber
-- **CSRF Protection**: Token unik setiap formulir POST/AJAX
-- **XSS Defense**: Sanitasi output dengan `esc($var)`
-- **SQL Injection Prevention**: Parameter binding QueryBuilder CI4
-- **Session Isolation**: Verifikasi RBAC setiap akses URL
-
-### Audit & Compliance
-- Audit Trail Logging otomatis semua aktivitas
-- Pencatatan waktu, pengguna, IP, user agent
-- Tidak ada "silent delete" (soft delete dengan timestamp)
-- Compliance GDPR-like untuk data medis pasien
-
----
-
-## 📡 API & INTEROPERABILITAS
-
-### REST API Endpoints
-- **`/api/v1/antrean`**: Live queue data
-- **`/api/v1/medicines`**: Katalog obat
-- **`/api/v1/patients`**: Pasien & kunjungan
-- **`/api/v1/satusehat`**: FHIR R4 Encounter (Kemenkes)
-
-### API Authentication
-- `X-API-KEY` Header validation via `ApiKeyFilter`
-- Bearer Token support
-- Rate limiting & API quota
-
-### WebSocket / Live Sync
-- 6 Channel LiveSync:
-  1. Klinik Queue
-  2. Pharmacy Prescriptions
-  3. Cashier Bills
-  4. Resto Orders
-  5. Notification Feeds
-  6. System Alerts
-
----
-
-## 🛠️ TEKNOLOGI SERVICE ENGINE
-
-### 1. **JournalEngine** (Auto Jurnal Akuntansi)
-- Pemicu otomatis saat transaksi lunas
-- Pembacaan aturan mapping COA per jenis transaksi
-- Multi-tier split allocation (Klinik, Dokter, Nakes)
-- Reverse/Correction journal support
-
-### 2. **ApprovalEngine** (Workflow Multi-Level)
-- Konfigurable step-level approval
-- Role-based approver assignment
-- Status tracking & notification
-- Rejection & resubmission handling
-
-### 3. **PharmacyService** (Multi-Warehouse Sync)
-- FIFO/FEFO batch picking
-- Automatic stock mutation logging
-- Multi-gudang transfer scheduling
-- Expired date monitoring & alerts
-
-### 4. **ClinicService** (Bisnis Logika Klinik)
-- Visit creation & queue management
-- Triage recording & vital sign validation
-- Auto-billing trigger saat SOAP selesai
-- Fee calculation & commission split
-
-### 5. **FinanceService** (Kalkulasi Finansial)
-- Diskon & subsidi calculation
-- Tax & pajak determination
-- Multi-payment reconciliation
-- Cash flow forecasting
-
-### 6. **QueueCallService** (Voice Caller Anti-Collision)
-- FIFO queue processing
-- Collision detection (jeda 850ms hening)
-- Voice generation dengan Web Speech API
-- Display TV sync & status update
-
-### 7. **NotificationService** (Push & Alert)
-- Real-time push notification rules
-- Email/WhatsApp gateway integration
-- Notification read tracking
-- Notification preference per user
-
-### 8. **AuditService** (Log Tracking)
-- Automatic request/response logging
-- Sensitive data masking (password, NIK, KK)
-- Error exception tracking
-- IP & user agent recording
-
-### 9. **ErrorTrackerService** (Deduplicated Error Monitoring)
-- Stack trace hash generation (64-bit)
-- Automatic error deduplication
-- Count & frequency tracking
-- Exception categorization & alerting
-
-### 10. **RestoService** (Resto & Diet Integration)
-- Order creation & kitchen queueing
-- KDS status management
-- Diet prescription integration dari dokter
-- Revenue tracking per menu item
-
----
-
-## 📊 MASTERING & BUSINESS RULES
-
-### Master Data Referensi
-- **ICD-10 Diagnosa**: 10,000+ kode penyakit internasional
-- **ICD-9-CM Prosedur**: 5,000+ kode tindakan medis
-- **Layanan Terpusat Hierarkis**: Parent-Child grouping untuk tarif
-- **Aturan Komisi Jasa Medis**:
-  - Per dokter percentage/fixed amount
-  - Per layanan/tindakan
-  - Automatic calculation saat transaksi lunas
-- **Metode Pembayaran**: Tunai, QRIS, Bank Transfer, EDC, BPJS, Asuransi, Piutang
-- **Insurance Provider**: BPJS, Asuransi Swasta, Alodokter, dll.
-
-### Business Rules Engine
-- Auto-calculate tindakan tarif berdasarkan kategori & dokter
-- Auto-billing saat dokter selesai SOAP
-- Auto-potong stok apotek saat dispensing
-- Auto-jurnal saat payment terverifikasi
-- Auto-komisi dokter saat billing paid
-- Auto-depresiasi aset bulan berjalan
-
----
-
-## 🚀 DEPLOYMENT & KONFIGURASI
-
-### Environment Setup
-```bash
-# 1. Clone Repository
-git clone https://github.com/pahriyadi/gitria_farma.git
-cd gitria_farma
-
-# 2. Install Dependencies
-composer install
-
-# 3. Environment Configuration
-cp .env.example .env
-# Edit .env dengan detail database lokal:
-# database.default.hostname = localhost
-# database.default.database = sawamawa_erp
-# database.default.username = root
-# database.default.password = (kosong di XAMPP)
-
-# 4. Database Migration & Seeding
-php spark migrate
-php spark db:seed DatabaseSeeder
-
-# 5. Generate App Key & Setup
-php spark key:generate
-
-# 6. Jalankan Server Development
-php spark serve
-# Akses: http://localhost:8080
-```
-
-### Web Server Configuration (Apache .htaccess)
-```apache
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
-</IfModule>
-```
-
-### Database Backup & Restore
-```bash
-# Backup
-php spark db:backup
-
-# Restore
-mysql -u root sawamawa_erp < database/dumps/backup.sql
-```
-
----
-
-## 📈 PERFORMANCE & SCALABILITY
-
-### DataTables Server-Side Processing
-- Tabel besar (Patients, Medicines, Invoices, Journals) menggunakan SSP
-- Limit 10-15 rows per page
-- Database LIMIT/OFFSET dengan prepared statements
-- Response JSON dalam hitungan milidetik
-
-### Database Optimization
-- InnoDB engine dengan foreign key constraints
-- Index pada kolom search & filter utama
-- Partitioning untuk tabel transaksi besar (2000+ rows/hari)
-- Query profiling via `system_slow_queries` table
-
-### Caching Strategy
-- Session caching pengguna (RBAC roles/permissions)
-- Database query cache via Memcached (optional)
-- Frontend localStorage untuk theme & user preferences
-
-### Scaling Considerations
-- **Horizontal**: Database replication (MySQL Master-Slave)
-- **Vertical**: Upgrade CPU/RAM server untuk database
-- **CDN**: Serve static assets (CSS/JS) dari CDN
-- **Load Balancing**: Distribute traffic via nginx/HAProxy
-
----
-
-## 📚 CHANGELOG & MILESTONE VERSI
-
-### v3.7.0 (Build 30 Agustus 2026) — Current Production
-✅ 101 Tabel terintegrasi
-✅ RME Suite lengkap dengan 4 Tab (Riwayat, TTV Trend, Riwayat Obat, Surat & Lab)
-✅ Jurnal Penyesuaian (Edit & Hapus dengan auto-balance reversal)
-✅ Pusat Bantuan database-driven dengan flowchart generator
-✅ Buku Jurnal & Buku Besar standar Bank Indonesia
-✅ Dashboard Eksekutif RBAC-guarded
-✅ Clean Production State (42 tabel transaksi kosong, master intact)
-
-### v2.8.0 (27 Agustus 2026) — RESTful & Event-Driven
-✅ RESTful API `/api/v1` dengan API Key filter
-✅ Event-driven hooks (`Config\Events`)
-✅ 33 CodeIgniter 4 Native Models
-✅ Universal Audit Trail Recording
-✅ Spark Scheduled Cron Jobs
-✅ Automated Testing Suite
-
-### v2.7.0 (27 Agustus 2026) — Enterprise Advanced
-✅ Odontogram interaktif FDI 32 gigi
-✅ Triase IGD/UGD dengan skala ATS 1-5
-✅ Buku Kartu Stok Digital (Stock Card Ledger)
-✅ Aging Schedule piutang & hutang
-✅ Settlement jasa medis dokter terotomasi
-✅ Error Tracking & APM Engine
-
-### v2.6.0 (26 Agustus 2026) — RME & Akuntansi BI
-✅ RME Super Lengkap dengan Multi-Tab (Berstandar SATUSEHAT)
-✅ Editable & Delete Journal Correction Suite
-✅ Manajemen & Reset Saldo Awal Sistem
-✅ Laporan Keuangan standar Bank Indonesia & SAK EMKM
-✅ Dashboard Operasional berbasis peran
-
-### v2.5.0 (22 Agustus 2026) — Performa & Server-Side
-✅ DataTables Server-Side Processing (SSP)
-✅ Menu "Apa yang Baru?" berbasis database
-
-### v2.4.0 (21 Agustus 2026) — Finishing Akuntansi
-✅ Setup Saldo Awal dengan Auto-Balancing
-✅ 5 Laporan Keuangan Terpadu
-
-### v2.3.0 (20 Agustus 2026) — Master Klinik
-✅ Struktur tarif & tindakan bertingkat
-✅ Aturan bagi hasil jasa medis terotomasi
-
-### v2.2.0 (19 Agustus 2026) — Public Portal
-✅ Landing Page & Registrasi Online
-
-### v2.1.0 (18 Agustus 2026) — Resto & Farmasi Advanced
-✅ Touchscreen POS Resto + KDS
-✅ Multi-Batch tracking obat + Lab + Odontogram
-
-### v2.0.0 (15 Agustus 2026) — Fondasi ERP
-✅ Arsitektur MVC-S, RBAC 10 peran, Journal Engine, Approval Engine
-
----
-
-## 🎯 NEXT DEVELOPMENT ROADMAP
-
-### Q1 2027
-- [ ] Mobile App (iOS/Android native)
-- [ ] WhatsApp Integration payment link
-- [ ] BPJS RESTful API integration
-- [ ] Machine Learning predictive analytics (omset forecast)
-
-### Q2 2027
-- [ ] Electronic Health Record (EHR) export SATUSEHAT standard
-- [ ] Telemedicine module (video consultation)
-- [ ] Advanced inventory forecasting (min-max calculation)
-- [ ] BI Dashboard (PowerBI/Metabase integration)
-
-### Q3 2027
-- [ ] Multi-branch/network support
-- [ ] Centralized reporting & consolidation
-- [ ] Inter-branch transfer & pricing policy
-- [ ] Advanced role-based dashboard customization
-
----
-
-## 📞 SUPPORT & RESOURCES
-
-- **GitHub Repository**: https://github.com/pahriyadi/gitria_farma
-- **Documentation**: `/docs/DOKUMENTASI_SISTEM_LENGKAP.md`
-- **Architecture Guide**: `/.agents/rules/arsitektur_dan_kebutuhan_sistem.md`
-- **Coding Standards**: `/docs/system_guide/dokumentasi.md`
-- **API Documentation**: `/docs/proposals/export_to_word.php`
-
----
-
-## 📝 CATATAN PENTING UNTUK AI/PENGEMBANG
-
-1. **Selalu gunakan Transactions** (`$db->transBegin/Commit/Rollback`) untuk operasi multi-tabel
-2. **Error Tracking** wajib di setiap `catch` block menggunakan `ErrorTrackerService`
-3. **Format Rupiah**: `number_format($amount, 0, ',', '.')`
-4. **Format Tanggal**: `d F Y` untuk display, `Y-m-d` untuk database
-5. **DataTables**: Gunakan Server-Side Processing untuk tabel > 100 rows
-6. **Audit Log**: Semua aksi otomatis tercatat via `AuditTrailFilter`
-7. **RBAC Guard**: Selalu check permission sebelum akses resource sensitif
-8. **Journal Balance**: Setiap jurnal HARUS debit = kredit (0 tolerance)
-
----
-
-**Dokumentasi ini dirancang sebagai acuan teknis resmi untuk pengembangan dan peningkatan sistem ERP Sawamawa Medical Center & Resto Gizi.**

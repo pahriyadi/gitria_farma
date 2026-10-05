@@ -102,6 +102,7 @@ $hasPerm = function($perm) use ($isSuper, $perms) {
 $canAccessClinic = $isSuper || $hasPerm('clinic.register') || $hasPerm('clinic.soap') || $hasPerm('clinic.billing') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Dokter', 'Perawat', 'Rekam Medis']);
 $canAccessPharmacy = $isSuper || $hasPerm('pharmacy.dispense') || $hasPerm('pharmacy.stock') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Apoteker', 'Gudang']);
 $canAccessResto = $isSuper || $hasPerm('resto.order') || $hasPerm('resto.kitchen') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Resto/Kasir', 'Resto/Dapur']);
+$canAccessDistributor = $isSuper || $hasPerm('distributor.view') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Distributor', 'Manager']);
 $canAccessFinance = $isSuper || $hasPerm('clinic.billing') || $hasPerm('finance.manage') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Kasir', 'Koordinator Keuangan', 'Accounting']);
 $canAccessAccounting = $isSuper || $hasPerm('accounting.ledger') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Accounting', 'Koordinator Keuangan', 'Manager']);
 $canAccessProcurement = $isSuper || $hasPerm('procurement.apply') || $hasPerm('procurement.verify') || $hasPerm('procurement.approve') || in_array($roleName, ['Direksi', 'Kepala Klinik', 'Gudang', 'Apoteker', 'Koordinator Keuangan', 'Manager']);
@@ -123,6 +124,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             $isDashboard = in_array($currUri, ['', 'dashboard']) || ($active_menu ?? '') === 'dashboard';
             $isApotekActive = str_starts_with($currUri, 'apotek') || str_starts_with($active_menu ?? '', 'apotek');
             $isRestoActive  = str_starts_with($currUri, 'resto') || str_starts_with($active_menu ?? '', 'resto');
+            $isDistributorActive = str_starts_with($currUri, 'distributor') || str_starts_with($active_menu ?? '', 'distributor');
             $isKeuanganActive = str_starts_with($currUri, 'keuangan') || in_array($active_menu ?? '', ['kasir', 'keuangan-rekap', 'keuangan-transaksi', 'keuangan-aging', 'keuangan-fee-dokter']);
             $isAccountingActive = str_starts_with($currUri, 'accounting') || str_starts_with($active_menu ?? '', 'accounting');
             $isProcurementActive = str_starts_with($currUri, 'procurement') || str_starts_with($active_menu ?? '', 'procurement');
@@ -430,8 +432,77 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     </li>
                     <?php endif; ?>
 
+                    <?php if ($canAccessDistributor): ?>
+                    <li class="nav-item has-treeview <?= $isDistributorActive ? 'menu-open' : '' ?>">
+                        <a href="#" class="nav-link <?= $isDistributorActive ? 'active' : '' ?>">
+                            <i class="nav-icon fas fa-truck-fast text-indigo"></i>
+                            <p class="font-weight-bold">
+                                Distributor &amp; Grosir
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/dashboard') ?>" class="nav-link <?= $currUri === 'distributor/dashboard' || $currUri === 'distributor' ? 'active' : '' ?>">
+                                    <i class="fas fa-gauge-high nav-icon text-indigo"></i>
+                                    <p>Dashboard Grosir</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/penjualan') ?>" class="nav-link <?= $currUri === 'distributor/penjualan' ? 'active' : '' ?>">
+                                    <i class="fas fa-cash-register nav-icon text-success"></i>
+                                    <p>Kasir &amp; Faktur B2B</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/riwayat') ?>" class="nav-link <?= $currUri === 'distributor/riwayat' ? 'active' : '' ?>">
+                                    <i class="fas fa-receipt nav-icon text-primary"></i>
+                                    <p>Riwayat Penjualan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/pelanggan') ?>" class="nav-link <?= $currUri === 'distributor/pelanggan' ? 'active' : '' ?>">
+                                    <i class="fas fa-users-rectangle nav-icon text-info"></i>
+                                    <p>Pelanggan &amp; Limit</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/stok') ?>" class="nav-link <?= $currUri === 'distributor/stok' ? 'active' : '' ?>">
+                                    <i class="fas fa-boxes-stacked nav-icon text-teal"></i>
+                                    <p>Stok &amp; Kartu Stok</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/transfer') ?>" class="nav-link <?= $currUri === 'distributor/transfer' ? 'active' : '' ?>">
+                                    <i class="fas fa-arrow-right-arrow-left nav-icon text-secondary"></i>
+                                    <p>Transfer Antar Unit</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/piutang') ?>" class="nav-link <?= $currUri === 'distributor/piutang' ? 'active' : '' ?>">
+                                    <i class="fas fa-file-invoice-dollar nav-icon text-warning"></i>
+                                    <p>Monitoring Piutang</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/retur') ?>" class="nav-link <?= $currUri === 'distributor/retur' ? 'active' : '' ?>">
+                                    <i class="fas fa-rotate-left nav-icon text-danger"></i>
+                                    <p>Retur Penjualan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('distributor/laporan') ?>" class="nav-link <?= $currUri === 'distributor/laporan' ? 'active' : '' ?>">
+                                    <i class="fas fa-chart-pie nav-icon text-success"></i>
+                                    <p>Laporan Distributor</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <?php endif; ?>
+
                     <!-- Section 2: Keuangan & Akuntansi -->
                     <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; font-weight: 800; color: #334155; padding: 12px 14px 4px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 6px;">KEUANGAN &amp; AKUNTANSI</li>
+
 
                     <?php if ($canAccessFinance): ?>
                     <li class="nav-item has-treeview <?= $isKeuanganActive ? 'menu-open' : '' ?>">

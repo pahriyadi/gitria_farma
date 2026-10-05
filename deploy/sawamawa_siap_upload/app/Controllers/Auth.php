@@ -57,27 +57,39 @@ class Auth extends BaseController
                 $session->regenerate(true);
 
                 // 3. Get Permissions: Prioritize direct user-level custom permissions, fallback to role permissions
-                $userPermsQuery = $db->table('user_permissions')
-                                     ->select('permissions.name')
-                                     ->join('permissions', 'permissions.id = user_permissions.permission_id')
-                                     ->where('user_permissions.user_id', $userQuery->id)
-                                     ->get()
-                                     ->getResult();
-
                 $permissions = [];
-                if (!empty($userPermsQuery)) {
-                    foreach ($userPermsQuery as $perm) {
-                        $permissions[] = $perm->name;
+                try {
+                    $userPermsQuery = $db->table('user_permissions')
+                                         ->select('permissions.name')
+                                         ->join('permissions', 'permissions.id = user_permissions.permission_id')
+                                         ->where('user_permissions.user_id', $userQuery->id)
+                                         ->get()
+                                         ->getResult();
+
+                    if (!empty($userPermsQuery)) {
+                        foreach ($userPermsQuery as $perm) {
+                            $permissions[] = $perm->name;
+                        }
                     }
-                } else {
-                    $rolePermsQuery = $db->table('role_permissions')
-                                          ->select('permissions.name')
-                                          ->join('permissions', 'permissions.id = role_permissions.permission_id')
-                                          ->where('role_id', $userQuery->role_id)
-                                          ->get()
-                                          ->getResult();
-                    foreach ($rolePermsQuery as $perm) {
-                        $permissions[] = $perm->name;
+                } catch (\Throwable $e) {
+                    log_message('error', 'user_permissions query error: ' . $e->getMessage());
+                }
+
+                if (empty($permissions)) {
+                    try {
+                        $rolePermsQuery = $db->table('role_permissions')
+                                              ->select('permissions.name')
+                                              ->join('permissions', 'permissions.id = role_permissions.permission_id')
+                                              ->where('role_id', $userQuery->role_id)
+                                              ->get()
+                                              ->getResult();
+                        if (!empty($rolePermsQuery)) {
+                            foreach ($rolePermsQuery as $perm) {
+                                $permissions[] = $perm->name;
+                            }
+                        }
+                    } catch (\Throwable $e) {
+                        log_message('error', 'role_permissions query error: ' . $e->getMessage());
                     }
                 }
 

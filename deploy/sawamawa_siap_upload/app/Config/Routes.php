@@ -178,6 +178,30 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('hrd/bayar-payroll', 'HRD::bayarPayroll');
     $routes->get('hrd/cetak-slip-gaji/(:num)', 'HRD::cetakSlipGaji/$1');
     $routes->get('hrd/cetak-rekap-payroll/(:num)', 'HRD::cetakRekapPayroll/$1');
+
+    // Distributor & Grosir (B2B Unit Mandiri)
+    $routes->get('distributor', 'Distributor::index');
+    $routes->get('distributor/dashboard', 'Distributor::index');
+    $routes->get('distributor/penjualan', 'Distributor::penjualan');
+    $routes->post('distributor/simpan-penjualan', 'Distributor::simpanPenjualan');
+    $routes->get('distributor/riwayat', 'Distributor::riwayat');
+    $routes->get('distributor/detail-penjualan/(:num)', 'Distributor::detailPenjualan/$1');
+    $routes->get('distributor/cetak-faktur/(:num)', 'Distributor::cetakFaktur/$1');
+    $routes->get('distributor/cetak-surat-jalan/(:num)', 'Distributor::cetakSuratJalan/$1');
+    $routes->get('distributor/pelanggan', 'Distributor::pelanggan');
+    $routes->post('distributor/simpan-pelanggan', 'Distributor::simpanPelanggan');
+    $routes->get('distributor/stok', 'Distributor::stok');
+    $routes->post('distributor/simpan-stok', 'Distributor::simpanStok');
+    $routes->get('distributor/kartu-stok/(:num)', 'Distributor::kartuStok/$1');
+    $routes->get('distributor/transfer', 'Distributor::transfer');
+    $routes->post('distributor/simpan-transfer', 'Distributor::simpanTransfer');
+    $routes->get('distributor/piutang', 'Distributor::piutang');
+    $routes->post('distributor/bayar-piutang', 'Distributor::bayarPiutang');
+    $routes->get('distributor/riwayat-pembayaran/(:num)', 'Distributor::riwayatPembayaran/$1');
+    $routes->get('distributor/retur', 'Distributor::retur');
+    $routes->post('distributor/simpan-retur', 'Distributor::simpanRetur');
+    $routes->get('distributor/laporan', 'Distributor::laporan');
+
     $routes->get('hrd/pegawai-json/(:num)', 'HRD::getPegawaiJson/$1');
 
     // HRD: Absensi & Presensi Karyawan

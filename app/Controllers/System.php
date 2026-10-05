@@ -43,14 +43,18 @@ class System extends BaseController
         }
 
         // 3. Map custom permissions per user: user_id => [perm_name, ...]
-        $userPermsRows = $db->table('user_permissions')
-                            ->select('user_permissions.user_id, permissions.name as perm_name')
-                            ->join('permissions', 'permissions.id = user_permissions.permission_id')
-                            ->get()
-                            ->getResult();
         $userPermissionsMap = [];
-        foreach ($userPermsRows as $up) {
-            $userPermissionsMap[$up->user_id][] = $up->perm_name;
+        try {
+            $userPermsRows = $db->table('user_permissions')
+                                ->select('user_permissions.user_id, permissions.name as perm_name')
+                                ->join('permissions', 'permissions.id = user_permissions.permission_id')
+                                ->get()
+                                ->getResult();
+            foreach ($userPermsRows as $up) {
+                $userPermissionsMap[$up->user_id][] = $up->perm_name;
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'user_permissions query error in users list: ' . $e->getMessage());
         }
 
         // Attach permissions to each user object
@@ -1930,20 +1934,29 @@ class System extends BaseController
                    ->getRow();
 
         // 4. Fetch assigned permissions
-        $userPerms = $db->table('user_permissions')
-                        ->select('permissions.name, permissions.description')
-                        ->join('permissions', 'permissions.id = user_permissions.permission_id')
-                        ->where('user_permissions.user_id', $userId)
-                        ->get()
-                        ->getResult();
-
-        if (empty($userPerms)) {
-            $userPerms = $db->table('role_permissions')
+        $userPerms = [];
+        try {
+            $userPerms = $db->table('user_permissions')
                             ->select('permissions.name, permissions.description')
-                            ->join('permissions', 'permissions.id = role_permissions.permission_id')
-                            ->where('role_permissions.role_id', $user->role_id)
+                            ->join('permissions', 'permissions.id = user_permissions.permission_id')
+                            ->where('user_permissions.user_id', $userId)
                             ->get()
                             ->getResult();
+        } catch (\Throwable $e) {
+            log_message('error', 'user_permissions query error in user detail: ' . $e->getMessage());
+        }
+
+        if (empty($userPerms)) {
+            try {
+                $userPerms = $db->table('role_permissions')
+                                ->select('permissions.name, permissions.description')
+                                ->join('permissions', 'permissions.id = role_permissions.permission_id')
+                                ->where('role_permissions.role_id', $user->role_id)
+                                ->get()
+                                ->getResult();
+            } catch (\Throwable $e) {
+                log_message('error', 'role_permissions query error in user detail: ' . $e->getMessage());
+            }
         }
 
         // 5. Fetch recent user audit logs

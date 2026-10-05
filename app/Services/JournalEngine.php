@@ -838,4 +838,310 @@ class JournalEngine
             }
         }
     }
+
+    /**
+     * Post Distributor Sale Journal (Revenue + HPP/COGS)
+     */
+    public function postDistributorSaleJournal($saleId, $invoiceNo, $totalAmount, $paymentType, $paymentMethod, $cogsAmount, $discountAmount = 0, $taxAmount = 0, $customerName = '', $itemSummary = '')
+    {
+        $totalAmount = (float) $totalAmount;
+        if ($totalAmount <= 0) return ['status' => 'success', 'message' => 'Nilai transaksi 0'];
+
+        $sourceModule = 'Distributor & Grosir';
+        
+        // Prevent duplicate posting
+        $exQ = $this->db->table('journal_entries')
+                        ->where('source_module', $sourceModule)
+                        ->where('reference_id', $saleId)
+                        ->get();
+        if ($exQ && $exQ->getRow()) {
+            return ['status' => 'success', 'message' => 'Jurnal sudah dibukukan'];
+        }
+
+        // Accounts
+        $accKasDist = $this->getAccountId('1-104', '111');
+        $accBankDist = $this->getAccountId('1-114', '112');
+        $accPiutangDist = $this->getAccountId('1-203', '113');
+        $accPersediaanDist = $this->getAccountId('1-302', '141');
+        $accPendapatanDist = $this->getAccountId('4-104', '411');
+        $accDiskonDist = $this->getAccountId('4-204', '431');
+        $accHppDist = $this->getAccountId('5-104', '511');
+
+        $pMethod = strtolower($paymentMethod ?? 'tunai');
+        $debitAccId = ($pMethod === 'transfer' || $paymentType === 'transfer') ? $accBankDist : $accKasDist;
+        if ($paymentType === 'credit') {
+            $debitAccId = $accPiutangDist;
+        }
+
+        $journalNo = $this->generateJournalNo();
+        $desc = "Penjualan Grosir Distributor #{$invoiceNo} ({$customerName})" . ($itemSummary ? ": " . $itemSummary : "");
+
+        // 1. Header
+        $this->db->table('journal_entries')->insert([
+            'journal_no'    => $journalNo,
+            'entry_date'    => date('Y-m-d'),
+            'source_module' => $sourceModule,
+            'reference_id'  => $saleId,
+            'description'   => $desc,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+        $journalId = $this->db->insertID();
+
+        // 2. Debit: Kas/Bank/Piutang
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $debitAccId,
+            'debit'      => $totalAmount,
+            'credit'     => 0.00
+        ]);
+        $this->applyBalanceMovement($debitAccId, $totalAmount, 0.00);
+
+        // Diskon jika ada
+        if ($discountAmount > 0 && $accDiskonDist) {
+            $this->db->table('journal_entry_details')->insert([
+                'journal_id' => $journalId,
+                'account_id' => $accDiskonDist,
+                'debit'      => $discountAmount,
+                'credit'     => 0.00
+            ]);
+            $this->applyBalanceMovement($accDiskonDist, $discountAmount, 0.00);
+        }
+
+        // 3. Kredit: Pendapatan Penjualan Distributor
+        $creditRevenue = $totalAmount + $discountAmount;
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $accPendapatanDist,
+            'debit'      => 0.00,
+            'credit'     => $creditRevenue
+        ]);
+        $this->applyBalanceMovement($accPendapatanDist, 0.00, $creditRevenue);
+
+        // 4. Jurnal HPP (Debit HPP, Kredit Persediaan) jika ada COGS
+        $cogsAmount = (float) $cogsAmount;
+        if ($cogsAmount > 0 && $accHppDist && $accPersediaanDist) {
+            $hppJournalNo = $this->generateJournalNo();
+            $this->db->table('journal_entries')->insert([
+                'journal_no'    => $hppJournalNo,
+                'entry_date'    => date('Y-m-d'),
+                'source_module' => 'HPP Distributor',
+                'reference_id'  => $saleId,
+                'description'   => "HPP Penjualan Grosir #{$invoiceNo} ({$customerName})",
+                'created_at'    => date('Y-m-d H:i:s')
+            ]);
+            $hppJournalId = $this->db->insertID();
+
+            // Debit HPP
+            $this->db->table('journal_entry_details')->insert([
+                'journal_id' => $hppJournalId,
+                'account_id' => $accHppDist,
+                'debit'      => $cogsAmount,
+                'credit'     => 0.00
+            ]);
+            $this->applyBalanceMovement($accHppDist, $cogsAmount, 0.00);
+
+            // Kredit Persediaan
+            $this->db->table('journal_entry_details')->insert([
+                'journal_id' => $hppJournalId,
+                'account_id' => $accPersediaanDist,
+                'debit'      => 0.00,
+                'credit'     => $cogsAmount
+            ]);
+            $this->applyBalanceMovement($accPersediaanDist, 0.00, $cogsAmount);
+        }
+
+        return ['status' => 'success', 'journal_no' => $journalNo];
+    }
+
+    /**
+     * Post Distributor Payment / Pelunasan Piutang
+     */
+    public function postDistributorPaymentJournal($paymentId, $paymentNo, $amount, $paymentMethod, $invoiceNo, $customerName)
+    {
+        $amount = (float) $amount;
+        if ($amount <= 0) return ['status' => 'success'];
+
+        $sourceModule = 'Pelunasan Piutang Distributor';
+        $accKasDist = $this->getAccountId('1-104', '111');
+        $accBankDist = $this->getAccountId('1-114', '112');
+        $accPiutangDist = $this->getAccountId('1-203', '113');
+
+        $pMethod = strtolower($paymentMethod ?? 'cash');
+        $debitAccId = in_array($pMethod, ['transfer', 'bank', 'bank_transfer']) ? $accBankDist : $accKasDist;
+
+        $journalNo = $this->generateJournalNo();
+        $desc = "Pelunasan Piutang Distributor #{$paymentNo} utk Faktur #{$invoiceNo} ({$customerName})";
+
+        $this->db->table('journal_entries')->insert([
+            'journal_no'    => $journalNo,
+            'entry_date'    => date('Y-m-d'),
+            'source_module' => $sourceModule,
+            'reference_id'  => $paymentId,
+            'description'   => $desc,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+        $journalId = $this->db->insertID();
+
+        // Debit: Kas/Bank
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $debitAccId,
+            'debit'      => $amount,
+            'credit'     => 0.00
+        ]);
+        $this->applyBalanceMovement($debitAccId, $amount, 0.00);
+
+        // Credit: Piutang
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $accPiutangDist,
+            'debit'      => 0.00,
+            'credit'     => $amount
+        ]);
+        $this->applyBalanceMovement($accPiutangDist, 0.00, $amount);
+
+        return ['status' => 'success', 'journal_no' => $journalNo];
+    }
+
+    /**
+     * Post Distributor Return Journal
+     */
+    public function postDistributorReturnJournal($returnId, $returnNo, $returnAmount, $cogsReversal, $refundMethod, $invoiceNo, $customerName)
+    {
+        $returnAmount = (float) $returnAmount;
+        if ($returnAmount <= 0) return ['status' => 'success'];
+
+        $sourceModule = 'Retur Penjualan Distributor';
+        $accKasDist = $this->getAccountId('1-104', '111');
+        $accBankDist = $this->getAccountId('1-114', '112');
+        $accPiutangDist = $this->getAccountId('1-203', '113');
+        $accReturDist = $this->getAccountId('4-304', '432');
+        $accPersediaanDist = $this->getAccountId('1-302', '141');
+        $accHppDist = $this->getAccountId('5-104', '511');
+
+        $creditAccId = $accPiutangDist;
+        if ($refundMethod === 'cash_refund') {
+            $creditAccId = $accKasDist;
+        } elseif ($refundMethod === 'bank_refund') {
+            $creditAccId = $accBankDist;
+        }
+
+        $journalNo = $this->generateJournalNo();
+        $desc = "Retur Penjualan Grosir #{$returnNo} utk Faktur #{$invoiceNo} ({$customerName})";
+
+        $this->db->table('journal_entries')->insert([
+            'journal_no'    => $journalNo,
+            'entry_date'    => date('Y-m-d'),
+            'source_module' => $sourceModule,
+            'reference_id'  => $returnId,
+            'description'   => $desc,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+        $journalId = $this->db->insertID();
+
+        // Debit: Retur Penjualan
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $accReturDist,
+            'debit'      => $returnAmount,
+            'credit'     => 0.00
+        ]);
+        $this->applyBalanceMovement($accReturDist, $returnAmount, 0.00);
+
+        // Credit: Piutang / Kas
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $creditAccId,
+            'debit'      => 0.00,
+            'credit'     => $returnAmount
+        ]);
+        $this->applyBalanceMovement($creditAccId, 0.00, $returnAmount);
+
+        // Reversal HPP & Persediaan
+        $cogsReversal = (float) $cogsReversal;
+        if ($cogsReversal > 0 && $accPersediaanDist && $accHppDist) {
+            $hppJournalNo = $this->generateJournalNo();
+            $this->db->table('journal_entries')->insert([
+                'journal_no'    => $hppJournalNo,
+                'entry_date'    => date('Y-m-d'),
+                'source_module' => 'Pembalikan HPP Retur Distributor',
+                'reference_id'  => $returnId,
+                'description'   => "Pembalikan HPP Retur Grosir #{$returnNo} ({$customerName})",
+                'created_at'    => date('Y-m-d H:i:s')
+            ]);
+            $hppJournalId = $this->db->insertID();
+
+            // Debit Persediaan (Stok kembali masuk)
+            $this->db->table('journal_entry_details')->insert([
+                'journal_id' => $hppJournalId,
+                'account_id' => $accPersediaanDist,
+                'debit'      => $cogsReversal,
+                'credit'     => 0.00
+            ]);
+            $this->applyBalanceMovement($accPersediaanDist, $cogsReversal, 0.00);
+
+            // Credit HPP
+            $this->db->table('journal_entry_details')->insert([
+                'journal_id' => $hppJournalId,
+                'account_id' => $accHppDist,
+                'debit'      => 0.00,
+                'credit'     => $cogsReversal
+            ]);
+            $this->applyBalanceMovement($accHppDist, 0.00, $cogsReversal);
+        }
+
+        return ['status' => 'success', 'journal_no' => $journalNo];
+    }
+
+    /**
+     * Post Distributor Inter-unit Stock Transfer Journal
+     */
+    public function postDistributorStockTransferJournal($transferId, $transferNo, $cogsValue, $sourceType, $targetType)
+    {
+        $cogsValue = (float) $cogsValue;
+        if ($cogsValue <= 0) return ['status' => 'success'];
+
+        $accPersediaanDist = $this->getAccountId('1-302', '141');
+        $accPersediaanApotek = $this->getAccountId('1-301', '141');
+
+        $debitAccId = $accPersediaanApotek;
+        $creditAccId = $accPersediaanDist;
+
+        if ($sourceType === 'pharmacy' && $targetType === 'distributor') {
+            $debitAccId = $accPersediaanDist;
+            $creditAccId = $accPersediaanApotek;
+        }
+
+        $journalNo = $this->generateJournalNo();
+        $desc = "Transfer Stok Antar-Unit #{$transferNo} ({$sourceType} -> {$targetType})";
+
+        $this->db->table('journal_entries')->insert([
+            'journal_no'    => $journalNo,
+            'entry_date'    => date('Y-m-d'),
+            'source_module' => 'Transfer Stok Antar Unit',
+            'reference_id'  => $transferId,
+            'description'   => $desc,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+        $journalId = $this->db->insertID();
+
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $debitAccId,
+            'debit'      => $cogsValue,
+            'credit'     => 0.00
+        ]);
+        $this->applyBalanceMovement($debitAccId, $cogsValue, 0.00);
+
+        $this->db->table('journal_entry_details')->insert([
+            'journal_id' => $journalId,
+            'account_id' => $creditAccId,
+            'debit'      => 0.00,
+            'credit'     => $cogsValue
+        ]);
+        $this->applyBalanceMovement($creditAccId, 0.00, $cogsValue);
+
+        return ['status' => 'success', 'journal_no' => $journalNo];
+    }
 }
+
