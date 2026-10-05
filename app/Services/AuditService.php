@@ -12,7 +12,7 @@ class AuditService
         try {
             $db = \Config\Database::connect('default');
             $request = service('request');
-            $userId = session()->get('user_id') ?: 1;
+            $userId = session()->get('user_id') ?: null;
 
             $db->table('audit_logs')->insert([
                 'user_id'    => $userId,

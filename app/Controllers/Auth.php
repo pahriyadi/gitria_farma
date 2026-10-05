@@ -139,7 +139,7 @@ class Auth extends BaseController
 
                 // Audit Log: Failed Login Attempt
                 $db->table('audit_logs')->insert([
-                    'user_id'    => $userQuery ? $userQuery->id : 1,
+                    'user_id'    => $userQuery ? $userQuery->id : null,
                     'action'     => 'LOGIN_FAILED',
                     'module'     => 'Auth',
                     'table_name' => 'users',
