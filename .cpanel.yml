@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/n1579664/public_html/
+    - export DEPLOYPATH=/home/n1579664/public_html/appsdemo-albiandra-project.my.id/
     - /bin/rsync -av --exclude='.git' --exclude='.cpanel.yml' * $DEPLOYPATH
