@@ -53,7 +53,7 @@ Setelah Anda berhasil melakukan `git push` ke GitHub, sekarang saatnya memperbar
 2. Salin dan jalankan **perintah komplit ini** (sekaligus meng-update file kodingan & memperbarui tabel database server):
 
 ```bash
-cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main && php spark db:seed VoidSystemSeeder
+cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main && php spark db:seed DistributorCoaSeeder
 ```
 
 3. ✨ **Selesai!** Seluruh file kode dan struktur tabel database di hosting Anda langsung terupdate otomatis.
