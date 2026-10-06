@@ -18,8 +18,8 @@
                     <a href="<?= base_url('distributor/piutang') ?>" class="btn btn-outline-warning btn-sm font-weight-bold shadow-sm">
                         <i class="fas fa-file-invoice-dollar mr-1"></i> Piutang
                     </a>
-                    <a href="<?= base_url('accounting/jurnal') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-book mr-1"></i> Jurnal Umum Holding
+                    <a href="<?= base_url('accounting/jurnal?scope=all') ?>" class="btn btn-outline-dark btn-sm font-weight-bold shadow-sm" title="Lihat Jurnal Umum Konsolidasian">
+                        <i class="fas fa-layer-group mr-1 text-warning"></i> Jurnal Konsolidasi
                     </a>
                 </div>
             </div>

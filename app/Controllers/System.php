@@ -631,8 +631,9 @@ class System extends BaseController
         try {
             $seeder = \Config\Database::seeder();
             $seeder->call('App\Database\Seeds\VoidSystemSeeder');
+            $seeder->call('App\Database\Seeds\DistributorCoaSeeder');
         } catch (\Throwable $e) {
-            log_message('error', 'Auto-run VoidSystemSeeder in syncData: ' . $e->getMessage());
+            log_message('error', 'Auto-run Seeders in syncData: ' . $e->getMessage());
         }
 
         $db->transComplete();

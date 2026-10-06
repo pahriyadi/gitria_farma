@@ -858,14 +858,14 @@ class JournalEngine
             return ['status' => 'success', 'message' => 'Jurnal sudah dibukukan'];
         }
 
-        // Accounts
-        $accKasDist = $this->getAccountId('1-104', '111');
-        $accBankDist = $this->getAccountId('1-114', '112');
-        $accPiutangDist = $this->getAccountId('1-203', '113');
-        $accPersediaanDist = $this->getAccountId('1-302', '141');
-        $accPendapatanDist = $this->getAccountId('4-104', '411');
-        $accDiskonDist = $this->getAccountId('4-204', '431');
-        $accHppDist = $this->getAccountId('5-104', '511');
+        // Accounts (Prioritize dedicated distributor COA accounts)
+        $accKasDist = $this->getAccountId('1131', '113') ?: ($this->getAccountId('1-104', '111'));
+        $accBankDist = $this->getAccountId('1132', '113') ?: ($this->getAccountId('1-114', '112'));
+        $accPiutangDist = $this->getAccountId('124', '1-203') ?: ($this->getAccountId('113', '12'));
+        $accPersediaanDist = $this->getAccountId('1410', '1-302') ?: ($this->getAccountId('141'));
+        $accPendapatanDist = $this->getAccountId('4110', '4-104') ?: ($this->getAccountId('411', '41'));
+        $accDiskonDist = $this->getAccountId('4310', '4-204') ?: ($this->getAccountId('431', '43'));
+        $accHppDist = $this->getAccountId('5110', '5-104') ?: ($this->getAccountId('511', '51'));
 
         $pMethod = strtolower($paymentMethod ?? 'tunai');
         $debitAccId = ($pMethod === 'transfer' || $paymentType === 'transfer') ? $accBankDist : $accKasDist;
@@ -962,9 +962,9 @@ class JournalEngine
         if ($amount <= 0) return ['status' => 'success'];
 
         $sourceModule = 'Pelunasan Piutang Distributor';
-        $accKasDist = $this->getAccountId('1-104', '111');
-        $accBankDist = $this->getAccountId('1-114', '112');
-        $accPiutangDist = $this->getAccountId('1-203', '113');
+        $accKasDist = $this->getAccountId('1131', '113') ?: ($this->getAccountId('1-104', '111'));
+        $accBankDist = $this->getAccountId('1132', '113') ?: ($this->getAccountId('1-114', '112'));
+        $accPiutangDist = $this->getAccountId('124', '1-203') ?: ($this->getAccountId('113', '12'));
 
         $pMethod = strtolower($paymentMethod ?? 'cash');
         $debitAccId = in_array($pMethod, ['transfer', 'bank', 'bank_transfer']) ? $accBankDist : $accKasDist;
@@ -1012,12 +1012,12 @@ class JournalEngine
         if ($returnAmount <= 0) return ['status' => 'success'];
 
         $sourceModule = 'Retur Penjualan Distributor';
-        $accKasDist = $this->getAccountId('1-104', '111');
-        $accBankDist = $this->getAccountId('1-114', '112');
-        $accPiutangDist = $this->getAccountId('1-203', '113');
-        $accReturDist = $this->getAccountId('4-304', '432');
-        $accPersediaanDist = $this->getAccountId('1-302', '141');
-        $accHppDist = $this->getAccountId('5-104', '511');
+        $accKasDist = $this->getAccountId('1131', '113') ?: ($this->getAccountId('1-104', '111'));
+        $accBankDist = $this->getAccountId('1132', '113') ?: ($this->getAccountId('1-114', '112'));
+        $accPiutangDist = $this->getAccountId('124', '1-203') ?: ($this->getAccountId('113', '12'));
+        $accReturDist = $this->getAccountId('4320', '4-304') ?: ($this->getAccountId('432', '43'));
+        $accPersediaanDist = $this->getAccountId('1410', '1-302') ?: ($this->getAccountId('141'));
+        $accHppDist = $this->getAccountId('5110', '5-104') ?: ($this->getAccountId('511', '51'));
 
         $creditAccId = $accPiutangDist;
         if ($refundMethod === 'cash_refund') {

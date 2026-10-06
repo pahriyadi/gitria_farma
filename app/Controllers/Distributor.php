@@ -704,4 +704,259 @@ class Distributor extends BaseController
 
         return view('distributor/laporan', $data);
     }
+
+    /**
+     * 10. Buku Kas & Arus Kas Mandiri Distributor
+     */
+    public function kas()
+    {
+        $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
+        $endDate = $this->request->getGet('end_date') ?: date('Y-m-d');
+        $accountType = $this->request->getGet('account_type') ?: 'all';
+
+        // Get Distributor Accounts
+        $accKasTunai = $this->db->table('accounts')->where('code', '1131')->get()->getRow();
+        $accKasBank = $this->db->table('accounts')->where('code', '1132')->get()->getRow();
+
+        $saldoKasTunai = (float) ($accKasTunai->balance ?? 0);
+        $saldoKasBank = (float) ($accKasBank->balance ?? 0);
+        $totalSaldo = $saldoKasTunai + $saldoKasBank;
+
+        // Query journal entries involving distributor cash accounts
+        $distributorAccountIds = [];
+        if ($accKasTunai) $distributorAccountIds[] = (int) $accKasTunai->id;
+        if ($accKasBank) $distributorAccountIds[] = (int) $accKasBank->id;
+
+        $builder = $this->db->table('journal_entry_details')
+                            ->select('journal_entry_details.*, journal_entries.journal_no, journal_entries.entry_date, journal_entries.source_module, journal_entries.description, accounts.code as acc_code, accounts.name as acc_name')
+                            ->join('journal_entries', 'journal_entries.id = journal_entry_details.journal_id')
+                            ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+                            ->where('journal_entries.entry_date >=', $startDate)
+                            ->where('journal_entries.entry_date <=', $endDate);
+
+        if (!empty($distributorAccountIds)) {
+            if ($accountType === 'cash' && $accKasTunai) {
+                $builder->where('journal_entry_details.account_id', $accKasTunai->id);
+            } elseif ($accountType === 'bank' && $accKasBank) {
+                $builder->where('journal_entry_details.account_id', $accKasBank->id);
+            } else {
+                $builder->whereIn('journal_entry_details.account_id', $distributorAccountIds);
+            }
+        }
+
+        $mutasiList = $builder->orderBy('journal_entries.entry_date', 'DESC')
+                              ->orderBy('journal_entries.id', 'DESC')
+                              ->get()->getResult();
+
+        // Calculate in / out totals
+        $totalMasuk = 0;
+        $totalKeluar = 0;
+        foreach ($mutasiList as $m) {
+            $totalMasuk += (float) $m->debit;
+            $totalKeluar += (float) $m->credit;
+        }
+
+        // Available expense accounts for Kas Keluar
+        $expenseAccounts = $this->db->table('accounts')
+                                    ->where('type', 'Expense')
+                                    ->orderBy('code', 'ASC')
+                                    ->get()->getResult();
+
+        // Available revenue/other accounts for Kas Masuk
+        $revenueAccounts = $this->db->table('accounts')
+                                    ->whereIn('type', ['Revenue', 'Equity'])
+                                    ->orderBy('code', 'ASC')
+                                    ->get()->getResult();
+
+        $data = [
+            'title'           => 'Buku Kas Mandiri Distributor',
+            'startDate'       => $startDate,
+            'endDate'         => $endDate,
+            'accountType'     => $accountType,
+            'saldoKasTunai'   => $saldoKasTunai,
+            'saldoKasBank'    => $saldoKasBank,
+            'totalSaldo'      => $totalSaldo,
+            'totalMasuk'      => $totalMasuk,
+            'totalKeluar'     => $totalKeluar,
+            'mutasiList'      => $mutasiList,
+            'expenseAccounts' => $expenseAccounts,
+            'revenueAccounts' => $revenueAccounts
+        ];
+
+        return view('distributor/kas', $data);
+    }
+
+    /**
+     * AJAX/POST: Simpan Transaksi Kas Masuk / Kas Keluar Distributor
+     */
+    public function simpanKas()
+    {
+        if (!$this->request->isAJAX() && strtolower($this->request->getMethod()) !== 'post') {
+            return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => 'Invalid request']);
+        }
+
+        try {
+            $type = $this->request->getPost('type'); // in / out
+            $accountTarget = $this->request->getPost('account_target'); // 1131 (tunai) / 1132 (bank)
+            $opposingAccountId = (int) $this->request->getPost('opposing_account_id');
+            $amount = (float) $this->request->getPost('amount');
+            $date = $this->request->getPost('transaction_date') ?: date('Y-m-d');
+            $description = trim($this->request->getPost('description') ?? '');
+            $userId = $this->getUserId();
+
+            if ($amount <= 0) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Nominal transaksi harus lebih besar dari 0']);
+            }
+            if (!$opposingAccountId) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Silakan pilih akun lawan transaksi']);
+            }
+
+            $this->db->transStart();
+
+            $distKasAcc = $this->db->table('accounts')->where('code', $accountTarget)->get()->getRow();
+            if (!$distKasAcc) {
+                $distKasAcc = $this->db->table('accounts')->where('code', '113')->get()->getRow();
+            }
+            $oppAcc = $this->db->table('accounts')->where('id', $opposingAccountId)->get()->getRow();
+
+            if (!$distKasAcc || !$oppAcc) {
+                throw new \Exception('Akun COA tidak valid');
+            }
+
+            $journalEngine = new \App\Services\JournalEngine();
+            $journalNo = $journalEngine->generateJournalNo();
+            $sourceModule = 'Kas ' . ($type === 'in' ? 'Masuk' : 'Keluar') . ' Distributor';
+
+            $this->db->table('journal_entries')->insert([
+                'journal_no'    => $journalNo,
+                'entry_date'    => $date,
+                'source_module' => $sourceModule,
+                'reference_id'  => 0,
+                'description'   => "Kas " . ($type === 'in' ? 'Masuk' : 'Keluar') . " Distributor: " . $description,
+                'created_at'    => date('Y-m-d H:i:s')
+            ]);
+            $journalId = $this->db->insertID();
+
+            if ($type === 'in') {
+                // Debit: Kas Distributor, Kredit: Akun Lawan
+                $this->db->table('journal_entry_details')->insert([
+                    'journal_id' => $journalId,
+                    'account_id' => $distKasAcc->id,
+                    'debit'      => $amount,
+                    'credit'     => 0.00
+                ]);
+                $this->db->table('accounts')->where('id', $distKasAcc->id)->update([
+                    'balance' => (float)$distKasAcc->balance + $amount
+                ]);
+
+                $this->db->table('journal_entry_details')->insert([
+                    'journal_id' => $journalId,
+                    'account_id' => $oppAcc->id,
+                    'debit'      => 0.00,
+                    'credit'     => $amount
+                ]);
+                $this->db->table('accounts')->where('id', $oppAcc->id)->update([
+                    'balance' => (float)$oppAcc->balance + ($oppAcc->normal_balance === 'credit' ? $amount : -$amount)
+                ]);
+            } else {
+                // Kas Keluar: Debit Akun Lawan (Beban), Kredit Kas Distributor
+                $this->db->table('journal_entry_details')->insert([
+                    'journal_id' => $journalId,
+                    'account_id' => $oppAcc->id,
+                    'debit'      => $amount,
+                    'credit'     => 0.00
+                ]);
+                $this->db->table('accounts')->where('id', $oppAcc->id)->update([
+                    'balance' => (float)$oppAcc->balance + ($oppAcc->normal_balance === 'debit' ? $amount : -$amount)
+                ]);
+
+                $this->db->table('journal_entry_details')->insert([
+                    'journal_id' => $journalId,
+                    'account_id' => $distKasAcc->id,
+                    'debit'      => 0.00,
+                    'credit'     => $amount
+                ]);
+                $this->db->table('accounts')->where('id', $distKasAcc->id)->update([
+                    'balance' => (float)$distKasAcc->balance - $amount
+                ]);
+            }
+
+            $this->db->transComplete();
+
+            if ($this->db->transStatus() === false) {
+                throw new \Exception('Gagal memproses transaksi kas.');
+            }
+
+            return $this->response->setJSON([
+                'status'     => 'success',
+                'journal_no' => $journalNo,
+                'message'    => 'Transaksi kas distributor berhasil disimpan dan dijurnal otomatis.'
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 11. Jurnal Transaksi Khusus Unit Distributor
+     */
+    public function jurnal()
+    {
+        $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
+        $endDate = $this->request->getGet('end_date') ?: date('Y-m-d');
+        $search = trim($this->request->getGet('search') ?? '');
+
+        $distributorModules = [
+            'Distributor & Grosir',
+            'Pelunasan Piutang Distributor',
+            'Retur Penjualan Distributor',
+            'HPP Distributor',
+            'Kas Masuk Distributor',
+            'Kas Keluar Distributor'
+        ];
+
+        $builder = $this->db->table('journal_entries')
+                            ->whereIn('source_module', $distributorModules)
+                            ->where('entry_date >=', $startDate)
+                            ->where('entry_date <=', $endDate);
+
+        if (!empty($search)) {
+            $builder->groupStart()
+                    ->like('journal_no', $search)
+                    ->orLike('description', $search)
+                    ->groupEnd();
+        }
+
+        $journals = $builder->orderBy('entry_date', 'DESC')
+                            ->orderBy('id', 'DESC')
+                            ->get()->getResult();
+
+        // Get details for all listed journals
+        $journalIds = array_map(function($j) { return $j->id; }, $journals);
+        $detailsByJournal = [];
+
+        if (!empty($journalIds)) {
+            $details = $this->db->table('journal_entry_details')
+                                ->select('journal_entry_details.*, accounts.code as acc_code, accounts.name as acc_name')
+                                ->join('accounts', 'accounts.id = journal_entry_details.account_id')
+                                ->whereIn('journal_entry_details.journal_id', $journalIds)
+                                ->orderBy('journal_entry_details.id', 'ASC')
+                                ->get()->getResult();
+
+            foreach ($details as $d) {
+                $detailsByJournal[$d->journal_id][] = $d;
+            }
+        }
+
+        $data = [
+            'title'            => 'Jurnal Umum Transaksi Distributor',
+            'startDate'        => $startDate,
+            'endDate'          => $endDate,
+            'search'           => $search,
+            'journals'         => $journals,
+            'detailsByJournal' => $detailsByJournal
+        ];
+
+        return view('distributor/jurnal', $data);
+    }
 }

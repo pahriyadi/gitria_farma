@@ -152,13 +152,28 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             <!-- Live Status Antrean Poli (Pill Widget with Pulse Indicator) -->
             <?php 
             $activeQueueCount = clinic_active_queue_count(); 
-            if ($canAccessClinic):
+            if ($canAccessClinic && !$isDistributorActive):
             ?>
             <li class="nav-item d-none d-sm-block">
                 <a href="<?= base_url('klinik/pendaftaran') ?>" class="navbar-queue-pill <?= $activeQueueCount > 0 ? 'has-queue' : '' ?>" title="Lihat Antrean Pasien Hari Ini">
                     <span class="pulse-dot <?= $activeQueueCount > 0 ? 'pulse-active' : '' ?>"></span>
                     <i class="fas fa-hospital-user mr-1.5" style="font-size: 11.5px;"></i>
                     <span>Antrean: <strong><?= $activeQueueCount ?></strong> Pasien</span>
+                </a>
+            </li>
+            <?php endif; ?>
+
+            <!-- Portal Switcher Indicator & Quick Jump -->
+            <?php if ($isDistributorActive): ?>
+            <li class="nav-item d-none d-sm-block">
+                <a href="<?= base_url('dashboard') ?>" class="btn btn-outline-teal btn-xs font-weight-bold px-2.5 py-1 shadow-xs" title="Beralih ke Portal Klinik & Pelayanan">
+                    <i class="fas fa-hospital mr-1"></i> Kembali ke Portal Klinik
+                </a>
+            </li>
+            <?php elseif ($canAccessDistributor): ?>
+            <li class="nav-item d-none d-md-block">
+                <a href="<?= base_url('distributor/dashboard') ?>" class="btn btn-outline-indigo btn-xs font-weight-bold px-2.5 py-1 shadow-xs" style="color: #4f46e5; border-color: #c7d2fe; background: #f5f3ff;" title="Buka Portal Mandiri Distributor & Grosir Farmasi (B2B)">
+                    <i class="fas fa-truck-fast mr-1"></i> Portal Distributor B2B
                 </a>
             </li>
             <?php endif; ?>
@@ -286,6 +301,126 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column nav-flat nav-compact" data-widget="treeview" role="menu" data-accordion="false">
                     
+                    <?php if ($isDistributorActive): ?>
+                    <!-- STANDALONE DISTRIBUTOR PORTAL SIDEBAR -->
+                    <div class="px-2 pt-2 pb-1 mb-2">
+                        <div class="p-2.5 rounded shadow-xs text-white" style="background: linear-gradient(135deg, #4338ca, #3730a3); border: 1px solid rgba(255,255,255,0.15);">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="badge badge-warning text-dark font-weight-bold" style="font-size: 10px;"><i class="fas fa-truck-fast mr-1"></i> PORTAL B2B</span>
+                                <span class="text-xs text-white-50">Unit Mandiri</span>
+                            </div>
+                            <div class="font-weight-bold mb-1" style="font-size: 13px; line-height: 1.2;">Distributor Farmasi</div>
+                            <div class="text-xs text-white-50 mb-2">Pencatatan Keuangan Mandiri</div>
+                            <a href="<?= base_url('dashboard') ?>" class="btn btn-light btn-xs btn-block font-weight-bold shadow-xs" style="color: #4338ca !important;">
+                                <i class="fas fa-hospital mr-1"></i> Beralih ke Portal Klinik
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Distributor Operasional Section -->
+                    <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; font-weight: 800; color: #334155; padding: 6px 14px 4px;">OPERASIONAL B2B</li>
+
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/dashboard') ?>" class="nav-link <?= $currUri === 'distributor/dashboard' || $currUri === 'distributor' ? 'active' : '' ?>">
+                            <i class="fas fa-gauge-high nav-icon text-indigo"></i>
+                            <p class="font-weight-bold">Dashboard Grosir</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/penjualan') ?>" class="nav-link <?= $currUri === 'distributor/penjualan' ? 'active' : '' ?>">
+                            <i class="fas fa-cash-register nav-icon text-success"></i>
+                            <p class="font-weight-bold">Kasir &amp; Faktur B2B</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/riwayat') ?>" class="nav-link <?= $currUri === 'distributor/riwayat' ? 'active' : '' ?>">
+                            <i class="fas fa-receipt nav-icon text-primary"></i>
+                            <p>Riwayat Faktur Penjualan</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/pelanggan') ?>" class="nav-link <?= $currUri === 'distributor/pelanggan' ? 'active' : '' ?>">
+                            <i class="fas fa-users-rectangle nav-icon text-info"></i>
+                            <p>Pelanggan &amp; Plafon Kredit</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/stok') ?>" class="nav-link <?= $currUri === 'distributor/stok' ? 'active' : '' ?>">
+                            <i class="fas fa-boxes-stacked nav-icon text-teal"></i>
+                            <p>Stok &amp; Kartu Mutasi B2B</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/transfer') ?>" class="nav-link <?= $currUri === 'distributor/transfer' ? 'active' : '' ?>">
+                            <i class="fas fa-arrow-right-arrow-left nav-icon text-secondary"></i>
+                            <p>Transfer Antar Unit</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/piutang') ?>" class="nav-link <?= $currUri === 'distributor/piutang' ? 'active' : '' ?>">
+                            <i class="fas fa-file-invoice-dollar nav-icon text-warning"></i>
+                            <p>Monitoring Piutang &amp; Aging</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/retur') ?>" class="nav-link <?= $currUri === 'distributor/retur' ? 'active' : '' ?>">
+                            <i class="fas fa-rotate-left nav-icon text-danger"></i>
+                            <p>Retur Penjualan Grosir</p>
+                        </a>
+                    </li>
+
+                    <!-- Section: Keuangan & Akuntansi Distributor Mandiri -->
+                    <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; font-weight: 800; color: #334155; padding: 12px 14px 4px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 6px;">KEUANGAN &amp; AKUNTANSI B2B</li>
+
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/kas') ?>" class="nav-link <?= $currUri === 'distributor/kas' ? 'active' : '' ?>">
+                            <i class="fas fa-wallet nav-icon text-success"></i>
+                            <p class="font-weight-bold">Buku Kas &amp; Bank B2B</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/jurnal') ?>" class="nav-link <?= $currUri === 'distributor/jurnal' ? 'active' : '' ?>">
+                            <i class="fas fa-file-lines nav-icon text-indigo"></i>
+                            <p class="font-weight-bold">Jurnal Umum B2B</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/laporan') ?>" class="nav-link <?= $currUri === 'distributor/laporan' ? 'active' : '' ?>">
+                            <i class="fas fa-chart-pie nav-icon text-teal"></i>
+                            <p class="font-weight-bold">Laba Rugi Distributor</p>
+                        </a>
+                    </li>
+
+                    <!-- Section: Modul Terhubung -->
+                    <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; font-weight: 800; color: #334155; padding: 12px 14px 4px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 6px;">MODUL TERHUBUNG</li>
+
+                    <?php if ($canAccessProcurement): ?>
+                    <li class="nav-item">
+                        <a href="<?= base_url('procurement/po') ?>" class="nav-link">
+                            <i class="fas fa-truck-ramp-box nav-icon text-secondary"></i>
+                            <p>Pengadaan PBF (PO)</p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($canAccessPharmacy): ?>
+                    <li class="nav-item">
+                        <a href="<?= base_url('apotek/gudang') ?>" class="nav-link">
+                            <i class="fas fa-warehouse nav-icon text-secondary"></i>
+                            <p>Gudang Induk Logistik</p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($canAccessAccounting): ?>
+                    <li class="nav-item">
+                        <a href="<?= base_url('accounting/coa') ?>" class="nav-link">
+                            <i class="fas fa-book-bookmark nav-icon text-secondary"></i>
+                            <p>Bagan Akun (COA)</p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php else: ?>
+                    <!-- STANDALONE CLINIC & HOSPITAL PORTAL SIDEBAR -->
                     <!-- Dashboard -->
                     <li class="nav-item">
                         <a href="<?= base_url('dashboard') ?>" class="nav-link <?= $isDashboard ? 'active' : '' ?>">
@@ -430,76 +565,19 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     <?php endif; ?>
 
                     <?php if ($canAccessDistributor): ?>
-                    <li class="nav-item has-treeview <?= $isDistributorActive ? 'menu-open' : '' ?>">
-                        <a href="#" class="nav-link <?= $isDistributorActive ? 'active' : '' ?>">
+                    <li class="nav-item">
+                        <a href="<?= base_url('distributor/dashboard') ?>" class="nav-link font-weight-bold" style="color: #4f46e5 !important; background: #f5f3ff; border: 1px solid #e0e7ff; border-radius: 6px; margin: 4px 0;">
                             <i class="nav-icon fas fa-truck-fast text-indigo"></i>
-                            <p class="font-weight-bold">
-                                Distributor &amp; Grosir
-                                <i class="right fas fa-angle-left"></i>
+                            <p>
+                                Portal Distributor B2B
+                                <span class="badge badge-indigo right font-weight-bold" style="background:#4f46e5; color:#fff; font-size:10px;">B2B Mandiri</span>
                             </p>
                         </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/dashboard') ?>" class="nav-link <?= $currUri === 'distributor/dashboard' || $currUri === 'distributor' ? 'active' : '' ?>">
-                                    <i class="fas fa-gauge-high nav-icon text-indigo"></i>
-                                    <p>Dashboard Grosir</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/penjualan') ?>" class="nav-link <?= $currUri === 'distributor/penjualan' ? 'active' : '' ?>">
-                                    <i class="fas fa-cash-register nav-icon text-success"></i>
-                                    <p>Kasir &amp; Faktur B2B</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/riwayat') ?>" class="nav-link <?= $currUri === 'distributor/riwayat' ? 'active' : '' ?>">
-                                    <i class="fas fa-receipt nav-icon text-primary"></i>
-                                    <p>Riwayat Penjualan</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/pelanggan') ?>" class="nav-link <?= $currUri === 'distributor/pelanggan' ? 'active' : '' ?>">
-                                    <i class="fas fa-users-rectangle nav-icon text-info"></i>
-                                    <p>Pelanggan &amp; Limit</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/stok') ?>" class="nav-link <?= $currUri === 'distributor/stok' ? 'active' : '' ?>">
-                                    <i class="fas fa-boxes-stacked nav-icon text-teal"></i>
-                                    <p>Stok &amp; Kartu Stok</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/transfer') ?>" class="nav-link <?= $currUri === 'distributor/transfer' ? 'active' : '' ?>">
-                                    <i class="fas fa-arrow-right-arrow-left nav-icon text-secondary"></i>
-                                    <p>Transfer Antar Unit</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/piutang') ?>" class="nav-link <?= $currUri === 'distributor/piutang' ? 'active' : '' ?>">
-                                    <i class="fas fa-file-invoice-dollar nav-icon text-warning"></i>
-                                    <p>Monitoring Piutang</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/retur') ?>" class="nav-link <?= $currUri === 'distributor/retur' ? 'active' : '' ?>">
-                                    <i class="fas fa-rotate-left nav-icon text-danger"></i>
-                                    <p>Retur Penjualan</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="<?= base_url('distributor/laporan') ?>" class="nav-link <?= $currUri === 'distributor/laporan' ? 'active' : '' ?>">
-                                    <i class="fas fa-chart-pie nav-icon text-success"></i>
-                                    <p>Laporan Distributor</p>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                     <?php endif; ?>
 
                     <!-- Section 2: Keuangan & Akuntansi -->
                     <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 0.6px; font-weight: 800; color: #334155; padding: 12px 14px 4px; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 6px;">KEUANGAN &amp; AKUNTANSI</li>
-
 
                     <?php if ($canAccessFinance): ?>
                     <li class="nav-item has-treeview <?= $isKeuanganActive ? 'menu-open' : '' ?>">
@@ -755,6 +833,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                             <?php endif; ?>
                         </ul>
                     </li>
+                    <?php endif; ?>
                     <?php endif; ?>
 
                     <li class="nav-item">

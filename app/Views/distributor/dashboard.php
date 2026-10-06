@@ -15,14 +15,17 @@
                     <a href="<?= base_url('distributor/penjualan') ?>" class="btn btn-indigo btn-sm font-weight-bold shadow-sm" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
                         <i class="fas fa-cart-plus mr-1"></i> Kasir &amp; Faktur Baru
                     </a>
-                    <a href="<?= base_url('distributor/piutang') ?>" class="btn btn-outline-warning btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-file-invoice-dollar mr-1"></i> Tagihan &amp; Piutang
+                    <a href="<?= base_url('distributor/kas') ?>" class="btn btn-outline-success btn-sm font-weight-bold shadow-sm">
+                        <i class="fas fa-wallet mr-1"></i> Kas &amp; Bank B2B
                     </a>
-                    <a href="<?= base_url('distributor/stok') ?>" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-boxes-stacked mr-1"></i> Stok Gudang
+                    <a href="<?= base_url('distributor/jurnal') ?>" class="btn btn-outline-indigo btn-sm font-weight-bold shadow-sm">
+                        <i class="fas fa-file-lines mr-1"></i> Jurnal B2B
+                    </a>
+                    <a href="<?= base_url('distributor/piutang') ?>" class="btn btn-outline-warning btn-sm font-weight-bold shadow-sm">
+                        <i class="fas fa-file-invoice-dollar mr-1"></i> Piutang
                     </a>
                     <a href="<?= base_url('distributor/laporan') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-chart-line mr-1"></i> Laporan Keuangan
+                        <i class="fas fa-chart-line mr-1"></i> Laporan Laba Rugi
                     </a>
                 </div>
             </div>

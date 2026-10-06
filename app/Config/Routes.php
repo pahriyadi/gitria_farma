@@ -210,6 +210,9 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('distributor/riwayat-pembayaran/(:num)', 'Distributor::riwayatPembayaran/$1');
     $routes->get('distributor/retur', 'Distributor::retur');
     $routes->post('distributor/simpan-retur', 'Distributor::simpanRetur');
+    $routes->get('distributor/kas', 'Distributor::kas');
+    $routes->post('distributor/simpan-kas', 'Distributor::simpanKas');
+    $routes->get('distributor/jurnal', 'Distributor::jurnal');
     $routes->get('distributor/laporan', 'Distributor::laporan');
 
     $routes->get('hrd/pegawai-json/(:num)', 'HRD::getPegawaiJson/$1');

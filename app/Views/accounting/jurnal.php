@@ -93,7 +93,32 @@
 </div>
 
 <!-- Filter Panel Modul & Periode Tanggal -->
-<div class="card p-3 mb-3 bg-white shadow-none" style="border: 1px solid #b8b8b8;">
+<div class="card p-3 mb-3 bg-white shadow-none" style="border: 1px solid #b8b8b8; border-radius: 8px;">
+    <!-- Scope Selector Tabs (Klinik vs Distributor vs Konsolidasian) -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 pb-2 border-bottom">
+        <div class="d-flex align-items-center mb-2 mb-md-0">
+            <span class="text-xs font-weight-bold text-muted text-uppercase mr-2">Cakupan Transaksi:</span>
+            <?php $activeScope = $initialScope ?? 'clinic_only'; ?>
+            <div class="btn-group btn-group-toggle shadow-xs" data-toggle="buttons">
+                <label class="btn btn-outline-teal btn-xs font-weight-bold <?= $activeScope === 'clinic_only' ? 'active' : '' ?>" id="lbl-scope-clinic" title="Hanya Transaksi Klinik, Farmasi Retail, &amp; Resto">
+                    <input type="radio" name="scope_filter" id="scope_clinic" value="clinic_only" <?= $activeScope === 'clinic_only' ? 'checked' : '' ?>>
+                    <i class="fas fa-hospital mr-1"></i> Klinik &amp; Retail (Default)
+                </label>
+                <label class="btn btn-outline-indigo btn-xs font-weight-bold <?= $activeScope === 'distributor_only' ? 'active' : '' ?>" id="lbl-scope-dist" title="Hanya Transaksi Unit Distributor &amp; Grosir" style="color:#4f46e5; border-color:#c7d2fe;">
+                    <input type="radio" name="scope_filter" id="scope_dist" value="distributor_only" <?= $activeScope === 'distributor_only' ? 'checked' : '' ?>>
+                    <i class="fas fa-truck-fast mr-1"></i> Unit Distributor
+                </label>
+                <label class="btn btn-outline-dark btn-xs font-weight-bold <?= $activeScope === 'all' ? 'active' : '' ?>" id="lbl-scope-all" title="Konsolidasi Seluruh Transaksi Klinik + Distributor">
+                    <input type="radio" name="scope_filter" id="scope_all" value="all" <?= $activeScope === 'all' ? 'checked' : '' ?>>
+                    <i class="fas fa-layer-group mr-1"></i> 📊 Gabungkan Semua (Konsolidasi)
+                </label>
+            </div>
+        </div>
+        <div class="text-xs text-muted">
+            <i class="fas fa-info-circle text-teal mr-1"></i> Transaksi distributor otomatis dipisahkan secara default.
+        </div>
+    </div>
+
     <div class="row align-items-end">
         <div class="col-md-4 form-group mb-2 mb-md-0">
             <label class="text-xs font-weight-bold text-dark mb-1"><i class="fas fa-layer-group text-teal mr-1"></i> Filter Berdasarkan Modul Sumber:</label>
@@ -322,6 +347,7 @@
                 url: '<?= base_url('accounting/jurnal') ?>',
                 type: 'GET',
                 data: function(d) {
+                    d.scope         = $('input[name="scope_filter"]:checked').val() || 'clinic_only';
                     d.source_module = $('#filter_source_module').val();
                     d.start_date    = $('#filter_start_date').val();
                     d.end_date      = $('#filter_end_date').val();
@@ -334,6 +360,10 @@
             ],
             language: window.dtIndonesianLanguage,
             pageLength: 15
+        });
+
+        $('input[name="scope_filter"]').on('change', function() {
+            tableJurnal.ajax.reload();
         });
 
         $('#btnFilterJurnal').click(function() {
@@ -363,9 +393,11 @@
 
         function getExportParams() {
             var params = new URLSearchParams();
+            var scope = $('input[name="scope_filter"]:checked').val() || 'clinic_only';
             var mod = $('#filter_source_module').val();
             var start = $('#filter_start_date').val();
             var end = $('#filter_end_date').val();
+            if (scope) params.append('scope', scope);
             if (mod) params.append('source_module', mod);
             if (start) params.append('start_date', start);
             if (end) params.append('end_date', end);

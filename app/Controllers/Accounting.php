@@ -244,11 +244,21 @@ class Accounting extends BaseController
             $filterModule = $this->request->getGet('source_module');
             $filterStart  = $this->request->getGet('start_date');
             $filterEnd    = $this->request->getGet('end_date');
+            $scope        = $this->request->getGet('scope') ?: 'clinic_only';
 
             $where = [];
+            $distributorModules = "'Distributor & Grosir', 'Pelunasan Piutang Distributor', 'Retur Penjualan Distributor', 'HPP Distributor', 'Kas Masuk Distributor', 'Kas Keluar Distributor'";
+
             if (!empty($filterModule)) {
                 $where['journal_entries.source_module'] = $filterModule;
+            } else {
+                if ($scope === 'clinic_only') {
+                    $where[] = "journal_entries.source_module NOT IN ({$distributorModules})";
+                } elseif ($scope === 'distributor_only') {
+                    $where[] = "journal_entries.source_module IN ({$distributorModules})";
+                }
             }
+
             if (!empty($filterStart)) {
                 $where['journal_entries.entry_date >='] = $filterStart;
             }
@@ -459,12 +469,14 @@ class Accounting extends BaseController
 
         $accounts = $db->table('accounts')->orderBy('code', 'ASC')->get()->getResult();
         $modules = $db->table('journal_entries')->distinct()->select('source_module')->where('source_module !=', '')->orderBy('source_module', 'ASC')->get()->getResult();
+        $initialScope = $this->request->getGet('scope') ?: 'clinic_only';
 
         $data = [
             'title'         => 'Bagan Jurnal Umum & Penyesuaian',
             'active_menu'   => 'accounting-jurnal',
             'accounts'      => $accounts,
-            'modules'       => $modules
+            'modules'       => $modules,
+            'initialScope'  => $initialScope
         ];
 
         return view('accounting/jurnal', $data);
@@ -477,11 +489,27 @@ class Accounting extends BaseController
     {
         $db = \Config\Database::connect('default');
 
+        $filterScope  = $this->request->getGet('scope') ?: 'clinic_only';
         $filterModule = $this->request->getGet('source_module');
         $filterStart  = $this->request->getGet('start_date');
         $filterEnd    = $this->request->getGet('end_date');
 
+        $distributorModules = [
+            'Distributor & Grosir',
+            'Pelunasan Piutang Distributor',
+            'Retur Penjualan Distributor',
+            'HPP Distributor',
+            'Kas Masuk Distributor',
+            'Kas Keluar Distributor'
+        ];
+
         $builder = $db->table('journal_entries');
+        if ($filterScope === 'clinic_only') {
+            $builder->whereNotIn('journal_entries.source_module', $distributorModules);
+        } elseif ($filterScope === 'distributor_only') {
+            $builder->whereIn('journal_entries.source_module', $distributorModules);
+        }
+
         if (!empty($filterModule)) {
             $builder->where('journal_entries.source_module', $filterModule);
         }
@@ -778,11 +806,27 @@ class Accounting extends BaseController
     {
         $db = \Config\Database::connect('default');
 
+        $filterScope  = $this->request->getGet('scope') ?: 'clinic_only';
         $filterModule = $this->request->getGet('source_module');
         $filterStart  = $this->request->getGet('start_date');
         $filterEnd    = $this->request->getGet('end_date');
 
+        $distributorModules = [
+            'Distributor & Grosir',
+            'Pelunasan Piutang Distributor',
+            'Retur Penjualan Distributor',
+            'HPP Distributor',
+            'Kas Masuk Distributor',
+            'Kas Keluar Distributor'
+        ];
+
         $builder = $db->table('journal_entries');
+        if ($filterScope === 'clinic_only') {
+            $builder->whereNotIn('journal_entries.source_module', $distributorModules);
+        } elseif ($filterScope === 'distributor_only') {
+            $builder->whereIn('journal_entries.source_module', $distributorModules);
+        }
+
         if (!empty($filterModule)) {
             $builder->where('journal_entries.source_module', $filterModule);
         }

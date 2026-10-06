@@ -83,10 +83,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($accounts as $acc): ?>
+                            <?php foreach ($accounts as $acc): 
+                                $isDistAcc = in_array($acc->code, ['1131', '1132', '124', '1410', '4110', '4310', '4320', '5110', '566', '5331']) || stripos($acc->name, 'distributor') !== false || stripos($acc->name, 'grosir') !== false;
+                            ?>
                                 <tr>
-                                    <td><span class="badge badge-teal py-1 px-2 font-weight-bold font-monospace" style="font-size: 13px;"><?= esc($acc->code) ?></span></td>
-                                    <td><strong><?= esc($acc->name) ?></strong></td>
+                                    <td>
+                                        <span class="badge <?= $isDistAcc ? 'badge-indigo' : 'badge-teal' ?> py-1 px-2 font-weight-bold font-monospace" style="font-size: 13px; <?= $isDistAcc ? 'background:#4f46e5; color:#fff;' : '' ?>">
+                                            <?= esc($acc->code) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong><?= esc($acc->name) ?></strong>
+                                        <?php if ($isDistAcc): ?>
+                                            <span class="badge badge-light border border-indigo ml-1 text-indigo font-weight-bold" style="font-size: 10px; color:#4f46e5; border-color:#c7d2fe !important;">
+                                                <i class="fas fa-truck-fast mr-1"></i>Distributor B2B
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><span class="badge badge-secondary"><?= strtoupper(esc($acc->type)) ?></span></td>
                                     <td><?= ucfirst(esc($acc->normal_balance)) ?></td>
                                     <td class="font-weight-bold">
