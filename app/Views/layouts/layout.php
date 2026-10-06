@@ -591,6 +591,12 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                                     <p>6. Saldo Awal</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="<?= base_url('accounting/void-logs') ?>" class="nav-link <?= in_array($active_menu ?? '', ['accounting-void-logs', 'void-logs']) || str_starts_with($currUri, 'accounting/void-logs') ? 'active' : '' ?>">
+                                    <i class="fas fa-shield-virus nav-icon text-danger"></i>
+                                    <p>7. Log Void (Anti-Fraud)</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -3995,8 +4001,276 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             localStorage.setItem('sawamawa_last_seen_version', currentVersion);
         });
     })();
+    // ---------------------------------------------------------------------
+    // 6. UNIVERSAL VOID / PEMBATALAN TRANSAKSI ENGINE HELPER
+    // ---------------------------------------------------------------------
+    window.openVoidModal = function(trxType, refId, refNo, amount, customerName, onSuccessCallback) {
+        $('#uv-trx-type').val(trxType);
+        $('#uv-ref-id').val(refId);
+        $('#uv-ref-no').text(refNo || ('ID #' + refId));
+        
+        var moduleLabels = {
+            'billing_klinik': 'Billing Kasir Klinik / Tindakan',
+            'pharmacy_sale': 'Penjualan Apotek (Retail)',
+            'distributor_sale': 'Faktur Penjualan Distributor B2B',
+            'distributor_payment': 'Pembayaran Piutang Distributor',
+            'cash_in': 'Kas Masuk Non-Operasional',
+            'cash_out': 'Kas Keluar / Beban Operasional',
+            'resto_order': 'Pesanan Restoran Gizi Sehat',
+            'lab_invoice': 'Billing Uji Laboratorium'
+        };
+        $('#uv-trx-type-label').text(moduleLabels[trxType] || trxType);
+        $('#uv-nominal').text('Rp ' + (amount ? Number(amount).toLocaleString('id-ID') : '0'));
+        $('#uv-customer').text(customerName || '-');
+        
+        $('#uv-reason-detail').val('');
+        $('#uv-supervisor-pin').val('');
+        $('#uv-reason-category').empty().append('<option value="">Memuat alasan...</option>');
+        $('#uv-supervisor-id').empty().append('<option value="">Memuat supervisor...</option>');
+
+        // Fetch reason categories and active supervisors
+        $.getJSON('<?= base_url('api/void/reasons') ?>?module=' + encodeURIComponent(trxType), function(res) {
+            if (res.status === 'success') {
+                var reasonOpts = '<option value="">-- Pilih Kategori Alasan --</option>';
+                if (res.reasons && res.reasons.length > 0) {
+                    res.reasons.forEach(function(r) {
+                        reasonOpts += '<option value="' + r.category_name + '">' + r.category_name + (r.description ? ' (' + r.description + ')' : '') + '</option>';
+                    });
+                } else {
+                    reasonOpts += '<option value="Salah Entri Kasir">Salah Entri Kasir</option>';
+                    reasonOpts += '<option value="Pasien Batal Dilayani">Pasien Batal Dilayani</option>';
+                    reasonOpts += '<option value="Koreksi Nominal / Diskon">Koreksi Nominal / Diskon</option>';
+                }
+                $('#uv-reason-category').html(reasonOpts);
+
+                var spvOpts = '<option value="">-- Pilih Supervisor Otentikator --</option>';
+                if (res.supervisors && res.supervisors.length > 0) {
+                    res.supervisors.forEach(function(s) {
+                        spvOpts += '<option value="' + s.id + '">' + s.name + ' (' + s.role_name + ')</option>';
+                    });
+                }
+                $('#uv-supervisor-id').html(spvOpts);
+            }
+        }).fail(function() {
+            $('#uv-reason-category').html('<option value="Salah Entri Kasir">Salah Entri Kasir</option><option value="Pasien Batal Dilayani">Pasien Batal Dilayani</option>');
+            $('#uv-supervisor-id').html('<option value="1">Super Admin (Default)</option>');
+        });
+
+        window._currentVoidSuccessCallback = onSuccessCallback;
+        $('#modal-universal-void').modal('show');
+    };
+
+    $(document).on('submit', '#form-universal-void', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var btn = $('#btn-submit-uv-void');
+        var origHtml = btn.html();
+
+        var trxType = $('#uv-trx-type').val();
+        var refId = $('#uv-ref-id').val();
+        var category = $('#uv-reason-category').val();
+        var detail = $('#uv-reason-detail').val().trim();
+        var spvId = $('#uv-supervisor-id').val();
+        var pin = $('#uv-supervisor-pin').val().trim();
+
+        if (!category) {
+            if (typeof Swal !== 'undefined') Swal.fire('Perhatian', 'Silahkan pilih kategori alasan pembatalan.', 'warning');
+            else alert('Silahkan pilih kategori alasan pembatalan.');
+            return;
+        }
+        if (!detail) {
+            if (typeof Swal !== 'undefined') Swal.fire('Perhatian', 'Silahkan isi rincian/kronologi alasan pembatalan.', 'warning');
+            else alert('Silahkan isi rincian/kronologi alasan pembatalan.');
+            return;
+        }
+        if (!spvId) {
+            if (typeof Swal !== 'undefined') Swal.fire('Perhatian', 'Silahkan pilih supervisor pengotorisasi.', 'warning');
+            else alert('Silahkan pilih supervisor pengotorisasi.');
+            return;
+        }
+        if (pin.length < 4) {
+            if (typeof Swal !== 'undefined') Swal.fire('Perhatian', 'PIN Supervisor wajib diisi (minimal 4 digit).', 'warning');
+            else alert('PIN Supervisor wajib diisi (minimal 4 digit).');
+            return;
+        }
+
+        var confirmFn = function() {
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Memproses Reversal...');
+
+            $.ajax({
+                url: '<?= base_url('api/void/execute') ?>',
+                method: 'POST',
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(res) {
+                    btn.prop('disabled', false).html(origHtml);
+                    if (res.status === 'success') {
+                        $('#modal-universal-void').modal('hide');
+                        
+                        var successMsg = res.message || 'Transaksi berhasil dibatalkan secara permanen.';
+                        var printUrl = '<?= base_url('accounting/void-logs/cetak') ?>/' + res.void_log_id;
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Void Berhasil!',
+                                html: '<p>' + successMsg + '</p>' +
+                                      '<div class="mt-3">' +
+                                      '<a href="' + printUrl + '" target="_blank" class="btn btn-primary btn-sm"><i class="fas fa-print mr-1"></i> Cetak Berita Acara (PDF)</a>' +
+                                      '</div>',
+                                confirmButtonText: 'Selesai',
+                                confirmButtonColor: '#28a745'
+                            }).then(function() {
+                                if (typeof window._currentVoidSuccessCallback === 'function') {
+                                    window._currentVoidSuccessCallback(res);
+                                } else {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            alert(successMsg);
+                            if (typeof window._currentVoidSuccessCallback === 'function') {
+                                window._currentVoidSuccessCallback(res);
+                            } else {
+                                location.reload();
+                            }
+                        }
+                    } else {
+                        if (typeof Swal !== 'undefined') Swal.fire('Gagal Reversal', res.message || 'Terjadi kesalahan.', 'error');
+                        else alert(res.message || 'Terjadi kesalahan.');
+                    }
+                },
+                error: function(xhr) {
+                    btn.prop('disabled', false).html(origHtml);
+                    var msg = 'Terjadi kesalahan sistem saat memproses void.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    if (typeof Swal !== 'undefined') Swal.fire('Otorisasi Ditolak', msg, 'error');
+                    else alert(msg);
+                }
+            });
+        };
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Konfirmasi Pembatalan',
+                text: 'Apakah Anda yakin ingin MEMBATALKAN transaksi ini? Jurnal keuangan akan dibalik dan stok batch dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Eksekusi Void!',
+                cancelButtonText: 'Batal'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    confirmFn();
+                }
+            });
+        } else {
+            if (confirm('Apakah Anda yakin ingin membatalkan transaksi ini?')) {
+                confirmFn();
+            }
+        }
+    });
 })();
 </script>
+
+<!-- Universal Void Modal -->
+<div class="modal fade" id="modal-universal-void" tabindex="-1" role="dialog" aria-labelledby="modalUniversalVoidLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 540px;">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header bg-gradient-danger text-white py-3 px-4">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-white text-danger d-flex align-items-center justify-content-center mr-3 shadow-xs" style="width: 40px; height: 40px; flex-shrink: 0;">
+                        <i class="fas fa-ban fa-lg"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title font-weight-bold mb-0" id="modalUniversalVoidLabel">Otorisasi Pembatalan (VOID)</h5>
+                        <small class="text-white-50">Sistem Pengamanan Keuangan &amp; Audit Anti-Fraud</small>
+                    </div>
+                </div>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-universal-void" onsubmit="return false;">
+                <div class="modal-body p-4">
+                    <input type="hidden" id="uv-trx-type" name="transaction_type">
+                    <input type="hidden" id="uv-ref-id" name="reference_id">
+
+                    <!-- Transaction Summary Card -->
+                    <div class="p-3 bg-light rounded-lg border mb-3" style="border-left: 4px solid #dc3545 !important;">
+                        <div class="row text-xs mb-1">
+                            <div class="col-5 text-muted font-weight-bold">MODUL / JENIS:</div>
+                            <div class="col-7 text-dark font-weight-bold" id="uv-trx-type-label">-</div>
+                        </div>
+                        <div class="row text-xs mb-1">
+                            <div class="col-5 text-muted font-weight-bold">NO. TRANSAKSI / INVOICE:</div>
+                            <div class="col-7 font-weight-bold text-danger font-monospace" id="uv-ref-no">-</div>
+                        </div>
+                        <div class="row text-xs mb-1">
+                            <div class="col-5 text-muted font-weight-bold">TOTAL NOMINAL:</div>
+                            <div class="col-7 font-weight-bold text-dark font-monospace" id="uv-nominal">-</div>
+                        </div>
+                        <div class="row text-xs">
+                            <div class="col-5 text-muted font-weight-bold">PASIEN / PELANGGAN:</div>
+                            <div class="col-7 text-dark" id="uv-customer">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Form Inputs -->
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-dark text-xs mb-1">
+                            <i class="fas fa-list mr-1 text-danger"></i> Kategori Alasan Pembatalan <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-control form-control-sm font-weight-bold" id="uv-reason-category" name="reason_category" required>
+                            <option value="">-- Pilih Kategori Alasan --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="font-weight-bold text-dark text-xs mb-1">
+                            <i class="fas fa-comment-alt mr-1 text-danger"></i> Rincian &amp; Kronologi Alasan <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control text-xs" id="uv-reason-detail" name="reason_detail" rows="2" placeholder="Jelaskan secara detail alasan pembatalan transaksi ini untuk log audit..." required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label class="font-weight-bold text-dark text-xs mb-1">
+                                <i class="fas fa-user-shield mr-1 text-primary"></i> Supervisor Otentikator <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-control form-control-sm" id="uv-supervisor-id" name="supervisor_user_id" required>
+                                <option value="">-- Pilih Supervisor --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label class="font-weight-bold text-dark text-xs mb-1">
+                                <i class="fas fa-key mr-1 text-warning"></i> PIN Supervisor (6 Digit) <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" class="form-control form-control-sm font-monospace text-center font-weight-bold" id="uv-supervisor-pin" name="supervisor_pin" maxlength="6" placeholder="******" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <!-- System Warning -->
+                    <div class="alert alert-warning py-2 px-3 text-xs mb-0 border-0" style="background-color: #fff3cd; color: #856404; border-radius: 8px;">
+                        <i class="fas fa-triangle-exclamation mr-1"></i>
+                        <strong>Peringatan Sistem:</strong> Pembatalan akan otomatis membalikkan jurnal keuangan double-entry, mengembalikan mutasi batch stok obat, dan mencatat rekam audit. <u>Tindakan ini tidak dapat dibatalkan.</u>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2.5 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-danger font-weight-bold px-3" id="btn-submit-uv-void">
+                        <i class="fas fa-ban mr-1"></i> Eksekusi VOID Transaksi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?= $this->renderSection('scripts') ?>
 </body>

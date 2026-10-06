@@ -518,6 +518,18 @@
                                                         <a href="<?= base_url('apotek/cetak-nota/' . $s->id) ?>" target="_blank" class="btn btn-outline-teal btn-xs font-weight-bold shadow-xs" title="Cetak Nota / Struk Penjualan">
                                                             <i class="fas fa-print mr-1"></i> Nota
                                                         </a>
+                                                        <?php if (empty($s->is_voided)): ?>
+                                                            <button type="button" class="btn btn-outline-danger btn-xs font-weight-bold shadow-xs btn-void-pharmacy" 
+                                                                    data-id="<?= $s->id ?>" 
+                                                                    data-no="<?= esc($s->sale_no) ?>" 
+                                                                    data-total="<?= (float)$s->grand_total ?>" 
+                                                                    data-customer="<?= esc($s->customer_name ?: 'Pelanggan Umum') ?>" 
+                                                                    title="Void / Batalkan Nota Penjualan Ini">
+                                                                <i class="fas fa-ban"></i> Void
+                                                            </button>
+                                                        <?php else: ?>
+                                                            <span class="badge badge-danger text-xs font-weight-bold py-1 px-1.5"><i class="fas fa-ban mr-0.5"></i> VOID</span>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -1677,9 +1689,19 @@
                 } else {
                     $('#modal-detail-sale-content').html('<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-triangle mr-1"></i> ' + (res.message || 'Gagal memuat rincian transaksi.') + '</div>');
                 }
-            }, 'json').fail(function() {
-                $('#modal-detail-sale-content').html('<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-triangle mr-1"></i> Terjadi kesalahan jaringan saat mengambil data rincian penjualan.</div>');
-            });
+        // Event Handler VOID Transaksi Apotek (Universal Anti-Fraud Modal)
+        $(document).on('click', '.btn-void-pharmacy', function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var no = $(this).data('no');
+            var total = $(this).data('total');
+            var customer = $(this).data('customer');
+
+            if (typeof window.openVoidModal === 'function') {
+                window.openVoidModal('pharmacy_sale', id, no, total, customer, function() {
+                    location.reload();
+                });
+            }
         });
 
     });

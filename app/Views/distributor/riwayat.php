@@ -142,15 +142,26 @@
                                             <?php endif; ?>
                                         </td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-xs btn-outline-info" onclick="viewDetail(<?= $s->id ?>)" title="Rincian Item">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <a href="<?= base_url('distributor/cetak-faktur/' . $s->id) ?>" target="_blank" class="btn btn-xs btn-outline-primary" title="Cetak Faktur">
-                                                <i class="fas fa-print"></i>
-                                            </a>
-                                            <a href="<?= base_url('distributor/cetak-surat-jalan/' . $s->id) ?>" target="_blank" class="btn btn-xs btn-outline-secondary" title="Cetak Surat Jalan">
-                                                <i class="fas fa-truck"></i>
-                                            </a>
+                                            <div class="btn-group btn-group-xs" role="group">
+                                                <button type="button" class="btn btn-xs btn-outline-info" onclick="viewDetail(<?= $s->id ?>)" title="Rincian Item">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a href="<?= base_url('distributor/cetak-faktur/' . $s->id) ?>" target="_blank" class="btn btn-xs btn-outline-primary" title="Cetak Faktur">
+                                                    <i class="fas fa-print"></i>
+                                                </a>
+                                                <a href="<?= base_url('distributor/cetak-surat-jalan/' . $s->id) ?>" target="_blank" class="btn btn-xs btn-outline-secondary" title="Cetak Surat Jalan">
+                                                    <i class="fas fa-truck"></i>
+                                                </a>
+                                                <?php if (empty($s->is_voided)): ?>
+                                                    <button type="button" class="btn btn-xs btn-outline-danger" 
+                                                            onclick="window.openVoidModal('distributor_sale', <?= $s->id ?>, '<?= esc($s->invoice_no) ?>', <?= (float)$s->total_amount ?>, '<?= esc($s->customer_name) ?>', function(){ location.reload(); })" 
+                                                            title="Void Faktur Penjualan">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="badge badge-danger text-xs font-weight-bold"><i class="fas fa-ban"></i> VOID</span>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

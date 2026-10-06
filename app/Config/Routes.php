@@ -155,6 +155,15 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('accounting/aturan-jurnal/reset-default', 'Accounting::resetDefaultTemplates');
     $routes->get('accounting/aturan-jurnal/api-simulate/(:num)', 'Accounting::apiSimulateSplit/$1');
 
+    // Pusat Log Pembatalan / Void Transaksi (Anti-Fraud Center)
+    $routes->get('accounting/void-logs', 'VoidCenter::index');
+    $routes->get('accounting/void-logs/detail/(:num)', 'VoidCenter::detailJson/$1');
+    $routes->get('accounting/void-logs/cetak/(:num)', 'VoidCenter::cetakBeritaAcara/$1');
+    $routes->post('accounting/void-logs/save-pin', 'VoidCenter::saveSupervisorPin');
+    $routes->post('api/void/execute', 'VoidCenter::apiExecuteVoid');
+    $routes->post('api/void/verify-pin', 'VoidCenter::apiVerifyPin');
+    $routes->get('api/void/reasons', 'VoidCenter::apiGetReasons');
+
     // Procurement & Approval
     $routes->match(['GET', 'POST'], 'procurement/po', 'Procurement::po');
     $routes->match(['GET', 'POST'], 'procurement/approval', 'Procurement::approval');

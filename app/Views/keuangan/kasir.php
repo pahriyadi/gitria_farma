@@ -1105,12 +1105,17 @@
             const patient = $(this).data('patient');
             const amount = $(this).data('amount');
 
-            $('#void-tx-id').val(txId);
-            $('#void-lbl-receipt').text(receipt);
-            $('#void-lbl-patient').text(patient);
-            $('#void-lbl-amount').text(amount);
-
-            $('#modalVoidTransaction').modal('show');
+            if (typeof window.openVoidModal === 'function') {
+                window.openVoidModal('billing_klinik', txId, receipt, amount, patient, function() {
+                    location.reload();
+                });
+            } else {
+                $('#void-tx-id').val(txId);
+                $('#void-lbl-receipt').text(receipt);
+                $('#void-lbl-patient').text(patient);
+                $('#void-lbl-amount').text(amount);
+                $('#modalVoidTransaction').modal('show');
+            }
         });
 
         $('#form-void-tx').on('submit', function() {
