@@ -48,13 +48,16 @@
         })();
     </script>
 </head>
-<body class="hold-transition sidebar-mini sidebar-collapse layout-fixed layout-navbar-fixed layout-footer-fixed theme-macos">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed theme-macos">
 <script>
     (function() {
         var savedTheme = localStorage.getItem('sawamawa_admin_theme') || 'theme-macos';
-        var isExpanded = localStorage.getItem('sawamawa_sidebar_state') === 'expanded';
+        var sidebarState = localStorage.getItem('sawamawa_sidebar_state');
+        var isSmallScreen = window.innerWidth < 992;
         var baseClasses = 'hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed';
-        if (!isExpanded) {
+        
+        // Default adalah DIBUKA (Expanded). Hanya collapse jika layar kecil (< 992px) ATAU user sengaja memilih collapsed
+        if (isSmallScreen || sidebarState === 'collapsed') {
             baseClasses += ' sidebar-collapse';
         }
         document.body.className = baseClasses + ' ' + savedTheme;
@@ -81,12 +84,6 @@
         <div class="preloader-text" style="font-size: 11.5px; color: #64748b; font-weight: 500;">Memuat data sistem medis...</div>
     </div>
 </div>
-<script>
-    // Restore sidebar collapse state & auto-collapse on tablet devices (< 992px)
-    if (window.innerWidth < 992 || localStorage.getItem('sidebar_collapsed') === 'true') {
-        document.body.classList.add('sidebar-collapse');
-    }
-</script>
 <div class="wrapper">
 <?php 
 $roleName = session('role_name');
@@ -2412,6 +2409,14 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
         // Initialize active nav states on initial page load
         $(document).ready(function() {
             updateActiveNavLinks(window.location.href);
+
+            // Simpan status buka/tutup sidebar saat user mengklik toggle pushmenu
+            $(document).on('collapsed.lte.pushmenu', function() {
+                localStorage.setItem('sawamawa_sidebar_state', 'collapsed');
+            });
+            $(document).on('shown.lte.pushmenu', function() {
+                localStorage.setItem('sawamawa_sidebar_state', 'expanded');
+            });
         });
 
         // =========================================================================
