@@ -50,30 +50,56 @@ Setelah Anda berhasil melakukan `git push` ke GitHub, sekarang saatnya memperbar
 ### 🌟 Cara Utama: Menggunakan Terminal cPanel (Super Cepat - 3 Detik)
 
 1. Buka cPanel hosting Anda → buka menu **Terminal**.
-2. Salin dan jalankan **1 baris perintah sakti ini**:
+2. Salin dan jalankan **perintah komplit ini** (sekaligus meng-update file kodingan & memperbarui tabel database server):
 
 ```bash
-cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main
+cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main && php spark db:seed VoidSystemSeeder
 ```
 
-3. ✨ **Selesai!** Seluruh file di website Anda akan langsung terupdate dengan versi terbaru dari GitHub.
+3. ✨ **Selesai!** Seluruh file kode dan struktur tabel database di hosting Anda langsung terupdate otomatis.
+
+---
+
+### 🗄️ BAGAIMANA CARA DATABASE SERVER IKUT BERUBAH?
+
+Ada **3 Cara Praktis** untuk memastikan database di server hosting selalu up-to-date:
+
+#### ✅ Cara 1: Sekali Jalan di Terminal cPanel (Paling Direkomendasikan)
+Cukup jalankan perintah seeder/migration saat Anda melakukan `git pull`:
+```bash
+cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id
+git pull origin main
+php spark db:seed VoidSystemSeeder
+```
+
+#### ✅ Cara 2: Melalui Tombol Web UI (Tanpa Buka Terminal)
+1. Login ke website hosting Anda sebagai Super Admin.
+2. Buka menu **Administrasi Database** (atau dari Pusat Kontrol / Launchpad).
+3. Klik tombol **"🔄 Sinkronisasi Data"** atau **"Paksa Pembaruan Sistem"**.
+4. Sistem backend akan otomatis menjalankan *Seeder* dan memastikan seluruh tabel & kolom baru terbuat.
+
+#### ✅ Cara 3: Menggunakan Spark Migrate
+Jika ada file migration baru:
+```bash
+php spark migrate
+```
 
 ---
 
 ## 🔄 ALUR KERJA HARIAN (DAILY WORKFLOW CHEAT-SHEET)
 
-Setiap hari saat Anda mengembangkan website, alurnya sesederhana:
+Setiap kali Anda selesai mengembangkan fitur baru:
 
 ```text
-[1. Edit / Koding di IDE]
+[1. Edit / Koding di IDE Laptop]
        ↓
 [2. Terminal Laptop: Commit & Push]
-   git add . ; git commit -m "pesan update" ; git push origin main
+   git add . ; git commit -m "update fitur" ; git push origin main
        ↓
-[3. Terminal Hosting: Pull Update]
-   cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main
+[3. Terminal Hosting: Pull Update + Update Database]
+   cd /home/n1579664/public_html/appsdemo-albiandra-project.my.id && git pull origin main && php spark db:seed VoidSystemSeeder
        ↓
-[4. Selesai! Refresh website di browser]
+[4. Selesai! Website & Database langsung sinkron sempurna]
 ```
 
 ---

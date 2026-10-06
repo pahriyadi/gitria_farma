@@ -627,10 +627,18 @@ class System extends BaseController
             }
         }
 
+        // 2. Auto-run Void & Anti-Fraud Seeder
+        try {
+            $seeder = \Config\Database::seeder();
+            $seeder->call('App\Database\Seeds\VoidSystemSeeder');
+        } catch (\Throwable $e) {
+            log_message('error', 'Auto-run VoidSystemSeeder in syncData: ' . $e->getMessage());
+        }
+
         $db->transComplete();
 
-        $this->logAudit('SYNC', 'Database Administration', 'Menjalankan sinkronisasi integritas referensi dan parameter sistem.');
-        session()->setFlashdata('success', 'Proses sinkronisasi data, foreign key check, dan verifikasi parameter referensi berhasil diselesaikan.');
+        $this->logAudit('SYNC', 'Database Administration', 'Menjalankan sinkronisasi integritas referensi, skema anti-fraud, dan parameter sistem.');
+        session()->setFlashdata('success', 'Proses sinkronisasi data, pembaruan skema anti-fraud void, dan verifikasi parameter sistem berhasil diselesaikan.');
         return redirect()->to(base_url('system/database'));
     }
 
