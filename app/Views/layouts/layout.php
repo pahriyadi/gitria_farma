@@ -2417,19 +2417,35 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
         // =========================================================================
         // GLOBAL FORCE UPDATE & SYSTEM CACHE PURGE CONTROLLER
         // =========================================================================
-        window.forceUpdateSystem = function(silent, callback) {
-            if (silent === undefined) silent = false;
+        window.forceUpdateSystem = function(silentOrInteractive, callback) {
+            // Mode handling: jika dipanggil dari tombol klik (tanpa argumen) default interactive = true
+            const isSilent = (silentOrInteractive === true);
+
+            // Jika offlineSyncEngine tersedia dan dipanggil dalam mode interaktif, delegasikan ke wizard lengkap
+            if (!isSilent && window.offlineSyncEngine && typeof window.offlineSyncEngine.forceUpdateSystem === 'function') {
+                return window.offlineSyncEngine.forceUpdateSystem(true);
+            }
+
             try {
-                // 1. Bersihkan Service Worker Cache Storage jika ada
+                // 1. Bersihkan Service Worker Registrations
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(function(regs) {
+                        for (let r of regs) {
+                            try { r.unregister(); } catch(e) {}
+                        }
+                    }).catch(function() {});
+                }
+
+                // 2. Bersihkan Service Worker Cache Storage jika ada
                 if ('caches' in window) {
                     caches.keys().then(function(names) {
                         for (let name of names) {
-                            caches.delete(name);
+                            try { caches.delete(name); } catch(e) {}
                         }
-                    });
+                    }).catch(function() {});
                 }
 
-                // 2. Bersihkan SessionStorage & LocalStorage non-esensial (pertahankan tema, sidebar state & audio)
+                // 3. Bersihkan SessionStorage & LocalStorage non-esensial (pertahankan tema, sidebar state & audio)
                 const preserveKeys = [
                     'sawamawa_admin_theme',
                     'sawamawa_sidebar_state',
@@ -2446,7 +2462,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     }
                 }
 
-                // 3. Bersihkan DataTables cached state
+                // 4. Bersihkan DataTables cached state
                 if ($.fn.DataTable) {
                     $('.dataTable, table[id]').each(function() {
                         if ($.fn.DataTable.isDataTable(this)) {
@@ -2457,8 +2473,20 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     });
                 }
 
-                // 4. Jika bukan mode senyap (silent), tampilkan feedback visual & reload halaman penuh
-                if (!silent) {
+                // 5. Trigger pembersihan cache server & OPcache PHP di background
+                const cleanBase = (typeof BASE_URL !== 'undefined' ? BASE_URL.replace(/\/+$/, '') : '');
+                try {
+                    fetch(cleanBase + '/system/clear-cache?format=json', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).catch(function() {});
+                } catch(e) {}
+
+                // 6. Jika bukan mode senyap (silent), tampilkan feedback visual & reload halaman penuh
+                if (!isSilent) {
                     if (typeof toastr !== 'undefined') {
                         toastr.info('Membersihkan cache aplikasi dan memuat versi terbaru...', '🔄 Perbarui Sistem', { timeOut: 1200 });
                     }
@@ -2471,7 +2499,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     callback();
                 }
             } catch(e) {
-                if (!silent) {
+                if (!isSilent) {
                     window.location.reload(true);
                 }
             }
