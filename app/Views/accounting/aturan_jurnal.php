@@ -169,7 +169,10 @@ foreach ($categories as $c) {
                 </h5>
                 <small class="text-muted d-block mt-0.5">Konfigurasi pos alokasi Debet &amp; Kredit untuk penjurnalan otomatis transaksi kasir faskes</small>
             </div>
-            <div>
+            <div class="d-flex flex-wrap" style="gap: 6px;">
+                <button class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#modalDefaultTemplate" title="Muat template aturan jurnal standar faskes & klinik">
+                    <i class="fas fa-wand-magic-sparkles mr-1"></i> Muat Template Standar (Default)
+                </button>
                 <button class="btn btn-teal btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#modalAddCategory">
                     <i class="fas fa-plus mr-1"></i> + Tambah Kategori Template
                 </button>
@@ -193,9 +196,16 @@ foreach ($categories as $c) {
                 <tbody>
                     <?php if (empty($categories)): ?>
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                <i class="fas fa-folder-open fa-2x mb-2 text-secondary"></i><br>
-                                Belum ada kategori template jurnal. Klik tombol "+ Tambah Kategori Template" untuk membuat baru.
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="fas fa-folder-open fa-3x mb-3 text-secondary"></i>
+                                <h6 class="font-weight-bold text-dark mb-1">Belum Ada Kategori Template Aturan Jurnal</h6>
+                                <p class="text-muted text-sm mb-3">Klik tombol di bawah untuk memuat konfigurasi template jurnal standar bawaan sistem (*100% Balanced*), atau buat template baru secara manual.</p>
+                                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-2" data-toggle="modal" data-target="#modalDefaultTemplate">
+                                    <i class="fas fa-wand-magic-sparkles mr-1"></i> Muat Template Standar (Default)
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm font-weight-bold" data-toggle="modal" data-target="#modalAddCategory">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Kategori Manual
+                                </button>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -375,6 +385,103 @@ foreach ($categories as $c) {
     </div>
 </div>
 
+<!-- ========================================================================= -->
+<!-- MODAL LOAD DEFAULT / STANDARD JOURNAL TEMPLATES                           -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalDefaultTemplate" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-teal text-white py-3">
+                <h5 class="modal-title font-weight-bold">
+                    <i class="fas fa-wand-magic-sparkles mr-1"></i> Muat Template Aturan Jurnal Standar Faskes
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="<?= base_url('accounting/aturan-jurnal/reset-default') ?>" method="post" id="formDefaultTpl">
+                <?= csrf_field() ?>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 shadow-xs mb-3" style="border-left: 4px solid #17a2b8 !important; font-size: 12.5px;">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Fitur ini akan menginisialisasi atau menyinkronkan <strong>6 Template Aturan Jurnal Standar</strong> (*100% Double-Entry Balanced*) yang telah disesuaikan dengan alur operasional klinik, apotek, resto gizi, dan grosir distributor.
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mb-2 text-sm">Daftar Template Standar yang Akan Dibuat:</h6>
+                    <div class="row mb-3" style="font-size: 11.5px;">
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-teal font-weight-bold text-uppercase mb-1">Apotek</span>
+                                <strong class="d-block text-dark">1. Penjualan Obat Bebas (OTC)</strong>
+                                <small class="text-muted">Kas (Dr 100%) vs Obat (49%), Pajak (11%), Penunjang (9%), Resep (7%), ADM (24%).</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-teal font-weight-bold text-uppercase mb-1">Apotek</span>
+                                <strong class="d-block text-dark">2. Penjualan Obat Resep Dokter</strong>
+                                <small class="text-muted">Kas (Dr 100%) vs Fee Dokter (5%), Obat (44%), Pajak (11%), Penunjang (9%), Resep (7%), ADM (24%).</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-primary font-weight-bold text-uppercase mb-1">Klinik / Apotek</span>
+                                <strong class="d-block text-dark">3. Konsultasi Online &amp; Telemedis</strong>
+                                <small class="text-muted">Kas (Dr 100%) vs Jasa Dokter Tetap (Rp 20rb), Utang Fee Dr, &amp; Alokasi 5 Pos Obat.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-primary font-weight-bold text-uppercase mb-1">Klinik</span>
+                                <strong class="d-block text-dark">4. Rawat Jalan Poli &amp; Tindakan Medis</strong>
+                                <small class="text-muted">Kas Utama (Dr 100%) vs Jasa Medis Dokter (66.67%) &amp; Sarana Fasilitas Klinik (33.33%).</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-warning text-dark font-weight-bold text-uppercase mb-1">Resto Gizi</span>
+                                <strong class="d-block text-dark">5. Penjualan Resto Gizi Sehat</strong>
+                                <small class="text-muted">Kas Resto (Dr 100%) vs Pendapatan Resto Gizi Sehat (Cr 100%).</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <div class="p-2 border rounded bg-light h-100">
+                                <span class="badge badge-success font-weight-bold text-uppercase mb-1">Distributor</span>
+                                <strong class="d-block text-dark">6. Penjualan Grosir B2B</strong>
+                                <small class="text-muted">Kas/Bank (Dr 100%) vs Pendapatan Penjualan Grosir B2B (Cr 100%).</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="font-weight-bold text-dark mb-2 text-sm">Pilih Metode Pemuatan Template:</h6>
+                    <div class="card border p-3 mb-0 bg-light">
+                        <div class="custom-control custom-radio mb-2">
+                            <input type="radio" id="mode_merge" name="mode" value="merge" class="custom-control-input" checked>
+                            <label class="custom-control-label font-weight-bold text-dark" for="mode_merge">
+                                <i class="fas fa-code-merge text-teal mr-1"></i> Sinkronkan Template Standar (Direkomendasikan)
+                            </label>
+                            <small class="d-block text-muted pl-4">Menambahkan kategori standar yang belum ada tanpa menghapus atau mengubah kategori kustom buatan Anda.</small>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="mode_overwrite" name="mode" value="overwrite" class="custom-control-input">
+                            <label class="custom-control-label font-weight-bold text-danger" for="mode_overwrite">
+                                <i class="fas fa-rotate text-danger mr-1"></i> Reset Total &amp; Muat Ulang Standar Pabrikan
+                            </label>
+                            <small class="d-block text-muted pl-4">Menghapus seluruh konfigurasi kategori jurnal dan sub-pos saat ini, lalu memuat ulang 6 template standar murni.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
+                    <button type="submit" id="btn-load-default" class="btn btn-teal btn-sm font-weight-bold shadow-sm">
+                        <i class="fas fa-play mr-1"></i> Proses Muat Template
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Form Hapus Kategori -->
 <form id="formDeleteCat" action="" method="post" style="display:none;">
     <?= csrf_field() ?>
@@ -403,6 +510,11 @@ $('#modalAddCategory').on('hidden.bs.modal', function () {
 $('#formCategory').on('submit', function() {
     const $btn = $('#btn-save-cat');
     $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
+});
+
+$('#formDefaultTpl').on('submit', function() {
+    const $btn = $('#btn-load-default');
+    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Memproses Template...');
 });
 
 function deleteCategory(id, name) {

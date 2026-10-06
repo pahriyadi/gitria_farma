@@ -152,6 +152,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('accounting/aturan-jurnal/toggle-category/(:num)', 'Accounting::toggleCategoryStatus/$1');
     $routes->post('accounting/aturan-jurnal/save-rule', 'Accounting::saveRule');
     $routes->post('accounting/aturan-jurnal/delete-rule/(:num)', 'Accounting::deleteRule/$1');
+    $routes->post('accounting/aturan-jurnal/reset-default', 'Accounting::resetDefaultTemplates');
     $routes->get('accounting/aturan-jurnal/api-simulate/(:num)', 'Accounting::apiSimulateSplit/$1');
 
     // Procurement & Approval

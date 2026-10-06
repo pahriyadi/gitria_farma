@@ -1726,6 +1726,198 @@ class Accounting extends BaseController
     }
 
     /**
+     * GENERATE / RESET TEMPLATE ATURAN JURNAL DEFAULT (STANDAR FASKES & EXCEL KLIEN)
+     */
+    public function resetDefaultTemplates()
+    {
+        $db = \Config\Database::connect('default');
+        $mode = $this->request->getPost('mode') ?: 'merge'; // 'overwrite' or 'merge'
+
+        if ($mode === 'overwrite') {
+            $db->table('journal_category_rules')->emptyTable();
+            $db->table('journal_categories')->emptyTable();
+        }
+
+        // Helper closures to resolve / create COA
+        $resolveAcc = function($code, $fallbackCode, $name, $type, $normalBalance) use ($db) {
+            $q = $db->table('accounts')->where('code', $code)->get();
+            $row = ($q && is_object($q)) ? $q->getRow() : null;
+            if ($row) return (int) $row->id;
+
+            if ($fallbackCode) {
+                $q = $db->table('accounts')->where('code', $fallbackCode)->get();
+                $row = ($q && is_object($q)) ? $q->getRow() : null;
+                if ($row) return (int) $row->id;
+            }
+
+            $q = $db->table('accounts')->like('name', $name)->get();
+            $row = ($q && is_object($q)) ? $q->getRow() : null;
+            if ($row) return (int) $row->id;
+
+            $db->table('accounts')->insert([
+                'code'           => $code,
+                'name'           => $name,
+                'type'           => $type,
+                'normal_balance' => $normalBalance,
+                'balance'        => 0.00,
+                'parent_id'      => null
+            ]);
+            return (int) $db->insertID();
+        };
+
+        // Standard accounts dictionary
+        $accKasApotek   = $resolveAcc('1111', '1-101', 'Kas Kasir Apotek', 'asset', 'debit');
+        $accKasUtama    = $resolveAcc('111', '1-101', 'Kas Kasir Utama', 'asset', 'debit');
+        $accPersediaan  = $resolveAcc('511', '1-104', 'Obat (Pembelian Obat Lagi)', 'expense', 'debit');
+        $accUtangPajak  = $resolveAcc('231', '2-102', 'Utang Pajak', 'liability', 'credit');
+        $accPenunjang   = $resolveAcc('512', '5-102', 'Penunjang Operasional', 'expense', 'debit');
+        $accObatResep   = $resolveAcc('513', '5-103', 'Pengelolaan Resep Farmasi', 'expense', 'debit');
+        $accAdmFarmasi  = $resolveAcc('514', '4-102', 'Administrasi & Pendapatan Farmasi', 'revenue', 'credit');
+        $accUtangFeeDr  = $resolveAcc('241', '2-103', 'Utang Fee Dokter', 'liability', 'credit');
+        $accJasaDokter  = $resolveAcc('411', '4-101', 'Pendapatan Jasa Medis Dokter', 'revenue', 'credit');
+        $accSaranaKlinik= $resolveAcc('412', '4-103', 'Pendapatan Sarana & Fasilitas Klinik', 'revenue', 'credit');
+        $accResto       = $resolveAcc('413', '4-105', 'Pendapatan Resto Gizi Sehat', 'revenue', 'credit');
+        $accGrosirB2B   = $resolveAcc('414', '4-104', 'Pendapatan Penjualan Grosir B2B', 'revenue', 'credit');
+
+        // Master Default Templates Definition
+        $defaultTemplates = [
+            [
+                'code'        => 'PENJUALAN_OBAT_BEBAS',
+                'name'        => 'Penjualan Obat Bebas (OTC Apotek)',
+                'module'      => 'apotek',
+                'description' => 'Penjualan obat bebas non-resep di apotek retail tanpa jasa medis dokter.',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas Kasir Apotek', 'acc' => $accKasApotek, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Obat (Pembelian Obat Lagi)', 'acc' => $accPersediaan, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 49.0, 'fix' => 0, 'code' => null, 'sort' => 2],
+                    ['name' => 'Utang Pajak', 'acc' => $accUtangPajak, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 11.0, 'fix' => 0, 'code' => null, 'sort' => 3],
+                    ['name' => 'Penunjang Operasional', 'acc' => $accPenunjang, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 9.0, 'fix' => 0, 'code' => null, 'sort' => 4],
+                    ['name' => 'Obat Resep', 'acc' => $accObatResep, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 7.0, 'fix' => 0, 'code' => null, 'sort' => 5],
+                    ['name' => 'Administrasi & Margin', 'acc' => $accAdmFarmasi, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 24.0, 'fix' => 0, 'code' => null, 'sort' => 6],
+                ]
+            ],
+            [
+                'code'        => 'PENJUALAN_OBAT_RESEP',
+                'name'        => 'Penjualan Obat Resep Dokter',
+                'module'      => 'apotek',
+                'description' => 'Penjualan obat resep dengan pembagian fee dokter dinamis dan alokasi 5 pos.',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas Kasir Apotek', 'acc' => $accKasApotek, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Utang Fee Dokter', 'acc' => $accUtangFeeDr, 'pos' => 'credit', 'type' => 'dynamic_fee', 'pct' => 5.0, 'fix' => 0, 'code' => 'DOCTOR_FEE_PCT', 'sort' => 2],
+                    ['name' => 'Obat (Pembelian Obat Lagi)', 'acc' => $accPersediaan, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 44.0, 'fix' => 0, 'code' => 'DYNAMIC_OBAT_REMAINDER', 'sort' => 3],
+                    ['name' => 'Utang Pajak', 'acc' => $accUtangPajak, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 11.0, 'fix' => 0, 'code' => null, 'sort' => 4],
+                    ['name' => 'Penunjang Operasional', 'acc' => $accPenunjang, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 9.0, 'fix' => 0, 'code' => null, 'sort' => 5],
+                    ['name' => 'Obat Resep', 'acc' => $accObatResep, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 7.0, 'fix' => 0, 'code' => null, 'sort' => 6],
+                    ['name' => 'Administrasi & Margin', 'acc' => $accAdmFarmasi, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 24.0, 'fix' => 0, 'code' => null, 'sort' => 7],
+                ]
+            ],
+            [
+                'code'        => 'KONSULTASI_ONLINE',
+                'name'        => 'Konsultasi Online & Telemedis',
+                'module'      => 'apotek',
+                'description' => 'Layanan telemedis online (Jasa Dokter Tetap Rp 20rb + Utang Fee Dokter + Alokasi 5 Pos Obat).',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas Kasir / Bank', 'acc' => $accKasApotek, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Pendapatan Jasa Dokter (Baku)', 'acc' => $accJasaDokter, 'pos' => 'credit', 'type' => 'fixed_amount', 'pct' => 0, 'fix' => 20000.0, 'code' => 'FIXED_NOMINAL', 'sort' => 2],
+                    ['name' => 'Utang Fee Dokter (Manual)', 'acc' => $accUtangFeeDr, 'pos' => 'credit', 'type' => 'fixed_amount', 'pct' => 0, 'fix' => 0.0, 'code' => 'DOCTOR_FEE_NOMINAL', 'sort' => 3],
+                    ['name' => 'Obat (Pembelian Obat Lagi)', 'acc' => $accPersediaan, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 49.0, 'fix' => 0, 'code' => null, 'sort' => 4],
+                    ['name' => 'Utang Pajak', 'acc' => $accUtangPajak, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 11.0, 'fix' => 0, 'code' => null, 'sort' => 5],
+                    ['name' => 'Penunjang Operasional', 'acc' => $accPenunjang, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 9.0, 'fix' => 0, 'code' => null, 'sort' => 6],
+                    ['name' => 'Obat Resep', 'acc' => $accObatResep, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 7.0, 'fix' => 0, 'code' => null, 'sort' => 7],
+                    ['name' => 'Administrasi & Margin', 'acc' => $accAdmFarmasi, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 24.0, 'fix' => 0, 'code' => null, 'sort' => 8],
+                ]
+            ],
+            [
+                'code'        => 'RAWAT_JALAN_POLI',
+                'name'        => 'Pelayanan Rawat Jalan Poli & Tindakan',
+                'module'      => 'klinik',
+                'description' => 'Pembagian penerimaan tindakan poli antara Jasa Medis Dokter (66.67%) dan Sarana Klinik (33.33%).',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas Kasir Utama', 'acc' => $accKasUtama, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Pendapatan Jasa Medis Dokter', 'acc' => $accJasaDokter, 'pos' => 'credit', 'type' => 'dynamic_fee', 'pct' => 66.67, 'fix' => 0, 'code' => 'DOCTOR_FEE_PCT', 'sort' => 2],
+                    ['name' => 'Pendapatan Sarana & Fasilitas Klinik', 'acc' => $accSaranaKlinik, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 33.33, 'fix' => 0, 'code' => null, 'sort' => 3],
+                ]
+            ],
+            [
+                'code'        => 'PENJUALAN_RESTO',
+                'name'        => 'Penjualan Resto Gizi Sehat',
+                'module'      => 'resto',
+                'description' => 'Penjualan menu makanan & minuman diet/gizi sehat restoran klinik.',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas Kasir Resto', 'acc' => $accKasUtama, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Pendapatan Resto Gizi Sehat', 'acc' => $accResto, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => null, 'sort' => 2],
+                ]
+            ],
+            [
+                'code'        => 'PENJUALAN_DISTRIBUTOR',
+                'name'        => 'Penjualan Distributor & Grosir B2B',
+                'module'      => 'keuangan',
+                'description' => 'Penjualan partai besar distributor farmasi B2B ke apotek mitra dan klinik.',
+                'rules'       => [
+                    ['name' => 'Penerimaan Kas / Bank Distributor', 'acc' => $accKasUtama, 'pos' => 'debit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => 'DEBIT_KAS', 'sort' => 1],
+                    ['name' => 'Pendapatan Penjualan Grosir B2B', 'acc' => $accGrosirB2B, 'pos' => 'credit', 'type' => 'percentage', 'pct' => 100.0, 'fix' => 0, 'code' => null, 'sort' => 2],
+                ]
+            ],
+        ];
+
+        $createdCount = 0;
+        $updatedCount = 0;
+
+        foreach ($defaultTemplates as $tpl) {
+            $cat = $db->table('journal_categories')->where('category_code', $tpl['code'])->get()->getRow();
+            if (!$cat) {
+                $db->table('journal_categories')->insert([
+                    'category_code' => $tpl['code'],
+                    'category_name' => $tpl['name'],
+                    'module'        => $tpl['module'],
+                    'description'   => $tpl['description'],
+                    'is_active'     => 1,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'updated_at'    => date('Y-m-d H:i:s')
+                ]);
+                $catId = (int) $db->insertID();
+                $createdCount++;
+            } else {
+                $catId = (int) $cat->id;
+                if ($mode === 'overwrite') {
+                    $db->table('journal_categories')->where('id', $catId)->update([
+                        'category_name' => $tpl['name'],
+                        'module'        => $tpl['module'],
+                        'description'   => $tpl['description'],
+                        'is_active'     => 1,
+                        'updated_at'    => date('Y-m-d H:i:s')
+                    ]);
+                    $db->table('journal_category_rules')->where('category_id', $catId)->delete();
+                }
+                $updatedCount++;
+            }
+
+            // Check if rules already exist for this category
+            $existingRulesCount = $db->table('journal_category_rules')->where('category_id', $catId)->countAllResults();
+            if ($existingRulesCount === 0 || $mode === 'overwrite') {
+                foreach ($tpl['rules'] as $rule) {
+                    $db->table('journal_category_rules')->insert([
+                        'category_id'        => $catId,
+                        'item_name'          => $rule['name'],
+                        'account_id'         => $rule['acc'],
+                        'position'           => $rule['pos'],
+                        'calc_type'          => $rule['type'],
+                        'percentage_value'   => $rule['pct'],
+                        'fixed_amount_value' => $rule['fix'],
+                        'formula_code'       => $rule['code'],
+                        'sort_order'         => $rule['sort'],
+                        'is_active'          => 1,
+                        'created_at'         => date('Y-m-d H:i:s'),
+                        'updated_at'         => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+        }
+
+        session()->setFlashdata('success', "Template aturan jurnal standar berhasil dimuat ({$createdCount} dibuat, {$updatedCount} disinkronkan). Seluruh aturan berstatus 100% Balanced.");
+        return redirect()->to(base_url('accounting/aturan-jurnal'));
+    }
+
+    /**
      * SIMPAN / UPDATE SUB-RULE ITEM JURNAL
      */
     public function saveRule()
