@@ -2,13 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= esc($title ?? 'Sawamawa Medical Center - Klinik Pratama & Pelayanan Kesehatan Terpadu') ?></title>
     
     <!-- Meta SEO & Open Graph -->
     <meta name="description" content="Sawamawa Medical Center - Pusat Pelayanan Medis Terpadu, Poliklinik Dokter Spesialis, Farmasi E-Resep, Laboratorium, dan Resto Sehat di Sumbawa Besar.">
     <meta name="keywords" content="klinik sumbawa, dokter spesialis sumbawa, sawamawa medical center, daftar online klinik, rekam medis elektronik, satusehat">
     <meta name="author" content="Sawamawa Medical Center">
+    <meta name="theme-color" content="#0d9488">
 
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,9 +38,24 @@
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
             --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 10px 10px -5px rgba(0,0,0,0.02);
-            --radius-md: 10px;
-            --radius-lg: 14px;
-            --radius-xl: 20px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 22px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -47,8 +63,8 @@
             color: var(--text-main);
             background-color: #ffffff;
             line-height: 1.6;
-            overflow-x: hidden;
             letter-spacing: -0.01em;
+            -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -58,25 +74,26 @@
             letter-spacing: -0.02em;
         }
 
-        /* Top Announcement / Emergency Hotline Bar */
+        /* Top Hotline Announcement Bar */
         .top-info-bar {
             background-color: #042f2e;
             color: #ccfbf1;
-            font-size: 12.5px;
-            padding: 7px 0;
+            font-size: 12px;
+            padding: 8px 0;
             font-weight: 500;
             border-bottom: 1px solid rgba(20, 184, 166, 0.2);
         }
         .top-info-bar a {
             color: #5eead4;
             text-decoration: none;
+            transition: color 0.2s ease;
         }
         .top-info-bar a:hover {
             color: #ffffff;
             text-decoration: underline;
         }
 
-        /* Navbar Header (Glassmorphism) */
+        /* Navbar Header */
         .navbar-main {
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(12px);
@@ -91,67 +108,139 @@
         .navbar-brand {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            font-size: 19px;
+            font-size: clamp(15px, 3.8vw, 19px);
             color: var(--dark-slate);
             display: flex;
             align-items: center;
             letter-spacing: -0.5px;
+            max-width: 80%;
         }
         .navbar-brand img {
-            height: 38px;
+            height: clamp(32px, 5vw, 40px);
             max-width: 44px;
             object-fit: contain;
             margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .navbar-brand span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .navbar-toggler {
+            padding: 6px 10px;
+            font-size: 18px;
+            border-radius: 8px;
+            background: var(--bg-light);
+        }
+        .navbar-toggler:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.25);
         }
         .nav-link {
             font-weight: 600;
             font-size: 13.5px;
             color: #475569 !important;
             padding: 8px 14px !important;
-            border-radius: 6px;
+            border-radius: 8px;
             transition: all 0.2s ease;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
         }
         .nav-link:hover, .nav-link.active {
             color: var(--primary-dark) !important;
             background-color: var(--primary-subtle);
         }
 
-        /* Button Styling */
+        /* Buttons */
         .btn-brand-primary {
             background-color: var(--primary);
             color: #ffffff !important;
             border: 1px solid var(--primary);
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 14px;
             padding: 10px 22px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             box-shadow: 0 2px 4px rgba(13, 148, 136, 0.2);
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
         }
         .btn-brand-primary:hover {
             background-color: var(--primary-dark);
             border-color: var(--primary-dark);
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(13, 148, 136, 0.3);
+            box-shadow: 0 6px 12px rgba(13, 148, 136, 0.25);
         }
         .btn-brand-outline {
             background-color: transparent;
             color: var(--primary-dark) !important;
             border: 1.5px solid var(--primary);
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 14px;
             padding: 9px 20px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
         }
         .btn-brand-outline:hover {
             background-color: var(--primary-subtle);
             border-color: var(--primary-dark);
         }
 
+        .btn {
+            white-space: normal !important;
+            word-break: normal;
+            max-width: 100%;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 11.5px;
+            max-width: 100%;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            text-align: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .status-pill-open {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        .status-pill-closed {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .status-pill .status-title {
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-pill .status-time {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
         /* Hero Section */
         .hero-section {
-            padding: 70px 0 60px;
+            padding: clamp(35px, 6vw, 75px) 0 clamp(35px, 5vw, 65px);
             background: radial-gradient(circle at 85% 15%, rgba(204, 251, 241, 0.45) 0%, rgba(255, 255, 255, 1) 70%);
             border-bottom: 1px solid var(--card-border);
             position: relative;
@@ -165,15 +254,17 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: 700;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             border: 1px solid #a7f3d0;
+            max-width: 100%;
+            line-height: 1.4;
         }
         .hero-title {
-            font-size: 42px;
+            font-size: clamp(24px, 4.2vw + 8px, 42px);
             font-weight: 800;
-            line-height: 1.18;
+            line-height: 1.2;
             color: var(--dark-slate);
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             letter-spacing: -0.03em;
         }
         .hero-title .text-gradient {
@@ -182,12 +273,11 @@
             -webkit-text-fill-color: transparent;
         }
         .hero-subtitle {
-            font-size: 16px;
+            font-size: clamp(14px, 1.5vw + 8px, 16px);
             color: var(--text-muted);
             line-height: 1.65;
-            margin-bottom: 28px;
+            margin-bottom: 24px;
             max-width: 580px;
-            font-weight: 400;
         }
 
         /* Quick Booking Card */
@@ -195,7 +285,7 @@
             background: #ffffff;
             border: 1px solid var(--card-border);
             border-radius: var(--radius-xl);
-            padding: 28px;
+            padding: clamp(18px, 3.5vw, 28px);
             box-shadow: var(--shadow-xl);
             position: relative;
             z-index: 10;
@@ -204,28 +294,29 @@
         /* Section Headings */
         .section-tag {
             display: inline-block;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             color: var(--primary);
             background: var(--primary-subtle);
             padding: 4px 12px;
             border-radius: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .section-title {
-            font-size: 30px;
+            font-size: clamp(22px, 3.2vw + 6px, 32px);
             font-weight: 800;
             color: var(--dark-slate);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             letter-spacing: -0.02em;
         }
         .section-desc {
-            font-size: 14.5px;
+            font-size: clamp(13.5px, 1.2vw + 6px, 15px);
             color: var(--text-muted);
             max-width: 650px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         /* Service Cards */
@@ -233,9 +324,11 @@
             background: #ffffff;
             border: 1px solid var(--card-border);
             border-radius: var(--radius-lg);
-            padding: 24px;
+            padding: clamp(18px, 2.5vw, 24px);
             height: 100%;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
         }
         .service-card:hover {
             border-color: var(--primary-light);
@@ -243,14 +336,15 @@
             box-shadow: var(--shadow-lg);
         }
         .service-icon-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
             margin-bottom: 16px;
+            flex-shrink: 0;
         }
 
         /* Doctor Cards */
@@ -261,6 +355,8 @@
             overflow: hidden;
             transition: all 0.25s ease;
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
         .doctor-card:hover {
             border-color: var(--primary-light);
@@ -268,7 +364,7 @@
             transform: translateY(-3px);
         }
         .doctor-avatar-box {
-            height: 160px;
+            height: clamp(130px, 20vw, 160px);
             background: linear-gradient(135deg, #f0fdf4 0%, #ccfbf1 100%);
             display: flex;
             align-items: center;
@@ -276,7 +372,7 @@
             position: relative;
         }
 
-        /* Article / News Card */
+        /* Article Cards */
         .article-card {
             background: #ffffff;
             border: 1px solid var(--card-border);
@@ -293,22 +389,22 @@
             transform: translateY(-4px);
         }
         .article-thumb {
-            height: 180px;
+            height: clamp(150px, 22vw, 180px);
             width: 100%;
             object-fit: cover;
             background: #f1f5f9;
         }
         .article-thumb-fallback {
-            height: 180px;
+            height: clamp(150px, 22vw, 180px);
             background: linear-gradient(135deg, #0d9488 0%, #0369a1 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ffffff;
-            font-size: 42px;
+            font-size: 40px;
         }
         .article-body {
-            padding: 20px;
+            padding: clamp(16px, 2.5vw, 20px);
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -316,15 +412,15 @@
         .article-cat-badge {
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 10px;
+            padding: 3px 10px;
             border-radius: 20px;
             background: #e0f2fe;
             color: #0369a1;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .article-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             line-height: 1.35;
             color: var(--dark-slate);
@@ -335,10 +431,10 @@
             overflow: hidden;
         }
         .article-summary {
-            font-size: 13px;
+            font-size: 12.5px;
             color: var(--text-muted);
             line-height: 1.5;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -346,27 +442,34 @@
             flex-grow: 1;
         }
         .article-meta {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #94a3b8;
             border-top: 1px solid #f1f5f9;
-            padding-top: 12px;
+            padding-top: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
-        /* Step Guide Item */
+        /* Step Card */
         .step-item-card {
             background: #ffffff;
             border: 1px solid var(--card-border);
             border-radius: var(--radius-lg);
-            padding: 22px;
+            padding: clamp(16px, 2.5vw, 22px);
             position: relative;
             height: 100%;
+            transition: transform 0.2s ease;
+        }
+        .step-item-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-light);
         }
         .step-number-badge {
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             background: var(--primary);
             color: #ffffff;
             border-radius: 10px;
@@ -374,22 +477,22 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 16px;
-            margin-bottom: 14px;
+            font-size: 15px;
+            margin-bottom: 12px;
         }
 
         /* Footer */
         .footer-main {
             background-color: var(--dark-slate);
             color: #94a3b8;
-            padding: 60px 0 25px;
-            font-size: 13.5px;
+            padding: clamp(40px, 6vw, 60px) 0 25px;
+            font-size: 13px;
         }
         .footer-main h5 {
             color: #ffffff;
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 700;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .footer-main a {
             color: #94a3b8;
@@ -403,29 +506,73 @@
         /* Floating WhatsApp Button */
         .floating-wa-btn {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
+            bottom: 24px;
+            right: 24px;
             background-color: #25d366;
             color: #ffffff !important;
-            width: 56px;
-            height: 56px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-            z-index: 1030;
-            transition: transform 0.2s ease;
+            font-size: 26px;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.45);
+            z-index: 1020;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+            box-sizing: border-box;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            text-decoration: none !important;
         }
-        .floating-wa-btn:hover {
-            transform: scale(1.08);
-            color: #ffffff;
+        @media (hover: hover) and (pointer: fine) {
+            .floating-wa-btn:hover {
+                transform: translateY(-3px) scale(1.06);
+                box-shadow: 0 8px 20px rgba(37, 211, 102, 0.55);
+                color: #ffffff !important;
+            }
         }
 
-        @media (max-width: 991px) {
-            .hero-title { font-size: 32px; }
-            .hero-section { padding: 40px 0 40px; }
+        /* Responsive Media Queries */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: #ffffff;
+                padding: 16px;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow-xl);
+                margin-top: 12px;
+                border: 1px solid var(--card-border);
+            }
+            .hero-title br {
+                display: none;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .floating-wa-btn {
+                bottom: 16px;
+                right: 16px;
+                width: 48px;
+                height: 48px;
+                font-size: 23px;
+                box-shadow: 0 3px 10px rgba(37, 211, 102, 0.4);
+            }
+            .hero-action-btns .btn {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            .hero-stats-col {
+                text-align: center;
+            }
+            .top-info-bar .container {
+                font-size: 11px;
+                justify-content: center !important;
+                text-align: center;
+            }
+            .trust-badges-wrap img {
+                height: 28px !important;
+                margin: 4px;
+            }
         }
     </style>
 </head>
@@ -434,13 +581,13 @@
 <!-- Top Announcement & Hotline -->
 <div class="top-info-bar">
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <span class="badge badge-success mr-2 font-weight-bold" style="font-size: 10.5px; background: #059669;">IGD &amp; FARMASI 24 JAM</span>
-            <span><i class="fas fa-location-dot mr-1"></i> <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB')) ?></span>
+        <div class="d-flex align-items-center flex-wrap">
+            <span class="badge badge-success mr-2 font-weight-bold" style="font-size: 10px; background: #059669; padding: 4px 8px;">IGD 24 JAM</span>
+            <span class="text-truncate"><i class="fas fa-location-dot mr-1"></i> <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB')) ?></span>
         </div>
         <div class="d-none d-md-flex align-items-center" style="gap: 15px;">
             <span><i class="fab fa-whatsapp mr-1"></i> Hotline: <a href="https://api.whatsapp.com/send?phone=<?= clinic_setting('clinic_phone', '6281234567890') ?>" target="_blank"><?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?></a></span>
-            <span><i class="fas fa-shield-alt mr-1"></i> Terintegrasi SATUSEHAT Kemenkes RI</span>
+            <span><i class="fas fa-shield-alt mr-1 text-teal"></i> SATUSEHAT Kemenkes RI</span>
         </div>
     </div>
 </div>
@@ -457,20 +604,20 @@
             <span><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span>
         </a>
         
-        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navMain">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars text-dark"></i>
         </button>
 
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav ml-auto align-items-lg-center">
-                <li class="nav-item"><a class="nav-link" href="#beranda">Beranda</a></li>
-                <li class="nav-item"><a class="nav-link" href="#layanan">Layanan Medis</a></li>
-                <li class="nav-item"><a class="nav-link" href="#dokter">Dokter</a></li>
-                <li class="nav-item"><a class="nav-link" href="#artikel">Artikel &amp; Berita</a></li>
-                <li class="nav-item"><a class="nav-link" href="#cara-daftar">Alur Daftar</a></li>
-                <li class="nav-item"><a class="nav-link" href="#tarif">Tarif</a></li>
+                <li class="nav-item"><a class="nav-link" href="#beranda"><i class="fas fa-house-chimney-medical d-lg-none mr-2 text-teal"></i>Beranda</a></li>
+                <li class="nav-item"><a class="nav-link" href="#layanan"><i class="fas fa-stethoscope d-lg-none mr-2 text-teal"></i>Layanan Medis</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dokter"><i class="fas fa-user-md d-lg-none mr-2 text-teal"></i>Dokter</a></li>
+                <li class="nav-item"><a class="nav-link" href="#artikel"><i class="fas fa-newspaper d-lg-none mr-2 text-teal"></i>Artikel &amp; Berita</a></li>
+                <li class="nav-item"><a class="nav-link" href="#cara-daftar"><i class="fas fa-list-ol d-lg-none mr-2 text-teal"></i>Alur Daftar</a></li>
+                <li class="nav-item"><a class="nav-link" href="#tarif"><i class="fas fa-receipt d-lg-none mr-2 text-teal"></i>Tarif</a></li>
                 <li class="nav-item ml-lg-2 mt-2 mt-lg-0">
-                    <a href="<?= base_url('login') ?>" class="btn btn-brand-outline btn-sm font-weight-bold">
+                    <a href="<?= base_url('login') ?>" class="btn btn-brand-outline btn-sm font-weight-bold w-100 w-lg-auto">
                         <i class="fas fa-user-doctor mr-1"></i> Portal Nakes
                     </a>
                 </li>
@@ -485,7 +632,7 @@
         <div class="row align-items-center">
             <div class="col-lg-7">
                 <div class="hero-badge">
-                    <i class="fas fa-shield-halved mr-1.5 text-teal"></i> Pusat Layanan Medis Terpadu &amp; Terpercaya Sumbawa
+                    <i class="fas fa-shield-halved mr-1.5 text-teal"></i> Pusat Layanan Medis Terpadu &amp; Terpercaya
                 </div>
                 <h1 class="hero-title">
                     Kesehatan Anda Prioritas Kami, <br>
@@ -494,73 +641,83 @@
                 <p class="hero-subtitle">
                     Klinik Pratama rawat jalan dengan dokter spesialis &amp; umum, instalasi farmasi e-resep otomatis, laboratorium diagnostik akurat, dan resto nutrisi sehat terpadu.
                 </p>
-                <div class="d-flex flex-wrap align-items-center mb-4" style="gap: 10px;">
+                <div class="d-flex flex-wrap align-items-center mb-4 hero-action-btns" style="gap: 10px;">
                     <?php if (!empty($isOnlineOpen)): ?>
-                        <a href="<?= base_url('daftar-online') ?>" class="btn btn-brand-primary btn-lg font-weight-bold">
-                            <i class="fas fa-ticket-alt mr-1"></i> Daftar Antrean Online
+                        <a href="<?= base_url('daftar-online') ?>" class="btn btn-brand-primary btn-md font-weight-bold">
+                            <i class="fas fa-ticket-alt mr-1.5"></i> Daftar Antrean Online
                         </a>
-                        <button type="button" class="btn btn-brand-outline btn-lg font-weight-bold" data-toggle="modal" data-target="#modalDaftarWa">
-                            <i class="fab fa-whatsapp mr-1 text-success"></i> Daftar via WhatsApp
+                        <button type="button" class="btn btn-brand-outline btn-md font-weight-bold" data-toggle="modal" data-target="#modalDaftarWa">
+                            <i class="fab fa-whatsapp mr-1.5 text-success"></i> Daftar via WhatsApp
                         </button>
                     <?php else: ?>
-                        <button type="button" class="btn btn-brand-outline btn-lg font-weight-bold" data-toggle="modal" data-target="#modalDaftarWa">
-                            <i class="fas fa-clock mr-1 text-warning"></i> Status Pendaftaran: Tutup
+                        <button type="button" class="btn btn-brand-outline btn-md font-weight-bold" data-toggle="modal" data-target="#modalDaftarWa">
+                            <i class="fas fa-clock mr-1.5 text-warning"></i> Status Pendaftaran: Tutup
                         </button>
-                        <a href="#dokter" class="btn btn-brand-primary btn-lg font-weight-bold">
-                            <i class="fas fa-user-md mr-1"></i> Cek Jadwal Dokter
+                        <a href="#dokter" class="btn btn-brand-primary btn-md font-weight-bold">
+                            <i class="fas fa-user-md mr-1.5"></i> Cek Jadwal Dokter
                         </a>
                     <?php endif; ?>
                 </div>
                 <div class="row pt-3 border-top" style="border-top-color: var(--card-border) !important;">
-                    <div class="col-4">
-                        <div class="h5 font-weight-bold mb-0 text-dark">24 Jam</div>
-                        <small class="text-muted" style="font-size: 11.5px;">Siaga Medis &amp; IGD</small>
+                    <div class="col-4 hero-stats-col">
+                        <div class="h5 font-weight-bold mb-0 text-dark" style="font-size: clamp(16px, 2.5vw, 20px);">24 Jam</div>
+                        <small class="text-muted" style="font-size: 11px;">Siaga Medis &amp; IGD</small>
                     </div>
-                    <div class="col-4">
-                        <div class="h5 font-weight-bold mb-0 text-dark"><?= count($doctors) ?>+ Dokter</div>
-                        <small class="text-muted" style="font-size: 11.5px;">Spesialis &amp; Umum</small>
+                    <div class="col-4 hero-stats-col">
+                        <div class="h5 font-weight-bold mb-0 text-dark" style="font-size: clamp(16px, 2.5vw, 20px);"><?= count($doctors) ?>+ Dokter</div>
+                        <small class="text-muted" style="font-size: 11px;">Spesialis &amp; Umum</small>
                     </div>
-                    <div class="col-4">
-                        <div class="h5 font-weight-bold mb-0 text-teal">SATUSEHAT</div>
-                        <small class="text-muted" style="font-size: 11.5px;">Standar Kemenkes RI</small>
+                    <div class="col-4 hero-stats-col">
+                        <div class="h5 font-weight-bold mb-0 text-teal" style="font-size: clamp(15px, 2.3vw, 19px);">SATUSEHAT</div>
+                        <small class="text-muted" style="font-size: 11px;">Standar Kemenkes RI</small>
                     </div>
                 </div>
             </div>
             
             <!-- Quick Reservation Card -->
-            <div class="col-lg-5 text-center mt-5 mt-lg-0">
+            <div class="col-lg-5 text-center mt-4 mt-lg-0">
                 <div class="quick-booking-card">
                     <div class="text-center mb-3">
                         <?php if (!empty($isOnlineOpen)): ?>
-                            <span class="badge badge-success px-3 py-1 font-weight-bold text-uppercase" style="font-size: 11px;">
-                                <i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Pendaftaran Dibuka (<?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
-                            </span>
+                            <div class="status-pill status-pill-open">
+                                <div class="status-title">
+                                    <i class="fas fa-circle mr-1 text-success" style="font-size: 8px;"></i> Pendaftaran Dibuka
+                                </div>
+                                <div class="status-time">
+                                    (<?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
+                                </div>
+                            </div>
                         <?php else: ?>
-                            <span class="badge badge-danger text-white px-3 py-1 font-weight-bold text-uppercase" style="font-size: 11px;">
-                                <i class="fas fa-ban mr-1"></i> Pendaftaran Online &amp; WA Tutup (Buka <?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
-                            </span>
+                            <div class="status-pill status-pill-closed">
+                                <div class="status-title">
+                                    <i class="fas fa-ban mr-1 text-danger"></i> Pendaftaran Online &amp; WA Tutup
+                                </div>
+                                <div class="status-time">
+                                    (Buka <?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
+                                </div>
+                            </div>
                         <?php endif; ?>
                         
-                        <h4 class="mt-2 mb-1" style="font-size: 19px;">Reservasi Antrean Cepat</h4>
-                        <small class="text-muted">Pilih poliklinik dan tanggal untuk mendapatkan kartu pasien digital</small>
+                        <h4 class="mt-2 mb-1" style="font-size: 18px;">Reservasi Antrean Cepat</h4>
+                        <small class="text-muted">Pilih poliklinik dan tanggal untuk mendapatkan nomor antrean digital</small>
                     </div>
 
                     <?php if (!empty($isOnlineOpen)): ?>
                         <form action="<?= base_url('daftar-online') ?>" method="get">
-                            <div class="form-group text-left">
-                                <label class="font-weight-bold text-xs text-uppercase text-muted">Pilih Poliklinik Tujuan:</label>
-                                <select name="polyclinic_id" class="form-control form-control-lg font-weight-bold" style="font-size: 13.5px; border-radius: 8px;">
+                            <div class="form-group text-left mb-2">
+                                <label class="font-weight-bold text-xs text-uppercase text-muted mb-1">Pilih Poliklinik Tujuan:</label>
+                                <select name="polyclinic_id" class="form-control form-control-md font-weight-bold" style="font-size: 13.5px; border-radius: 8px; height: 44px;">
                                     <?php foreach ($polyclinics as $p): ?>
                                         <option value="<?= $p->id ?>">Poliklinik <?= esc($p->name) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="form-group text-left">
-                                <label class="font-weight-bold text-xs text-uppercase text-muted">Rencana Tanggal Kunjungan:</label>
-                                <input type="date" name="visit_date" class="form-control form-control-lg font-weight-bold" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" style="font-size: 13.5px; border-radius: 8px;">
+                            <div class="form-group text-left mb-3">
+                                <label class="font-weight-bold text-xs text-uppercase text-muted mb-1">Rencana Tanggal Kunjungan:</label>
+                                <input type="date" name="visit_date" class="form-control form-control-md font-weight-bold" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" style="font-size: 13.5px; border-radius: 8px; height: 44px;">
                             </div>
-                            <button type="submit" class="btn btn-brand-primary btn-block font-weight-bold py-2.5 mt-3" style="font-size: 14.5px;">
-                                <i class="fas fa-arrow-right mr-1"></i> Lanjutkan Pendaftaran
+                            <button type="submit" class="btn btn-brand-primary btn-block font-weight-bold py-2.5" style="font-size: 14.5px;">
+                                <i class="fas fa-arrow-right mr-1.5"></i> Lanjutkan Pendaftaran
                             </button>
                         </form>
                         <div class="mt-3 text-center">
@@ -570,7 +727,7 @@
                         <div class="alert alert-light border text-left p-3 my-3 text-xs text-muted" style="border-radius: 8px;">
                             <i class="fas fa-info-circle text-teal mr-1"></i> <?= esc($closedMessage) ?>
                         </div>
-                        <button type="button" class="btn btn-secondary btn-block font-weight-bold py-2 mt-2" data-toggle="modal" data-target="#modalDaftarWa">
+                        <button type="button" class="btn btn-secondary btn-block font-weight-bold py-2.5 mt-2 text-wrap" data-toggle="modal" data-target="#modalDaftarWa" style="white-space: normal; line-height: 1.4; font-size: 13.5px;">
                             <i class="fas fa-clock mr-1"></i> Pendaftaran Online &amp; WA Sedang Tutup
                         </button>
                         <div class="mt-3 text-center">
@@ -585,8 +742,8 @@
 
 <!-- 2. Layanan Medis Terpadu -->
 <section class="py-5" id="layanan" style="background: #ffffff; border-bottom: 1px solid var(--card-border);">
-    <div class="container py-3">
-        <div class="text-center mb-5">
+    <div class="container py-2">
+        <div class="text-center mb-4 mb-md-5">
             <span class="section-tag">Fasilitas &amp; Layanan</span>
             <h2 class="section-title">Layanan Medis Terintegrasi Modern</h2>
             <p class="section-desc">Pusat kesehatan komprehensif didukung fasilitas mutakhir dan tenaga medis berdedikasi tinggi.</p>
@@ -594,62 +751,62 @@
 
         <div class="row">
             <!-- 1. Poliklinik -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#ccfbf1; color:#0f766e;">
                         <i class="fas fa-stethoscope"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">Poliklinik Spesialis &amp; Umum</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">Poliklinik Spesialis &amp; Umum</h5>
                     <p class="text-muted text-xs mb-0">Pelayanan rawat jalan dokter spesialis penyakit dalam, anak, gigi, dan umum dengan rekam medis digital terintegrasi.</p>
                 </div>
             </div>
             <!-- 2. Farmasi E-Resep -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#e0e7ff; color:#4338ca;">
                         <i class="fas fa-pills"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">Instalasi Farmasi E-Resep</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">Instalasi Farmasi E-Resep</h5>
                     <p class="text-muted text-xs mb-0">Resep obat digital langsung terhubung dari ruang dokter ke instalasi farmasi. Cepat, tepat dosis, dan bebas antre lama.</p>
                 </div>
             </div>
             <!-- 3. Laboratorium -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#fee2e2; color:#b91c1c;">
                         <i class="fas fa-microscope"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">Laboratorium Diagnostik</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">Laboratorium Diagnostik</h5>
                     <p class="text-muted text-xs mb-0">Pemeriksaan darah lengkap, tes urin, profil lipid, gula darah, dan uji diagnostik akurat standar Kemenkes RI.</p>
                 </div>
             </div>
             <!-- 4. Rawat Inap & Observasi -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#fef3c7; color:#b45309;">
                         <i class="fas fa-bed-pulse"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">Rawat Inap &amp; Observasi</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">Rawat Inap &amp; Observasi</h5>
                     <p class="text-muted text-xs mb-0">Ruang observasi dan rawat inap berstandar higienis dengan monitoring tanda vital perawat 24 jam.</p>
                 </div>
             </div>
             <!-- 5. Resto Gizi Sehat -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#dcfce7; color:#15803d;">
                         <i class="fas fa-utensils"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">Resto Gizi &amp; Diet Medis</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">Resto Gizi &amp; Diet Medis</h5>
                     <p class="text-muted text-xs mb-0">Penyediaan menu bergizi terukur oleh ahli gizi klinis untuk mendukung pemulihan pasien dan santapan keluarga.</p>
                 </div>
             </div>
             <!-- 6. IGD 24 Jam & Homecare -->
-            <div class="col-md-4 col-sm-6 mb-4">
+            <div class="col-lg-4 col-md-6 col-12 mb-4">
                 <div class="service-card">
                     <div class="service-icon-box" style="background:#f3e8ff; color:#7e22ce;">
                         <i class="fas fa-truck-medical"></i>
                     </div>
-                    <h5 class="font-weight-bold mb-2">IGD 24 Jam &amp; Homecare</h5>
+                    <h5 class="font-weight-bold mb-2" style="font-size: 16px;">IGD 24 Jam &amp; Homecare</h5>
                     <p class="text-muted text-xs mb-0">Penanganan kegawatdaruratan medis darurat 24 jam setiap hari serta layanan perawat homecare ke rumah pasien.</p>
                 </div>
             </div>
@@ -659,8 +816,8 @@
 
 <!-- 3. Jadwal Dokter Spesialis & Umum -->
 <section class="py-5" id="dokter" style="background: var(--bg-light); border-bottom: 1px solid var(--card-border);">
-    <div class="container py-3">
-        <div class="text-center mb-5">
+    <div class="container py-2">
+        <div class="text-center mb-4 mb-md-5">
             <span class="section-tag">Tim Medis Profesional</span>
             <h2 class="section-title">Jadwal Praktek Dokter</h2>
             <p class="section-desc">Dokter spesialis dan dokter umum bersertifikat resmi Surat Izin Praktik (SIP) siap memberikan pelayanan medis prima.</p>
@@ -668,20 +825,22 @@
 
         <div class="row">
             <?php if (!empty($doctors)): foreach ($doctors as $doc): ?>
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="doctor-card">
+                <div class="col-xl-3 col-lg-4 col-sm-6 col-12 mb-4">
+                    <div class="doctor-card shadow-xs">
                         <div class="doctor-avatar-box">
                             <div class="text-center">
-                                <span class="text-teal" style="font-size: 52px;"><i class="fas fa-user-doctor"></i></span>
+                                <span class="text-teal" style="font-size: 48px;"><i class="fas fa-user-doctor"></i></span>
                             </div>
                         </div>
-                        <div class="p-3 text-center">
-                            <span class="badge badge-subtle-teal font-weight-bold text-xs mb-1" style="background:#ccfbf1; color:#0f766e;">
-                                <?= esc($doc->polyclinic_name ?? 'Poliklinik') ?>
-                            </span>
-                            <h6 class="font-weight-bold text-dark mb-1" style="font-size: 14.5px;"><?= esc($doc->name ?? 'Dokter') ?></h6>
-                            <small class="text-muted d-block text-xs mb-2">SIP: <?= esc($doc->sip_number ?? '445/SIP/DINKES/2024') ?></small>
-                            <div class="pt-2 border-top text-xs text-secondary">
+                        <div class="p-3 text-center flex-grow-1 d-flex flex-column justify-content-between">
+                            <div>
+                                <span class="badge badge-subtle-teal font-weight-bold text-xs mb-1" style="background:#ccfbf1; color:#0f766e; padding: 4px 8px; border-radius: 6px;">
+                                    <?= esc($doc->polyclinic_name ?? 'Poliklinik') ?>
+                                </span>
+                                <h6 class="font-weight-bold text-dark mb-1" style="font-size: 14.5px; line-height: 1.35;"><?= esc($doc->name ?? 'Dokter') ?></h6>
+                                <small class="text-muted d-block text-xs mb-2">SIP: <?= esc($doc->sip_number ?? '445/SIP/DINKES/2024') ?></small>
+                            </div>
+                            <div class="pt-2 border-top text-xs text-secondary mt-auto">
                                 <i class="fas fa-clock text-teal mr-1"></i> <?= esc($doc->schedule_days ?? 'Senin - Sabtu') ?> <br>
                                 <span class="font-weight-bold text-dark"><?= esc($doc->schedule_time ?? '08:00 - 14:00 WITA') ?></span>
                             </div>
@@ -695,17 +854,17 @@
     </div>
 </section>
 
-<!-- 4. 📰 SECTION ARTIKEL & EDUKASI KESEHATAN (CMS Terintegrasi) -->
+<!-- 4. SECTION ARTIKEL & EDUKASI KESEHATAN -->
 <section class="py-5" id="artikel" style="background: #ffffff; border-bottom: 1px solid var(--card-border);">
-    <div class="container py-3">
+    <div class="container py-2">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4">
             <div>
                 <span class="section-tag">Wawasan &amp; Tips Medis</span>
                 <h2 class="section-title mb-1">Artikel &amp; Edukasi Kesehatan</h2>
-                <p class="section-desc text-left m-0">Informasi kesehatan terpercaya, panduan pencegahan penyakit, dan kabar terbaru dari Sawamawa Medical Center.</p>
+                <p class="section-desc text-left m-0">Informasi kesehatan terpercaya, panduan pencegahan penyakit, dan kabar terbaru.</p>
             </div>
             <div class="mt-3 mt-md-0">
-                <a href="<?= base_url('berita') ?>" class="btn btn-brand-outline btn-sm font-weight-bold">
+                <a href="<?= base_url('berita') ?>" class="btn btn-brand-outline btn-sm font-weight-bold w-100 w-md-auto">
                     <i class="fas fa-list mr-1"></i> Semua Artikel
                 </a>
             </div>
@@ -713,8 +872,8 @@
 
         <div class="row">
             <?php if (!empty($articles)): foreach ($articles as $art): ?>
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="article-card">
+                <div class="col-lg-4 col-md-6 col-12 mb-4">
+                    <div class="article-card shadow-xs">
                         <?php if (!empty($art->image_url) && file_exists(FCPATH . $art->image_url)): ?>
                             <img src="<?= base_url($art->image_url) ?>" alt="<?= esc($art->title) ?>" class="article-thumb">
                         <?php else: ?>
@@ -754,37 +913,37 @@
 
 <!-- 5. Alur Pelayanan Pasien (4 Langkah Mudah) -->
 <section class="py-5" id="cara-daftar" style="background: var(--bg-light); border-bottom: 1px solid var(--card-border);">
-    <div class="container py-3">
-        <div class="text-center mb-5">
+    <div class="container py-2">
+        <div class="text-center mb-4 mb-md-5">
             <span class="section-tag">Alur Pelayanan Pasien</span>
             <h2 class="section-title">Panduan 4 Langkah Pendaftaran Berobat</h2>
             <p class="section-desc">Kemudahan pendaftaran mandiri dari rumah untuk pasien baru maupun pasien lama yang telah memiliki Nomor Rekam Medis (No. RM).</p>
         </div>
 
         <div class="row">
-            <div class="col-lg-3 col-sm-6 mb-3">
-                <div class="step-item-card">
+            <div class="col-xl-3 col-md-6 col-12 mb-3">
+                <div class="step-item-card shadow-xs">
                     <div class="step-number-badge">1</div>
                     <h6 class="font-weight-bold text-dark mb-1">Daftar Mandiri</h6>
                     <p class="text-muted text-xs mb-0">Daftar melalui formulir online di website ini atau lewat Kiosk APM Mandiri saat tiba di klinik.</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 mb-3">
-                <div class="step-item-card">
+            <div class="col-xl-3 col-md-6 col-12 mb-3">
+                <div class="step-item-card shadow-xs">
                     <div class="step-number-badge">2</div>
                     <h6 class="font-weight-bold text-dark mb-1">Nomor Antrean &amp; QR</h6>
                     <p class="text-muted text-xs mb-0">Dapatkan tiket nomor antrean digital lengkap dengan estimasi jam pelayanan dokter.</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 mb-3">
-                <div class="step-item-card">
+            <div class="col-xl-3 col-md-6 col-12 mb-3">
+                <div class="step-item-card shadow-xs">
                     <div class="step-number-badge">3</div>
                     <h6 class="font-weight-bold text-dark mb-1">Pemeriksaan Medis</h6>
                     <p class="text-muted text-xs mb-0">Skrining tanda vital oleh perawat, dilanjutkan konsultasi &amp; tindakan medis oleh dokter.</p>
                 </div>
             </div>
-            <div class="col-lg-3 col-sm-6 mb-3">
-                <div class="step-item-card">
+            <div class="col-xl-3 col-md-6 col-12 mb-3">
+                <div class="step-item-card shadow-xs">
                     <div class="step-number-badge">4</div>
                     <h6 class="font-weight-bold text-dark mb-1">E-Resep &amp; Kasir</h6>
                     <p class="text-muted text-xs mb-0">Resep otomatis tersalurkan ke Instalasi Farmasi. Pembayaran mudah via Tunai, QRIS, atau Kartu Debit.</p>
@@ -796,8 +955,8 @@
 
 <!-- 6. Transparansi Tarif Layanan -->
 <section class="py-5" id="tarif" style="background: #ffffff; border-bottom: 1px solid var(--card-border);">
-    <div class="container py-3">
-        <div class="text-center mb-5">
+    <div class="container py-2">
+        <div class="text-center mb-4 mb-md-5">
             <span class="section-tag">Transparansi Biaya</span>
             <h2 class="section-title">Katalog Tarif Layanan &amp; Tindakan</h2>
             <p class="section-desc">Biaya pelayanan terstandar, transparan, dan terjangkau untuk seluruh masyarakat.</p>
@@ -805,20 +964,20 @@
 
         <div class="card border shadow-sm" style="border-radius: var(--radius-lg); overflow: hidden;">
             <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0">
+                <table class="table table-striped table-hover mb-0" style="font-size: 13px;">
                     <thead class="bg-light">
                         <tr>
-                            <th class="py-3 px-4 text-xs font-weight-bold text-uppercase">Nama Tindakan / Layanan</th>
-                            <th class="py-3 px-4 text-xs font-weight-bold text-uppercase">Kategori</th>
-                            <th class="py-3 px-4 text-xs font-weight-bold text-uppercase text-right">Tarif Pasien Umum</th>
+                            <th class="py-3 px-3 px-md-4 text-xs font-weight-bold text-uppercase">Nama Tindakan / Layanan</th>
+                            <th class="py-3 px-3 px-md-4 text-xs font-weight-bold text-uppercase">Kategori</th>
+                            <th class="py-3 px-3 px-md-4 text-xs font-weight-bold text-uppercase text-right">Tarif Pasien Umum</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($services)): foreach ($services as $s): ?>
                             <tr>
-                                <td class="py-3 px-4 font-weight-bold text-dark"><?= esc($s->name) ?></td>
-                                <td class="py-3 px-4"><span class="badge badge-light border text-xs"><?= esc($s->category_name ?? 'Pelayanan Medis') ?></span></td>
-                                <td class="py-3 px-4 font-weight-bold text-teal text-right">Rp <?= number_format($s->price, 0, ',', '.') ?></td>
+                                <td class="py-3 px-3 px-md-4 font-weight-bold text-dark"><?= esc($s->name) ?></td>
+                                <td class="py-3 px-3 px-md-4"><span class="badge badge-light border text-xs"><?= esc($s->category_name ?? 'Pelayanan Medis') ?></span></td>
+                                <td class="py-3 px-3 px-md-4 font-weight-bold text-teal text-right text-nowrap">Rp <?= number_format($s->price, 0, ',', '.') ?></td>
                             </tr>
                         <?php endforeach; else: ?>
                             <tr>
@@ -833,7 +992,7 @@
 </section>
 
 <!-- Floating WhatsApp Widget -->
-<a href="https://api.whatsapp.com/send?phone=<?= clinic_setting('clinic_phone', '6281234567890') ?>&text=Halo%20Admin%20Sawamawa%20Medical%20Center,%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20medis." target="_blank" class="floating-wa-btn" title="Chat WhatsApp Admin">
+<a href="https://api.whatsapp.com/send?phone=<?= clinic_setting('clinic_phone', '6281234567890') ?>&text=Halo%20Admin%20Sawamawa%20Medical%20Center,%20saya%20ingin%20berkonsultasi%20mengenai%20layanan%20medis." target="_blank" class="floating-wa-btn" title="Chat WhatsApp Admin" aria-label="Chat WhatsApp Admin">
     <i class="fab fa-whatsapp"></i>
 </a>
 
@@ -841,7 +1000,7 @@
 <footer class="footer-main">
     <div class="container">
         <div class="row pb-4 border-bottom" style="border-color: #334155 !important;">
-            <div class="col-md-5 mb-4 mb-md-0">
+            <div class="col-lg-5 col-md-6 col-12 mb-4 mb-lg-0">
                 <div class="h6 text-white font-weight-bold mb-2"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
                 <p class="text-xs" style="color: #94a3b8; max-width: 380px;">Klinik Pratama Rawat Jalan, Pelayanan Farmasi e-Resep, Laboratorium Diagnostik, dan Resto Gizi Terpadu Sumbawa Besar, NTB.</p>
                 <div class="mt-3">
@@ -850,7 +1009,7 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-lg-3 col-md-3 col-6 mb-4 mb-md-0">
                 <h5>Tautan Cepat</h5>
                 <ul class="list-unstyled text-xs">
                     <li class="mb-2"><a href="<?= base_url('daftar-online') ?>">Daftar Antrean Online</a></li>
@@ -861,7 +1020,7 @@
                     <li class="mb-2"><a href="<?= base_url('login') ?>">Portal Login Nakes</a></li>
                 </ul>
             </div>
-            <div class="col-md-4 col-6">
+            <div class="col-lg-4 col-md-3 col-6">
                 <h5>Kontak Resmi</h5>
                 <p class="text-xs mb-1 text-white font-weight-bold"><i class="fab fa-whatsapp mr-1 text-teal"></i> <?= esc(clinic_setting('clinic_phone', '0812-3456-7890')) ?></p>
                 <p class="text-xs mb-1 text-white"><i class="fas fa-envelope mr-1 text-teal"></i> <?= esc(clinic_setting('clinic_email', 'info@sawamawamedicalcenter.id')) ?></p>
@@ -869,23 +1028,23 @@
             </div>
         </div>
 
-        <!-- ISO & Standard Keamanan Data Pasien Ribbon (Dengan Logo Gambar Resmi) -->
-        <div class="row pt-4 pb-3 mt-4 border-top align-items-center" style="border-color: #334155 !important;">
-            <div class="col-lg-4 mb-3 mb-lg-0">
+        <!-- ISO & Standard Keamanan Data Pasien Ribbon -->
+        <div class="row pt-4 pb-3 mt-3 border-top align-items-center" style="border-color: #334155 !important;">
+            <div class="col-lg-4 mb-3 mb-lg-0 text-center text-lg-left">
                 <strong class="text-white d-block text-xs mb-1 font-weight-bold">
                     <i class="fas fa-shield-halved text-teal mr-1"></i> Standar Kualitas &amp; Keamanan Data:
                 </strong>
                 <p class="text-xs mb-0" style="color: #94a3b8; font-size: 11px;">
-                    Seluruh data rekam medis elektronik (RME), identitas pasien, dan resep farmasi dienkripsi dengan standar internasional ISO &amp; Kemenkes RI.
+                    Seluruh data rekam medis elektronik (RME), identitas pasien, dan resep farmasi dienkripsi standar internasional ISO &amp; Kemenkes RI.
                 </p>
             </div>
             <div class="col-lg-8">
-                <div class="d-flex flex-wrap justify-content-lg-end align-items-center" style="gap: 10px;">
-                    <img src="<?= base_url('assets/images/iso-27001.svg') ?>" alt="ISO/IEC 27001 ISMS Certified" title="ISO/IEC 27001 - Sistem Manajemen Keamanan Informasi" style="height: 38px; width: auto; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <img src="<?= base_url('assets/images/iso-27701.svg') ?>" alt="ISO/IEC 27701 PIMS Certified" title="ISO/IEC 27701 - Perlindungan Privasi Data Pribadi Pasien" style="height: 38px; width: auto; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <img src="<?= base_url('assets/images/iso-9001.svg') ?>" alt="ISO 9001:2015 Quality Management" title="ISO 9001:2015 - Sistem Manajemen Mutu Layanan" style="height: 38px; width: auto; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <img src="<?= base_url('assets/images/satusehat-logo.svg') ?>" alt="SATUSEHAT Kemenkes RI" title="SATUSEHAT Kemenkes RI - Interoperabilitas RME Nasional" style="height: 38px; width: auto; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    <img src="<?= base_url('assets/images/ssl-secure.svg') ?>" alt="256-Bit SSL TLS 1.3 Encryption" title="256-Bit SSL TLS 1.3 End-to-End Encryption" style="height: 38px; width: auto; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-end align-items-center trust-badges-wrap" style="gap: 8px;">
+                    <img src="<?= base_url('assets/images/iso-27001.svg') ?>" alt="ISO/IEC 27001 ISMS Certified" title="ISO/IEC 27001 - Sistem Manajemen Keamanan Informasi" style="height: 34px; width: auto; max-width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="<?= base_url('assets/images/iso-27701.svg') ?>" alt="ISO/IEC 27701 PIMS Certified" title="ISO/IEC 27701 - Perlindungan Privasi Data Pribadi Pasien" style="height: 34px; width: auto; max-width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="<?= base_url('assets/images/iso-9001.svg') ?>" alt="ISO 9001:2015 Quality Management" title="ISO 9001:2015 - Sistem Manajemen Mutu Layanan" style="height: 34px; width: auto; max-width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="<?= base_url('assets/images/satusehat-logo.svg') ?>" alt="SATUSEHAT Kemenkes RI" title="SATUSEHAT Kemenkes RI - Interoperabilitas RME Nasional" style="height: 34px; width: auto; max-width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <img src="<?= base_url('assets/images/ssl-secure.svg') ?>" alt="256-Bit SSL TLS 1.3 Encryption" title="256-Bit SSL TLS 1.3 End-to-End Encryption" style="height: 34px; width: auto; max-width: 100%; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 </div>
             </div>
         </div>
@@ -899,10 +1058,10 @@
 <!-- Modal Pendaftaran Berobat via WhatsApp -->
 <div class="modal fade" id="modalDaftarWa" tabindex="-1" role="dialog" aria-labelledby="modalDaftarWaTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
             <div class="modal-header text-white p-3" style="background: linear-gradient(135deg, #0d9488 0%, #059669 100%);">
                 <div>
-                    <h5 class="modal-title font-weight-bold d-flex align-items-center mb-0" id="modalDaftarWaTitle">
+                    <h5 class="modal-title font-weight-bold d-flex align-items-center mb-0" id="modalDaftarWaTitle" style="font-size: 17px;">
                         <i class="fab fa-whatsapp fa-lg mr-2"></i> Pendaftaran Berobat via WhatsApp
                     </h5>
                     <small class="text-white-50">Layanan reservasi langsung ke WhatsApp Admin Sawamawa Medical Center</small>
@@ -911,7 +1070,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body p-4 bg-light">
+            <div class="modal-body p-3 p-md-4 bg-light">
                 <?php if (empty($isOnlineOpen)): ?>
                     <div class="alert alert-warning border shadow-none p-3 text-center mb-3" style="border-radius: 8px; background: #fffbeb; border-color: #fde68a !important;">
                         <i class="fas fa-clock text-warning fa-lg mr-1"></i> <strong class="text-dark">Layanan Pendaftaran Berobat via WhatsApp Sedang Ditutup</strong>
@@ -925,17 +1084,17 @@
                 <!-- Pilihan Tipe Pasien: Baru vs Lama -->
                 <div class="row mb-3">
                     <div class="col-6">
-                        <div class="card p-3 text-center border patient-type-select-wa" id="wa-type-baru" style="cursor: pointer; border-radius: 8px; border: 2px solid #0d9488 !important; background: #f0fdf4;">
+                        <div class="card p-2 p-md-3 text-center border patient-type-select-wa" id="wa-type-baru" style="cursor: pointer; border-radius: 8px; border: 2px solid #0d9488 !important; background: #f0fdf4;">
                             <i class="fas fa-user-plus text-teal fa-2x mb-1"></i>
-                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 14px;">Pasien Baru</h6>
-                            <small class="text-muted" style="font-size: 11px;">Belum punya No. Rekam Medis</small>
+                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 13px;">Pasien Baru</h6>
+                            <small class="text-muted d-none d-sm-block" style="font-size: 10.5px;">Belum punya No. Rekam Medis</small>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="card p-3 text-center border patient-type-select-wa" id="wa-type-lama" style="cursor: pointer; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff;">
+                        <div class="card p-2 p-md-3 text-center border patient-type-select-wa" id="wa-type-lama" style="cursor: pointer; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff;">
                             <i class="fas fa-id-card text-secondary fa-2x mb-1"></i>
-                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 14px;">Pasien Lama</h6>
-                            <small class="text-muted" style="font-size: 11px;">Sudah punya No. RM / Pernah Berobat</small>
+                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 13px;">Pasien Lama</h6>
+                            <small class="text-muted d-none d-sm-block" style="font-size: 10.5px;">Sudah punya No. RM</small>
                         </div>
                     </div>
                 </div>
@@ -956,23 +1115,23 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-4 col-sm-6 form-group">
                                 <label class="text-xs font-weight-bold text-dark">Tanggal Lahir <span class="text-danger">*</span></label>
                                 <input type="date" id="wa_new_dob" class="form-control form-control-sm" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-4 col-sm-6 form-group">
                                 <label class="text-xs font-weight-bold text-dark">Jenis Kelamin</label>
                                 <select id="wa_new_gender" class="form-control form-control-sm" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                                     <option value="Laki-laki">Laki-laki (L)</option>
                                     <option value="Perempuan">Perempuan (P)</option>
                                 </select>
                             </div>
-                            <div class="col-md-4 form-group">
+                            <div class="col-md-4 col-12 form-group">
                                 <label class="text-xs font-weight-bold text-dark">No. WhatsApp Pasien</label>
                                 <input type="text" id="wa_new_phone" class="form-control form-control-sm" placeholder="0812xxxxxxxx" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group mb-0">
                             <label class="text-xs font-weight-bold text-dark">Alamat Domisili / Tempat Tinggal</label>
                             <input type="text" id="wa_new_address" class="form-control form-control-sm" placeholder="Jl. Kartini No. 5, Sumbawa Besar" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                         </div>
@@ -995,7 +1154,7 @@
                                 <label class="text-xs font-weight-bold text-dark">Tanggal Lahir Pasien <span class="text-danger">*</span></label>
                                 <input type="date" id="wa_old_dob" class="form-control form-control-sm" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="col-md-6 form-group mb-0">
                                 <label class="text-xs font-weight-bold text-dark">No. WhatsApp Pasien</label>
                                 <input type="text" id="wa_old_phone" class="form-control form-control-sm" placeholder="0812xxxxxxxx" <?= empty($isOnlineOpen) ? 'disabled' : '' ?>>
                             </div>
@@ -1029,7 +1188,7 @@
                 </div>
 
             </div>
-            <div class="modal-footer bg-white p-3 d-flex justify-content-between">
+            <div class="modal-footer bg-white p-3 d-flex justify-content-between flex-wrap" style="gap: 8px;">
                 <button type="button" class="btn btn-light btn-sm text-secondary font-weight-bold" data-dismiss="modal">
                     Tutup
                 </button>
@@ -1060,20 +1219,20 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body p-4 bg-white" style="font-size: 15px; line-height: 1.75; color: #334155;">
-                <h3 class="font-weight-bold text-dark mb-2" id="reader_title" style="font-size: 22px; line-height: 1.35;">Judul Artikel</h3>
-                <div class="d-flex align-items-center text-xs text-muted mb-4 pb-2 border-bottom">
+            <div class="modal-body p-3 p-md-4 bg-white" style="font-size: 14.5px; line-height: 1.75; color: #334155;">
+                <h3 class="font-weight-bold text-dark mb-2" id="reader_title" style="font-size: clamp(18px, 2.5vw, 22px); line-height: 1.35;">Judul Artikel</h3>
+                <div class="d-flex align-items-center text-xs text-muted mb-3 pb-2 border-bottom flex-wrap" style="gap: 8px;">
                     <span class="mr-3"><i class="fas fa-user-doctor text-teal mr-1"></i> <strong id="reader_author" class="text-dark">Penulis</strong></span>
                     <span><i class="fas fa-eye mr-1"></i> <span id="reader_views">0</span> pembaca</span>
                 </div>
-                <div id="reader_image_box" class="mb-4 text-center" style="display: none;">
+                <div id="reader_image_box" class="mb-3 text-center" style="display: none;">
                     <img id="reader_image" src="" alt="Cover" class="img-fluid rounded" style="max-height: 320px; width: 100%; object-fit: cover;">
                 </div>
                 <div id="reader_content">
-                    <!-- Konten artikel akan dimasukkan di sini via JavaScript -->
+                    <!-- Konten artikel dimasukkan via JS -->
                 </div>
             </div>
-            <div class="modal-footer bg-light p-3 d-flex justify-content-between">
+            <div class="modal-footer bg-light p-3 d-flex justify-content-between flex-wrap" style="gap: 8px;">
                 <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal">Tutup</button>
                 <button type="button" class="btn btn-teal btn-sm font-weight-bold" id="btn-share-article-wa">
                     <i class="fab fa-whatsapp mr-1"></i> Bagikan Artikel

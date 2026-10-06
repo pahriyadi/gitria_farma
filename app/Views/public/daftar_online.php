@@ -37,6 +37,12 @@
             --radius-xl: 24px;
         }
 
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #f1f5f9;
@@ -81,6 +87,51 @@
             height: 24px;
             background: #f1f5f9;
             border-radius: 24px 24px 0 0;
+        }
+
+        /* Global Responsive Button Fix */
+        .btn {
+            white-space: normal !important;
+            word-break: normal;
+            max-width: 100%;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 11.5px;
+            max-width: 100%;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            text-align: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .status-pill-open {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+        .status-pill-closed {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        .status-pill .status-title {
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-pill .status-time {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.9;
         }
 
         /* Main Registration Card */
@@ -282,17 +333,17 @@
 
             <!-- Banner Pendaftaran Tutup (Jika Di Luar Jam Operasional) -->
             <?php if (empty($isOnlineOpen)): ?>
-                <div class="alert alert-warning border shadow-sm p-4 text-center mb-3" style="border-radius: 12px; background: #fffbeb; border-color: #fde68a !important;">
+                <div class="alert alert-warning border shadow-sm p-3 p-md-4 text-center mb-3" style="border-radius: 12px; background: #fffbeb; border-color: #fde68a !important;">
                     <i class="fas fa-clock text-warning fa-3x mb-2"></i>
-                    <h5 class="font-weight-bold text-dark mb-1">Pendaftaran Online Mandiri Sedang Ditutup</h5>
-                    <p class="text-secondary text-sm mb-3 mx-auto" style="max-width: 620px;">
+                    <h5 class="font-weight-bold text-dark mb-1" style="font-size: clamp(16px, 3.5vw, 18px);">Pendaftaran Online Mandiri Sedang Ditutup</h5>
+                    <p class="text-secondary text-sm mb-3 mx-auto" style="max-width: 620px; font-size: 13px; line-height: 1.5;">
                         <?= esc($closedMessage ?? 'Pendaftaran online saat ini sedang ditutup di luar jam operasional.') ?>
                     </p>
                     <div class="d-flex justify-content-center flex-wrap" style="gap: 10px;">
-                        <button type="button" class="btn btn-success font-weight-bold px-4" data-toggle="modal" data-target="#modalDaftarWa">
+                        <button type="button" class="btn btn-success font-weight-bold px-3 py-2 text-wrap" data-toggle="modal" data-target="#modalDaftarWa" style="max-width: 100%; line-height: 1.35;">
                             <i class="fab fa-whatsapp mr-1"></i> Buka Pendaftaran via WhatsApp
                         </button>
-                        <a href="<?= base_url() ?>" class="btn btn-outline-secondary font-weight-bold px-3">
+                        <a href="<?= base_url() ?>" class="btn btn-outline-secondary font-weight-bold px-3 py-2 text-wrap" style="max-width: 100%; line-height: 1.35;">
                             <i class="fas fa-home mr-1"></i> Kembali ke Beranda
                         </a>
                     </div>
@@ -315,14 +366,25 @@
                 <!-- Status Badge -->
                 <div class="text-center mb-4 pb-3 border-bottom">
                     <?php if (!empty($isOnlineOpen)): ?>
-                        <span class="badge badge-success px-3 py-1.5 text-uppercase font-weight-bold" style="font-size: 11px; background: #059669; letter-spacing: 0.5px;">
-                            <i class="fas fa-circle mr-1" style="font-size: 8px;"></i> Pendaftaran Dibuka (<?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
-                        </span>
+                        <div class="status-pill status-pill-open">
+                            <div class="status-title">
+                                <i class="fas fa-circle mr-1 text-success" style="font-size: 8px;"></i> Pendaftaran Dibuka
+                            </div>
+                            <div class="status-time">
+                                (<?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
+                            </div>
+                        </div>
                     <?php else: ?>
-                        <span class="badge badge-danger px-3 py-1.5 text-uppercase font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">
-                            <i class="fas fa-ban mr-1"></i> Pendaftaran Online &amp; WA Tutup (Buka <?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
-                        </span>
+                        <div class="status-pill status-pill-closed">
+                            <div class="status-title">
+                                <i class="fas fa-ban mr-1 text-danger"></i> Pendaftaran Online &amp; WA Tutup
+                            </div>
+                            <div class="status-time">
+                                (Buka <?= esc($openTime) ?> - <?= esc($closeTime) ?> WITA)
+                            </div>
+                        </div>
                     <?php endif; ?>
+                </div>
                 <!-- Edukasi Alur Pendaftaran Pasien (Fast & Simple) -->
                 <div class="card border-0 mb-4 shadow-sm" style="border-radius: 12px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid #a7f3d0 !important;">
                     <div class="card-body p-3.5">
@@ -592,7 +654,7 @@
                                 <i class="fas fa-ticket-alt mr-2"></i> Daftar Sekarang &amp; Dapatkan Nomor Antrean
                             </button>
                         <?php else: ?>
-                            <button type="button" class="btn btn-secondary btn-block font-weight-bold py-3" disabled>
+                            <button type="button" class="btn btn-secondary btn-block font-weight-bold py-3 text-wrap" disabled style="white-space: normal; line-height: 1.4;">
                                 <i class="fas fa-ban mr-1"></i> Pendaftaran Online Sedang Ditutup
                             </button>
                         <?php endif; ?>
