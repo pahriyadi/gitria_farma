@@ -167,7 +167,7 @@ if (!function_exists('clinic_latest_version')) {
     function clinic_latest_version()
     {
         $info = clinic_latest_update_info();
-        return $info ? ($info->version ?? 'v2.9.0') : 'v2.9.0';
+        return $info ? ($info->version ?? 'v2.10.0') : 'v2.10.0';
     }
 }
 
@@ -414,4 +414,3 @@ if (!function_exists('clinic_active_queue_count')) {
         }
     }
 }
-

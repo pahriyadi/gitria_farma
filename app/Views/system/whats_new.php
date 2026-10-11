@@ -62,7 +62,7 @@
                                     <i class="fas fa-search"></i>
                                 </span>
                             </div>
-                            <input type="text" id="filter-updates-search" class="form-control border-left-0" placeholder="Cari rilis versi (v2.9.0), fitur, atau kata kunci..." style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                            <input type="text" id="filter-updates-search" class="form-control border-left-0" placeholder="Cari rilis versi (v2.10.0), fitur, atau kata kunci..." style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
                         </div>
                     </div>
                     <div class="col-lg-7 d-flex flex-wrap align-items-center justify-content-lg-end" style="gap: 5px;">

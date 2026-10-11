@@ -2117,11 +2117,11 @@ class System extends BaseController
 
         return $this->response->setJSON([
             'status'        => 'success',
-            'version'       => $info ? $info->version : 'v2.9.0',
+            'version'       => $info ? $info->version : 'v2.10.0',
             'title'         => $info ? $info->title : 'Sawamawa Medical Center Enterprise',
             'category'      => $info ? $info->category : 'PERFORMA & DATA',
             'badge_color'   => $info ? $info->badge_color : 'teal',
-            'release_date'  => $info ? $info->release_date : '2026-09-26',
+            'release_date'  => $info ? $info->release_date : '2026-10-11',
             'summary'       => $info ? $info->summary : '',
             'details'       => $info ? $info->details : '',
             'is_major'      => $info ? (int)$info->is_major : 1,
@@ -2549,5 +2549,4 @@ class System extends BaseController
         ]);
     }
 }
-
 

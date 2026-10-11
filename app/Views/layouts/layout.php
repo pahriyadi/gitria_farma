@@ -915,7 +915,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                             <h5 class="modal-title font-weight-bold mb-0 text-white" id="modalWhatsNewPopupLabel">
                                 Apa yang Baru di Sawamawa Medical Center?
                             </h5>
-                            <small class="text-white-50">Log Pembaruan Rilis Versi Terkini: <strong><?= esc($latestUpdateInfo ? $latestUpdateInfo->version : 'v2.9.0') ?></strong> (<?= esc($latestUpdateInfo ? date('d F Y', strtotime($latestUpdateInfo->release_date)) : date('d F Y')) ?>)</small>
+                            <small class="text-white-50">Log Pembaruan Rilis Versi Terkini: <strong><?= esc($latestUpdateInfo ? $latestUpdateInfo->version : 'v2.10.0') ?></strong> (<?= esc($latestUpdateInfo ? date('d F Y', strtotime($latestUpdateInfo->release_date)) : '11 Oktober 2026') ?>)</small>
                         </div>
                     </div>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9;">
