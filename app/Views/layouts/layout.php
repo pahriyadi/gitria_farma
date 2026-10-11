@@ -149,60 +149,43 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 </button>
             </li>
 
-            <!-- Live Status Antrean Poli (Pill Widget with Pulse Indicator) -->
-            <?php 
-            $activeQueueCount = clinic_active_queue_count(); 
-            if ($canAccessClinic && !$isDistributorActive):
-            ?>
-            <li class="nav-item d-none d-sm-block">
-                <a href="<?= base_url('klinik/pendaftaran') ?>" class="navbar-queue-pill <?= $activeQueueCount > 0 ? 'has-queue' : '' ?>" title="Lihat Antrean Pasien Hari Ini">
-                    <span class="pulse-dot <?= $activeQueueCount > 0 ? 'pulse-active' : '' ?>"></span>
-                    <i class="fas fa-hospital-user mr-1.5" style="font-size: 11.5px;"></i>
-                    <span>Antrean: <strong><?= $activeQueueCount ?></strong> Pasien</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <!-- Portal Switcher Indicator & Quick Jump -->
-            <?php if ($isDistributorActive): ?>
-            <li class="nav-item d-none d-sm-block">
-                <a href="<?= base_url('dashboard') ?>" class="btn btn-outline-teal btn-xs font-weight-bold px-2.5 py-1 shadow-xs" title="Beralih ke Portal Klinik & Pelayanan">
-                    <i class="fas fa-hospital mr-1"></i> Kembali ke Portal Klinik
-                </a>
-            </li>
-            <?php elseif ($canAccessDistributor): ?>
-            <li class="nav-item d-none d-md-block">
-                <a href="<?= base_url('distributor/dashboard') ?>" class="btn btn-outline-indigo btn-xs font-weight-bold px-2.5 py-1 shadow-xs" style="color: #4f46e5; border-color: #c7d2fe; background: #f5f3ff;" title="Buka Portal Mandiri Distributor & Grosir Farmasi (B2B)">
-                    <i class="fas fa-truck-fast mr-1"></i> Portal Distributor B2B
-                </a>
-            </li>
-            <?php endif; ?>
         </ul>
 
         <!-- Right navbar links (Icon-Only, Spacious & Clean) -->
         <ul class="navbar-nav ml-auto align-items-center flex-nowrap" style="gap: 10px;">
-            <!-- Indikator Jaringan & Pusat Draf Offline -->
-            <li class="nav-item">
-                <a href="javascript:void(0)" id="navbar-network-status" class="nav-icon-btn position-relative" onclick="if(window.offlineSyncEngine) window.offlineSyncEngine.openQueueModal(); else $('#modal-offline-queue').modal('show');" style="cursor: pointer;" title="Status Jaringan &amp; Antrean Draf Offline">
-                    <i class="fas fa-wifi text-success" id="icon-network-status"></i>
-                    <span class="online-indicator-dot"></span>
-                    <span id="offline-draft-count" class="badge badge-warning text-dark nav-badge-counter d-none font-weight-bold">0</span>
-                </a>
-            </li>
-
-            <!-- Badge Versi Sistem & Trigger Apa Yang Baru -->
-            <li class="nav-item d-none d-sm-block">
-                <a href="javascript:void(0)" onclick="$('#modal-whats-new-popup').modal('show')" class="nav-icon-btn d-flex align-items-center px-2.5 text-decoration-none" style="width: auto; border-radius: 20px; gap: 5px; background: rgba(13, 148, 136, 0.08); border: 1px solid rgba(13, 148, 136, 0.25);" title="Versi Sistem: <?= clinic_latest_version() ?> (Klik untuk melihat Apa Yang Baru)">
-                    <i class="fas fa-sparkles text-warning" style="font-size: 11px;"></i>
-                    <span class="text-teal font-weight-bold" style="font-size: 11px;"><?= clinic_latest_version() ?></span>
-                </a>
-            </li>
-
-            <!-- Tombol Paksa Perbarui Sistem & Bersihkan Cache Komputer -->
-            <li class="nav-item">
-                <button type="button" class="nav-icon-btn btn-force-update" onclick="window.forceUpdateSystem()" title="Paksa Perbarui Sistem &amp; Bersihkan Cache Komputer">
-                    <i class="fas fa-arrows-rotate text-teal"></i>
+            <!-- Header Utility Actions -->
+            <li class="nav-item dropdown compact-action-dropdown compact-header-action-dropdown compact-navbar-utility-dropdown">
+                <button type="button" class="btn btn-sm btn-outline-secondary compact-action-toggle dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-label="Tindakan sistem">
+                    <i class="fas fa-ellipsis"></i>
                 </button>
+                <div class="dropdown-menu dropdown-menu-right compact-action-menu" aria-hidden="true">
+                    <div class="compact-action-option">
+                        <a href="javascript:void(0)" id="navbar-network-status" class="nav-icon-btn position-relative compact-action-item" onclick="if(window.offlineSyncEngine) window.offlineSyncEngine.openQueueModal(); else $('#modal-offline-queue').modal('show');" aria-label="Status Jaringan &amp; Antrean Draf Offline" style="cursor: pointer;" title="Status Jaringan &amp; Antrean Draf Offline">
+                            <i class="fas fa-wifi text-success" id="icon-network-status"></i>
+                            <span class="compact-action-label">Status Jaringan &amp; Antrean Offline</span>
+                            <span class="online-indicator-dot"></span>
+                            <span id="offline-draft-count" class="badge badge-warning text-dark nav-badge-counter d-none font-weight-bold">0</span>
+                        </a>
+                    </div>
+                    <div class="compact-action-option">
+                        <a href="javascript:void(0)" onclick="$('#modal-whats-new-popup').modal('show')" class="nav-icon-btn compact-action-item" aria-label="Apa yang Baru? Versi Sistem <?= clinic_latest_version() ?>" title="Versi Sistem: <?= clinic_latest_version() ?> (Klik untuk melihat Apa Yang Baru)">
+                            <i class="fas fa-circle-info text-warning"></i>
+                            <span class="compact-action-label">Apa yang Baru? Versi <?= clinic_latest_version() ?></span>
+                        </a>
+                    </div>
+                    <div class="compact-action-option">
+                        <button type="button" class="nav-icon-btn btn-force-update compact-action-item" onclick="window.forceUpdateSystem()" aria-label="Paksa Perbarui Sistem &amp; Bersihkan Cache Komputer" title="Paksa Perbarui Sistem &amp; Bersihkan Cache Komputer">
+                            <i class="fas fa-arrows-rotate text-teal"></i>
+                            <span class="compact-action-label">Perbarui Sistem &amp; Bersihkan Cache</span>
+                        </button>
+                    </div>
+                    <div class="compact-action-option">
+                        <button type="button" class="nav-icon-btn btn-control-hub compact-action-item" data-toggle="modal" data-target="#modal-control-center" aria-label="Pusat Kontrol &amp; Menu Lengkap" title="Pusat Kontrol &amp; Menu Lengkap (Aksi Cepat, Display TV, Tema &amp; Pemeliharaan)">
+                            <i class="fas fa-table-cells-large text-primary"></i>
+                            <span class="compact-action-label">Pusat Kontrol &amp; Menu Lengkap</span>
+                        </button>
+                    </div>
+                </div>
             </li>
 
             <!-- Notifications Dropdown Menu -->
@@ -227,13 +210,6 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 </div>
             </li>
 
-            <!-- Tombol Pusat Menu Lengkap & Kontrol (Launchpad Hub) -->
-            <li class="nav-item">
-                <button type="button" class="nav-icon-btn btn-control-hub" data-toggle="modal" data-target="#modal-control-center" title="Pusat Kontrol &amp; Menu Lengkap (Aksi Cepat, Display TV, Tema &amp; Pemeliharaan)">
-                    <i class="fas fa-table-cells-large text-primary"></i>
-                </button>
-            </li>
-            
             <!-- User Profile & Account Dropdown -->
             <li class="nav-item dropdown ml-1">
                 <a class="nav-profile-btn dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Akun Pengguna">
@@ -900,7 +876,9 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 <?php endif; ?>
 
                 <!-- Render Dynamic Content View -->
+                <div class="app-page-shell">
                 <?= $this->renderSection('content') ?>
+                </div>
                 
             </div><!-- /.container-fluid -->
         </div>
@@ -2601,20 +2579,26 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             if (!url || url === '#' || url.startsWith('javascript:')) return;
             if (url === window.location.href && !forceBypassCache) return;
 
+            const targetPath = new URL(url, window.location.origin).pathname;
+            const isDistributorRoute = function(path) {
+                return /\/distributor(?:\/|$)/.test(path);
+            };
+            if (isDistributorRoute(targetPath) !== isDistributorRoute(window.location.pathname)) {
+                window.location.href = url;
+                return;
+            }
+
             const $prog = $('#spa-progressbar');
             $prog.css({ width: '25%', opacity: 1 });
 
             const $wrapper = $('.content-wrapper');
             $wrapper.css({ opacity: 0.5, transition: 'opacity 0.12s ease' });
 
-            // Clean up open modal backdrops or active select dropdowns & tooltips
+            // Clean up open modal backdrops and active select dropdowns
             $('.modal-backdrop').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
             $('.select2-container--open').remove();
             $('.macos-select-wrapper.is-open').removeClass('is-open');
-            if ($.fn.tooltip) {
-                $('[data-toggle="tooltip"], [title]').tooltip('dispose');
-            }
 
             // Destroy existing DataTables cleanly to prevent "Cannot reinitialise DataTable"
             if ($.fn.DataTable) {
@@ -2670,6 +2654,12 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
 
                     if ($newContent.length) {
                         $wrapper.html($newContent.html());
+                        if (typeof window.initCompactRowActionMenus === 'function') {
+                            window.initCompactRowActionMenus($wrapper[0]);
+                        }
+                        if (typeof window.initCompactHeaderActionMenus === 'function') {
+                            window.initCompactHeaderActionMenus($wrapper[0]);
+                        }
                     } else {
                         window.location.href = url;
                         return;
@@ -2677,6 +2667,9 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
 
                     // Update active nav status
                     updateActiveNavLinks(url);
+                    if (typeof window.initGlobalPageShell === 'function') {
+                        window.initGlobalPageShell($wrapper[0]);
+                    }
 
                     // Run page-specific scripts
                     $newContent.find('script').each(function() {
@@ -2701,9 +2694,6 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     setTimeout(function() {
                         if (window.initSearchableSelects) {
                             window.initSearchableSelects();
-                        }
-                        if ($.fn.tooltip) {
-                            $('[title], [data-toggle="tooltip"]').tooltip();
                         }
                         if ($.fn.dataTable) {
                             $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
@@ -2790,11 +2780,30 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
         color: #1d1d1f !important;
     }
 
-    /* When active */
-    .sidebar .nav-sidebar .nav-link.active p,
-    body.theme-macos .sidebar .nav-link.active p {
+    /* Keep non-macOS themes on their existing active text treatment. */
+    body:not(.theme-macos) .sidebar .nav-sidebar .nav-link.active p {
         color: #ffffff !important;
         font-weight: 700 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active {
+        background: var(--macos-sidebar-active) !important;
+        color: var(--macos-sidebar-active-text) !important;
+        box-shadow: inset 3px 0 0 #4b83c3 !important;
+        font-weight: 600 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active p {
+        background: transparent !important;
+        color: var(--macos-sidebar-active-text) !important;
+        font-weight: 600 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active i.nav-icon {
+        background: transparent !important;
+        color: var(--macos-sidebar-active-text) !important;
+        -webkit-text-fill-color: var(--macos-sidebar-active-text) !important;
+        box-shadow: none !important;
     }
 
     /* In Collapsed State (closed and not hovered), cleanly hide text & headers */
@@ -3257,6 +3266,1397 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         flex-shrink: 0;
     }
+
+    /* Shared soft macOS surfaces for every page rendered by this layout. */
+    body.theme-macos {
+        --macos-surface: #ffffff;
+        --macos-surface-muted: #f8fafc;
+        --macos-surface-hover: #f3f6fb;
+        --macos-page-background: #f7f8fa;
+        --macos-accent-soft: #eaf2fd;
+        --macos-accent-icon: #d9e9fc;
+        --macos-accent-text: #245f9f;
+        --macos-border: #e5eaf1;
+        --macos-text: #344054;
+        --macos-muted: #748196;
+        --macos-sidebar-background: #ffffff;
+        --macos-sidebar-brand: #ffffff;
+        --macos-sidebar-text: #3e4c61;
+        --macos-sidebar-muted: #748399;
+        --macos-sidebar-hover: #e5edf7;
+        --macos-sidebar-active: #dceaff;
+        --macos-sidebar-active-text: #1d4f91;
+        --macos-shadow: 0 1px 2px rgba(22, 40, 67, 0.04), 0 5px 16px rgba(22, 40, 67, 0.045);
+        background: var(--macos-page-background) !important;
+        font-size: 14px !important;
+        line-height: 1.45;
+    }
+
+    body.theme-macos .content-wrapper,
+    body.theme-macos .wrapper {
+        background: var(--macos-page-background) !important;
+    }
+
+    body.theme-macos .main-sidebar {
+        background: var(--macos-sidebar-background) !important;
+        border-right: 1px solid #e1e8f0 !important;
+        box-shadow: 2px 0 8px rgba(38, 58, 82, 0.045) !important;
+    }
+
+    body.theme-macos .main-sidebar .brand-link {
+        min-height: 58px;
+        background: var(--macos-sidebar-brand) !important;
+        border-bottom: 1px solid #dfe6ef !important;
+        color: #29384d !important;
+    }
+
+    body.theme-macos .main-sidebar .brand-link .brand-text,
+    body.theme-macos .main-sidebar .brand-link .text-dark {
+        color: #29384d !important;
+    }
+
+    body.theme-macos .main-sidebar .user-panel {
+        border-bottom-color: #dfe6ef !important;
+    }
+
+    body.theme-macos .main-sidebar .user-panel .info,
+    body.theme-macos .main-sidebar .user-panel .info a,
+    body.theme-macos .main-sidebar .text-dark,
+    body.theme-macos .main-sidebar .text-muted {
+        color: #536278 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-header {
+        padding: 0.85rem 0.9rem 0.35rem !important;
+        color: var(--macos-sidebar-muted) !important;
+        font-size: 0.68rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.07em !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link {
+        min-height: 38px;
+        margin: 0.1rem 0.55rem !important;
+        padding: 0.5rem 0.65rem !important;
+        border: 0 !important;
+        border-radius: 7px !important;
+        background: transparent !important;
+        color: var(--macos-sidebar-text) !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link p {
+        color: inherit !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link i.nav-icon {
+        width: 1.35rem !important;
+        margin-right: 0.5rem !important;
+        background: transparent !important;
+        color: #75859b !important;
+        -webkit-text-fill-color: #75859b !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link:hover {
+        background: var(--macos-sidebar-hover) !important;
+        color: #263a55 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link:hover i.nav-icon {
+        background: transparent !important;
+        color: #263a55 !important;
+        -webkit-text-fill-color: #263a55 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link.active,
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link.active:hover {
+        background: var(--macos-sidebar-active) !important;
+        color: var(--macos-sidebar-active-text) !important;
+        box-shadow: inset 3px 0 0 #4b83c3 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link.active p,
+    body.theme-macos .main-sidebar .nav-sidebar > .nav-item > .nav-link.active i.nav-icon {
+        background: transparent !important;
+        color: var(--macos-sidebar-active-text) !important;
+        -webkit-text-fill-color: var(--macos-sidebar-active-text) !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview {
+        margin: 0.15rem 0.55rem 0.35rem 1.05rem !important;
+        padding-left: 0.25rem !important;
+        border-left: 1px solid #d7e0eb !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link {
+        min-height: 34px;
+        margin: 0.08rem 0 !important;
+        padding: 0.4rem 0.55rem !important;
+        border-radius: 6px !important;
+        background: transparent !important;
+        color: #536278 !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link p {
+        color: inherit !important;
+        font-size: 0.78rem !important;
+        font-weight: 400 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link i.nav-icon {
+        background: transparent !important;
+        color: #8493a7 !important;
+        -webkit-text-fill-color: #8493a7 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link:hover {
+        background: var(--macos-sidebar-hover) !important;
+        color: #263a55 !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link.active,
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link.active:hover {
+        background: var(--macos-sidebar-active) !important;
+        color: var(--macos-sidebar-active-text) !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link.active p,
+    body.theme-macos .main-sidebar .nav-treeview > .nav-item > .nav-link.active i.nav-icon {
+        background: transparent !important;
+        color: var(--macos-sidebar-active-text) !important;
+        -webkit-text-fill-color: var(--macos-sidebar-active-text) !important;
+    }
+
+    body.theme-macos .main-sidebar .nav-sidebar .right,
+    body.theme-macos .main-sidebar .nav-sidebar .nav-link > .right {
+        color: #8493a7 !important;
+    }
+
+    body.theme-macos .main-header.navbar {
+        border-bottom-color: var(--macos-border) !important;
+        box-shadow: 0 1px 4px rgba(35, 55, 80, 0.025) !important;
+    }
+
+    body.theme-macos .main-header .navbar-nav .nav-link {
+        color: #5b687b !important;
+    }
+
+    body.theme-macos .nav-icon-btn,
+    body.theme-macos .navbar-queue-pill {
+        background: #f5f7fb !important;
+        border: 1px solid var(--macos-border) !important;
+        color: #5b687b !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .nav-icon-btn:hover,
+    body.theme-macos .navbar-queue-pill:hover {
+        background: var(--macos-accent-soft) !important;
+        border-color: #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+        transform: none !important;
+    }
+
+    body.theme-macos .btn-header-action {
+        background: var(--macos-accent-soft) !important;
+        border: 1px solid #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .btn-header-action:hover {
+        background: #dceafb !important;
+        border-color: #c8dcf4 !important;
+        color: #1e548f !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+
+    body.theme-macos .navbar-clinical-quickbar .btn-clinical-nav {
+        background: #f5f7fb !important;
+        border: 1px solid var(--macos-border) !important;
+        border-radius: 7px !important;
+        color: #5b687b !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .navbar-clinical-quickbar .btn-clinical-nav:hover,
+    body.theme-macos .navbar-clinical-quickbar .btn-clinical-nav.active {
+        background: var(--macos-accent-soft) !important;
+        border-color: #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .content-header {
+        padding: 0.65rem 0.25rem 0.55rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content {
+        padding: 0 0.25rem 1rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid {
+        width: 100%;
+        max-width: none;
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid > .content {
+        padding: 0 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container-fluid {
+        width: 100%;
+        max-width: none;
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container {
+        width: 100%;
+        max-width: none;
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid > .content-header {
+        padding: 0.55rem 0.25rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid > .content-header > .container-fluid {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    body.theme-macos .content-header h1,
+    body.theme-macos .content-header .breadcrumb {
+        color: var(--macos-text) !important;
+    }
+
+    body.theme-macos .content-header h1 {
+        font-size: 1.35rem !important;
+        font-weight: 650 !important;
+        letter-spacing: -0.02em !important;
+    }
+
+    body.theme-macos .nav-sidebar .nav-item {
+        margin-bottom: 3px;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar > .nav-item > .nav-link {
+        min-height: 39px;
+        color: var(--macos-sidebar-text) !important;
+        font-weight: 500 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar > .nav-item > .nav-link p {
+        font-size: 13px !important;
+        font-weight: 500 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-treeview {
+        border-left-color: #d7e0eb !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar {
+        padding: 0.4rem 0.25rem 5rem !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link {
+        border: 0 !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link {
+        border-left: 0 !important;
+        border-radius: 7px !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-treeview {
+        margin-left: 1.15rem !important;
+        padding-left: 0.55rem !important;
+        border-left: 1px solid #d7e0eb !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active {
+        background: var(--macos-sidebar-active) !important;
+        color: var(--macos-sidebar-active-text) !important;
+        box-shadow: inset 3px 0 0 #4b83c3 !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active p {
+        color: var(--macos-sidebar-active-text) !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-link.active i.nav-icon {
+        background: transparent !important;
+        color: var(--macos-sidebar-active-text) !important;
+        -webkit-text-fill-color: var(--macos-sidebar-active-text) !important;
+    }
+
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar > .nav-item > .nav-link:hover i.nav-icon,
+    body.theme-macos .main-sidebar .sidebar .nav-treeview > .nav-item > .nav-link:hover i.nav-icon {
+        color: #111827 !important;
+        -webkit-text-fill-color: #111827 !important;
+    }
+
+    .app-page-shell {
+        position: relative;
+        margin-bottom: 1rem;
+        padding: 0.35rem 0.65rem 0.65rem;
+        background: #ffffff;
+        border: 1px solid #e5eaf1;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(22, 40, 67, 0.035);
+    }
+
+    .app-page-shell > .content-header {
+        padding: 0.45rem 0.25rem 0.6rem !important;
+    }
+
+    .app-page-shell > .content-header .row {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .app-page-shell > .content-header .row > :first-child {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .app-page-shell > .content-header .row > .app-page-actions-column,
+    .app-page-shell > .content-header .row > .text-right {
+        order: 3;
+        flex: 0 0 auto;
+        width: auto;
+        max-width: none;
+        padding-right: 0;
+        padding-left: 0;
+        margin-left: 0.5rem;
+        text-align: right;
+    }
+
+    .app-page-shell > .content-header .row > .app-page-breadcrumb-column {
+        order: 2;
+        flex: 0 1 auto;
+        width: auto;
+        max-width: 45%;
+        padding-right: 0;
+        padding-left: 0;
+        margin-left: auto;
+    }
+
+    .app-page-shell > .content-header .breadcrumb {
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+    .app-page-shell > .content > .container-fluid,
+    .app-page-shell > .container-fluid {
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
+    }
+
+    .app-page-shell .card-header {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .app-page-shell .card-header .card-tools,
+    .app-page-shell .card-header .page-actions,
+    .app-page-shell .card-header .header-actions,
+    .app-page-shell .card-header .table-actions,
+    .app-page-shell .card-header .table-toolbar-actions {
+        float: none !important;
+        margin-left: auto !important;
+    }
+
+    .app-page-context {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        min-height: 32px;
+        margin: 0.1rem 0.25rem 0.65rem;
+    }
+
+    .app-page-context .breadcrumb {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 767.98px) {
+        .app-page-shell {
+            padding: 0.25rem 0.35rem 0.45rem;
+            border-radius: 9px;
+        }
+
+        .app-page-shell > .content-header .row {
+            flex-wrap: wrap;
+        }
+
+        .app-page-shell > .content-header .row > :first-child {
+            flex: 1 1 100%;
+        }
+
+        .app-page-shell > .content-header .row > .app-page-breadcrumb-column {
+            order: 2;
+            flex: 1 1 auto;
+            max-width: 100%;
+            margin-left: 0;
+        }
+
+        .app-page-shell .card-header .card-tools,
+        .app-page-shell .card-header .page-actions,
+        .app-page-shell .card-header .header-actions,
+        .app-page-shell .card-header .table-actions,
+        .app-page-shell .card-header .table-toolbar-actions {
+            width: 100%;
+            margin-top: 0.4rem;
+            text-align: right;
+        }
+    }
+
+    body.theme-macos a:not(.btn):not(.nav-link):not(.dropdown-item) {
+        color: var(--macos-accent-text);
+    }
+
+    body.theme-macos .text-primary,
+    body.theme-macos a:not(.btn):not(.nav-link):not(.dropdown-item):hover {
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .text-success {
+        color: #31805a !important;
+    }
+
+    body.theme-macos .text-info {
+        color: #39739d !important;
+    }
+
+    body.theme-macos .text-warning {
+        color: #98701f !important;
+    }
+
+    body.theme-macos .text-danger {
+        color: #bd5550 !important;
+    }
+
+    body.theme-macos .bg-primary-soft,
+    body.theme-macos .bg-indigo-soft {
+        background: #eaf2fd !important;
+        color: #245f9f !important;
+    }
+
+    body.theme-macos .bg-teal-soft {
+        background: #e7f3f2 !important;
+        color: #286d67 !important;
+    }
+
+    body.theme-macos .bg-success-soft {
+        background: #e7f5ec !important;
+        color: #287348 !important;
+    }
+
+    body.theme-macos .bg-amber-soft,
+    body.theme-macos .bg-orange-soft {
+        background: #fff4df !important;
+        color: #8a641e !important;
+    }
+
+    body.theme-macos .bg-danger-soft {
+        background: #fdeceb !important;
+        color: #a84640 !important;
+    }
+
+    body.theme-macos .bg-purple-soft {
+        background: #f2edfa !important;
+        color: #66518d !important;
+    }
+
+    body.theme-macos .card,
+    body.theme-macos .info-box,
+    body.theme-macos .small-box,
+    body.theme-macos .callout {
+        border: 1px solid var(--macos-border) !important;
+        border-radius: 13px !important;
+        box-shadow: var(--macos-shadow) !important;
+    }
+
+    body.theme-macos .card {
+        margin-bottom: 1.125rem !important;
+    }
+
+    body.theme-macos .card-header,
+    body.theme-macos .card-footer {
+        padding: 0.9rem 1.1rem !important;
+        background: var(--macos-surface-muted) !important;
+        border-color: var(--macos-border) !important;
+    }
+
+    body.theme-macos .card-body {
+        padding: 1.1rem !important;
+    }
+
+    body.theme-macos .card-header .card-title,
+    body.theme-macos .info-box-text,
+    body.theme-macos .small-box h3 {
+        color: var(--macos-text) !important;
+    }
+
+    body.theme-macos .card-header .card-title {
+        font-size: 0.98rem !important;
+        font-weight: 600 !important;
+    }
+
+    body.theme-macos .info-box,
+    body.theme-macos .small-box {
+        margin-bottom: 1rem !important;
+        background-color: var(--macos-surface) !important;
+    }
+
+    body.theme-macos .info-box-icon,
+    body.theme-macos .small-box > .inner > .icon {
+        opacity: 0.78;
+    }
+
+    body.theme-macos .small-box .small-box-footer {
+        background: rgba(35, 55, 80, 0.025) !important;
+        color: var(--macos-muted) !important;
+    }
+
+    body.theme-macos .card-tools .btn,
+    body.theme-macos .card-tools .btn-tool {
+        color: var(--macos-muted) !important;
+        border-radius: 7px !important;
+    }
+
+    body.theme-macos .table-responsive {
+        border: 1px solid var(--macos-border);
+        border-radius: 10px;
+        background: var(--macos-surface);
+        margin-bottom: 0.35rem;
+    }
+
+    body.theme-macos .table {
+        margin-bottom: 0 !important;
+        color: var(--macos-text) !important;
+    }
+
+    body.theme-macos .table thead th {
+        padding: 0.7rem 0.75rem !important;
+        background: var(--macos-surface-muted) !important;
+        color: #68768a !important;
+        border-top: 0 !important;
+        border-bottom: 1px solid var(--macos-border) !important;
+        font-size: 0.78rem !important;
+        font-weight: 600 !important;
+        vertical-align: middle !important;
+    }
+
+    body.theme-macos .table tbody td,
+    body.theme-macos .table tfoot th,
+    body.theme-macos .table tfoot td {
+        padding: 0.7rem 0.8rem !important;
+        border-top: 1px solid #edf1f6 !important;
+        vertical-align: middle !important;
+    }
+
+    body.theme-macos .table .btn + .btn {
+        margin-left: 0.25rem;
+    }
+
+    body.theme-macos .table-primary,
+    body.theme-macos .table-primary > th,
+    body.theme-macos .table-primary > td {
+        background: var(--macos-accent-soft) !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .table-success,
+    body.theme-macos .table-success > th,
+    body.theme-macos .table-success > td {
+        background: #edf7f0 !important;
+    }
+
+    body.theme-macos .table-warning,
+    body.theme-macos .table-warning > th,
+    body.theme-macos .table-warning > td {
+        background: #fff8e9 !important;
+    }
+
+    body.theme-macos .table-danger,
+    body.theme-macos .table-danger > th,
+    body.theme-macos .table-danger > td {
+        background: #fdf1f0 !important;
+    }
+
+    body.theme-macos .table.table-bordered,
+    body.theme-macos .table.table-bordered th,
+    body.theme-macos .table.table-bordered td {
+        border-color: var(--macos-border) !important;
+    }
+
+    body.theme-macos .table-striped tbody tr:nth-of-type(odd) {
+        background: #fafbfd !important;
+    }
+
+    body.theme-macos .table-hover tbody tr:hover {
+        background: var(--macos-surface-hover) !important;
+    }
+
+    body.theme-macos table.dataTable {
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+    }
+
+    body.theme-macos .dataTables_wrapper {
+        color: var(--macos-muted);
+    }
+
+    body.theme-macos .dataTables_wrapper > .row {
+        align-items: center;
+        row-gap: 0.5rem;
+        margin-bottom: 0.65rem;
+    }
+
+    body.theme-macos .dataTables_wrapper > .row:last-child {
+        margin-top: 0.65rem;
+        margin-bottom: 0;
+    }
+
+    body.theme-macos .dataTables_length label,
+    body.theme-macos .dataTables_filter label,
+    body.theme-macos .dataTables_info {
+        color: var(--macos-muted) !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+    }
+
+    body.theme-macos .dataTables_paginate .pagination {
+        gap: 3px;
+    }
+
+    body.theme-macos .dataTables_paginate .page-link {
+        min-width: 32px;
+        border: 1px solid transparent !important;
+        border-radius: 7px !important;
+        background: transparent !important;
+        color: var(--macos-text) !important;
+        text-align: center;
+    }
+
+    body.theme-macos .dataTables_paginate .page-item.active .page-link {
+        background: var(--macos-accent-soft) !important;
+        border-color: #d9e7f8 !important;
+        color: var(--macos-accent-text) !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .dataTables_paginate .page-item:not(.active):not(.disabled) .page-link:hover {
+        background: var(--macos-surface-hover) !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .btn {
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
+    }
+
+    body.theme-macos .btn:not(.btn-xs):not(.btn-sm) {
+        min-height: 35px;
+        padding: 0.42rem 0.85rem !important;
+    }
+
+    body.theme-macos .btn.btn-sm {
+        min-height: 30px;
+        padding: 0.28rem 0.65rem !important;
+    }
+
+    body.theme-macos .btn.btn-xs {
+        min-height: 26px;
+        padding: 0.2rem 0.5rem !important;
+    }
+
+    body.theme-macos .btn-primary,
+    body.theme-macos .btn-teal {
+        background: var(--macos-accent-soft) !important;
+        border-color: #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .btn-primary:hover,
+    body.theme-macos .btn-teal:hover {
+        background: #dceafb !important;
+        border-color: #c8dcf4 !important;
+        color: #1e548f !important;
+    }
+
+    body.theme-macos .btn-secondary,
+    body.theme-macos .btn-light,
+    body.theme-macos .btn-outline-secondary {
+        background: var(--macos-surface-muted) !important;
+        border-color: var(--macos-border) !important;
+        color: #59677b !important;
+    }
+
+    body.theme-macos .btn-outline-primary {
+        background: #f4f8fe !important;
+        border-color: #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .btn-outline-success {
+        background: #f3faf5 !important;
+        border-color: #d2eadb !important;
+        color: #287348 !important;
+    }
+
+    body.theme-macos .btn-outline-info {
+        background: #f3f8fc !important;
+        border-color: #d5e6f6 !important;
+        color: #326b9e !important;
+    }
+
+    body.theme-macos .btn-outline-warning {
+        background: #fffbf3 !important;
+        border-color: #f4e4c2 !important;
+        color: #8a641e !important;
+    }
+
+    body.theme-macos .btn-outline-danger {
+        background: #fff7f6 !important;
+        border-color: #f4d6d4 !important;
+        color: #a84640 !important;
+    }
+
+    body.theme-macos .btn-success,
+    body.theme-macos .btn-info,
+    body.theme-macos .btn-warning,
+    body.theme-macos .btn-danger {
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .btn-success,
+    body.theme-macos .badge-success,
+    body.theme-macos .bg-success,
+    body.theme-macos .card-success > .card-header {
+        background: #e7f5ec !important;
+        border-color: #d2eadb !important;
+        color: #287348 !important;
+    }
+
+    body.theme-macos .btn-info,
+    body.theme-macos .badge-info,
+    body.theme-macos .bg-info,
+    body.theme-macos .card-info > .card-header {
+        background: #e8f2fb !important;
+        border-color: #d5e6f6 !important;
+        color: #326b9e !important;
+    }
+
+    body.theme-macos .btn-warning,
+    body.theme-macos .badge-warning,
+    body.theme-macos .bg-warning,
+    body.theme-macos .card-warning > .card-header {
+        background: #fff4df !important;
+        border-color: #f4e4c2 !important;
+        color: #8a641e !important;
+    }
+
+    body.theme-macos .btn-danger,
+    body.theme-macos .badge-danger,
+    body.theme-macos .bg-danger,
+    body.theme-macos .card-danger > .card-header {
+        background: #fdeceb !important;
+        border-color: #f4d6d4 !important;
+        color: #a84640 !important;
+    }
+
+    body.theme-macos .bg-primary,
+    body.theme-macos .badge-primary,
+    body.theme-macos .card-primary > .card-header {
+        background: var(--macos-accent-soft) !important;
+        border-color: #d7e6f8 !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .bg-teal,
+    body.theme-macos .badge-teal,
+    body.theme-macos .card-teal > .card-header {
+        background: #e7f3f2 !important;
+        border-color: #d2e8e5 !important;
+        color: #286d67 !important;
+    }
+
+    body.theme-macos .btn-primary .text-white,
+    body.theme-macos .badge-primary .text-white,
+    body.theme-macos .bg-primary .text-white,
+    body.theme-macos .bg-primary.text-white {
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .btn-success .text-white,
+    body.theme-macos .badge-success .text-white,
+    body.theme-macos .bg-success .text-white,
+    body.theme-macos .bg-success.text-white {
+        color: #287348 !important;
+    }
+
+    body.theme-macos .btn-info .text-white,
+    body.theme-macos .badge-info .text-white,
+    body.theme-macos .bg-info .text-white,
+    body.theme-macos .bg-info.text-white {
+        color: #326b9e !important;
+    }
+
+    body.theme-macos .btn-warning .text-white,
+    body.theme-macos .badge-warning .text-white,
+    body.theme-macos .bg-warning .text-white,
+    body.theme-macos .bg-warning.text-white {
+        color: #8a641e !important;
+    }
+
+    body.theme-macos .btn-danger .text-white,
+    body.theme-macos .badge-danger .text-white,
+    body.theme-macos .bg-danger .text-white,
+    body.theme-macos .bg-danger.text-white {
+        color: #a84640 !important;
+    }
+
+    body.theme-macos .btn-teal .text-white,
+    body.theme-macos .badge-teal .text-white,
+    body.theme-macos .bg-teal .text-white,
+    body.theme-macos .bg-teal.text-white {
+        color: #286d67 !important;
+    }
+
+    body.theme-macos .bg-primary,
+    body.theme-macos .badge-primary {
+        background-color: var(--macos-accent-soft) !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .bg-success,
+    body.theme-macos .badge-success {
+        background-color: #e7f5ec !important;
+        color: #287348 !important;
+    }
+
+    body.theme-macos .bg-info,
+    body.theme-macos .badge-info {
+        background-color: #e8f2fb !important;
+        color: #326b9e !important;
+    }
+
+    body.theme-macos .bg-warning,
+    body.theme-macos .badge-warning {
+        background-color: #fff4df !important;
+        color: #8a641e !important;
+    }
+
+    body.theme-macos .bg-danger,
+    body.theme-macos .badge-danger {
+        background-color: #fdeceb !important;
+        color: #a84640 !important;
+    }
+
+    body.theme-macos .bg-teal,
+    body.theme-macos .badge-teal {
+        background-color: #e7f3f2 !important;
+        color: #286d67 !important;
+    }
+
+    body.theme-macos .btn-group > .btn {
+        border-radius: 0 !important;
+    }
+
+    body.theme-macos .btn-group > .btn:first-child {
+        border-radius: 8px 0 0 8px !important;
+    }
+
+    body.theme-macos .btn-group > .btn:last-child {
+        border-radius: 0 8px 8px 0 !important;
+    }
+
+    body.theme-macos .btn-group > .btn:only-child {
+        border-radius: 8px !important;
+    }
+
+    body.theme-macos .input-group > :first-child,
+    body.theme-macos .input-group > .input-group-prepend > :first-child {
+        border-radius: 8px 0 0 8px !important;
+    }
+
+    body.theme-macos .input-group > :last-child,
+    body.theme-macos .input-group > .input-group-append > :last-child {
+        border-radius: 0 8px 8px 0 !important;
+    }
+
+    body.theme-macos .input-group > :only-child {
+        border-radius: 8px !important;
+    }
+
+    body.theme-macos .input-group > .form-control:not(:first-child):not(:last-child),
+    body.theme-macos .input-group > .custom-select:not(:first-child):not(:last-child) {
+        border-radius: 0 !important;
+    }
+
+    body.theme-macos .alert-success,
+    body.theme-macos .callout-success {
+        background: #f0f8f2 !important;
+        border-color: #d8ecdd !important;
+        color: #356b4a !important;
+    }
+
+    body.theme-macos .alert-info,
+    body.theme-macos .callout-info {
+        background: #eff6fb !important;
+        border-color: #d9e9f5 !important;
+        color: #3b698b !important;
+    }
+
+    body.theme-macos .alert-warning,
+    body.theme-macos .callout-warning {
+        background: #fff9ec !important;
+        border-color: #f2e5c8 !important;
+        color: #80652f !important;
+    }
+
+    body.theme-macos .alert-danger,
+    body.theme-macos .callout-danger {
+        background: #fdf3f2 !important;
+        border-color: #f1d9d7 !important;
+        color: #914c49 !important;
+    }
+
+    body.theme-macos .form-control,
+    body.theme-macos .custom-select,
+    body.theme-macos .input-group-text,
+    body.theme-macos .select2-container--bootstrap4 .select2-selection {
+        min-height: 36px;
+        border: 1px solid #dfe6ef !important;
+        border-radius: 8px !important;
+        background-color: #fff !important;
+        color: var(--macos-text) !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .form-control:focus,
+    body.theme-macos .custom-select:focus,
+    body.theme-macos .select2-container--bootstrap4.select2-container--focus .select2-selection {
+        border-color: #a9c7ea !important;
+        box-shadow: 0 0 0 3px rgba(75, 135, 204, 0.12) !important;
+    }
+
+    body.theme-macos .form-control::placeholder {
+        color: #9aa5b5 !important;
+    }
+
+    body.theme-macos .form-group {
+        margin-bottom: 1rem !important;
+    }
+
+    body.theme-macos .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #4b87cc !important;
+        border-color: #4b87cc !important;
+    }
+
+    body.theme-macos .alert,
+    body.theme-macos .callout {
+        border-radius: 10px !important;
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .alert-light,
+    body.theme-macos .bg-light {
+        background-color: var(--macos-surface-muted) !important;
+        border-color: var(--macos-border) !important;
+        color: var(--macos-text) !important;
+    }
+
+    body.theme-macos .badge {
+        border-radius: 6px !important;
+        font-weight: 600 !important;
+    }
+
+    body.theme-macos .dropdown-menu {
+        padding: 0.4rem !important;
+        border: 1px solid var(--macos-border) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 8px 24px rgba(35, 55, 80, 0.1) !important;
+    }
+
+    body.theme-macos .dropdown-item {
+        border-radius: 6px !important;
+        padding: 0.45rem 0.65rem !important;
+    }
+
+    body.theme-macos .dropdown-item:hover,
+    body.theme-macos .dropdown-item:focus {
+        background: var(--macos-surface-hover) !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos .modal-content {
+        border: 1px solid var(--macos-border) !important;
+        border-radius: 14px !important;
+        box-shadow: 0 14px 38px rgba(35, 55, 80, 0.14) !important;
+    }
+
+    body.theme-macos .modal-header,
+    body.theme-macos .modal-footer {
+        background: var(--macos-surface-muted) !important;
+        border-color: var(--macos-border) !important;
+    }
+
+    body.theme-macos .nav-tabs {
+        border-bottom-color: var(--macos-border) !important;
+    }
+
+    body.theme-macos .nav-tabs .nav-link {
+        border-radius: 8px 8px 0 0 !important;
+        color: var(--macos-muted) !important;
+    }
+
+    body.theme-macos .nav-tabs .nav-link.active {
+        background: var(--macos-surface) !important;
+        border-color: var(--macos-border) var(--macos-border) var(--macos-surface) !important;
+        color: var(--macos-accent-text) !important;
+    }
+
+    body.theme-macos hr {
+        border-top-color: var(--macos-border) !important;
+    }
+
+    @media (max-width: 767.98px) {
+        body.theme-macos .content-header {
+            padding: 0.6rem 0.2rem 0.45rem !important;
+        }
+
+        body.theme-macos .content-wrapper > .content {
+            padding: 0 0.15rem 0.75rem !important;
+        }
+
+        body.theme-macos .content-wrapper > .content > .container-fluid,
+        body.theme-macos .content-wrapper > .content > .container-fluid > .container-fluid,
+        body.theme-macos .content-wrapper > .content > .container-fluid > .container {
+            padding-right: 0.15rem;
+            padding-left: 0.15rem;
+        }
+
+        body.theme-macos .content-wrapper > .content > .container-fluid > .content-header {
+            padding-right: 0.15rem !important;
+            padding-left: 0.15rem !important;
+        }
+
+        body.theme-macos .card-body {
+            padding: 0.9rem !important;
+        }
+
+        body.theme-macos .table thead th,
+        body.theme-macos .table tbody td,
+        body.theme-macos .table tfoot th,
+        body.theme-macos .table tfoot td {
+            padding: 0.55rem 0.6rem !important;
+        }
+    }
+
+    /* Refined macOS workspace surfaces: clear hierarchy with restrained contrast. */
+    body.theme-macos .content-wrapper > .content,
+    body.theme-macos .content-wrapper > .content > .container-fluid,
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container-fluid,
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container {
+        background: var(--macos-page-background) !important;
+    }
+
+    body.theme-macos .content-wrapper > .content {
+        padding: 0 0.75rem 1.25rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid,
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container-fluid,
+    body.theme-macos .content-wrapper > .content > .container-fluid > .container {
+        padding-right: 0.3rem !important;
+        padding-left: 0.3rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card:not(.shadow-none),
+    body.theme-macos .content-wrapper > .content > .container-fluid .info-box:not(.shadow-none),
+    body.theme-macos .content-wrapper > .content > .container-fluid .small-box:not(.shadow-none),
+    body.theme-macos .content-wrapper > .content > .container-fluid .callout:not(.shadow-none) {
+        background-color: #ffffff !important;
+        border: 1px solid #e4e9f0 !important;
+        border-radius: 12px !important;
+        box-shadow: var(--macos-shadow) !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.shadow-none,
+    body.theme-macos .content-wrapper > .content > .container-fluid .info-box.shadow-none,
+    body.theme-macos .content-wrapper > .content > .container-fluid .small-box.shadow-none,
+    body.theme-macos .content-wrapper > .content > .container-fluid .callout.shadow-none {
+        box-shadow: none !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card .card-header,
+    body.theme-macos .content-wrapper > .content > .container-fluid .card .card-footer {
+        background: #f9fafc !important;
+        border-color: #e8edf3 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card .card-header .card-title,
+    body.theme-macos .content-header h1,
+    body.theme-macos .content-header h2 {
+        color: #253247 !important;
+    }
+
+    body.theme-macos .content-header {
+        padding: 0.7rem 0.3rem 0.65rem !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .table-responsive {
+        border-color: #e4e9f0 !important;
+        border-radius: 9px !important;
+        box-shadow: 0 1px 2px rgba(22, 40, 67, 0.025) !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .table thead th {
+        background: #f7f9fc !important;
+        color: #59677a !important;
+        font-weight: 600 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .table tbody tr:hover {
+        background: #f5f8fc !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .form-control,
+    body.theme-macos .content-wrapper > .content > .container-fluid .custom-select,
+    body.theme-macos .content-wrapper > .content > .container-fluid .select2-container--bootstrap4 .select2-selection {
+        border-color: #d9e1eb !important;
+        border-radius: 7px !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .form-control:focus,
+    body.theme-macos .content-wrapper > .content > .container-fluid .custom-select:focus,
+    body.theme-macos .content-wrapper > .content > .container-fluid .select2-container--bootstrap4.select2-container--focus .select2-selection {
+        border-color: #7da9dd !important;
+        box-shadow: 0 0 0 3px rgba(38, 121, 223, 0.12) !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.card-kpi-teal {
+        border-top: 3px solid #57a99f !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.card-kpi-info {
+        border-top: 3px solid #6f9fc7 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.card-kpi-success {
+        border-top: 3px solid #73ae86 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.card-kpi-danger {
+        border-top: 3px solid #cf8581 !important;
+    }
+
+    body.theme-macos .content-wrapper > .content > .container-fluid .card.card-kpi-purple {
+        border-top: 3px solid #9a8ac0 !important;
+    }
+
+    body.theme-macos .btn:focus-visible,
+    body.theme-macos a:focus-visible {
+        outline: 3px solid rgba(38, 121, 223, 0.35) !important;
+        outline-offset: 2px;
+    }
+
+    body.theme-macos .compact-action-cell {
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    body.theme-macos .compact-action-dropdown {
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        z-index: 1060;
+    }
+
+    body.theme-macos .compact-header-action-dropdown {
+        margin-left: auto;
+    }
+
+    body.theme-macos .compact-action-toggle {
+        min-width: 38px;
+        padding: 0.32rem 0.55rem !important;
+        background: #f7f9fc !important;
+        border: 1px solid #dfe6ef !important;
+        border-radius: 7px !important;
+        color: #526176 !important;
+    }
+
+    body.theme-macos .compact-action-toggle:hover,
+    body.theme-macos .compact-action-toggle[aria-expanded="true"] {
+        background: #eaf2fd !important;
+        border-color: #cbdcf1 !important;
+        color: #245f9f !important;
+    }
+
+    body.theme-macos .compact-action-menu {
+        min-width: 190px;
+        max-width: min(280px, calc(100vw - 24px));
+        max-height: 60vh;
+        overflow-y: auto;
+        padding: 0.3rem !important;
+        border: 1px solid #e1e7ef !important;
+        border-radius: 9px !important;
+        background: #ffffff !important;
+        box-shadow: 0 8px 24px rgba(22, 40, 67, 0.14) !important;
+    }
+
+    body.theme-macos .compact-action-menu .compact-action-option {
+        display: block;
+    }
+
+    body.theme-macos .compact-action-menu .compact-action-option > form {
+        margin: 0;
+    }
+
+    body.theme-macos .compact-action-menu .compact-action-label {
+        margin-left: 0.55rem;
+    }
+
+    body.theme-macos .compact-action-menu .compact-action-item.nav-icon-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: 34px !important;
+        justify-content: flex-start !important;
+    }
+
+    body.theme-macos .compact-action-menu .compact-action-item {
+        display: flex !important;
+        align-items: center;
+        width: 100%;
+        min-height: 34px;
+        margin: 0 !important;
+        padding: 0.42rem 0.6rem !important;
+        border: 0 !important;
+        border-radius: 6px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: #253247 !important;
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        text-align: left !important;
+        white-space: normal;
+        outline: 0 !important;
+        transform: none !important;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item * {
+        color: #253247 !important;
+        -webkit-text-fill-color: currentColor !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:hover,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:focus,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:active {
+        background: #2679df !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: inset 0 0 0 999px #2679df !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:hover *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:focus *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item:active * {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger * {
+        color: #b64b4b !important;
+        -webkit-text-fill-color: #b64b4b !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:hover,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:hover,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:hover,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:focus,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:focus,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:focus,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:active,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:active,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:active {
+        background: #fff1f0 !important;
+        color: #a63d3d !important;
+        box-shadow: inset 0 0 0 999px #fff1f0 !important;
+    }
+
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:hover *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:hover *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:hover *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:focus *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:focus *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:focus *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-danger:active *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.btn-outline-danger:active *,
+    body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .compact-action-menu .compact-action-item.text-danger:active * {
+        color: #a63d3d !important;
+        -webkit-text-fill-color: #a63d3d !important;
+    }
+
+    body.theme-macos th.compact-action-column {
+        width: 76px !important;
+        min-width: 76px !important;
+        max-width: 76px !important;
+    }
+
+    body.theme-macos .table-responsive.compact-actions-open {
+        overflow: visible !important;
+    }
+
+    .tooltip {
+        display: none !important;
+    }
+
+    @media (max-width: 767.98px) {
+        body.theme-macos .content-wrapper > .content {
+            padding-right: 0.3rem !important;
+            padding-left: 0.3rem !important;
+        }
+
+        body.theme-macos .content-wrapper > .content > .container-fluid,
+        body.theme-macos .content-wrapper > .content > .container-fluid > .container-fluid,
+        body.theme-macos .content-wrapper > .content > .container-fluid > .container {
+            padding-right: 0.15rem !important;
+            padding-left: 0.15rem !important;
+        }
+    }
 </style>
 
 <!-- Modal Pusat Kontrol & Menu Lengkap (Launchpad Hub) -->
@@ -3706,6 +5106,490 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
 // =========================================================================
 (function() {
     'use strict';
+
+    window.initGlobalPageShell = function(root) {
+        var scope = root || document;
+        var shells = [];
+        if (scope.matches && scope.matches('.app-page-shell')) {
+            shells.push(scope);
+        }
+        if (scope.querySelectorAll) {
+            shells = shells.concat(Array.prototype.slice.call(scope.querySelectorAll('.app-page-shell')));
+        }
+
+        shells.forEach(function(shell) {
+            var contentHeader = shell.querySelector('.content-header');
+            var headerRow = contentHeader && contentHeader.querySelector('.row');
+            if (headerRow) {
+                Array.prototype.forEach.call(headerRow.children, function(column) {
+                    if (column.querySelector('.breadcrumb')) {
+                        column.classList.add('app-page-breadcrumb-column');
+                    } else if (column.classList.contains('text-right') ||
+                        column.querySelector('.compact-header-action-dropdown, .card-tools, .page-actions, .header-actions')) {
+                        column.classList.add('app-page-actions-column');
+                    }
+                });
+            }
+
+            if (shell.querySelector('.breadcrumb')) {
+                return;
+            }
+
+            var activeLink = shell.closest('.content-wrapper')
+                ? document.querySelector('.main-sidebar .nav-treeview .nav-link.active[href]:not([href="#"])') ||
+                  document.querySelector('.main-sidebar .nav-sidebar > .nav-item > .nav-link.active[href]:not([href="#"])')
+                : null;
+            var activeItem = activeLink ? activeLink.closest('.nav-item') : null;
+            var parentItem = activeItem ? activeItem.parentElement.closest('.nav-item.has-treeview') : null;
+            var parentNavLink = parentItem
+                ? parentItem.querySelector('.nav-treeview .nav-link[href]:not([href="#"])')
+                : null;
+            var currentLabel = activeLink && activeLink.querySelector('p')
+                ? activeLink.querySelector('p').textContent.trim()
+                : '';
+            var parentLabel = parentItem && parentItem.querySelector(':scope > .nav-link p')
+                ? parentItem.querySelector(':scope > .nav-link p').textContent.trim()
+                : '';
+            var breadcrumb = document.createElement('ol');
+            breadcrumb.className = 'breadcrumb';
+            var breadcrumbNav = document.createElement('nav');
+            breadcrumbNav.setAttribute('aria-label', 'breadcrumb');
+            breadcrumbNav.appendChild(breadcrumb);
+
+            var homeItem = document.createElement('li');
+            homeItem.className = 'breadcrumb-item';
+            var homeLink = document.createElement('a');
+            var dashboardLink = document.querySelector('.main-sidebar .brand-link');
+            homeLink.href = dashboardLink ? dashboardLink.href : window.location.origin + '/dashboard';
+            homeLink.textContent = 'Home';
+            homeItem.appendChild(homeLink);
+            breadcrumb.appendChild(homeItem);
+
+            if (parentLabel && parentLabel !== currentLabel) {
+                var parentCrumb = document.createElement('li');
+                parentCrumb.className = 'breadcrumb-item';
+                if (parentNavLink) {
+                    var parentLink = document.createElement('a');
+                    parentLink.href = parentNavLink.href;
+                    parentLink.textContent = parentLabel;
+                    parentCrumb.appendChild(parentLink);
+                } else {
+                    parentCrumb.textContent = parentLabel;
+                }
+                breadcrumb.appendChild(parentCrumb);
+            }
+
+            var currentCrumb = document.createElement('li');
+            currentCrumb.className = 'breadcrumb-item active';
+            currentCrumb.setAttribute('aria-current', 'page');
+            if (currentLabel) {
+                currentCrumb.textContent = currentLabel;
+            } else {
+                var pathSegments = window.location.pathname.split('/').filter(Boolean);
+                currentCrumb.textContent = (pathSegments.pop() || 'Dashboard')
+                    .replace(/[-_]+/g, ' ')
+                    .replace(/\b\w/g, function(letter) { return letter.toUpperCase(); });
+            }
+            breadcrumb.appendChild(currentCrumb);
+
+            if (contentHeader) {
+                if (headerRow) {
+                    var breadcrumbColumn = document.createElement('div');
+                    breadcrumbColumn.className = 'app-page-breadcrumb-column d-flex justify-content-end';
+                    breadcrumbColumn.appendChild(breadcrumbNav);
+                    headerRow.appendChild(breadcrumbColumn);
+                } else {
+                    contentHeader.appendChild(breadcrumbNav);
+                }
+                return;
+            }
+
+            var context = document.createElement('div');
+            context.className = 'app-page-context';
+            context.appendChild(breadcrumbNav);
+            shell.insertBefore(context, shell.firstChild);
+        });
+    };
+
+    window.initGlobalPageShell(document);
+
+    window.disableTooltips = function(root) {
+        var scope = root || document;
+        var selector = '[title], [data-original-title], [data-toggle="tooltip"], [data-bs-toggle="tooltip"]';
+        var elements = [];
+
+        if (scope.nodeType === 1 && scope.matches(selector)) {
+            elements.push(scope);
+        }
+        if (scope.querySelectorAll) {
+            elements = elements.concat(Array.prototype.slice.call(scope.querySelectorAll(selector)));
+        }
+
+        elements.forEach(function(element) {
+            var title = element.getAttribute('title') || element.getAttribute('data-original-title');
+            if (title && !element.hasAttribute('aria-label')) {
+                element.setAttribute('aria-label', title);
+            }
+            if (window.jQuery && $.fn.tooltip && $(element).data('bs.tooltip')) {
+                $(element).tooltip('dispose');
+            }
+            element.removeAttribute('title');
+            element.removeAttribute('data-original-title');
+            if (element.getAttribute('data-toggle') === 'tooltip') {
+                element.removeAttribute('data-toggle');
+            }
+            if (element.getAttribute('data-bs-toggle') === 'tooltip') {
+                element.removeAttribute('data-bs-toggle');
+            }
+        });
+
+        document.querySelectorAll('.tooltip').forEach(function(tooltip) {
+            tooltip.remove();
+        });
+    };
+
+    window.disableTooltips(document);
+    new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes') {
+                window.disableTooltips(mutation.target);
+                return;
+            }
+            mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType === 1) {
+                    if (node.matches('.tooltip')) {
+                        node.remove();
+                    } else {
+                        window.disableTooltips(node);
+                    }
+                }
+            });
+        });
+    }).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['title', 'data-original-title', 'data-toggle', 'data-bs-toggle'],
+        childList: true,
+        subtree: true
+    });
+
+    window.initCompactRowActionMenus = function(root) {
+        var scope = root || document;
+        var tables = [];
+
+        if (scope.matches && scope.matches('table')) {
+            tables.push(scope);
+        }
+        if (scope.querySelectorAll) {
+            tables = tables.concat(Array.prototype.slice.call(scope.querySelectorAll('table')));
+        }
+
+        tables.forEach(function(table) {
+            if (!table.tHead || !table.tHead.rows.length) return;
+
+            var columnIndex = 0;
+            var actionColumns = [];
+            Array.prototype.forEach.call(table.tHead.rows[0].cells, function(header) {
+                var headerText = (header.textContent || '').replace(/\s+/g, ' ').trim();
+                var span = Math.max(1, parseInt(header.colSpan, 10) || 1);
+                if (/^(aksi|action)(?:\b|$)/i.test(headerText)) {
+                    actionColumns.push(columnIndex);
+                    header.classList.add('compact-action-column');
+                }
+                columnIndex += span;
+            });
+
+            if (!actionColumns.length) return;
+
+            function getCellAtColumn(row, targetIndex) {
+                var currentIndex = 0;
+                for (var i = 0; i < row.cells.length; i++) {
+                    var cell = row.cells[i];
+                    var span = Math.max(1, parseInt(cell.colSpan, 10) || 1);
+                    if (targetIndex >= currentIndex && targetIndex < currentIndex + span) {
+                        return cell;
+                    }
+                    currentIndex += span;
+                }
+                return null;
+            }
+
+            Array.prototype.forEach.call(table.tBodies, function(body) {
+                Array.prototype.forEach.call(body.rows, function(row) {
+                    actionColumns.forEach(function(index) {
+                        var cell = getCellAtColumn(row, index);
+                        if (!cell || cell.classList.contains('compact-action-cell')) return;
+                        if (cell.querySelector('.dropdown, .compact-action-dropdown')) return;
+
+                        var forms = Array.prototype.slice.call(cell.querySelectorAll('form'));
+                        if (forms.some(function(form) {
+                            return form.querySelectorAll('button, input[type="button"], input[type="submit"]').length !== 1;
+                        })) return;
+
+                        var actions = Array.prototype.slice.call(
+                            cell.querySelectorAll('a, button, input[type="button"], input[type="submit"]')
+                        ).filter(function(action) {
+                            return !action.closest('form') && !action.parentElement.closest('a, button');
+                        });
+                        actions = actions.concat(forms);
+
+                        if (actions.length < 2) return;
+
+                        var dropdown = document.createElement('div');
+                        dropdown.className = 'dropdown compact-action-dropdown';
+
+                        var toggle = document.createElement('button');
+                        toggle.type = 'button';
+                        toggle.className = 'btn btn-sm btn-outline-secondary compact-action-toggle dropdown-toggle';
+                        toggle.setAttribute('aria-haspopup', 'true');
+                        toggle.setAttribute('aria-expanded', 'false');
+                        toggle.setAttribute('aria-label', 'Pilih aksi untuk baris ini');
+                        toggle.setAttribute('title', 'Pilih aksi');
+                        toggle.innerHTML = '<i class="fas fa-ellipsis"></i><span class="sr-only">Aksi</span>';
+
+                        var menu = document.createElement('div');
+                        menu.className = 'dropdown-menu dropdown-menu-right compact-action-menu';
+                        menu.setAttribute('aria-hidden', 'true');
+
+                        dropdown.appendChild(toggle);
+                        dropdown.appendChild(menu);
+
+                        actions.forEach(function(action) {
+                            var control = action.tagName === 'FORM'
+                                ? action.querySelector('button, input[type="button"], input[type="submit"]')
+                                : action;
+                            if (action.tagName === 'FORM') {
+                                action.classList.remove('compact-action-item');
+                            }
+                            if (!control) return;
+
+                            control.classList.add('compact-action-item');
+                            var icon = control.querySelector('i, svg');
+                            if (icon) {
+                                var labelSource = control.cloneNode(true);
+                                Array.prototype.forEach.call(labelSource.querySelectorAll('i, svg, .sr-only'), function(node) {
+                                    node.remove();
+                                });
+                                var actionLabel = control.getAttribute('aria-label') ||
+                                    control.getAttribute('title') ||
+                                    (labelSource.textContent || '').replace(/\s+/g, ' ').trim() ||
+                                    (control.value || '').trim();
+                                if (actionLabel) {
+                                    control.setAttribute('aria-label', actionLabel);
+                                    if (!control.hasAttribute('title')) control.setAttribute('title', actionLabel);
+                                }
+                                if (!(labelSource.textContent || '').replace(/\s+/g, ' ').trim() && actionLabel) {
+                                    var label = document.createElement('span');
+                                    label.className = 'compact-action-label';
+                                    label.textContent = actionLabel;
+                                    control.appendChild(label);
+                                }
+                            }
+
+                            var option = document.createElement('div');
+                            option.className = 'compact-action-option';
+                            option.appendChild(action);
+                            menu.appendChild(option);
+                        });
+                        cell.appendChild(dropdown);
+                        Array.prototype.slice.call(cell.querySelectorAll('div, span')).reverse().forEach(function(wrapper) {
+                            if (wrapper === dropdown || wrapper.contains(dropdown)) return;
+                            if (!wrapper.children.length && !(wrapper.textContent || '').trim()) {
+                                wrapper.remove();
+                            }
+                        });
+                        cell.classList.add('compact-action-cell');
+                    });
+                });
+            });
+        });
+    };
+
+    window.initCompactHeaderActionMenus = function(root) {
+        var scope = root || document;
+        var selectors = [
+            '.card-tools',
+            '.content-header .text-right',
+            '.content-header .text-end',
+            '.dt-buttons',
+            '.page-actions',
+            '.header-actions',
+            '.table-actions',
+            '.table-toolbar-actions'
+        ];
+        var containers = [];
+
+        selectors.forEach(function(selector) {
+            if (scope.matches && scope.matches(selector)) containers.push(scope);
+            if (scope.querySelectorAll) {
+                containers = containers.concat(Array.prototype.slice.call(scope.querySelectorAll(selector)));
+            }
+        });
+
+        containers.forEach(function(container) {
+            if (container.querySelector('.compact-header-action-dropdown, .dropdown')) return;
+
+            var actions = Array.prototype.filter.call(container.children, function(child) {
+                return child.matches('button, a.btn, a.dt-button, input[type="button"], input[type="submit"], form');
+            });
+            if (actions.length < 2) return;
+
+            var preparedActions = actions.map(function(action) {
+                if (action.tagName === 'FORM') {
+                    var submitControls = action.querySelectorAll('button, input[type="button"], input[type="submit"]');
+                    if (submitControls.length !== 1) return null;
+                    return { action: action, control: submitControls[0] };
+                }
+                return { action: action, control: action };
+            });
+            if (preparedActions.some(function(item) {
+                return !item || item.control.matches('.dropdown-toggle, [data-toggle="dropdown"], [data-bs-toggle="dropdown"]') ||
+                    !item.control.querySelector('i, svg');
+            })) return;
+
+            var dropdown = document.createElement('div');
+            dropdown.className = 'dropdown compact-action-dropdown compact-header-action-dropdown';
+
+            var toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'btn btn-sm btn-outline-secondary compact-action-toggle dropdown-toggle';
+            toggle.setAttribute('aria-haspopup', 'true');
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-label', 'Tampilkan tindakan lainnya');
+            toggle.setAttribute('title', 'Tindakan lainnya');
+            toggle.innerHTML = '<i class="fas fa-ellipsis"></i><span class="sr-only">Tindakan</span>';
+
+            var menu = document.createElement('div');
+            menu.className = 'dropdown-menu dropdown-menu-right compact-action-menu';
+            menu.setAttribute('aria-hidden', 'true');
+            dropdown.appendChild(toggle);
+            dropdown.appendChild(menu);
+
+            preparedActions.forEach(function(item) {
+                var control = item.control;
+                var labelSource = control.cloneNode(true);
+                Array.prototype.forEach.call(labelSource.querySelectorAll('i, svg, .sr-only'), function(node) {
+                    node.remove();
+                });
+                var actionLabel = control.getAttribute('aria-label') ||
+                    control.getAttribute('title') ||
+                    (labelSource.textContent || '').replace(/\s+/g, ' ').trim() ||
+                    (control.value || '').trim();
+                if (actionLabel) {
+                    control.setAttribute('aria-label', actionLabel);
+                    if (!control.hasAttribute('title')) control.setAttribute('title', actionLabel);
+                }
+
+                control.classList.add('compact-action-item');
+                if (!(labelSource.textContent || '').replace(/\s+/g, ' ').trim() && actionLabel &&
+                    !control.matches('input[type="button"], input[type="submit"]')) {
+                    var label = document.createElement('span');
+                    label.className = 'compact-action-label';
+                    label.textContent = actionLabel;
+                    control.appendChild(label);
+                }
+
+                var option = document.createElement('div');
+                option.className = 'compact-action-option';
+                option.appendChild(item.action);
+                menu.appendChild(option);
+            });
+
+            container.appendChild(dropdown);
+        });
+    };
+
+    $(document).ready(function() {
+        window.initCompactRowActionMenus(document);
+        window.initCompactHeaderActionMenus(document);
+    });
+
+    $(document).on('draw.dt.compactActions', 'table', function() {
+        window.initCompactRowActionMenus(this);
+        var tableWrapper = this.closest('.dataTables_wrapper');
+        if (tableWrapper) window.initCompactHeaderActionMenus(tableWrapper);
+    });
+
+    function closeCompactActionDropdown(dropdown, restoreFocus) {
+        if (!dropdown || !dropdown.classList.contains('show')) return;
+        dropdown.classList.remove('show', 'dropup');
+        var toggle = dropdown.querySelector('.compact-action-toggle');
+        var menu = dropdown.querySelector('.compact-action-menu');
+        if (menu) menu.classList.remove('show');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        if (menu) menu.setAttribute('aria-hidden', 'true');
+        var responsiveTable = dropdown.closest('.table-responsive');
+        if (responsiveTable) {
+            var original = $(responsiveTable).data('compactActionOverflow');
+            responsiveTable.classList.remove('compact-actions-open');
+            if (original) {
+                responsiveTable.style.overflow = original.overflow;
+                responsiveTable.style.overflowX = original.overflowX;
+                responsiveTable.style.overflowY = original.overflowY;
+            }
+        }
+        if (restoreFocus && toggle) toggle.focus();
+        if (responsiveTable) {
+            $(responsiveTable).removeData('compactActionOverflow');
+        }
+    }
+
+    function openCompactActionDropdown(dropdown) {
+        var toggle = dropdown.querySelector('.compact-action-toggle');
+        var menu = dropdown.querySelector('.compact-action-menu');
+        var responsiveTable = dropdown.closest('.table-responsive');
+
+        document.querySelectorAll('.compact-action-dropdown.show').forEach(function(openDropdown) {
+            closeCompactActionDropdown(openDropdown, false);
+        });
+
+        if (responsiveTable) {
+            $(responsiveTable).data('compactActionOverflow', {
+                overflow: responsiveTable.style.overflow,
+                overflowX: responsiveTable.style.overflowX,
+                overflowY: responsiveTable.style.overflowY
+            });
+            responsiveTable.classList.add('compact-actions-open');
+        }
+
+        if (toggle && menu && toggle.getBoundingClientRect().bottom + 250 > window.innerHeight) {
+            dropdown.classList.add('dropup');
+        }
+        dropdown.classList.add('show');
+        if (menu) menu.classList.add('show');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+        if (menu) menu.setAttribute('aria-hidden', 'false');
+    }
+
+    $(document).on('click', '.compact-action-toggle', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var dropdown = this.closest('.compact-action-dropdown');
+        if (dropdown.classList.contains('show')) {
+            closeCompactActionDropdown(dropdown, false);
+        } else {
+            openCompactActionDropdown(dropdown);
+        }
+    });
+
+    $(document).on('click', function(event) {
+        if ($(event.target).closest('.compact-action-dropdown').length) return;
+        document.querySelectorAll('.compact-action-dropdown.show').forEach(function(dropdown) {
+            closeCompactActionDropdown(dropdown, false);
+        });
+    });
+
+    $(document).on('click', '.compact-action-menu .compact-action-item', function() {
+        var dropdown = this.closest('.compact-action-dropdown');
+        window.setTimeout(function() {
+            closeCompactActionDropdown(dropdown, false);
+        }, 0);
+    });
+
+    $(document).on('keydown', function(event) {
+        if (event.key !== 'Escape') return;
+        var dropdown = document.querySelector('.compact-action-dropdown.show');
+        if (dropdown) closeCompactActionDropdown(dropdown, true);
+    });
 
     // ---------------------------------------------------------------------
     // 1. NAVBAR DROPDOWNS & ACTION CONTROLLERS (+ Aksi Cepat, Profil, etc.)

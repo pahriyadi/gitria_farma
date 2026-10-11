@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="row">
     <div class="col-12">
-        <div class="card card-outline card-teal shadow-none" style="border: 1px solid #b8b8b8 !important; background: #ffffff !important; border-radius: 4px;">
+        <div class="card card-outline card-teal shadow-none">
             <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="font-weight-bold text-dark mb-0">
@@ -22,7 +22,7 @@
                 <!-- Status Koneksi Gateway -->
                 <div class="row mb-4">
                     <div class="col-md-3 col-sm-6 mb-2">
-                        <div class="p-3 border rounded bg-white" style="border: 1px solid #b8b8b8 !important; border-left: 4px solid #10b981 !important;">
+                        <div class="p-3 border rounded bg-white">
                             <small class="text-muted d-block text-xs font-weight-bold">STATUS GATEWAY</small>
                             <div class="d-flex align-items-center mt-1">
                                 <span class="badge badge-success px-2 py-1 mr-2"><i class="fas fa-circle text-xs mr-1"></i> CONNECTED</span>
@@ -31,19 +31,19 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-2">
-                        <div class="p-3 border rounded bg-white" style="border: 1px solid #b8b8b8 !important; border-left: 4px solid #3b82f6 !important;">
+                        <div class="p-3 border rounded bg-white">
                             <small class="text-muted d-block text-xs font-weight-bold">TOTAL PESAN TERKIRIM</small>
                             <strong class="text-primary h5 font-weight-bold mb-0"><?= $totalSent ?> Pesan</strong>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-2">
-                        <div class="p-3 border rounded bg-white" style="border: 1px solid #b8b8b8 !important; border-left: 4px solid #f59e0b !important;">
+                        <div class="p-3 border rounded bg-white">
                             <small class="text-muted d-block text-xs font-weight-bold">PENGINGAT KONTROL H-1</small>
                             <strong class="text-warning h5 font-weight-bold mb-0"><?= $totalReminder ?> Terjadwal</strong>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6 mb-2">
-                        <div class="p-3 border rounded bg-white" style="border: 1px solid #b8b8b8 !important; border-left: 4px solid #0d9f4f !important;">
+                        <div class="p-3 border rounded bg-white">
                             <small class="text-muted d-block text-xs font-weight-bold">TEMPLAT PESAN OTOMATIS</small>
                             <strong class="text-teal h5 font-weight-bold mb-0">4 Templat Aktif</strong>
                         </div>
@@ -54,7 +54,7 @@
                 <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-layer-group text-teal mr-1"></i> Templat Pesan Otomatis Terkonfigurasi</h6>
                 <div class="row mb-4">
                     <div class="col-md-6 col-lg-3 mb-3">
-                        <div class="card h-100 bg-light border" style="border: 1px solid #b8b8b8 !important;">
+                        <div class="card h-100 bg-light border">
                             <div class="card-body p-3 text-xs">
                                 <strong class="text-dark d-block mb-1 font-weight-bold"><i class="fas fa-ticket text-teal mr-1"></i> 1. e-Ticket Antrean Online</strong>
                                 <p class="text-muted mb-2">Dikirim otomatis saat pasien selesai mendaftar secara mandiri melalui website.</p>
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-3">
-                        <div class="card h-100 bg-light border" style="border: 1px solid #b8b8b8 !important;">
+                        <div class="card h-100 bg-light border">
                             <div class="card-body p-3 text-xs">
                                 <strong class="text-dark d-block mb-1 font-weight-bold"><i class="fas fa-pills text-teal mr-1"></i> 2. Notifikasi Obat Siap Ambil</strong>
                                 <p class="text-muted mb-2">Dikirim saat apoteker selesai meracik resep dokter di instalasi farmasi.</p>
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-3">
-                        <div class="card h-100 bg-light border" style="border: 1px solid #b8b8b8 !important;">
+                        <div class="card h-100 bg-light border">
                             <div class="card-body p-3 text-xs">
                                 <strong class="text-dark d-block mb-1 font-weight-bold"><i class="fas fa-calendar-check text-teal mr-1"></i> 3. Pengingat Kontrol Ulang</strong>
                                 <p class="text-muted mb-2">Dikirim otomatis H-1 sebelum tanggal jadwal kontrol ulang ke dokter spesialis.</p>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-3">
-                        <div class="card h-100 bg-light border" style="border: 1px solid #b8b8b8 !important;">
+                        <div class="card h-100 bg-light border">
                             <div class="card-body p-3 text-xs">
                                 <strong class="text-dark d-block mb-1 font-weight-bold"><i class="fas fa-file-invoice-dollar text-teal mr-1"></i> 4. Notifikasi Slip Gaji</strong>
                                 <p class="text-muted mb-2">Dikirim ke staf/karyawan saat payroll bulanan resmi dibayarkan oleh bagian Keuangan.</p>
@@ -99,12 +99,12 @@
                     </div>
                 </div>
 
-                <hr style="border-top: 1px dashed #b8b8b8; margin: 25px 0;">
+                <hr class="my-4">
 
                 <!-- Riwayat Log Pesan WhatsApp Terkirim -->
                 <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-history text-teal mr-1"></i> Riwayat Log Pesan WhatsApp Terkirim (Audit Log)</h6>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
+                    <table class="table table-bordered table-striped table-hover mb-0 datatable">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>
@@ -153,7 +153,7 @@
     <div class="modal-dialog" role="document">
         <form action="<?= base_url('system/send-whatsapp') ?>" method="post">
             <?= csrf_field() ?>
-            <div class="modal-content" style="border: 1px solid #b8b8b8 !important; border-radius: 4px;">
+            <div class="modal-content">
                 <div class="modal-header bg-teal text-white py-2">
                     <h6 class="modal-title font-weight-bold"><i class="fab fa-whatsapp mr-1"></i> Simulator Pengiriman WhatsApp Gateway</h6>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>

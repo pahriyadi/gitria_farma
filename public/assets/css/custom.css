@@ -109,8 +109,16 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
     --apple-glass-bg: rgba(255, 255, 255, 0.88);
 }
 
-body.theme-macos,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) {
+body.theme-macos {
+    font-family: var(--apple-font) !important;
+    font-size: 13px !important;
+    background: #f7f8fa !important;
+    color: var(--apple-text-primary) !important;
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+}
+
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) {
     font-family: var(--apple-font) !important;
     font-size: 13px !important;
     background: linear-gradient(135deg, #e4ebf5 0%, #f2f5fa 50%, #e1e9f4 100%) !important;
@@ -121,8 +129,8 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 
 body.theme-macos .content-wrapper,
 body.theme-macos .wrapper,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .content-wrapper,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .wrapper {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .content-wrapper,
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .wrapper {
     background: transparent !important;
     font-family: var(--apple-font) !important;
 }
@@ -448,8 +456,15 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 
 
 /* 2. Finder Sidebar macOS (Frosted Acrylic Sidebar & SF Symbols Icons) */
-body.theme-macos .main-sidebar,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .main-sidebar {
+body.theme-macos .main-sidebar {
+    background: #12345a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-right: 1px solid #183b63 !important;
+    box-shadow: 2px 0 8px rgba(15, 38, 68, 0.1) !important;
+}
+
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .main-sidebar {
     background: rgba(246, 248, 252, 0.82) !important;
     backdrop-filter: blur(25px) !important;
     -webkit-backdrop-filter: blur(25px) !important;
@@ -457,8 +472,15 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
     box-shadow: 1px 0 10px rgba(0, 0, 0, 0.02) !important;
 }
 
-body.theme-macos .brand-link,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .brand-link {
+body.theme-macos .brand-link {
+    background: #102f53 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #f4f8ff !important;
+    font-weight: 700 !important;
+    padding: 14px 18px !important;
+}
+
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .brand-link {
     background: transparent !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
     color: #1d1d1f !important;
@@ -467,7 +489,7 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 }
 
 body.theme-macos .sidebar .nav-header,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-header {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-header {
     color: #86868b !important;
     font-size: 10.5px !important;
     font-weight: 600 !important;
@@ -478,7 +500,7 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 
 /* macOS SF Symbols Inspired Squircle Badges & Colors */
 body.theme-macos .sidebar .nav-link,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link {
     color: #1d1d1f !important;
     border-radius: 8px !important;
     margin: 2px 10px !important;
@@ -491,7 +513,7 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 }
 
 body.theme-macos .sidebar .nav-link p,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link p {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link p {
     color: #1d1d1f !important;
     font-weight: 600 !important;
     font-size: 13px !important;
@@ -503,7 +525,7 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 }
 
 body.theme-macos .sidebar .nav-link.active p,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active p {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active p {
     color: #ffffff !important;
     font-weight: 700 !important;
 }
@@ -649,8 +671,14 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-body.theme-macos .sidebar .nav-link.active,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active {
+body.theme-macos .sidebar .nav-link.active {
+    background: #2679df !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35) !important;
+}
+
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active {
     background: #007aff !important;
     color: #ffffff !important;
     font-weight: 600 !important;
@@ -658,7 +686,7 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
 }
 
 body.theme-macos .sidebar .nav-link.active i.nav-icon,
-body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active i.nav-icon {
+body:not(.theme-macos):not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active i.nav-icon {
     background: rgba(255, 255, 255, 0.25) !important;
     box-shadow: none !important;
 }
@@ -1315,6 +1343,187 @@ body:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):
     letter-spacing: 0.5px;
 }
 
+/* ==========================================================================
+   macOS BIG SUR REFINEMENT — QUIETER SURFACES & CLEANER CONTROLS
+   ========================================================================== */
+body.theme-macos {
+    --apple-border-soft: #e6e8ec;
+    --apple-shadow-soft: 0 1px 3px rgba(28, 39, 60, 0.06);
+    background: #f7f8fa !important;
+    color: #252a34 !important;
+}
+
+body.theme-macos .content-wrapper,
+body.theme-macos .wrapper {
+    background: #f7f8fa !important;
+}
+
+body.theme-macos .main-header.navbar {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(18px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+    border-bottom: 1px solid var(--apple-border-soft) !important;
+    box-shadow: 0 1px 2px rgba(28, 39, 60, 0.03) !important;
+}
+
+body.theme-macos .main-sidebar {
+    background: #f8f9fb !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-right: 1px solid var(--apple-border-soft) !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .sidebar .nav-link {
+    color: #48505d !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+body.theme-macos .sidebar .nav-link p {
+    color: inherit !important;
+    font-weight: 500 !important;
+}
+
+body.theme-macos .sidebar .nav-link i.nav-icon {
+    background: #e9eff9 !important;
+    color: #4776bd !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .sidebar .nav-link:hover {
+    background: #edf1f6 !important;
+    color: #202a3a !important;
+}
+
+body.theme-macos .sidebar .nav-link.active,
+body.theme-macos .sidebar .nav-link.active:hover {
+    background: #e7f0ff !important;
+    color: #145fbe !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .sidebar .nav-link.active p {
+    background: transparent !important;
+    color: #145fbe !important;
+}
+
+body.theme-macos .sidebar .nav-link.active i.nav-icon {
+    background: #d5e7ff !important;
+    color: #145fbe !important;
+    -webkit-text-fill-color: #145fbe !important;
+}
+
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active,
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active:hover {
+    background: #dceaff !important;
+    color: #1d4f91 !important;
+    box-shadow: inset 3px 0 0 #4b83c3 !important;
+}
+
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active p {
+    background: transparent !important;
+    color: #1d4f91 !important;
+    font-weight: 600 !important;
+}
+
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active i.nav-icon,
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .sidebar .nav-link.active:hover i.nav-icon {
+    background: transparent !important;
+    color: #1d4f91 !important;
+    -webkit-text-fill-color: #1d4f91 !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .card,
+body.theme-macos .card.bg-white.shadow-sm {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid var(--apple-border-soft) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--apple-shadow-soft) !important;
+    transform: none !important;
+}
+
+body.theme-macos .card-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid #edf0f3 !important;
+}
+
+body.theme-macos .card-header .card-title {
+    color: #303744 !important;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+}
+
+body.theme-macos .btn {
+    border-radius: 7px !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+}
+
+body.theme-macos .btn-primary,
+body.theme-macos .btn-teal {
+    background: #1672dc !important;
+    border-color: #1672dc !important;
+}
+
+body.theme-macos .btn-primary:hover,
+body.theme-macos .btn-teal:hover {
+    background: #0e63c4 !important;
+    border-color: #0e63c4 !important;
+}
+
+body.theme-macos .form-control,
+body.theme-macos .custom-select {
+    background: #ffffff !important;
+    border: 1px solid #d9dde4 !important;
+    border-radius: 7px !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .form-control:focus,
+body.theme-macos .custom-select:focus {
+    border-color: #6ba4ed !important;
+    box-shadow: 0 0 0 3px rgba(22, 114, 220, 0.12) !important;
+}
+
+body.theme-macos .table thead th {
+    background: #f7f8fa !important;
+    color: #697384 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: none !important;
+    border-bottom: 1px solid var(--apple-border-soft) !important;
+}
+
+body.theme-macos .table tbody td {
+    border-top-color: #eef0f3 !important;
+}
+
+body.theme-macos .table tbody tr:hover {
+    background: #f7f9fc !important;
+}
+
+body.theme-macos:not(.theme-excel-paper):not(.theme-paper-white):not(.theme-modern-emerald):not(.theme-windows-xp) .modal-header:not(.macos-window)::before {
+    content: none !important;
+    display: none !important;
+}
+
+body.theme-macos .modal-content {
+    border: 1px solid var(--apple-border-soft) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 12px 32px rgba(28, 39, 60, 0.14) !important;
+}
+
+body.theme-macos .main-footer {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(14px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    border-top: 1px solid var(--apple-border-soft) !important;
+    box-shadow: none !important;
+}
 
 /* ==========================================================================
    TEMA 2: PUTIH DI ATAS KERTAS (CLASSIC PAPER WHITE V2.0 — DESAIN_TABEL.MD)
@@ -1897,7 +2106,7 @@ body.theme-windows-xp .xp-progress-bar span {
 .navbar-pill-user:hover {
     background-color: #f8fafc;
     border-color: #007aff;
-    color: #007aff !important;
+    color: #145fbe !important;
 }
 
 /* Page Preloader Core */
@@ -2021,6 +2230,25 @@ body.theme-windows-xp .xp-progress-bar span {
     .navbar-clinical-quickbar::-webkit-scrollbar {
         display: none;
     }
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link > i.nav-icon {
+    color: #b9cce1 !important;
+    background: transparent !important;
+    -webkit-text-fill-color: #b9cce1 !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link:hover > i.nav-icon {
+    color: #ffffff !important;
+    background: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active > i.nav-icon,
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active:hover > i.nav-icon {
+    color: #ffffff !important;
+    background: transparent !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
 @media (max-width: 575.98px) {
@@ -2152,24 +2380,25 @@ body.theme-windows-xp .xp-progress-bar span {
 
     body.theme-macos .sidebar .nav-treeview .nav-link:hover {
         background: rgba(0, 0, 0, 0.04) !important;
-        color: #007aff !important;
+        color: #145fbe !important;
     }
 
     body.theme-macos .sidebar .nav-treeview .nav-link.active {
-        background: rgba(0, 122, 255, 0.12) !important;
-        color: #007aff !important;
+        background: #e7f0ff !important;
+        color: #145fbe !important;
         font-weight: 700 !important;
         box-shadow: none !important;
     }
 
     body.theme-macos .sidebar .nav-treeview .nav-link.active p {
-        color: #007aff !important;
+        color: #145fbe !important;
         font-weight: 700 !important;
     }
 
     body.theme-macos .sidebar .nav-treeview .nav-link.active i.nav-icon {
-        background: #007aff !important;
-        color: #ffffff !important;
+        background: #d5e7ff !important;
+        color: #145fbe !important;
+        -webkit-text-fill-color: #145fbe !important;
     }
 
     /* macOS Segmented Control Toolbar for Header Quickbar */
@@ -2698,6 +2927,151 @@ body.theme-windows-xp .xp-progress-bar span {
         z-index: 1055 !important;
     }
 
+/* ==========================================================================
+   macOS BIG SUR SIDEBAR — CONSISTENT ICON CONTRAST & NAVIGATION STATES
+   ========================================================================== */
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link {
+    min-height: 38px;
+    margin: 2px 10px !important;
+    padding: 6px 11px !important;
+    border-radius: 9px !important;
+    color: #48505d !important;
+    transition: background-color 0.16s ease, color 0.16s ease !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link p {
+    color: inherit !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link i.nav-icon {
+    width: 26px !important;
+    height: 26px !important;
+    margin: 0 9px 0 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: #edf1f6 !important;
+    color: #56657a !important;
+    box-shadow: none !important;
+    font-size: 12px !important;
+    transition: background-color 0.16s ease, color 0.16s ease !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link:hover {
+    background: #edf1f6 !important;
+    color: #263449 !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link:hover i.nav-icon {
+    background: #e2e9f2 !important;
+    color: #315f9f !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active,
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active:hover {
+    background: #e7f0ff !important;
+    color: #145fbe !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active p {
+    color: #145fbe !important;
+    font-weight: 600 !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active i.nav-icon,
+body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link.active:hover i.nav-icon {
+    background: #d5e7ff !important;
+    color: #145fbe !important;
+    -webkit-text-fill-color: #145fbe !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-header {
+    padding: 17px 18px 6px !important;
+    color: #8791a0 !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview {
+    margin: 3px 10px 7px 25px !important;
+    padding-left: 10px !important;
+    border-left: 1px solid #e2e7ee !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link {
+    min-height: 34px;
+    margin: 1px 0 !important;
+    padding: 5px 9px !important;
+    border-radius: 7px !important;
+    color: #687386 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link p {
+    color: inherit !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link i.nav-icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 8px !important;
+    border-radius: 6px !important;
+    background: transparent !important;
+    color: #79869a !important;
+    box-shadow: none !important;
+    font-size: 10px !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link:hover {
+    background: #edf1f6 !important;
+    color: #315f9f !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link.active,
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link.active:hover {
+    background: #e7f0ff !important;
+    color: #145fbe !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link.active p {
+    background: transparent !important;
+    color: #145fbe !important;
+}
+
+body.theme-macos .main-sidebar .sidebar .nav-treeview .nav-link.active i.nav-icon {
+    background: #d5e7ff !important;
+    color: #145fbe !important;
+    -webkit-text-fill-color: #145fbe !important;
+}
+
+body.theme-macos.sidebar-collapse:not(.sidebar-open) .main-sidebar:not(:hover) .sidebar .nav-sidebar .nav-link {
+    margin-right: 8px !important;
+    margin-left: 8px !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    justify-content: center !important;
+}
+
+body.theme-macos.sidebar-collapse:not(.sidebar-open) .main-sidebar:not(:hover) .sidebar .nav-sidebar .nav-link i.nav-icon {
+    margin: 0 !important;
+}
+
+@media (max-width: 991.98px) {
+    body.theme-macos .main-sidebar .sidebar .nav-sidebar .nav-item > .nav-link {
+    min-height: 40px;
+    }
+}
+
 
     @media (max-width: 575.98px) {
         .navbar-clinical-quickbar {
@@ -2828,24 +3202,25 @@ body.theme-windows-xp .xp-progress-bar span {
 
         body.theme-macos .sidebar .nav-treeview .nav-link:hover {
             background: rgba(0, 0, 0, 0.04) !important;
-            color: #007aff !important;
+            color: #145fbe !important;
         }
 
         body.theme-macos .sidebar .nav-treeview .nav-link.active {
-            background: rgba(0, 122, 255, 0.12) !important;
-            color: #007aff !important;
+            background: #e7f0ff !important;
+            color: #145fbe !important;
             font-weight: 700 !important;
             box-shadow: none !important;
         }
 
         body.theme-macos .sidebar .nav-treeview .nav-link.active p {
-            color: #007aff !important;
+            color: #145fbe !important;
             font-weight: 700 !important;
         }
 
         body.theme-macos .sidebar .nav-treeview .nav-link.active i.nav-icon {
-            background: #007aff !important;
-            color: #ffffff !important;
+            background: #d5e7ff !important;
+            color: #145fbe !important;
+            -webkit-text-fill-color: #145fbe !important;
         }
 
         /* macOS Segmented Control Toolbar for Header Quickbar */
