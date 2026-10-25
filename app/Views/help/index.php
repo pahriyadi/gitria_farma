@@ -26,6 +26,9 @@
             <button class="btn btn-teal btn-sm font-weight-bold shadow-none mb-2" data-toggle="modal" data-target="#modalAddDoc">
                 <i class="fas fa-plus mr-1"></i> + Tulis / Tambah Panduan Baru
             </button>
+            <a href="<?= base_url('alur-3d') ?>" class="btn btn-outline-dark btn-sm font-weight-bold shadow-none mb-2 ml-1">
+                <i class="fas fa-cubes mr-1 text-teal"></i> Peta Alur 3D
+            </a>
             <a href="<?= base_url('bantuan/cetak') ?>" target="_blank" class="btn btn-outline-dark btn-sm font-weight-bold shadow-none mb-2 ml-1">
                 <i class="fas fa-print mr-1 text-teal"></i> Cetak / PDF Panduan
             </a>

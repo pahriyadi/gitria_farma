@@ -57,6 +57,17 @@ class Help extends BaseController
     }
 
     /**
+     * Peta Alur Sistem 3D: visualisasi kantor 3D untuk alur permintaan & pengembalian data antar modul.
+     * Halaman layar penuh (tanpa layout admin). Skenario disimpan di localStorage browser.
+     */
+    public function alur3d()
+    {
+        return view('help/alur_3d', [
+            'title' => 'Peta Alur Sistem 3D',
+        ]);
+    }
+
+    /**
      * Simpan atau Edit Dokumentasi / Alur Sistem (CRUD)
      */
     public function save()

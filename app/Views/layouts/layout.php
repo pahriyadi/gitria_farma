@@ -2723,9 +2723,9 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 $('body').addClass('sidebar-collapse').removeClass('sidebar-open');
             }
 
-            // Only intercept internal application links (not logout, not downloads)
+            // Only intercept internal application links (not logout, not downloads, not alur-3d fullscreen)
             if (href.includes(window.location.origin) || href.startsWith('/') || href.startsWith('./') || !href.includes('://')) {
-                if (!href.includes('logout') && !href.includes('export') && !href.includes('cetak') && !href.includes('pdf')) {
+                if (!href.includes('logout') && !href.includes('export') && !href.includes('cetak') && !href.includes('pdf') && !href.includes('alur-3d')) {
                     e.preventDefault();
                     window.navigateSpa(href, true, true);
                 }

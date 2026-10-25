@@ -316,6 +316,7 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->get('bantuan/delete/(:num)', 'Help::delete/$1');
     $routes->get('bantuan/toggle/(:num)', 'Help::toggle/$1');
     $routes->get('bantuan/cetak', 'Help::cetak');
+    $routes->get('alur-3d', 'Help::alur3d');
 });
 
 /**
