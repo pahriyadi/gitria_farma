@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------
 # ROOT .htaccess - SAWAMAWA MEDICAL CENTER & RESTO GIZI
-# Otomatis mengarahkan seluruh request domain ke folder /public
+# Otomatis mengarahkan seluruh request domain ke folder /public tanpa /public di URL
 # ----------------------------------------------------------------------
 
 <IfModule mod_rewrite.c>
@@ -9,9 +9,12 @@
     # 1. Lindungi berkas sensitif dari akses web langsung
     RewriteRule ^\.env - [F,L,NC]
     RewriteRule ^composer\.(json|lock) - [F,L,NC]
+    RewriteRule ^app(/.*)?$ - [F,L,NC]
+    RewriteRule ^writable(/.*)?$ - [F,L,NC]
 
     # 2. Arahkan semua request ke folder public/
-    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_URI} !^/sawamawamedicalcenter\.id/public/ [NC]
+    RewriteCond %{REQUEST_URI} !^/public/ [NC]
     RewriteRule ^(.*)$ public/$1 [L,QSA]
 </IfModule>
 
