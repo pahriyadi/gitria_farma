@@ -161,3 +161,4 @@ echo json_encode([
     'git_bin'      => $git_bin,
     'output'       => $pull_result['output'] . $spark_output
 ], JSON_PRETTY_PRINT);
+
