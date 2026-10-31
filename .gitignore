@@ -145,3 +145,9 @@ _modules/*
 
 /results/
 /phpunit.xml
+
+# Node & E2E Testing
+/node_modules/
+/tests/e2e-report/
+/test-results/
+
