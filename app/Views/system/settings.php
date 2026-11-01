@@ -1,30 +1,6 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2 align-items-center">
-            <div class="col-sm-7">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-sliders text-teal mr-2"></i> Satu Data Referensi & Pengaturan Sistem
-                </h1>
-                <small class="text-muted">Pusat kendali parameter tunggal, kop surat resmi, stempel digital, regulasi farmasi/resto, dan integrasi API.</small>
-            </div>
-            <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
-                <span class="badge badge-pill badge-light border text-teal px-3 py-2 font-weight-bold shadow-xs mr-1">
-                    <i class="fas fa-shield-halved mr-1"></i> Sawamawa Medical Center
-                </span>
-                <span class="badge badge-pill badge-info px-2 py-2 font-weight-normal shadow-xs">
-                    <i class="fas fa-clock mr-1"></i> <span id="clock-display"><?= date('H:i') ?> WITA</span>
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
-
         <!-- Flash Message Alerts -->
         <?php if (session()->getFlashdata('success')): ?>
             <div class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
@@ -997,8 +973,6 @@
 
             </div>
         </form>
-    </div>
-</div>
 
 <!-- ========================================================================= -->
 <!-- JAVASCRIPT LOGIC (Live Kop Surat Binding, Previews, Audio, WhatsApp Ping) -->
@@ -1577,6 +1551,67 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .shadow-xs {
     box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-body,
+body.dark-mode .card-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .nav-tabs {
+    border-bottom-color: #374151 !important;
+}
+body.dark-mode .nav-tabs .nav-link {
+    color: #9ca3af;
+}
+body.dark-mode .nav-tabs .nav-link:hover {
+    border-top-color: #20c997;
+    background-color: #181b1f !important;
+    color: #f0f6fc;
+}
+body.dark-mode .nav-tabs .nav-link.active {
+    color: #20c997 !important;
+    border-top: 3px solid #20c997 !important;
+    background-color: #1f2328 !important;
+}
+body.dark-mode .form-control,
+body.dark-mode .input-group-text,
+body.dark-mode .custom-select {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .border,
+body.dark-mode .border-bottom,
+body.dark-mode .border-top {
+    border-color: #374151 !important;
+}
+body.dark-mode .bg-light,
+body.dark-mode .bg-white {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+body.dark-mode .table {
+    color: #f0f6fc !important;
+    border-collapse: collapse !important;
+}
+body.dark-mode .table th,
+body.dark-mode .table td {
+    border-color: #374151 !important;
 }
 </style>
 <?= $this->endSection() ?>

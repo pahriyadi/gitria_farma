@@ -1,138 +1,238 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row align-items-center mb-2">
-            <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
-                <h4 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-boxes-stacked text-teal mr-2"></i> Stok Gudang Distributor &amp; Kartu Stok
-                </h4>
-                <small class="text-muted">Stok mandiri terisolasi khusus Unit Bisnis Distributor (terpisah dari Stok Apotek &amp; Resto)</small>
-            </div>
-            <div class="col-lg-6 col-md-12 text-lg-right">
-                <div class="d-inline-flex flex-wrap align-items-center justify-content-lg-end" style="gap: 6px;">
-                    <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm" onclick="openAddStockModal()">
-                        <i class="fas fa-plus-circle mr-1"></i> Tambah / Inbound Stok
-                    </button>
-                    <a href="<?= base_url('distributor/transfer') ?>" class="btn btn-outline-primary btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-arrow-right-arrow-left mr-1"></i> Transfer Antar-Unit
-                    </a>
-                    <a href="<?= base_url('distributor/penjualan') ?>" class="btn btn-outline-indigo btn-sm font-weight-bold shadow-sm" style="color: #4f46e5; border-color: #4f46e5;">
-                        <i class="fas fa-cart-plus mr-1"></i> Penjualan Grosir
-                    </a>
-                </div>
-            </div>
+<style>
+    /* Theme Variables for Paper Light and Paper Dark (desain_tabel.md & dokumentasi_dark_mode.md) */
+    :root {
+        --dist-canvas-bg: #f4f6f9;
+        --dist-card-bg: #ffffff;
+        --dist-card-header: #ffffff;
+        --dist-border: #b8b8b8;
+        --dist-border-td: #c8c8c8;
+        --dist-border-th: #b0b0b0;
+        --dist-text: #212529;
+        --dist-text-muted: #6c757d;
+        --dist-th-bg: #f8fafc;
+        --dist-hover-bg: #f0f4f8;
+        --dist-box-bg: #f8fafc;
+        --dist-input-bg: #ffffff;
+    }
+
+    body.dark-mode {
+        --dist-canvas-bg: #14171a;
+        --dist-card-bg: #1f2328;
+        --dist-card-header: #1f2328;
+        --dist-border: #374151;
+        --dist-border-td: #374151;
+        --dist-border-th: #374151;
+        --dist-text: #f0f6fc;
+        --dist-text-muted: #9ca3af;
+        --dist-th-bg: #181b1f;
+        --dist-hover-bg: #262c36;
+        --dist-box-bg: #181b1f;
+        --dist-input-bg: #181b1f;
+    }
+
+    /* Container Card Styling */
+    .dist-card {
+        background-color: var(--dist-card-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .dist-card .card-header {
+        background-color: var(--dist-card-header) !important;
+        border-bottom: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    .dist-card .card-body {
+        background-color: var(--dist-card-bg) !important;
+        color: var(--dist-text) !important;
+    }
+
+    /* Form Controls */
+    .dist-input {
+        background-color: var(--dist-input-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+        border-radius: 4px;
+    }
+
+    .dist-input:focus {
+        border-color: #0d9488 !important;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2) !important;
+    }
+
+    body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    /* Strict Table Styling (desain_tabel.md) */
+    .table-dist {
+        border-collapse: collapse !important;
+        width: 100%;
+        margin-bottom: 0;
+        color: var(--dist-text) !important;
+    }
+
+    .table-dist th,
+    .table-dist td {
+        border: 1px solid var(--dist-border) !important;
+        padding: 8px 12px;
+        vertical-align: middle;
+    }
+
+    .table-dist thead th {
+        background-color: var(--dist-th-bg) !important;
+        color: var(--dist-text) !important;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid var(--dist-border) !important;
+    }
+
+    .table-dist tbody tr {
+        background-color: var(--dist-card-bg) !important;
+        transition: background-color 0.15s ease;
+    }
+
+    .table-dist tbody tr:hover {
+        background-color: var(--dist-hover-bg) !important;
+    }
+
+    /* Modal in Dark Mode */
+    body.dark-mode .modal-content {
+        background-color: var(--dist-card-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .modal-header {
+        border-bottom: 1px solid var(--dist-border) !important;
+    }
+
+    body.dark-mode .modal-footer {
+        background-color: var(--dist-box-bg) !important;
+        border-top: 1px solid var(--dist-border) !important;
+    }
+</style>
+
+<!-- HEADER ROW -->
+<div class="row align-items-center mb-3">
+    <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
+        <h4 class="font-weight-bold mb-1" style="color: var(--dist-text);">
+            <i class="fas fa-boxes-stacked text-teal mr-2"></i> Stok Gudang Distributor &amp; Kartu Stok
+        </h4>
+        <p class="small mb-0" style="color: var(--dist-text-muted);">
+            Stok mandiri terisolasi khusus Unit Bisnis Distributor (terpisah dari Stok Apotek &amp; Resto)
+        </p>
+    </div>
+    <div class="col-lg-6 col-md-12 text-lg-right">
+        <div class="d-inline-flex flex-wrap align-items-center justify-content-lg-end" style="gap: 6px;">
+            <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm" id="btnOpenAddStock" onclick="openAddStockModal()">
+                <i class="fas fa-plus-circle mr-1"></i> Tambah / Inbound Stok
+            </button>
+            <a href="<?= base_url('distributor/transfer') ?>" class="btn btn-outline-primary btn-sm font-weight-bold shadow-sm">
+                <i class="fas fa-arrow-right-arrow-left mr-1"></i> Transfer Antar-Unit
+            </a>
+            <a href="<?= base_url('distributor/penjualan') ?>" class="btn btn-outline-indigo btn-sm font-weight-bold shadow-sm" style="color: #4f46e5; border-color: #4f46e5;">
+                <i class="fas fa-cart-plus mr-1"></i> Penjualan Grosir
+            </a>
         </div>
     </div>
 </div>
 
-<div class="content">
-    <div class="container-fluid">
-
-        <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle mr-1"></i> <?= session()->getFlashdata('success') ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle mr-1"></i> <?= session()->getFlashdata('error') ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-        <?php endif; ?>
-
-        <!-- STOCKS TABLE CARD -->
-        <div class="card card-outline card-teal shadow-none border">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0 text-sm">
-                        <thead class="bg-light">
+<!-- STOCKS TABLE CARD -->
+<div class="dist-card mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table-dist mb-0 text-sm" id="tableStocks">
+                <thead>
+                    <tr>
+                        <th>Kode &amp; Nama Obat</th>
+                        <th>No. Batch</th>
+                        <th>Kedaluwarsa (Exp)</th>
+                        <th class="text-right">Harga Beli (HPP)</th>
+                        <th class="text-right">Harga Jual Grosir</th>
+                        <th class="text-center">Sisa Stok</th>
+                        <th class="text-right">Total Nilai Stok</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($stocks)): ?>
+                        <tr>
+                            <td colspan="9" class="text-center py-5" style="color: var(--dist-text-muted);">
+                                <i class="fas fa-boxes-stacked fa-3x mb-2 text-secondary opacity-50 d-block"></i>
+                                Stok gudang distributor masih kosong. Silakan tambah stok obat.
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($stocks as $s): 
+                            $isLow = $s->stock <= $s->min_stock;
+                            $totalVal = $s->stock * (float)$s->buy_price;
+                        ?>
                             <tr>
-                                <th>Kode &amp; Nama Obat</th>
-                                <th>No. Batch</th>
-                                <th>Kedaluwarsa (Exp)</th>
-                                <th class="text-right">Harga Beli (HPP)</th>
-                                <th class="text-right">Harga Jual Grosir</th>
-                                <th class="text-center">Sisa Stok</th>
-                                <th class="text-right">Total Nilai Stok</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center">Aksi</th>
+                                <td>
+                                    <strong class="d-block" style="color: var(--dist-text);"><?= esc($s->med_name) ?></strong>
+                                    <small style="color: var(--dist-text-muted);"><?= esc($s->med_code) ?> | Satuan: <?= esc($s->default_unit ?: 'PCS') ?></small>
+                                </td>
+                                <td>
+                                    <span class="badge badge-light border"><?= esc($s->batch_no ?: '-') ?></span>
+                                </td>
+                                <td>
+                                    <?= $s->expired_date ? date('d/m/Y', strtotime($s->expired_date)) : '-' ?>
+                                </td>
+                                <td class="text-right font-weight-bold" style="color: var(--dist-text-muted);">
+                                    Rp <?= number_format($s->buy_price, 0, ',', '.') ?>
+                                </td>
+                                <td class="text-right font-weight-bold text-indigo">
+                                    Rp <?= number_format($s->selling_price, 0, ',', '.') ?>
+                                </td>
+                                <td class="text-center font-weight-bold <?= $isLow ? 'text-danger' : 'text-success' ?>" style="font-size: 15px;">
+                                    <?= $s->stock ?>
+                                </td>
+                                <td class="text-right font-weight-bold" style="color: var(--dist-text);">
+                                    Rp <?= number_format($totalVal, 0, ',', '.') ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php if ($isLow): ?>
+                                        <span class="badge badge-danger font-weight-bold"><i class="fas fa-triangle-exclamation mr-1"></i>Stok Menipis</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-success font-weight-bold">Aman</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-xs btn-outline-info btn-kartu-stok" onclick="openKartuStok(<?= $s->id ?>)" title="Buku Kartu Stok Mutasi">
+                                        <i class="fas fa-book mr-1"></i> Kartu Stok
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-outline-primary btn-edit-stock" onclick='editStock(<?= json_encode($s) ?>)' title="Update Stok / Harga">
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($stocks)): ?>
-                                <tr>
-                                    <td colspan="9" class="text-center py-5 text-muted">
-                                        <i class="fas fa-boxes-stacked fa-3x mb-2 text-secondary opacity-50 d-block"></i>
-                                        Stok gudang distributor masih kosong. Silakan tambah stok obat.
-                                    </td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($stocks as $s): 
-                                    $isLow = $s->stock <= $s->min_stock;
-                                    $totalVal = $s->stock * (float)$s->buy_price;
-                                ?>
-                                    <tr>
-                                        <td>
-                                            <strong class="text-dark d-block"><?= esc($s->med_name) ?></strong>
-                                            <small class="text-muted"><?= esc($s->med_code) ?> | Satuan: <?= esc($s->default_unit ?: 'PCS') ?></small>
-                                        </td>
-                                        <td>
-                                            <span class="badge badge-light border"><?= esc($s->batch_no ?: '-') ?></span>
-                                        </td>
-                                        <td>
-                                            <?= $s->expired_date ? date('d/m/Y', strtotime($s->expired_date)) : '-' ?>
-                                        </td>
-                                        <td class="text-right font-weight-bold text-muted">
-                                            Rp <?= number_format($s->buy_price, 0, ',', '.') ?>
-                                        </td>
-                                        <td class="text-right font-weight-bold text-indigo">
-                                            Rp <?= number_format($s->selling_price, 0, ',', '.') ?>
-                                        </td>
-                                        <td class="text-center font-weight-bold <?= $isLow ? 'text-danger' : 'text-success' ?>" style="font-size: 15px;">
-                                            <?= $s->stock ?>
-                                        </td>
-                                        <td class="text-right font-weight-bold text-dark">
-                                            Rp <?= number_format($totalVal, 0, ',', '.') ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <?php if ($isLow): ?>
-                                                <span class="badge badge-danger font-weight-bold"><i class="fas fa-triangle-exclamation mr-1"></i>Stok Menipis</span>
-                                            <?php else: ?>
-                                                <span class="badge badge-success font-weight-bold">Aman</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-xs btn-outline-info" onclick="openKartuStok(<?= $s->id ?>)" title="Buku Kartu Stok Mutasi">
-                                                <i class="fas fa-book mr-1"></i> Kartu Stok
-                                            </button>
-                                            <button type="button" class="btn btn-xs btn-outline-primary" onclick='editStock(<?= json_encode($s) ?>)' title="Update Stok / Harga">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-
     </div>
 </div>
 
 <!-- MODAL ADD / EDIT STOCK -->
 <div class="modal fade" id="modalStockForm" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
-            <form action="<?= base_url('distributor/simpan-stok') ?>" method="post">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 8px;">
+            <form action="<?= base_url('distributor/simpan-stok') ?>" method="post" id="formStock">
                 <input type="hidden" name="id" id="stock_id" value="">
                 
-                <div class="modal-header bg-teal text-white py-2">
+                <div class="modal-header bg-teal text-white py-2.5">
                     <h6 class="modal-title font-weight-bold" id="modalStockTitle"><i class="fas fa-boxes-stacked mr-1"></i> Tambah Stok Gudang Distributor</h6>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -142,8 +242,8 @@
                 <div class="modal-body p-3">
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">PILIH OBAT / BARANG <span class="text-danger">*</span></label>
-                            <select class="form-control form-control-sm select2" name="medicine_id" id="stock_med_id" required>
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">PILIH OBAT / BARANG <span class="text-danger">*</span></label>
+                            <select class="form-control form-control-sm dist-input" name="medicine_id" id="stock_med_id" data-native="true" required>
                                 <option value="">-- Pilih Obat --</option>
                                 <?php foreach ($medicines as $m): ?>
                                     <option value="<?= $m->id ?>" data-price="<?= (float)$m->price ?>">
@@ -153,39 +253,39 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">NO. BATCH DISTRIBUTOR</label>
-                            <input type="text" class="form-control form-control-sm" name="batch_no" id="stock_batch" placeholder="DIST-YYYYMMDD-XXX">
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">NO. BATCH DISTRIBUTOR</label>
+                            <input type="text" class="form-control form-control-sm dist-input" name="batch_no" id="stock_batch" placeholder="DIST-YYYYMMDD-XXX">
                         </div>
                         <div class="col-md-6 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">TANGGAL KEDALUWARSA (EXP)</label>
-                            <input type="date" class="form-control form-control-sm" name="expired_date" id="stock_exp" value="<?= date('Y-m-d', strtotime('+1 year')) ?>">
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">TANGGAL KEDALUWARSA (EXP)</label>
+                            <input type="date" class="form-control form-control-sm dist-input" name="expired_date" id="stock_exp" value="<?= date('Y-m-d', strtotime('+1 year')) ?>">
                         </div>
                         <div class="col-md-6 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">MINIMAL STOK ALERT</label>
-                            <input type="number" class="form-control form-control-sm" name="min_stock" id="stock_min" value="10" min="1">
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">MINIMAL STOK ALERT</label>
+                            <input type="number" class="form-control form-control-sm dist-input" name="min_stock" id="stock_min" value="10" min="1">
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">HARGA BELI POKOK (HPP)</label>
-                            <input type="number" class="form-control form-control-sm text-right" name="buy_price" id="stock_buy_price" value="0" min="0" step="100" required>
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">HARGA BELI POKOK (HPP)</label>
+                            <input type="number" class="form-control form-control-sm text-right dist-input" name="buy_price" id="stock_buy_price" value="0" min="0" step="100" required>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">HARGA JUAL GROSIR (B2B)</label>
-                            <input type="number" class="form-control form-control-sm text-right text-indigo font-weight-bold" name="selling_price" id="stock_sell_price" value="0" min="0" step="100" required>
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">HARGA JUAL GROSIR (B2B)</label>
+                            <input type="number" class="form-control form-control-sm text-right text-indigo font-weight-bold dist-input" name="selling_price" id="stock_sell_price" value="0" min="0" step="100" required>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1" id="lbl_qty_title">JUMLAH STOK MASUK <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm text-center font-weight-bold" name="stock" id="stock_qty" value="10" min="1" required>
+                            <label class="text-xs font-weight-bold mb-1" id="lbl_qty_title" style="color: var(--dist-text-muted);">JUMLAH STOK MASUK <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm text-center font-weight-bold dist-input" name="stock" id="stock_qty" value="10" min="1" required>
                         </div>
                         <div class="col-md-12 mb-2">
-                            <label class="text-xs font-weight-bold text-muted mb-1">CATATAN / SUMBER PENERIMAAN</label>
-                            <input type="text" class="form-control form-control-sm" name="notes" id="stock_notes" placeholder="Penerimaan langsung pabrik / penyesuaian stok...">
+                            <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">CATATAN / SUMBER PENERIMAAN</label>
+                            <input type="text" class="form-control form-control-sm dist-input" name="notes" id="stock_notes" placeholder="Penerimaan langsung pabrik / penyesuaian stok...">
                         </div>
                     </div>
                 </div>
 
-                <div class="modal-footer py-2 bg-light">
+                <div class="modal-footer py-2">
                     <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-sm btn-teal font-weight-bold">
+                    <button type="submit" class="btn btn-sm btn-teal font-weight-bold" id="btnSubmitStock">
                         <i class="fas fa-save mr-1"></i> Simpan Stok Gudang
                     </button>
                 </div>
@@ -197,8 +297,8 @@
 <!-- MODAL KARTU STOK MUTASI -->
 <div class="modal fade" id="modalKartuStok" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
-            <div class="modal-header bg-teal text-white py-2">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 8px;">
+            <div class="modal-header bg-teal text-white py-2.5">
                 <h6 class="modal-title font-weight-bold"><i class="fas fa-book-medical mr-1"></i> Buku Kartu Stok Gudang Distributor</h6>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -206,6 +306,9 @@
             </div>
             <div class="modal-body p-3" id="kartuStokModalBody">
                 <div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x text-teal"></i> Memuat mutasi kartu stok...</div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -255,7 +358,7 @@ function openKartuStok(stockId) {
 
             let movsHtml = '';
             if (movs.length === 0) {
-                movsHtml = '<tr><td colspan="7" class="text-center py-4 text-muted">Belum ada riwayat mutasi stok pada item ini.</td></tr>';
+                movsHtml = '<tr><td colspan="7" class="text-center py-4" style="color: var(--dist-text-muted);">Belum ada riwayat mutasi stok pada item ini.</td></tr>';
             } else {
                 movs.forEach(m => {
                     let typeBadge = '<span class="badge badge-success">Masuk (In)</span>';
@@ -268,13 +371,13 @@ function openKartuStok(stockId) {
                         <tr>
                             <td>${m.created_at}</td>
                             <td>${typeBadge}</td>
-                            <td class="font-weight-bold text-dark">${m.reference_no || '-'}</td>
+                            <td class="font-weight-bold" style="color: var(--dist-text);">${m.reference_no || '-'}</td>
                             <td class="text-center font-weight-bold ${m.movement_type.includes('in') ? 'text-success' : 'text-danger'}">
                                 ${m.movement_type.includes('in') ? '+' : '-'}${m.qty}
                             </td>
-                            <td class="text-center text-muted">${m.stock_before}</td>
+                            <td class="text-center" style="color: var(--dist-text-muted);">${m.stock_before}</td>
                             <td class="text-center font-weight-bold text-teal">${m.stock_after}</td>
-                            <td><small class="text-muted">${m.notes || '-'}</small></td>
+                            <td><small style="color: var(--dist-text-muted);">${m.notes || '-'}</small></td>
                         </tr>
                     `;
                 });
@@ -284,17 +387,17 @@ function openKartuStok(stockId) {
                 <div class="row mb-3 align-items-center">
                     <div class="col-8">
                         <h5 class="font-weight-bold text-teal mb-0">${st.med_name}</h5>
-                        <small class="text-muted">Kode: ${st.med_code} | Batch: ${st.batch_no || '-'} | Exp: ${st.expired_date || '-'}</small>
+                        <small style="color: var(--dist-text-muted);">Kode: ${st.med_code} | Batch: ${st.batch_no || '-'} | Exp: ${st.expired_date || '-'}</small>
                     </div>
                     <div class="col-4 text-right">
-                        <span class="text-muted text-xs font-weight-bold d-block">SISA SALDO STOK:</span>
+                        <span class="text-xs font-weight-bold d-block" style="color: var(--dist-text-muted);">SISA SALDO STOK:</span>
                         <h3 class="font-weight-bold text-indigo mb-0">${st.stock} Unit</h3>
                     </div>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm text-sm">
-                        <thead class="bg-light">
+                    <table class="table-dist text-sm">
+                        <thead>
                             <tr>
                                 <th>Waktu Mutasi</th>
                                 <th>Jenis Transaksi</th>

@@ -104,7 +104,7 @@
                 <!-- Riwayat Log Pesan WhatsApp Terkirim -->
                 <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-history text-teal mr-1"></i> Riwayat Log Pesan WhatsApp Terkirim (Audit Log)</h6>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover mb-0 datatable">
+                    <table class="table table-bordered table-clean-grid table-hover mb-0 datatable">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>

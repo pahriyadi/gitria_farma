@@ -310,16 +310,17 @@ class LiveSync extends BaseController
                            ->select('ro.*, u.username as cashier_name')
                            ->join('users u', 'u.id = ro.cashier_id', 'left')
                            ->where('DATE(ro.created_at)', $today)
-                           ->whereIn('ro.status', ['pending', 'cooking', 'ready'])
+                           ->whereIn('ro.status', ['open', 'pending', 'cooking', 'ready'])
                            ->orderBy('ro.id', 'ASC')
                            ->get()
                            ->getResult();
 
         foreach ($orders as $ord) {
-            $ord->items = $this->db->table('restaurant_order_items roi')
-                                   ->select('roi.*, mi.name as menu_name, mi.category')
-                                   ->join('restaurant_menu_items mi', 'mi.id = roi.menu_item_id', 'left')
-                                   ->where('roi.order_id', $ord->id)
+            $ord->order_number = $ord->order_no ?? ('ORD-' . $ord->id);
+            $ord->items = $this->db->table('restaurant_order_details rod')
+                                   ->select('rod.*, rm.name as menu_name, rm.category')
+                                   ->join('restaurant_menus rm', 'rm.id = rod.menu_id', 'left')
+                                   ->where('rod.order_id', $ord->id)
                                    ->get()
                                    ->getResult();
             $ord->total_formatted = number_format($ord->total_amount ?? 0, 0, ',', '.');

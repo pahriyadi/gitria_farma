@@ -66,7 +66,7 @@
                     </h3>
                     <span class="text-muted text-xs d-block">Kelola konten berita, edukasi medis, dan tips kesehatan yang tampil di Landing Page publik.</span>
                 </div>
-                <div class="card-tools ml-auto mt-2 mt-sm-0">
+                <div class="ml-auto mt-2 mt-sm-0">
                     <a href="<?= base_url('#artikel') ?>" target="_blank" class="btn btn-outline-info btn-sm font-weight-bold mr-2">
                         <i class="fas fa-external-link-alt mr-1"></i> Lihat di Landing Page
                     </a>
@@ -77,7 +77,7 @@
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover datatable dt-responsive w-100" id="table-articles">
+                    <table class="table table-clean-grid table-bordered table-hover datatable dt-responsive w-100" id="table-articles">
                         <thead class="bg-light">
                             <tr>
                                 <th style="width: 40px;" class="text-center">No</th>
@@ -194,7 +194,7 @@
                     <div class="row">
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Kategori Artikel:</label>
-                            <select name="category" class="form-control form-control-sm font-weight-bold">
+                            <select name="category" class="form-control form-control-sm font-weight-bold" data-native="true">
                                 <option value="Edukasi Kesehatan">Edukasi Kesehatan</option>
                                 <option value="Tips Medis">Tips Medis</option>
                                 <option value="Berita Klinik">Berita Klinik</option>
@@ -208,7 +208,7 @@
                         </div>
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Status Publikasi:</label>
-                            <select name="status" class="form-control form-control-sm font-weight-bold">
+                            <select name="status" class="form-control form-control-sm font-weight-bold" data-native="true">
                                 <option value="published">🟢 Published (Langsung Tayang)</option>
                                 <option value="draft">🟡 Draft (Disimpan Dulu)</option>
                             </select>
@@ -333,4 +333,89 @@
         }
     });
 </script>
+
+<style>
+/* Desain Tabel Bersih & Border Konsisten Sesuai desain_tabel.md */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #b8b8b8 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.table-clean-grid tbody td {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+    vertical-align: middle;
+}
+.table-clean-grid tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .small-box {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody td {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover td {
+    background-color: #262c36 !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+body.dark-mode .bg-light,
+body.dark-mode .bg-white {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+</style>
 <?= $this->endSection() ?>

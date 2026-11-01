@@ -15,27 +15,23 @@ foreach ($categories as $c) {
     $totalRulesCount += ($c->total_rules ?? 0);
 }
 ?>
-<div class="content-header p-0 mb-3">
-    <div class="container-fluid p-0">
-        <div class="row align-items-center">
-            <div class="col-sm-7">
-                <h1 class="m-0 text-dark font-weight-bold" style="font-size: 1.45rem;">
-                    <i class="fas fa-sliders text-teal mr-2"></i> Template &amp; Aturan Jurnal Multi-Akun
-                </h1>
-                <small class="text-muted">Konfigurasi pembagian bagi hasil (Dynamic COA Split) &amp; integrasi penjurnalan otomatis multi-modul</small>
-            </div>
-            <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
-                <span class="badge badge-pill aturan-header-badge text-teal px-3 py-2 font-weight-bold mr-1">
-                    <i class="fas fa-folder-tree mr-1"></i> <?= $totalCat ?> Kategori
-                </span>
-                <span class="badge badge-pill aturan-header-badge text-success px-3 py-2 font-weight-bold mr-1">
-                    <i class="fas fa-scale-balanced mr-1"></i> <?= $balancedCat ?> / <?= $totalCat ?> Balanced
-                </span>
-                <span class="badge badge-pill aturan-header-badge text-primary px-3 py-2 font-weight-bold">
-                    <i class="fas fa-list-check mr-1"></i> <?= $totalRulesCount ?> Sub-Pos Akun
-                </span>
-            </div>
-        </div>
+<div class="row align-items-center mb-3">
+    <div class="col-sm-7">
+        <h4 class="m-0 font-weight-bold" style="font-size: 1.45rem;">
+            <i class="fas fa-sliders text-teal mr-2"></i> Template &amp; Aturan Jurnal Multi-Akun
+        </h4>
+        <small class="text-muted">Konfigurasi pembagian bagi hasil (Dynamic COA Split) &amp; integrasi penjurnalan otomatis multi-modul</small>
+    </div>
+    <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
+        <span class="badge badge-pill aturan-header-badge text-teal px-3 py-2 font-weight-bold mr-1">
+            <i class="fas fa-folder-tree mr-1"></i> <?= $totalCat ?> Kategori
+        </span>
+        <span class="badge badge-pill aturan-header-badge text-success px-3 py-2 font-weight-bold mr-1">
+            <i class="fas fa-scale-balanced mr-1"></i> <?= $balancedCat ?> / <?= $totalCat ?> Balanced
+        </span>
+        <span class="badge badge-pill aturan-header-badge text-primary px-3 py-2 font-weight-bold">
+            <i class="fas fa-list-check mr-1"></i> <?= $totalRulesCount ?> Sub-Pos Akun
+        </span>
     </div>
 </div>
 
@@ -345,17 +341,17 @@ foreach ($categories as $c) {
                 <input type="hidden" name="id" id="cat_id" value="">
                 <div class="modal-body p-4">
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">Kode Kategori <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold text-sm aturan-label">Kode Kategori <span class="text-danger">*</span></label>
                         <input type="text" name="category_code" id="cat_code" class="form-control text-uppercase font-monospace font-weight-bold" placeholder="Contoh: PENJUALAN_OBAT_BEBAS" required>
                         <small class="text-muted">Kode unik referensi sistem (huruf kapital tanpa spasi, gunakan underscore `_`)</small>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">Nama Kategori Template <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold text-sm aturan-label">Nama Kategori Template <span class="text-danger">*</span></label>
                         <input type="text" name="category_name" id="cat_name" class="form-control font-weight-bold" placeholder="Contoh: PENJUALAN OBAT RESEP" required>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">Modul Terkait <span class="text-danger">*</span></label>
-                        <select name="module" id="cat_module" class="form-control select2" required style="width: 100%;">
+                        <label class="font-weight-bold text-sm aturan-label">Modul Terkait <span class="text-danger">*</span></label>
+                        <select name="module" id="cat_module" class="form-control" data-native="true" required style="width: 100%;">
                             <option value="apotek">Farmasi &amp; Apotek (Obat Resep, Bebas, Online)</option>
                             <option value="keuangan">Keuangan &amp; Kasir Utama</option>
                             <option value="resto">Resto Sehat &amp; Dapur Gizi</option>
@@ -364,13 +360,13 @@ foreach ($categories as $c) {
                         </select>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">Keterangan / Catatan Alur</label>
+                        <label class="font-weight-bold text-sm aturan-label">Keterangan / Catatan Alur</label>
                         <textarea name="description" id="cat_description" class="form-control" rows="2" placeholder="Deskripsi alur pembagian pos akun transaksi ini..."></textarea>
                     </div>
                     <div class="form-group mb-0">
                         <div class="custom-control custom-switch">
                             <input type="checkbox" class="custom-control-input" id="cat_is_active" name="is_active" value="1" checked>
-                            <label class="custom-control-label font-weight-bold text-dark" for="cat_is_active">Aktifkan Template Jurnal Ini</label>
+                            <label class="custom-control-label font-weight-bold aturan-label" for="cat_is_active">Aktifkan Template Jurnal Ini</label>
                         </div>
                     </div>
                 </div>
@@ -651,6 +647,137 @@ body.dark-mode .nav-tabs-modern .nav-link.active,
 }
 .table td, .table th {
     vertical-align: middle;
+}
+
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+.aturan-header-badge {
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+}
+.aturan-code-badge {
+    background-color: #eef2f6;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+.aturan-val-badge {
+    background-color: rgba(0,0,0,0.15);
+}
+.aturan-alert-guide {
+    background-color: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    color: #134e4a;
+}
+.aturan-template-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+.aturan-template-mode-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .kpi-card,
+.dark-mode .kpi-card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .kpi-value,
+.dark-mode .kpi-value {
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-header-badge,
+.dark-mode .aturan-header-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .aturan-code-badge,
+.dark-mode .aturan-code-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #34d399 !important;
+}
+body.dark-mode .aturan-alert-guide,
+.dark-mode .aturan-alert-guide {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-template-box,
+.dark-mode .aturan-template-box {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-template-mode-box,
+.dark-mode .aturan-template-mode-box {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-modal-footer,
+.dark-mode .aturan-modal-footer {
+    border-top: 1px solid #374151 !important;
+    background-color: #181b1f !important;
+}
+body.dark-mode .aturan-label,
+.dark-mode .aturan-label {
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
 }
 </style>
 <?= $this->endSection() ?>

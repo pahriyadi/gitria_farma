@@ -649,5 +649,126 @@ $(document).ready(function() {
 .table td, .table th {
     vertical-align: middle;
 }
+
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+.aturan-detail-header-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+.aturan-summary-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+.aturan-code-badge {
+    background-color: #eef2f6;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+.sim-result-table {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.sim-result-table td,
+.sim-result-table th {
+    border: 1px solid #b8b8b8 !important;
+}
+.sim-tr-total {
+    background-color: #f1f5f9;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-detail-header-card,
+.dark-mode .aturan-detail-header-card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .aturan-header-title,
+.dark-mode .aturan-header-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .aturan-summary-box,
+.dark-mode .aturan-summary-box {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .aturan-code-badge,
+.dark-mode .aturan-code-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #34d399 !important;
+}
+body.dark-mode .aturan-acc-name,
+.dark-mode .aturan-acc-name {
+    color: #f0f6fc !important;
+}
+body.dark-mode .sim-result-table,
+.dark-mode .sim-result-table {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .sim-result-table td,
+body.dark-mode .sim-result-table th,
+.dark-mode .sim-result-table td,
+.dark-mode .sim-result-table th {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .sim-tr-total,
+.dark-mode .sim-tr-total {
+    background-color: #181b1f !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
 </style>
 <?= $this->endSection() ?>

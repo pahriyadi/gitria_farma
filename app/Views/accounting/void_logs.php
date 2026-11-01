@@ -4,27 +4,23 @@
 <!-- ========================================================================= -->
 <!-- EXECUTIVE HEADER & QUICK STATS                                            -->
 <!-- ========================================================================= -->
-<div class="content-header p-0 mb-3">
-    <div class="container-fluid p-0">
-        <div class="row align-items-center">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark font-weight-bold" style="font-size: 1.45rem;">
-                    <i class="fas fa-shield-halved text-danger mr-2"></i> Pusat Log Pembatalan / Void (Anti-Fraud Center)
-                </h1>
-                <small class="text-muted">Audit trail, otorisasi supervisor, dan jurnal pembalik otomatis untuk seluruh pembatalan transaksi</small>
-            </div>
-            <div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
-                <button class="btn btn-info btn-sm font-weight-bold shadow-xs mr-1" data-toggle="modal" data-target="#modalReadmeVoid">
-                    <i class="fas fa-book-open mr-1"></i> Panduan Operasional (README)
-                </button>
-                <button class="btn btn-outline-secondary btn-sm font-weight-bold shadow-xs mr-1" data-toggle="modal" data-target="#modalManagePin">
-                    <i class="fas fa-key mr-1"></i> Atur PIN Supervisor
-                </button>
-                <button class="btn btn-danger btn-sm font-weight-bold shadow-sm" onclick="window.location.reload();">
-                    <i class="fas fa-arrows-rotate mr-1"></i> Refresh Data
-                </button>
-            </div>
-        </div>
+<div class="row align-items-center mb-3">
+    <div class="col-sm-6">
+        <h4 class="m-0 font-weight-bold void-page-title" style="font-size: 1.45rem;">
+            <i class="fas fa-shield-halved text-danger mr-2"></i> Pusat Log Pembatalan / Void (Anti-Fraud Center)
+        </h4>
+        <small class="text-muted">Audit trail, otorisasi supervisor, dan jurnal pembalik otomatis untuk seluruh pembatalan transaksi</small>
+    </div>
+    <div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
+        <button class="btn btn-info btn-sm font-weight-bold shadow-xs mr-1" data-toggle="modal" data-target="#modalReadmeVoid">
+            <i class="fas fa-book-open mr-1"></i> Panduan Operasional (README)
+        </button>
+        <button class="btn btn-outline-secondary btn-sm font-weight-bold shadow-xs mr-1" data-toggle="modal" data-target="#modalManagePin">
+            <i class="fas fa-key mr-1"></i> Atur PIN Supervisor
+        </button>
+        <button class="btn btn-danger btn-sm font-weight-bold shadow-sm" onclick="window.location.reload();">
+            <i class="fas fa-arrows-rotate mr-1"></i> Refresh Data
+        </button>
     </div>
 </div>
 
@@ -673,14 +669,6 @@
         </div>
     </div>
 </div>
-                <small class="text-muted"><i class="fas fa-shield-halved text-teal mr-1"></i> ERP Gitria Farma - Sawamawa Medical Center Anti-Fraud System</small>
-                <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal">
-                    <i class="fas fa-times mr-1"></i> Tutup Panduan
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
 function viewVoidDetail(id) {
@@ -749,5 +737,215 @@ function viewVoidDetail(id) {
 .bg-teal-soft { background-color: rgba(32, 201, 151, 0.12); color: #20c997; }
 .bg-primary-soft { background-color: rgba(13, 110, 253, 0.12); color: #0d6efd; }
 .bg-success-soft { background-color: rgba(25, 135, 84, 0.12); color: #198754; }
+
+/* ========================================================================== */
+/* ACCOUNTING SUITE MODERN SCROLLABLE TABS & DESIGN TOKENS                    */
+/* ========================================================================== */
+.accounting-tabs-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+.accounting-tabs-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+.accounting-tabs-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #20c997;
+    border-radius: 4px;
+}
+.nav-tabs-modern {
+    border-bottom: 2px solid #e9ecef;
+    min-width: 100%;
+}
+.nav-tabs-modern .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+.nav-tabs-modern .nav-link:hover {
+    color: #00796b;
+    border-bottom: 3px solid #b2dfdb;
+    background-color: #f8f9fa;
+}
+body:not(.dark-mode) .nav-tabs-modern .nav-link.active {
+    color: #00796b !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #ffffff !important;
+}
+
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+.void-alert-guide {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+.void-total-badge {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+.void-reason-badge {
+    background-color: #f1f5f9;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+}
+.void-filter-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .nav-tabs-modern,
+.dark-mode .nav-tabs-modern {
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link,
+.dark-mode .nav-tabs-modern .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link:hover,
+.dark-mode .nav-tabs-modern .nav-link:hover {
+    color: #34d399 !important;
+    border-bottom: 3px solid #34d399 !important;
+    background-color: #262b32 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link.active,
+.dark-mode .nav-tabs-modern .nav-link.active {
+    color: #f87171 !important;
+    border-bottom: 3px solid #ef4444 !important;
+    background-color: #1f2328 !important;
+}
+body.dark-mode .void-page-title,
+.dark-mode .void-page-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+.dark-mode .card-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .kpi-card,
+.dark-mode .kpi-card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .kpi-value,
+.dark-mode .kpi-value {
+    color: #f0f6fc !important;
+}
+body.dark-mode .void-filter-card,
+.dark-mode .void-filter-card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .void-alert-guide,
+.dark-mode .void-alert-guide {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #f87171 !important;
+}
+body.dark-mode .void-total-badge,
+.dark-mode .void-total-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #f87171 !important;
+}
+body.dark-mode .void-reason-badge,
+.dark-mode .void-reason-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #9ca3af !important;
+}
+body.dark-mode .void-ref-num,
+.dark-mode .void-ref-num,
+body.dark-mode .void-person-name,
+.dark-mode .void-person-name {
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .void-modal-footer,
+.dark-mode .void-modal-footer {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .void-modal-label,
+.dark-mode .void-modal-label {
+    color: #f0f6fc !important;
+}
+body.dark-mode .void-readme-tab-header,
+.dark-mode .void-readme-tab-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .void-readme-card,
+.dark-mode .void-readme-card {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .void-json-pre,
+.dark-mode .void-json-pre {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #34d399 !important;
+}
 </style>
 <?= $this->endSection() ?>

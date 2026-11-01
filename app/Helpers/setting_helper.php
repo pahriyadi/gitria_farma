@@ -339,7 +339,13 @@ if (!function_exists('datatable_server_side')) {
         }
         if (!empty($options['where'])) {
             if (is_array($options['where'])) {
-                $baseBuilder->where($options['where']);
+                foreach ($options['where'] as $wKey => $wVal) {
+                    if (is_int($wKey)) {
+                        $baseBuilder->where($wVal, null, false);
+                    } else {
+                        $baseBuilder->where($wKey, $wVal);
+                    }
+                }
             } else {
                 $baseBuilder->where($options['where'], null, false);
             }

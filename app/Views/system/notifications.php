@@ -371,4 +371,98 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<style>
+/* Desain Tabel Bersih & Border Konsisten Sesuai desain_tabel.md */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #b8b8b8 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.table-clean-grid tbody td {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+    vertical-align: middle;
+}
+.table-clean-grid tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+.notif-hero-card,
+.notif-kpi-card,
+.notif-main-card {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card,
+body.dark-mode .notif-hero-card,
+body.dark-mode .notif-kpi-card,
+body.dark-mode .notif-main-card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .notif-main-header {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+body.dark-mode .notif-modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody td {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover td {
+    background-color: #262c36 !important;
+}
+body.dark-mode .notif-hero-title,
+body.dark-mode .notif-kpi-val-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .notif-hero-subtitle,
+body.dark-mode .notif-hero-desc,
+body.dark-mode .notif-kpi-label,
+body.dark-mode .notif-kpi-sub {
+    color: #9ca3af !important;
+}
+body.dark-mode .notif-receipt-banner {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .list-group-item {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+</style>
 <?= $this->endSection() ?>

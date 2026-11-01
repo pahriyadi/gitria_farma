@@ -1,6 +1,86 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+<style>
+/* CSS Variabel Akuntansi Paper White / Paper Dark */
+:root {
+    --acc-bg: #ffffff;
+    --acc-text: #1f2937;
+    --acc-muted: #6b7280;
+    --acc-border: #b8b8b8;
+    --acc-card-bg: #ffffff;
+    --acc-head-bg: #f8fafc;
+    --acc-hover-bg: #f1f5f9;
+}
+
+body.dark-mode {
+    --acc-bg: #14171a;
+    --acc-text: #f0f6fc;
+    --acc-muted: #9ca3af;
+    --acc-border: #374151;
+    --acc-card-bg: #1f2328;
+    --acc-head-bg: #181b1f;
+    --acc-hover-bg: #272c33;
+}
+
+body.dark-mode .card {
+    background-color: var(--acc-card-bg) !important;
+    border-color: var(--acc-border) !important;
+    color: var(--acc-text) !important;
+}
+
+body.dark-mode .card-header {
+    background-color: var(--acc-head-bg) !important;
+    border-color: var(--acc-border) !important;
+    color: var(--acc-text) !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: var(--acc-card-bg) !important;
+    color: var(--acc-text) !important;
+    border-color: var(--acc-border) !important;
+}
+
+/* Strict Table Styling per desain_tabel.md */
+body:not(.dark-mode) #table-jurnal,
+body:not(.dark-mode) .table-bordered {
+    border: 1px solid #b8b8b8 !important;
+    border-collapse: collapse !important;
+}
+body:not(.dark-mode) #table-jurnal th,
+body:not(.dark-mode) #table-jurnal td,
+body:not(.dark-mode) .table-bordered th,
+body:not(.dark-mode) .table-bordered td {
+    border: 1px solid #b8b8b8 !important;
+}
+body:not(.dark-mode) #table-jurnal thead th,
+body:not(.dark-mode) .table-bordered thead th {
+    background-color: #f8fafc !important;
+    color: #1f2937 !important;
+    border-color: #b8b8b8 !important;
+}
+
+body.dark-mode #table-jurnal,
+body.dark-mode .table-bordered {
+    border: 1px solid #374151 !important;
+    border-collapse: collapse !important;
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode #table-jurnal th,
+body.dark-mode #table-jurnal td,
+body.dark-mode .table-bordered th,
+body.dark-mode .table-bordered td {
+    border: 1px solid #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode #table-jurnal thead th,
+body.dark-mode .table-bordered thead th {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+</style>
 <!-- Quick Switcher Tabs -->
 <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div class="accounting-tabs-scroll-wrapper">
@@ -168,7 +248,7 @@
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table id="table-jurnal" class="table table-bordered table-striped datatable-serverside text-dark w-100" style="font-size: 13px;">
+                    <table id="table-jurnal" class="table table-bordered datatable-serverside w-100" style="font-size: 13px;">
                         <thead class="bg-light">
                             <tr>
                                 <th style="width: 120px;" class="text-center"><i class="far fa-calendar-alt text-teal mr-1"></i>Tanggal &amp; Waktu</th>

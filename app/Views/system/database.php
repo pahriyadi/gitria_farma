@@ -1,44 +1,30 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2 align-items-center">
-            <div class="col-md-6">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-database text-teal mr-2"></i> Status Database, Backup & Sinkronisasi
-                </h1>
-                <small class="text-muted">Pencadangan otomatis harian & bulanan ultra-hemat ruang (Gzip Stream), pemantauan kesehatan tabel, dan manajemen rotasi arsip</small>
-            </div>
-            <div class="col-md-6 text-md-right mt-2 mt-md-0">
-                <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-1" data-toggle="modal" data-target="#modal-instant-backup">
-                    <i class="fas fa-file-zipper mr-1"></i> Backup Sekarang
+        <!-- Action Buttons Header Bar -->
+        <div class="d-flex justify-content-end mb-3 flex-wrap">
+            <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-1 mb-1" data-toggle="modal" data-target="#modal-instant-backup">
+                <i class="fas fa-file-zipper mr-1"></i> Backup Sekarang
+            </button>
+            <button type="button" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm mr-1 mb-1" data-toggle="modal" data-target="#modal-backup-settings">
+                <i class="fas fa-clock-rotate-left mr-1"></i> Jadwal & Retensi
+            </button>
+            <form action="<?= base_url('system/optimize-db') ?>" method="post" class="d-inline mr-1 mb-1" onsubmit="return confirm('Jalankan optimasi dan defragmentasi seluruh tabel database?');">
+                <?= csrf_field() ?>
+                <button type="submit" class="btn btn-purple btn-sm font-weight-bold shadow-sm text-white" style="background:#8b5cf6;" title="Optimasi & Defragmentasi Tabel">
+                    <i class="fas fa-bolt mr-1"></i> Defrag
                 </button>
-                <button type="button" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm mr-1" data-toggle="modal" data-target="#modal-backup-settings">
-                    <i class="fas fa-clock-rotate-left mr-1"></i> Jadwal & Retensi
+            </form>
+            <form action="<?= base_url('system/sync-data') ?>" method="post" class="d-inline mr-1 mb-1" onsubmit="return confirm('Sinkronkan integritas relasi referensi dan parameter sistem?');">
+                <?= csrf_field() ?>
+                <button type="submit" class="btn btn-dark btn-sm font-weight-bold shadow-sm" title="Sinkronisasi Integritas Data">
+                    <i class="fas fa-arrows-rotate mr-1"></i> Sinkronisasi
                 </button>
-                <form action="<?= base_url('system/optimize-db') ?>" method="post" class="d-inline mr-1" onsubmit="return confirm('Jalankan optimasi dan defragmentasi seluruh tabel database?');">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-purple btn-sm font-weight-bold shadow-sm text-white" style="background:#8b5cf6;" title="Optimasi & Defragmentasi Tabel">
-                        <i class="fas fa-bolt mr-1"></i> Defrag
-                    </button>
-                </form>
-                <form action="<?= base_url('system/sync-data') ?>" method="post" class="d-inline mr-1" onsubmit="return confirm('Sinkronkan integritas relasi referensi dan parameter sistem?');">
-                    <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-dark btn-sm font-weight-bold shadow-sm" title="Sinkronisasi Integritas Data">
-                        <i class="fas fa-arrows-rotate mr-1"></i> Sinkronisasi
-                    </button>
-                </form>
-                <button type="button" class="btn btn-danger btn-sm font-weight-bold shadow-sm" data-toggle="modal" data-target="#modal-reset-transactions" title="Pengosongan Data Transaksi">
-                    <i class="fas fa-trash-can mr-1"></i> Reset Transaksi
-                </button>
-            </div>
+            </form>
+            <button type="button" class="btn btn-danger btn-sm font-weight-bold shadow-sm mb-1" data-toggle="modal" data-target="#modal-reset-transactions" title="Pengosongan Data Transaksi">
+                <i class="fas fa-trash-can mr-1"></i> Reset Transaksi
+            </button>
         </div>
-    </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
 
         <!-- 4 KPI SUMMARY CARDS -->
         <div class="row mb-4">
@@ -198,7 +184,7 @@
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover datatable" style="font-size: 13px;">
+                                <table class="table table-clean-grid table-bordered table-hover datatable" style="font-size: 13px;">
                                     <thead class="bg-light">
                                         <tr>
                                             <th style="width: 40px;" class="text-center">NO</th>
@@ -274,7 +260,7 @@
                     <!-- TAB 2: DIAGNOSTIK & STATUS TABEL -->
                     <div class="tab-pane fade" id="tab-tables" role="tabpanel" aria-labelledby="tab-tables-tab">
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover datatable" style="font-size: 13px;">
+                            <table class="table table-clean-grid table-bordered table-hover datatable" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 50px;" class="text-center">NO</th>
@@ -384,9 +370,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
-</div>
 
 <!-- ========================================================================= -->
 <!-- MODAL BUAT BACKUP INSTAN (MANUAL / SCHEDULER TEST)                         -->
@@ -728,4 +711,87 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<style>
+/* Desain Tabel Bersih & Border Konsisten Sesuai desain_tabel.md */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #b8b8b8 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.table-clean-grid tbody td {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+    vertical-align: middle;
+}
+.table-clean-grid tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-body,
+body.dark-mode .card-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .input-group-text {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody td {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover td {
+    background-color: #262c36 !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+body.dark-mode .bg-light,
+body.dark-mode .bg-white {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+</style>
 <?= $this->endSection() ?>

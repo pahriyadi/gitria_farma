@@ -3,8 +3,8 @@
 <?= $this->section('content') ?>
 <div class="row">
     <div class="col-12">
-        <div class="card card-outline card-teal shadow-none" style="border: 1px solid #b8b8b8 !important; background: #ffffff !important; border-radius: 4px;">
-            <div class="card-header bg-white p-3 border-bottom d-flex justify-content-between align-items-center">
+        <div class="card card-outline card-teal shadow-none" style="border-radius: 4px;">
+            <div class="card-header p-3 border-bottom d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="font-weight-bold text-dark mb-0">
                         <i class="fas fa-chart-line text-teal mr-1"></i> MATRIKS KPI & PRODUKTIVITAS KINERJA PEGAWAI / DOKTER
@@ -39,9 +39,9 @@
                 </form>
 
                 <!-- 1. KPI DOKTER & TENAGA MEDIS -->
-                <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-user-doctor text-teal mr-1"></i> 1. Kinerja Pelayanan Dokter Spesialis & Dokter Umum</h6>
+                <h6 class="font-weight-bold kpi-sub-title mb-3"><i class="fas fa-user-doctor text-teal mr-1"></i> 1. Kinerja Pelayanan Dokter Spesialis &amp; Dokter Umum</h6>
                 <div class="table-responsive mb-4">
-                    <table class="table table-bordered table-striped table-hover mb-0" style="border: 1px solid #b8b8b8 !important;">
+                    <table class="table table-bordered table-hover table-clean-grid mb-0">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>
@@ -80,9 +80,9 @@
                 </div>
 
                 <!-- 2. KPI STAF, PERAWAT & APOTEKER (PRESENSI & PRODUKTIVITAS) -->
-                <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-user-nurse text-teal mr-1"></i> 2. Rekapitulasi Presensi & Disiplin Kerja Karyawan</h6>
+                <h6 class="font-weight-bold kpi-sub-title mb-3"><i class="fas fa-user-nurse text-teal mr-1"></i> 2. Rekapitulasi Presensi &amp; Disiplin Kerja Karyawan</h6>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
+                    <table class="table table-bordered table-hover mb-0 datatable table-clean-grid">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>
@@ -126,4 +126,78 @@
         </div>
     </div>
 </div>
+
+<style>
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+.dark-mode .card-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-dark,
+.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .kpi-sub-title,
+.dark-mode .kpi-sub-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .bg-light,
+.dark-mode .bg-light {
+    background-color: #181b1f !important;
+}
+</style>
 <?= $this->endSection() ?>

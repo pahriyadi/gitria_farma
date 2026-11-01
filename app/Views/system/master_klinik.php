@@ -1,33 +1,27 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2 align-items-center">
-            <div class="col-sm-7">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-hospital-user text-teal mr-2"></i> Master Data Referensi Klinik
-                </h1>
-                <small class="text-muted">Pusat tata kelola referensi pelayanan medis, tarif tindakan, dokter, ruangan, farmasi, lab, asuransi & PBF</small>
-            </div>
-            <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
-                <span class="badge badge-pill badge-light border text-teal px-3 py-2 font-weight-bold shadow-xs mr-1">
-                    <i class="fas fa-user-md mr-1"></i> <?= count($doctors) ?> Dokter
-                </span>
-                <span class="badge badge-pill badge-light border text-info px-3 py-2 font-weight-bold shadow-xs mr-1">
-                    <i class="fas fa-stethoscope mr-1"></i> <?= count($tindakanList) ?> Tarif Tindakan
-                </span>
-                <span class="badge badge-pill badge-light border text-secondary px-3 py-2 font-weight-bold shadow-xs">
-                    <i class="fas fa-building mr-1"></i> <?= count($rooms) ?> Ruang / <?= count($beds) ?> Bed
-                </span>
-            </div>
-        </div>
+<div class="row mb-3 align-items-center">
+    <div class="col-sm-7">
+        <h4 class="m-0 font-weight-bold master-klinik-page-title" style="font-size: 1.45rem;">
+            <i class="fas fa-hospital-user text-teal mr-2"></i> Master Data Referensi Klinik
+        </h4>
+        <small class="text-muted">Pusat tata kelola referensi pelayanan medis, tarif tindakan, dokter, ruangan, farmasi, lab, asuransi &amp; PBF</small>
+    </div>
+    <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
+        <span class="badge badge-pill badge-light border text-teal px-3 py-2 font-weight-bold shadow-xs mr-1">
+            <i class="fas fa-user-md mr-1"></i> <?= count($doctors) ?> Dokter
+        </span>
+        <span class="badge badge-pill badge-light border text-info px-3 py-2 font-weight-bold shadow-xs mr-1">
+            <i class="fas fa-stethoscope mr-1"></i> <?= count($tindakanList) ?> Tarif Tindakan
+        </span>
+        <span class="badge badge-pill badge-light border text-secondary px-3 py-2 font-weight-bold shadow-xs">
+            <i class="fas fa-building mr-1"></i> <?= count($rooms) ?> Ruang / <?= count($beds) ?> Bed
+        </span>
     </div>
 </div>
 
-<div class="content">
-    <div class="container-fluid">
-        <div class="card card-outline card-teal shadow-sm border-0 mb-4">
+<div class="card card-outline card-teal shadow-sm border-0 mb-4">
             <div class="card-header p-0 border-bottom-0 bg-light">
                 <div class="master-tabs-scroll-wrapper">
                     <ul class="nav nav-tabs nav-tabs-modern flex-nowrap" id="masterTab" role="tablist">
@@ -120,7 +114,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-striped table-bordered table-hover datatable w-100" style="font-size: 12px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 12px;">
                             <thead class="bg-light">
                                 <tr>
                                     <th style="width: 80px;" class="text-center">ID</th>
@@ -177,7 +171,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 12px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 12px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 50px;" class="text-center">ID</th>
@@ -347,7 +341,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-master-doctors" class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+                            <table id="table-master-doctors" class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 50px;" class="text-center">ID</th>
@@ -501,7 +495,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -563,7 +557,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>BED</th>
@@ -641,7 +635,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -703,7 +697,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -765,7 +759,7 @@
                         <div class="table-responsive">
 
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 200px;">JUDUL TEMPLATE</th>
@@ -852,7 +846,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -903,7 +897,7 @@
                                     </div>
                                     <div class="card-body p-2">
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th>KODE</th>
@@ -965,7 +959,7 @@
                         <div class="table-responsive">
 
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 100px;">KODE</th>
@@ -1048,7 +1042,7 @@
                         <div class="table-responsive">
 
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 120px;">KODE</th>
@@ -1132,7 +1126,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-master-schedules" class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+                            <table id="table-master-schedules" class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th>NAMA DOKTER</th>
@@ -1202,7 +1196,7 @@
                         <div class="table-responsive">
 
 <div class="table-responsive">
-<table class="table table-bordered table-striped table-hover datatable w-100" style="font-size: 11.5px;">
+<table class="table table-bordered table-hover datatable table-clean-grid w-100" style="font-size: 11.5px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 120px;">KODE</th>
@@ -1268,8 +1262,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 <!-- ========================================================================= -->
 <!-- MODALS SECTION -->
@@ -3674,6 +3666,113 @@
     .table-responsive .dataTables_info {
         text-align: left !important;
     }
+}
+
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .master-klinik-page-title,
+.dark-mode .master-klinik-page-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+.dark-mode .card-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .nav-tabs-modern,
+.dark-mode .nav-tabs-modern {
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link,
+.dark-mode .nav-tabs-modern .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link:hover,
+.dark-mode .nav-tabs-modern .nav-link:hover {
+    color: #34d399 !important;
+    border-bottom: 3px solid #34d399 !important;
+    background-color: #262b32 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link.active,
+.dark-mode .nav-tabs-modern .nav-link.active {
+    color: #34d399 !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #1f2328 !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+.dark-mode .modal-header {
+    border-color: #374151 !important;
+}
+body.dark-mode .modal-footer,
+.dark-mode .modal-footer {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .text-dark,
+.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .bg-light,
+.dark-mode .bg-light {
+    background-color: #181b1f !important;
 }
 </style>
 <?= $this->endSection() ?>

@@ -59,7 +59,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-icd10" class="table table-bordered table-striped table-hover datatable-serverside" style="width: 100%;">
+                            <table id="table-icd10" class="table table-bordered table-hover datatable-serverside table-clean-grid" style="width: 100%;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 110px;" class="text-center">KODE ICD-10</th>
@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-icd9" class="table table-bordered table-striped table-hover datatable-serverside" style="width: 100%;">
+                            <table id="table-icd9" class="table table-bordered table-hover datatable-serverside table-clean-grid" style="width: 100%;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 110px;" class="text-center">KODE ICD-9</th>
@@ -381,4 +381,101 @@
         });
     });
 </script>
+
+<style>
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .info-box,
+.dark-mode .info-box {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+.dark-mode .card-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-footer,
+.dark-mode .modal-footer {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .text-dark,
+.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .bg-light,
+.dark-mode .bg-light {
+    background-color: #181b1f !important;
+}
+body.dark-mode .nav-tabs .nav-link,
+.dark-mode .nav-tabs .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs .nav-link.active,
+.dark-mode .nav-tabs .nav-link.active {
+    background-color: #1f2328 !important;
+    color: #34d399 !important;
+    border-color: #374151 #374151 transparent !important;
+}
+</style>
 <?= $this->endSection() ?>

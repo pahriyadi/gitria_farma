@@ -67,7 +67,7 @@
                     <div class="form-row align-items-center">
                         <div class="col-auto">
                             <label class="text-xs font-weight-bold text-dark mr-2 mb-0">Status Error:</label>
-                            <select name="status" class="form-control form-control-sm d-inline-block w-auto" onchange="this.form.submit()">
+                            <select name="status" class="form-control form-control-sm d-inline-block w-auto" data-native="true" onchange="this.form.submit()">
                                 <option value="unresolved" <?= ($statusFilter === 'unresolved') ? 'selected' : '' ?>>🔴 Belum Selesai (Open)</option>
                                 <option value="resolved" <?= ($statusFilter === 'resolved') ? 'selected' : '' ?>>🟢 Sudah Selesai (Resolved)</option>
                                 <option value="all" <?= ($statusFilter === 'all') ? 'selected' : '' ?>>Semua Status</option>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-auto">
                             <label class="text-xs font-weight-bold text-dark mr-2 mb-0">Tingkat Severity:</label>
-                            <select name="level" class="form-control form-control-sm d-inline-block w-auto" onchange="this.form.submit()">
+                            <select name="level" class="form-control form-control-sm d-inline-block w-auto" data-native="true" onchange="this.form.submit()">
                                 <option value="">Semua Tingkat</option>
                                 <option value="CRITICAL" <?= ($levelFilter === 'CRITICAL') ? 'selected' : '' ?>>CRITICAL (Fatal)</option>
                                 <option value="ERROR" <?= ($levelFilter === 'ERROR') ? 'selected' : '' ?>>ERROR</option>
@@ -92,7 +92,7 @@
 
                 <!-- Tabel Daftar Log Error -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
+                    <table class="table table-clean-grid table-bordered table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>
@@ -219,4 +219,90 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<style>
+/* Desain Tabel Bersih & Border Konsisten Sesuai desain_tabel.md */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #b8b8b8 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.table-clean-grid tbody td {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+    vertical-align: middle;
+}
+.table-clean-grid tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode form.bg-light {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-body {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody td {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover td {
+    background-color: #262c36 !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+body.dark-mode .bg-light,
+body.dark-mode .bg-white {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+</style>
 <?= $this->endSection() ?>

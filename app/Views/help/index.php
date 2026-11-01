@@ -379,7 +379,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label class="font-weight-bold text-dark text-xs">Kategori Panduan <span class="text-danger">*</span></label>
-                            <select name="category" id="doc_category" class="form-control form-control-sm font-weight-bold" required>
+                            <select name="category" id="doc_category" class="form-control form-control-sm font-weight-bold" data-native="true" required>
                                 <option value="workflow">1. Peta Alur & Workflow Terpadu</option>
                                 <option value="role_guide">2. Panduan Langkah per Peran (Role)</option>
                                 <option value="faq">3. Tanya Jawab (FAQ & Solusi Kendala)</option>
@@ -388,7 +388,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label class="font-weight-bold text-dark text-xs">Target Peran / Profesi Staf</label>
-                            <select name="target_role" id="doc_target_role" class="form-control form-control-sm">
+                            <select name="target_role" id="doc_target_role" class="form-control form-control-sm" data-native="true">
                                 <option value="Semua Peran">Semua Peran Staf</option>
                                 <option value="Pendaftaran / FO">Pendaftaran / Front Office</option>
                                 <option value="Perawat">Perawat / Triase</option>
@@ -412,7 +412,7 @@
                     <div class="row">
                         <div class="col-md-4 form-group">
                             <label class="font-weight-bold text-dark text-xs">Warna Aksen Badge</label>
-                            <select name="badge_color" id="doc_badge_color" class="form-control form-control-sm">
+                            <select name="badge_color" id="doc_badge_color" class="form-control form-control-sm" data-native="true">
                                 <option value="teal">Hijau Toska (Teal)</option>
                                 <option value="primary">Biru (Primary)</option>
                                 <option value="warning">Oranye / Kuning (Warning)</option>
@@ -514,4 +514,59 @@
         });
     });
 </script>
+
+<style>
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-body,
+body.dark-mode .card-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .input-group-text {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted,
+body.dark-mode .text-secondary {
+    color: #9ca3af !important;
+}
+body.dark-mode .bg-light,
+body.dark-mode .bg-white {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .border,
+body.dark-mode .border-bottom,
+body.dark-mode .border-top {
+    border-color: #374151 !important;
+}
+</style>
 <?= $this->endSection() ?>

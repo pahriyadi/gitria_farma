@@ -614,7 +614,7 @@
                 <a href="<?= base_url('procurement/po') ?>" class="btn btn-xs btn-outline-danger font-weight-bold">Ajukan PO <i class="fas fa-arrow-right"></i></a>
             </div>
             <div class="card-body p-0 table-responsive">
-                <table class="table table-sm table-striped mb-0 text-xs">
+                <table class="table table-sm table-clean-grid mb-0 text-xs">
                     <thead>
                         <tr>
                             <th>Nama Obat</th>
@@ -650,7 +650,7 @@
                 <a href="<?= base_url('system/master-klinik') ?>" class="btn btn-xs btn-outline-teal font-weight-bold">Master Ruang</a>
             </div>
             <div class="card-body p-0 table-responsive">
-                <table class="table table-sm table-striped mb-0 text-xs">
+                <table class="table table-sm table-clean-grid mb-0 text-xs">
                     <thead>
                         <tr>
                             <th>Ruangan</th>
@@ -694,7 +694,7 @@
                 <a href="<?= base_url('keuangan/kasir') ?>" class="btn btn-xs btn-outline-info font-weight-bold">Kasir Klaim</a>
             </div>
             <div class="card-body p-0 table-responsive">
-                <table class="table table-sm table-striped mb-0 text-xs">
+                <table class="table table-sm table-clean-grid mb-0 text-xs">
                     <thead>
                         <tr>
                             <th>Pasien & Penjamin</th>

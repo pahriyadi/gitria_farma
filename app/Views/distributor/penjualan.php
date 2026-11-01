@@ -1,225 +1,376 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row align-items-center mb-2">
-            <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
-                <h4 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-cash-register text-indigo mr-2"></i> Kasir &amp; Faktur Penjualan Grosir B2B
-                </h4>
-                <small class="text-muted">Transaksi penjualan partai besar / grosir ke Apotek mitra, Klinik, Toko Obat, atau B2B</small>
-            </div>
-            <div class="col-lg-6 col-md-12 text-lg-right">
-                <div class="d-inline-flex flex-wrap align-items-center justify-content-lg-end" style="gap: 6px;">
-                    <a href="<?= base_url('distributor/riwayat') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-receipt mr-1"></i> Riwayat Penjualan
-                    </a>
-                    <a href="<?= base_url('distributor/pelanggan') ?>" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-user-plus mr-1"></i> Tambah Pelanggan
-                    </a>
-                    <a href="<?= base_url('distributor/stok') ?>" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm">
-                        <i class="fas fa-boxes-stacked mr-1"></i> Cek Stok Gudang
-                    </a>
-                </div>
-            </div>
+<style>
+    /* Theme Variables for Paper Light and Paper Dark (desain_tabel.md & dokumentasi_dark_mode.md) */
+    :root {
+        --dist-canvas-bg: #f4f6f9;
+        --dist-card-bg: #ffffff;
+        --dist-card-header: #ffffff;
+        --dist-border: #b8b8b8;
+        --dist-border-td: #c8c8c8;
+        --dist-border-th: #b0b0b0;
+        --dist-text: #212529;
+        --dist-text-muted: #6c757d;
+        --dist-th-bg: #f8fafc;
+        --dist-hover-bg: #f0f4f8;
+        --dist-box-bg: #f8fafc;
+        --dist-input-bg: #ffffff;
+    }
+
+    body.dark-mode {
+        --dist-canvas-bg: #14171a;
+        --dist-card-bg: #1f2328;
+        --dist-card-header: #1f2328;
+        --dist-border: #374151;
+        --dist-border-td: #374151;
+        --dist-border-th: #374151;
+        --dist-text: #f0f6fc;
+        --dist-text-muted: #9ca3af;
+        --dist-th-bg: #181b1f;
+        --dist-hover-bg: #262c36;
+        --dist-box-bg: #181b1f;
+        --dist-input-bg: #181b1f;
+    }
+
+    /* Container Card Styling */
+    .dist-card {
+        background-color: var(--dist-card-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .dist-card .card-header {
+        background-color: var(--dist-card-header) !important;
+        border-bottom: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    .dist-card .card-body {
+        background-color: var(--dist-card-bg) !important;
+        color: var(--dist-text) !important;
+    }
+
+    /* Form Controls */
+    .dist-input {
+        background-color: var(--dist-input-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+        border-radius: 4px;
+    }
+
+    .dist-input:focus {
+        border-color: #4f46e5 !important;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2) !important;
+    }
+
+    body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    /* Strict Table Styling (desain_tabel.md) */
+    .table-dist {
+        border-collapse: collapse !important;
+        width: 100%;
+        margin-bottom: 0;
+        color: var(--dist-text) !important;
+    }
+
+    .table-dist th,
+    .table-dist td {
+        border: 1px solid var(--dist-border) !important;
+        padding: 8px 12px;
+        vertical-align: middle;
+    }
+
+    .table-dist thead th {
+        background-color: var(--dist-th-bg) !important;
+        color: var(--dist-text) !important;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid var(--dist-border) !important;
+    }
+
+    .table-dist tbody tr {
+        background-color: var(--dist-card-bg) !important;
+        transition: background-color 0.15s ease;
+    }
+
+    .table-dist tbody tr:hover {
+        background-color: var(--dist-hover-bg) !important;
+    }
+
+    /* Info & Summary Boxes */
+    .dist-summary-box {
+        background-color: var(--dist-box-bg);
+        border: 1px solid var(--dist-border);
+        border-radius: 4px;
+        padding: 12px;
+    }
+
+    /* Modal Styling in Dark Mode */
+    body.dark-mode .modal-content {
+        background-color: var(--dist-card-bg) !important;
+        border: 1px solid var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .modal-header {
+        border-bottom: 1px solid var(--dist-border) !important;
+    }
+
+    body.dark-mode .modal-footer {
+        border-top: 1px solid var(--dist-border) !important;
+    }
+
+    /* Select2 in Dark Mode */
+    body.dark-mode .select2-container--bootstrap4 .select2-selection {
+        background-color: var(--dist-input-bg) !important;
+        border-color: var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .select2-container--bootstrap4 .select2-selection__rendered {
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .select2-dropdown {
+        background-color: var(--dist-card-bg) !important;
+        border-color: var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .select2-search__field {
+        background-color: var(--dist-input-bg) !important;
+        border-color: var(--dist-border) !important;
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .select2-results__option {
+        color: var(--dist-text) !important;
+    }
+
+    body.dark-mode .select2-results__option--highlighted {
+        background-color: #4f46e5 !important;
+        color: #ffffff !important;
+    }
+</style>
+
+<!-- HEADER ROW -->
+<div class="row align-items-center mb-3">
+    <div class="col-lg-6 col-md-12 mb-2 mb-lg-0">
+        <h4 class="font-weight-bold mb-1" style="color: var(--dist-text);">
+            <i class="fas fa-cash-register text-indigo mr-2"></i> Kasir &amp; Faktur Penjualan Grosir B2B
+        </h4>
+        <p class="small mb-0" style="color: var(--dist-text-muted);">
+            Transaksi penjualan partai besar / grosir ke Apotek mitra, Klinik, Toko Obat, atau B2B
+        </p>
+    </div>
+    <div class="col-lg-6 col-md-12 text-lg-right">
+        <div class="d-inline-flex flex-wrap align-items-center justify-content-lg-end" style="gap: 6px;">
+            <a href="<?= base_url('distributor/riwayat') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-sm">
+                <i class="fas fa-receipt mr-1"></i> Riwayat Penjualan
+            </a>
+            <a href="<?= base_url('distributor/pelanggan') ?>" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm">
+                <i class="fas fa-user-plus mr-1"></i> Tambah Pelanggan
+            </a>
+            <a href="<?= base_url('distributor/stok') ?>" class="btn btn-outline-teal btn-sm font-weight-bold shadow-sm">
+                <i class="fas fa-boxes-stacked mr-1"></i> Cek Stok Gudang
+            </a>
         </div>
     </div>
 </div>
 
-<div class="content">
-    <div class="container-fluid">
-        <form id="formPenjualanDistributor">
-            <div class="row">
-                
-                <!-- LEFT COLUMN: TRANSACTION HEADER & ITEM LIST -->
-                <div class="col-lg-8">
-                    
-                    <!-- 1. HEADER CARD (CUSTOMER & INVOICE INFO) -->
-                    <div class="card card-outline card-indigo shadow-none border mb-3">
-                        <div class="card-header bg-white py-2">
-                            <h6 class="card-title font-weight-bold m-0 text-dark">
-                                <i class="fas fa-circle-info text-indigo mr-1"></i> Data Transaksi &amp; Pelanggan
-                            </h6>
-                        </div>
-                        <div class="card-body p-3">
-                            <div class="row">
-                                <div class="col-md-4 mb-2">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">NO. FAKTUR</label>
-                                    <input type="text" class="form-control form-control-sm font-weight-bold text-indigo" id="invoice_no" name="invoice_no" value="<?= esc($invoiceNo) ?>" readonly>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">TANGGAL FAKTUR</label>
-                                    <input type="date" class="form-control form-control-sm" id="sale_date" name="sale_date" value="<?= date('Y-m-d') ?>" required>
-                                </div>
-                                <div class="col-md-4 mb-2">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">METODE PEMBAYARAN</label>
-                                    <select class="form-control form-control-sm font-weight-bold" id="payment_type" name="payment_type" onchange="onPaymentTypeChange()">
-                                        <option value="cash" selected>Tunai (Cash)</option>
-                                        <option value="transfer">Transfer Bank</option>
-                                        <option value="credit">Kredit / Tempo (TOP)</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-6 mb-2">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">PILIH PELANGGAN / CUSTOMER B2B <span class="text-danger">*</span></label>
-                                    <select class="form-control form-control-sm select2" id="customer_id" name="customer_id" onchange="onCustomerSelect()" required>
-                                        <option value="">-- Pilih Customer --</option>
-                                        <?php foreach ($customers as $c): ?>
-                                            <option value="<?= $c->id ?>" 
-                                                data-limit="<?= (float)$c->credit_limit ?>" 
-                                                data-debt="<?= (float)$c->current_receivable ?>" 
-                                                data-terms="<?= (int)$c->payment_terms_days ?>"
-                                                data-name="<?= esc($c->name) ?>"
-                                                data-phone="<?= esc($c->phone) ?>">
-                                                <?= esc($c->code) ?> - <?= esc($c->name) ?> <?= !empty($c->company_name) ? '(' . esc($c->company_name) . ')' : '' ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-3 mb-2" id="terms_container" style="display: none;">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">TEMPO (HARI)</label>
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" class="form-control form-control-sm" id="payment_terms_days" name="payment_terms_days" value="30" min="1" onchange="calculateDueDate()">
-                                        <div class="input-group-append"><span class="input-group-text">Hari</span></div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 mb-2" id="due_date_container" style="display: none;">
-                                    <label class="font-weight-bold text-xs text-muted mb-1">JATUH TEMPO</label>
-                                    <input type="date" class="form-control form-control-sm bg-light" id="due_date_preview" readonly>
-                                </div>
-                            </div>
-
-                            <!-- Customer Credit Limit & Debt Information Box -->
-                            <div id="customer_credit_box" class="p-2 mt-2 bg-light rounded border text-xs" style="display: none;">
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <span class="text-muted">Limit Kredit:</span> 
-                                        <strong id="cust_limit_val" class="text-dark">Rp 0</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span class="text-muted">Piutang Berjalan:</span> 
-                                        <strong id="cust_debt_val" class="text-danger">Rp 0</strong>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <span class="text-muted">Sisa Kuota:</span> 
-                                        <strong id="cust_quota_val" class="text-success">Rp 0</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. MEDICINE SELECTION & CART TABLE -->
-                    <div class="card card-outline card-indigo shadow-none border">
-                        <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
-                            <h6 class="card-title font-weight-bold m-0 text-dark">
-                                <i class="fas fa-boxes-stacked text-teal mr-1"></i> Rincian Barang Penjualan
-                            </h6>
-                            <button type="button" class="btn btn-sm btn-outline-indigo font-weight-bold" onclick="openItemPickerModal()">
-                                <i class="fas fa-plus-circle mr-1"></i> Tambah Barang
-                            </button>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive" style="min-height: 250px;">
-                                <table class="table table-bordered table-striped mb-0 text-sm" id="cartTable">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th style="width: 35%;">Nama Obat / Barang</th>
-                                            <th style="width: 15%;">Batch &amp; Exp</th>
-                                            <th style="width: 12%;" class="text-center">Qty</th>
-                                            <th style="width: 18%;" class="text-right">Harga Satuan</th>
-                                            <th style="width: 15%;" class="text-right">Subtotal</th>
-                                            <th style="width: 5%;" class="text-center"><i class="fas fa-trash"></i></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="cartTableBody">
-                                        <tr id="emptyCartRow">
-                                            <td colspan="6" class="text-center py-5 text-muted">
-                                                <i class="fas fa-cart-shopping fa-3x mb-2 text-secondary opacity-50 d-block"></i>
-                                                Belum ada barang di keranjang.<br>
-                                                <button type="button" class="btn btn-xs btn-indigo mt-2" onclick="openItemPickerModal()" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
-                                                    <i class="fas fa-plus mr-1"></i> Tambah Barang Sekarang
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
+<form id="formPenjualanDistributor">
+    <div class="row">
+        <!-- LEFT COLUMN: TRANSACTION HEADER & ITEM LIST -->
+        <div class="col-lg-8 mb-4">
+            <!-- 1. HEADER CARD (CUSTOMER & INVOICE INFO) -->
+            <div class="dist-card mb-3">
+                <div class="card-header py-2.5">
+                    <h6 class="font-weight-bold m-0" style="color: var(--dist-text); font-size: 14px;">
+                        <i class="fas fa-circle-info text-indigo mr-1"></i> Data Transaksi &amp; Pelanggan
+                    </h6>
                 </div>
-
-                <!-- RIGHT COLUMN: TOTALS, SUMMARY & CHECKOUT -->
-                <div class="col-lg-4">
-                    <div class="card card-outline card-indigo shadow-none border">
-                        <div class="card-header bg-white py-2">
-                            <h6 class="card-title font-weight-bold m-0 text-dark">
-                                <i class="fas fa-calculator text-indigo mr-1"></i> Ringkasan Faktur
-                            </h6>
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-md-4 mb-2">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">NO. FAKTUR</label>
+                            <input type="text" class="form-control form-control-sm font-weight-bold text-indigo dist-input" id="invoice_no" name="invoice_no" value="<?= esc($invoiceNo) ?>" readonly>
                         </div>
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Subtotal:</span>
-                                <strong id="lbl_subtotal" class="text-dark">Rp 0</strong>
+                        <div class="col-md-4 mb-2">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">TANGGAL FAKTUR</label>
+                            <input type="date" class="form-control form-control-sm dist-input" id="sale_date" name="sale_date" value="<?= date('Y-m-d') ?>" required>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">METODE PEMBAYARAN</label>
+                            <select class="form-control form-control-sm font-weight-bold dist-input" id="payment_type" name="payment_type" data-native="true" onchange="onPaymentTypeChange()">
+                                <option value="cash" selected>Tunai (Cash)</option>
+                                <option value="transfer">Transfer Bank</option>
+                                <option value="credit">Kredit / Tempo (TOP)</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">PILIH PELANGGAN / CUSTOMER B2B <span class="text-danger">*</span></label>
+                            <select class="form-control form-control-sm dist-input" id="customer_id" name="customer_id" data-native="true" onchange="onCustomerSelect()" required>
+                                <option value="">-- Pilih Customer --</option>
+                                <?php foreach ($customers as $c): ?>
+                                    <option value="<?= $c->id ?>" 
+                                        data-limit="<?= (float)$c->credit_limit ?>" 
+                                        data-debt="<?= (float)$c->current_receivable ?>" 
+                                        data-terms="<?= (int)$c->payment_terms_days ?>"
+                                        data-name="<?= esc($c->name) ?>"
+                                        data-phone="<?= esc($c->phone) ?>">
+                                        <?= esc($c->code) ?> - <?= esc($c->name) ?> <?= !empty($c->company_name) ? '(' . esc($c->company_name) . ')' : '' ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-2" id="terms_container" style="display: none;">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">TEMPO (HARI)</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control form-control-sm dist-input" id="payment_terms_days" name="payment_terms_days" value="30" min="1" onchange="calculateDueDate()">
+                                <div class="input-group-append"><span class="input-group-text dist-input">Hari</span></div>
                             </div>
+                        </div>
 
-                            <div class="form-group mb-2">
-                                <label class="text-xs text-muted font-weight-bold mb-1">DISKON FAKTUR (NOMINAL)</label>
-                                <div class="input-group input-group-sm">
-                                    <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
-                                    <input type="number" class="form-control form-control-sm text-right font-weight-bold" id="discount_amount" name="discount_amount" value="0" min="0" oninput="calculateGrandTotal()">
-                                </div>
+                        <div class="col-md-3 mb-2" id="due_date_container" style="display: none;">
+                            <label class="font-weight-bold text-xs mb-1" style="color: var(--dist-text-muted);">JATUH TEMPO</label>
+                            <input type="date" class="form-control form-control-sm dist-input" id="due_date_preview" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Customer Credit Limit & Debt Information Box -->
+                    <div id="customer_credit_box" class="dist-summary-box mt-2 text-xs" style="display: none;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <span style="color: var(--dist-text-muted);">Limit Kredit:</span> 
+                                <strong id="cust_limit_val" style="color: var(--dist-text);">Rp 0</strong>
                             </div>
-
-                            <div class="form-group mb-2">
-                                <label class="text-xs text-muted font-weight-bold mb-1">PPN (PAJAK PERTAMBAHAN NILAI)</label>
-                                <select class="form-control form-control-sm font-weight-bold" id="tax_type" onchange="calculateGrandTotal()">
-                                    <option value="0" selected>Tanpa PPN (0%)</option>
-                                    <option value="11">PPN 11% (Standar Faktur Pajak)</option>
-                                </select>
+                            <div class="col-md-4">
+                                <span style="color: var(--dist-text-muted);">Piutang Berjalan:</span> 
+                                <strong id="cust_debt_val" class="text-danger">Rp 0</strong>
                             </div>
-
-                            <div class="d-flex justify-content-between mb-2" id="tax_row" style="display: none;">
-                                <span class="text-muted">Nilai PPN (11%):</span>
-                                <strong id="lbl_tax" class="text-dark">Rp 0</strong>
+                            <div class="col-md-4">
+                                <span style="color: var(--dist-text-muted);">Sisa Kuota:</span> 
+                                <strong id="cust_quota_val" class="text-success">Rp 0</strong>
                             </div>
-
-                            <hr class="my-2">
-
-                            <div class="p-3 bg-light rounded border mb-3">
-                                <span class="text-muted text-xs font-weight-bold text-uppercase d-block mb-1">TOTAL TAGIHAN FAKTUR</span>
-                                <h3 class="font-weight-bold text-indigo mb-0" id="lbl_grand_total" style="color: #4f46e5;">Rp 0</h3>
-                            </div>
-
-                            <div class="form-group mb-3">
-                                <label class="text-xs text-muted font-weight-bold mb-1">CATATAN / KETERANGAN FAKTUR</label>
-                                <textarea class="form-control form-control-sm" id="notes" name="notes" rows="2" placeholder="Catatan termin, no. PO customer, alamat kirim, dll..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-indigo btn-block py-2.5 font-weight-bold shadow-sm" id="btnSubmitSale" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
-                                <i class="fas fa-check-circle mr-1"></i> SIMPAN &amp; CETAK FAKTUR
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary btn-block btn-sm mt-2" onclick="resetCart()">
-                                <i class="fas fa-rotate-left mr-1"></i> Reset Formulir
-                            </button>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </form>
+
+            <!-- 2. MEDICINE SELECTION & CART TABLE -->
+            <div class="dist-card">
+                <div class="card-header py-2.5 d-flex justify-content-between align-items-center">
+                    <h6 class="font-weight-bold m-0" style="color: var(--dist-text); font-size: 14px;">
+                        <i class="fas fa-boxes-stacked text-teal mr-1"></i> Rincian Barang Penjualan
+                    </h6>
+                    <button type="button" class="btn btn-sm btn-outline-indigo font-weight-bold" id="btnOpenItemPicker" onclick="openItemPickerModal()">
+                        <i class="fas fa-plus-circle mr-1"></i> Tambah Barang
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="min-height: 250px;">
+                        <table class="table-dist mb-0 text-sm" id="cartTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 35%;">Nama Obat / Barang</th>
+                                    <th style="width: 15%;">Batch &amp; Exp</th>
+                                    <th style="width: 12%;" class="text-center">Qty</th>
+                                    <th style="width: 18%;" class="text-right">Harga Satuan</th>
+                                    <th style="width: 15%;" class="text-right">Subtotal</th>
+                                    <th style="width: 5%;" class="text-center"><i class="fas fa-trash"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartTableBody">
+                                <tr id="emptyCartRow">
+                                    <td colspan="6" class="text-center py-5" style="color: var(--dist-text-muted);">
+                                        <i class="fas fa-cart-shopping fa-3x mb-2 text-secondary opacity-50 d-block"></i>
+                                        Belum ada barang di keranjang.<br>
+                                        <button type="button" class="btn btn-xs btn-indigo mt-2" onclick="openItemPickerModal()" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
+                                            <i class="fas fa-plus mr-1"></i> Tambah Barang Sekarang
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: TOTALS, SUMMARY & CHECKOUT -->
+        <div class="col-lg-4 mb-4">
+            <div class="dist-card">
+                <div class="card-header py-2.5">
+                    <h6 class="font-weight-bold m-0" style="color: var(--dist-text); font-size: 14px;">
+                        <i class="fas fa-calculator text-indigo mr-1"></i> Ringkasan Faktur
+                    </h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span style="color: var(--dist-text-muted);">Subtotal:</span>
+                        <strong id="lbl_subtotal" style="color: var(--dist-text);">Rp 0</strong>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">DISKON FAKTUR (NOMINAL)</label>
+                        <div class="input-group input-group-sm">
+                            <div class="input-group-prepend"><span class="input-group-text dist-input">Rp</span></div>
+                            <input type="number" class="form-control form-control-sm text-right font-weight-bold dist-input" id="discount_amount" name="discount_amount" value="0" min="0" oninput="calculateGrandTotal()">
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">PPN (PAJAK PERTAMBAHAN NILAI)</label>
+                        <select class="form-control form-control-sm font-weight-bold dist-input" id="tax_type" data-native="true" onchange="calculateGrandTotal()">
+                            <option value="0" selected>Tanpa PPN (0%)</option>
+                            <option value="11">PPN 11% (Standar Faktur Pajak)</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2" id="tax_row" style="display: none;">
+                        <span style="color: var(--dist-text-muted);">Nilai PPN (11%):</span>
+                        <strong id="lbl_tax" style="color: var(--dist-text);">Rp 0</strong>
+                    </div>
+
+                    <hr class="my-2" style="border-color: var(--dist-border);">
+
+                    <div class="dist-summary-box mb-3">
+                        <span class="text-xs font-weight-bold text-uppercase d-block mb-1" style="color: var(--dist-text-muted);">TOTAL TAGIHAN FAKTUR</span>
+                        <h3 class="font-weight-bold mb-0 text-indigo" id="lbl_grand_total" style="color: #4f46e5;">Rp 0</h3>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="text-xs font-weight-bold mb-1" style="color: var(--dist-text-muted);">CATATAN / KETERANGAN FAKTUR</label>
+                        <textarea class="form-control form-control-sm dist-input" id="notes" name="notes" rows="2" placeholder="Catatan termin, no. PO customer, alamat kirim, dll..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-indigo btn-block py-2.5 font-weight-bold shadow-sm" id="btnSubmitSale" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
+                        <i class="fas fa-check-circle mr-1"></i> SIMPAN &amp; CETAK FAKTUR
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-block btn-sm mt-2" onclick="resetCart()">
+                        <i class="fas fa-rotate-left mr-1"></i> Reset Formulir
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</form>
 
 <!-- MODAL ITEM PICKER (PILIH OBAT DARI GUDANG DISTRIBUTOR) -->
 <div class="modal fade" id="modalItemPicker" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
-            <div class="modal-header bg-indigo text-white py-2" style="background-color: #4f46e5;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 8px;">
+            <div class="modal-header bg-indigo text-white py-2.5" style="background-color: #4f46e5;">
                 <h6 class="modal-title font-weight-bold"><i class="fas fa-boxes-stacked mr-1"></i> Pilih Obat dari Stok Gudang Distributor</h6>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -227,12 +378,12 @@
             </div>
             <div class="modal-body p-3">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-search"></i></span></div>
-                    <input type="text" class="form-control" id="searchItemInput" placeholder="Cari nama obat, kode, atau batch..." onkeyup="filterPickerItems()">
+                    <div class="input-group-prepend"><span class="input-group-text dist-input"><i class="fas fa-search"></i></span></div>
+                    <input type="text" class="form-control dist-input" id="searchItemInput" placeholder="Cari nama obat, kode, atau batch..." onkeyup="filterPickerItems()">
                 </div>
                 <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
-                    <table class="table table-hover table-striped text-sm mb-0">
-                        <thead class="bg-light sticky-top">
+                    <table class="table-dist mb-0 text-sm" id="pickerTable">
+                        <thead class="sticky-top">
                             <tr>
                                 <th>Kode &amp; Nama Obat</th>
                                 <th>Batch &amp; Exp</th>
@@ -244,18 +395,18 @@
                         <tbody id="pickerTableBody">
                             <?php if (empty($stocks)): ?>
                                 <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">Stok gudang distributor kosong. Silakan tambahkan stok terlebih dahulu.</td>
+                                    <td colspan="5" class="text-center py-4" style="color: var(--dist-text-muted);">Stok gudang distributor kosong. Silakan tambahkan stok terlebih dahulu.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($stocks as $stk): ?>
                                     <tr class="picker-item-row" data-search="<?= strtolower($stk->med_name . ' ' . $stk->med_code . ' ' . $stk->batch_no) ?>">
                                         <td>
-                                            <strong class="text-dark d-block"><?= esc($stk->med_name) ?></strong>
-                                            <small class="text-muted"><?= esc($stk->med_code) ?> | Satuan: <?= esc($stk->default_unit ?: 'PCS') ?></small>
+                                            <strong class="d-block" style="color: var(--dist-text);"><?= esc($stk->med_name) ?></strong>
+                                            <small style="color: var(--dist-text-muted);"><?= esc($stk->med_code) ?> | Satuan: <?= esc($stk->default_unit ?: 'PCS') ?></small>
                                         </td>
                                         <td>
                                             <span class="badge badge-light border"><?= esc($stk->batch_no ?: '-') ?></span>
-                                            <small class="d-block text-muted">Exp: <?= $stk->expired_date ? date('d/m/Y', strtotime($stk->expired_date)) : '-' ?></small>
+                                            <small class="d-block" style="color: var(--dist-text-muted);">Exp: <?= $stk->expired_date ? date('d/m/Y', strtotime($stk->expired_date)) : '-' ?></small>
                                         </td>
                                         <td class="text-center font-weight-bold text-indigo">
                                             <?= $stk->stock ?>
@@ -264,7 +415,7 @@
                                             Rp <?= number_format($stk->selling_price, 0, ',', '.') ?>
                                         </td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-xs btn-indigo" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;" onclick='addToCart(<?= json_encode($stk) ?>)'>
+                                            <button type="button" class="btn btn-xs btn-indigo btn-select-stock" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;" onclick='addToCart(<?= json_encode($stk) ?>)'>
                                                 <i class="fas fa-plus mr-1"></i> Pilih
                                             </button>
                                         </td>
@@ -274,6 +425,9 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -413,7 +567,7 @@ function renderCart() {
     if (cartItems.length === 0) {
         tbody.innerHTML = `
             <tr id="emptyCartRow">
-                <td colspan="6" class="text-center py-5 text-muted">
+                <td colspan="6" class="text-center py-5" style="color: var(--dist-text-muted);">
                     <i class="fas fa-cart-shopping fa-3x mb-2 text-secondary opacity-50 d-block"></i>
                     Belum ada barang di keranjang.<br>
                     <button type="button" class="btn btn-xs btn-indigo mt-2" onclick="openItemPickerModal()" style="background-color: #4f46e5; border-color: #4f46e5; color: #fff;">
@@ -432,25 +586,25 @@ function renderCart() {
         html += `
             <tr>
                 <td>
-                    <strong class="text-dark d-block">${it.med_name}</strong>
-                    <small class="text-muted">${it.med_code} | Sat: ${it.unit}</small>
+                    <strong class="d-block" style="color: var(--dist-text);">${it.med_name}</strong>
+                    <small style="color: var(--dist-text-muted);">${it.med_code} | Sat: ${it.unit}</small>
                 </td>
                 <td>
                     <span class="badge badge-light border">${it.batch_no}</span>
-                    <small class="d-block text-muted">${it.expired_date ? it.expired_date : ''}</small>
+                    <small class="d-block" style="color: var(--dist-text-muted);">${it.expired_date ? it.expired_date : ''}</small>
                 </td>
                 <td class="text-center">
-                    <input type="number" class="form-control form-control-sm text-center font-weight-bold" value="${it.qty}" min="1" max="${it.max_stock}" onchange="updateCartQty(${idx}, this.value)">
-                    <small class="text-muted text-xs">Maks: ${it.max_stock}</small>
+                    <input type="number" class="form-control form-control-sm text-center font-weight-bold dist-input cart-qty-input" value="${it.qty}" min="1" max="${it.max_stock}" onchange="updateCartQty(${idx}, this.value)">
+                    <small class="text-xs" style="color: var(--dist-text-muted);">Maks: ${it.max_stock}</small>
                 </td>
                 <td class="text-right">
-                    <input type="number" class="form-control form-control-sm text-right font-weight-bold" value="${it.selling_price}" min="0" onchange="updateCartPrice(${idx}, this.value)">
+                    <input type="number" class="form-control form-control-sm text-right font-weight-bold dist-input" value="${it.selling_price}" min="0" onchange="updateCartPrice(${idx}, this.value)">
                 </td>
-                <td class="text-right font-weight-bold text-dark pt-3">
+                <td class="text-right font-weight-bold pt-3" style="color: var(--dist-text);">
                     Rp ${formatRupiah(lineTotal)}
                 </td>
                 <td class="text-center pt-3">
-                    <button type="button" class="btn btn-xs btn-outline-danger" onclick="removeFromCart(${idx})">
+                    <button type="button" class="btn btn-xs btn-outline-danger btn-remove-item" onclick="removeFromCart(${idx})">
                         <i class="fas fa-trash"></i>
                     </button>
                 </td>

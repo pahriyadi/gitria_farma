@@ -238,7 +238,15 @@ class Resto extends BaseController
                     }
 
                     if ($allReady) {
-                        $db->table('restaurant_orders')->where('id', $orderId)->update(['status' => 'ready']);
+                        $allServed = true;
+                        foreach ($allDetails as $d) {
+                            if ($d->status !== 'served') $allServed = false;
+                        }
+                        if ($allServed) {
+                            $db->table('restaurant_orders')->where('id', $orderId)->update(['status' => 'closed']);
+                        } else {
+                            $db->table('restaurant_orders')->where('id', $orderId)->update(['status' => 'ready']);
+                        }
                     } elseif ($anyCooking) {
                         $db->table('restaurant_orders')->where('id', $orderId)->update(['status' => 'cooking']);
                     }

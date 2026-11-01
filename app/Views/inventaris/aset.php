@@ -1,32 +1,25 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-boxes-packing text-teal mr-2"></i> Inventaris & Manajemen Aset Klinik
-                </h1>
-                <small class="text-muted">Pencatatan aset medis & non-medis, mutasi ruangan, jadwal pemeliharaan, depresiasi nilai buku, dan cetak label stiker</small>
-            </div>
-            <div class="col-sm-6 text-right">
-                <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-1" data-toggle="modal" data-target="#modalAddAsset">
-                    <i class="fas fa-plus mr-1"></i> Catat Aset Baru
-                </button>
-                <a href="<?= base_url('inventaris/cetak-laporan') ?>" target="_blank" class="btn btn-dark btn-sm font-weight-bold shadow-sm">
-                    <i class="fas fa-print mr-1"></i> Cetak Rekap Aset
-                </a>
-            </div>
-        </div>
+<div class="row align-items-center mb-3">
+    <div class="col-sm-6">
+        <h4 class="m-0 font-weight-bold inventaris-page-title" style="font-size: 1.45rem;">
+            <i class="fas fa-boxes-packing text-teal mr-2"></i> Inventaris &amp; Manajemen Aset Klinik
+        </h4>
+        <small class="text-muted">Pencatatan aset medis &amp; non-medis, mutasi ruangan, jadwal pemeliharaan, depresiasi nilai buku, dan cetak label stiker</small>
+    </div>
+    <div class="col-sm-6 text-sm-right mt-2 mt-sm-0">
+        <button class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-1" data-toggle="modal" data-target="#modalAddAsset">
+            <i class="fas fa-plus mr-1"></i> Catat Aset Baru
+        </button>
+        <a href="<?= base_url('inventaris/cetak-laporan') ?>" target="_blank" class="btn btn-dark btn-sm font-weight-bold shadow-sm">
+            <i class="fas fa-print mr-1"></i> Cetak Rekap Aset
+        </a>
     </div>
 </div>
 
-<div class="content">
-    <div class="container-fluid">
-
-        <!-- 4 KPI SUMMARY CARDS -->
-        <div class="row mb-4">
+<!-- 4 KPI SUMMARY CARDS -->
+<div class="row mb-4">
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm h-100 bg-white" style="border: 1px solid #b8b8b8; border-left: 4px solid #0d9488 !important;">
                     <div class="card-body p-3">
@@ -144,7 +137,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable" style="font-size: 13px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 130px;" class="text-center">Kode Aset</th>
@@ -238,7 +231,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable" style="font-size: 13px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 130px;" class="text-center">Kode Aset</th>
@@ -288,7 +281,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable" style="font-size: 13px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 130px;" class="text-center">Kode Aset</th>
@@ -334,7 +327,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable" style="font-size: 13px;">
+                            <table class="table table-bordered table-hover datatable table-clean-grid" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 130px;" class="text-center">Kode Aset</th>
@@ -364,9 +357,6 @@
                 </div>
             </div>
         </div>
-
-    </div>
-</div>
 
 <!-- ========================================================================= -->
 <!-- MODAL: TAMBAH / EDIT ASET -->
@@ -683,4 +673,103 @@
         });
     });
 </script>
+
+<style>
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .inventaris-page-title,
+.dark-mode .inventaris-page-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body.bg-white,
+.dark-mode .card-body.bg-white {
+    background-color: #1f2328 !important;
+}
+body.dark-mode .card-header,
+.dark-mode .card-header {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+.dark-mode .modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header.bg-white,
+.dark-mode .modal-header.bg-white {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .text-dark,
+.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .bg-light,
+.dark-mode .bg-light {
+    background-color: #181b1f !important;
+}
+body.dark-mode .nav-tabs .nav-link,
+.dark-mode .nav-tabs .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs .nav-link.active,
+.dark-mode .nav-tabs .nav-link.active {
+    background-color: #1f2328 !important;
+    color: #34d399 !important;
+    border-color: #374151 #374151 transparent !important;
+}
+</style>
 <?= $this->endSection() ?>

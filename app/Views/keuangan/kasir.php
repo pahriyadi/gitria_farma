@@ -260,6 +260,41 @@
         background-color: #374151 !important;
         color: #ffffff !important;
     }
+
+    /* Strict Table Styling per desain_tabel.md */
+    body:not(.dark-mode) .table-bordered {
+        border: 1px solid #b8b8b8 !important;
+        border-collapse: collapse !important;
+    }
+    body:not(.dark-mode) .table-bordered th,
+    body:not(.dark-mode) .table-bordered td {
+        border: 1px solid #b8b8b8 !important;
+    }
+    body:not(.dark-mode) .table-bordered thead th {
+        background-color: #f8fafc !important;
+        color: #1f2937 !important;
+        border-color: #b8b8b8 !important;
+    }
+    body.dark-mode .table-bordered,
+    .dark-mode .table-bordered {
+        border: 1px solid #374151 !important;
+        border-collapse: collapse !important;
+        background-color: #1f2328 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .table-bordered th,
+    body.dark-mode .table-bordered td,
+    .dark-mode .table-bordered th,
+    .dark-mode .table-bordered td {
+        border: 1px solid #374151 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .table-bordered thead th,
+    .dark-mode .table-bordered thead th {
+        background-color: #181b1f !important;
+        border-color: #374151 !important;
+        color: #f0f6fc !important;
+    }
 </style>
 <div class="row">
     <div class="col-md-12">
@@ -482,7 +517,7 @@
                                             </div>
                                             
                                             <div class="table-responsive mb-3 border rounded">
-                                                <table class="table table-bordered table-striped table-sm mb-0" id="details-table" style="font-size: 13px;">
+                                                <table class="table table-bordered table-sm mb-0" id="details-table" style="font-size: 13px;">
                                                     <thead class="bg-light">
                                                         <tr>
                                                             <th style="width: 30px;" class="text-center">No</th>
@@ -642,7 +677,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable">
+                            <table class="table table-bordered table-hover datatable">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 140px;" class="text-center">NO. KWITANSI</th>
@@ -761,7 +796,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-sm table-striped" id="dtl-items-table">
+                    <table class="table table-bordered table-sm" id="dtl-items-table">
                         <thead class="bg-light">
                             <tr>
                                 <th>Item Layanan / Obat</th>

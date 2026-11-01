@@ -1,22 +1,6 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-shield-halved text-teal mr-2"></i> Audit Trail & Log Keamanan Sistem
-                </h1>
-                <small class="text-muted">Pelacakan riwayat aktivitas pengguna, perubahan data, transaksi kritis, dan akses keamanan</small>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="content">
-    <div class="container-fluid">
-
         <!-- FILTER TOOLBAR -->
         <form method="get" action="<?= base_url('system/audit') ?>" class="mb-3 bg-light p-2 rounded border">
             <div class="row align-items-center">
@@ -25,7 +9,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text font-weight-bold bg-white"><i class="fas fa-bolt mr-1"></i> Aksi:</span>
                         </div>
-                        <select name="action" class="form-control font-weight-bold">
+                        <select name="action" class="form-control font-weight-bold" data-native="true">
                             <option value="">-- Semua Aksi --</option>
                             <option value="LOGIN" <?= $filterAction === 'LOGIN' ? 'selected' : '' ?>>LOGIN (Masuk Akun)</option>
                             <option value="LOGOUT" <?= $filterAction === 'LOGOUT' ? 'selected' : '' ?>>LOGOUT (Keluar)</option>
@@ -46,7 +30,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text font-weight-bold bg-white"><i class="fas fa-cubes mr-1"></i> Modul:</span>
                         </div>
-                        <select name="module" class="form-control font-weight-bold">
+                        <select name="module" class="form-control font-weight-bold" data-native="true">
                             <option value="">-- Semua Modul --</option>
                             <?php foreach ($modules as $m): ?>
                                 <option value="<?= esc($m->module) ?>" <?= $filterModule === $m->module ? 'selected' : '' ?>><?= esc($m->module) ?></option>
@@ -84,7 +68,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="table-audit" class="table table-striped table-bordered table-hover datatable-serverside" style="font-size: 13px; width: 100%;">
+                    <table id="table-audit" class="table table-clean-grid table-bordered table-hover datatable-serverside" style="font-size: 13px; width: 100%;">
                         <thead class="bg-light">
                             <tr>
                                 <th style="width: 40px;" class="text-center">NO</th>
@@ -104,8 +88,77 @@
             </div>
         </div>
 
-    </div>
-</div>
+<style>
+/* Desain Tabel Bersih & Border Konsisten Sesuai desain_tabel.md */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #b8b8b8 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+.table-clean-grid tbody td {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+    vertical-align: middle;
+}
+.table-clean-grid tbody tr:hover td {
+    background-color: #f1f5f9 !important;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode form.bg-light {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .input-group-text {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .form-control {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody td {
+    background-color: #1f2328 !important;
+    color: #f0f6fc !important;
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover td {
+    background-color: #262c36 !important;
+}
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+</style>
 
 <script>
     $(document).ready(function() {

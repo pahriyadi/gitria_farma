@@ -232,7 +232,7 @@
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
-                                <table class="table table-hover table-striped mb-0 text-xs">
+                                <table class="table table-hover table-clean-grid mb-0 text-xs">
                                     <thead class="bg-light">
                                         <tr>
                                             <th>Tanggal</th>

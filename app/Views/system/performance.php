@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
+                    <table class="table table-bordered table-clean-grid table-hover mb-0 datatable" style="border: 1px solid #b8b8b8 !important;">
                         <thead class="bg-light text-center">
                             <tr>
                                 <th style="width: 50px;">NO</th>

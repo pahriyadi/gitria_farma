@@ -1,31 +1,21 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header p-0 mb-3">
-    <div class="container-fluid p-0">
-        <div class="row align-items-center">
-            <div class="col-sm-8">
-                <h1 class="m-0 wn-page-title font-weight-bold" style="font-size: 1.45rem;">
-                    <i class="fas fa-sparkles text-warning mr-2"></i> Apa yang Baru? (What's New)
-                </h1>
-                <small class="wn-page-sub">Pusat log pembaruan fitur, peningkatan arsitektur, dan rilis versi sistem Sawamawa Medical Center</small>
-            </div>
-            <div class="col-sm-4 text-right mt-2 mt-sm-0">
+        <!-- Top Action Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+            <div>
                 <span class="badge badge-teal px-3 py-2 font-weight-bold shadow-xs" style="font-size: 13px;">
                     <i class="fas fa-code-branch mr-1"></i> Versi Sistem: <?= esc($currentVersion) ?>
                 </span>
+            </div>
+            <div>
                 <?php if ($isSuper): ?>
-                    <button class="btn btn-teal btn-sm font-weight-bold ml-2 shadow-xs" data-toggle="modal" data-target="#modalAddUpdate">
+                    <button class="btn btn-teal btn-sm font-weight-bold shadow-xs" data-toggle="modal" data-target="#modalAddUpdate">
                         <i class="fas fa-plus mr-1"></i> + Tambah Rilis Fitur
                     </button>
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="content p-0">
-    <div class="container-fluid p-0">
 
         <!-- Top Highlight Summary Banner -->
         <div class="card wn-hero-card shadow-none mb-3" style="border-radius: 4px;">
@@ -211,9 +201,6 @@
             </div>
 
         </div>
-
-    </div>
-</div>
 
 <?php if ($isSuper): ?>
 <!-- MODAL ADD RELEASE -->
@@ -478,5 +465,72 @@
         });
     });
 </script>
+
+<style>
+.wn-hero-card,
+.wn-filter-card {
+    border: 1px solid #b8b8b8 !important;
+    background-color: #ffffff;
+}
+
+/* Paper Dark Mode Palette Support */
+body.dark-mode .card,
+body.dark-mode .wn-hero-card,
+body.dark-mode .wn-filter-card,
+body.dark-mode .timeline-item {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-body,
+body.dark-mode .timeline-body,
+body.dark-mode .timeline-header,
+body.dark-mode .timeline-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-content,
+body.dark-mode .wn-modal-content {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-body,
+body.dark-mode .modal-footer,
+body.dark-mode .wn-modal-header,
+body.dark-mode .wn-modal-body,
+body.dark-mode .wn-modal-footer {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .form-control,
+body.dark-mode .wn-search-input {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .input-group-text,
+body.dark-mode .wn-search-prepend {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-color: #374151 !important;
+}
+body.dark-mode .wn-hero-title,
+body.dark-mode .wn-page-title,
+body.dark-mode .text-dark {
+    color: #f0f6fc !important;
+}
+body.dark-mode .wn-hero-desc,
+body.dark-mode .wn-page-sub,
+body.dark-mode .text-muted {
+    color: #9ca3af !important;
+}
+body.dark-mode .bg-light {
+    background-color: #181b1f !important;
+}
+</style>
 
 <?= $this->endSection() ?>

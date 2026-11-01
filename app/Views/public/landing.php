@@ -964,7 +964,7 @@
 
         <div class="card border shadow-sm" style="border-radius: var(--radius-lg); overflow: hidden;">
             <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0" style="font-size: 13px;">
+                <table class="table table-clean-grid table-hover mb-0" style="font-size: 13px;">
                     <thead class="bg-light">
                         <tr>
                             <th class="py-3 px-3 px-md-4 text-xs font-weight-bold text-uppercase">Nama Tindakan / Layanan</th>

@@ -459,7 +459,8 @@ class Distributor extends BaseController
     public function simpanTransfer()
     {
         try {
-            $jsonData = $this->request->getJSON(true);
+            $isJson = str_contains($this->request->getHeaderLine('Content-Type'), 'application/json');
+            $jsonData = $isJson ? $this->request->getJSON(true) : null;
             $postData = $jsonData ?: $this->request->getPost();
 
             $res = $this->distributorService->processStockTransfer($postData, $this->getUserId());
@@ -473,7 +474,7 @@ class Distributor extends BaseController
             if ($this->request->isAJAX()) {
                 return $this->response->setStatusCode(400)->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
             }
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->to(base_url('distributor/transfer'))->with('error', $e->getMessage());
         }
     }
 
@@ -536,7 +537,8 @@ class Distributor extends BaseController
     public function bayarPiutang()
     {
         try {
-            $jsonData = $this->request->getJSON(true);
+            $isJson = str_contains($this->request->getHeaderLine('Content-Type'), 'application/json');
+            $jsonData = $isJson ? $this->request->getJSON(true) : null;
             $postData = $jsonData ?: $this->request->getPost();
 
             $res = $this->distributorService->processPayment($postData, $this->getUserId());
@@ -602,7 +604,8 @@ class Distributor extends BaseController
     public function simpanRetur()
     {
         try {
-            $jsonData = $this->request->getJSON(true);
+            $isJson = str_contains($this->request->getHeaderLine('Content-Type'), 'application/json');
+            $jsonData = $isJson ? $this->request->getJSON(true) : null;
             $postData = $jsonData ?: $this->request->getPost();
 
             $res = $this->distributorService->processReturn($postData, $this->getUserId());

@@ -324,4 +324,160 @@
         });
     });
 </script>
+
+<style>
+/* ========================================================================== */
+/* ACCOUNTING SUITE MODERN SCROLLABLE TABS & DESIGN TOKENS                    */
+/* ========================================================================== */
+.accounting-tabs-scroll-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+.accounting-tabs-scroll-wrapper::-webkit-scrollbar {
+    height: 4px;
+}
+.accounting-tabs-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #20c997;
+    border-radius: 4px;
+}
+.nav-tabs-modern {
+    border-bottom: 2px solid #e9ecef;
+    min-width: 100%;
+}
+.nav-tabs-modern .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+.nav-tabs-modern .nav-link:hover {
+    color: #00796b;
+    border-bottom: 3px solid #b2dfdb;
+    background-color: #f8f9fa;
+}
+body:not(.dark-mode) .nav-tabs-modern .nav-link.active {
+    color: #00796b !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #ffffff !important;
+}
+
+/* ========================================================================== */
+/* STRICT TABLE CLEAN GRID SPECIFICATION (desain_tabel.md)                   */
+/* ========================================================================== */
+.table-clean-grid {
+    border-collapse: collapse !important;
+    border: 1px solid #b8b8b8 !important;
+}
+.table-clean-grid th,
+.table-clean-grid td {
+    border: 1px solid #b8b8b8 !important;
+    vertical-align: middle;
+}
+.table-clean-grid thead th {
+    background-color: #f8fafc;
+    color: #334155;
+    border-bottom: 2px solid #b8b8b8 !important;
+}
+.saldo-cat-badge {
+    background-color: #e2e8f0;
+    color: #334155;
+}
+
+/* ========================================================================== */
+/* DARK MODE TOKENS (dokumentasi_dark_mode.md)                                */
+/* ========================================================================== */
+body.dark-mode .nav-tabs-modern,
+.dark-mode .nav-tabs-modern {
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link,
+.dark-mode .nav-tabs-modern .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link:hover,
+.dark-mode .nav-tabs-modern .nav-link:hover {
+    color: #34d399 !important;
+    border-bottom: 3px solid #34d399 !important;
+    background-color: #262b32 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link.active,
+.dark-mode .nav-tabs-modern .nav-link.active {
+    color: #34d399 !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #1f2328 !important;
+}
+body.dark-mode .card,
+.dark-mode .card {
+    background-color: #1f2328 !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-footer,
+.dark-mode .card-header,
+.dark-mode .card-footer {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .table-clean-grid,
+.dark-mode .table-clean-grid {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid th,
+body.dark-mode .table-clean-grid td,
+.dark-mode .table-clean-grid th,
+.dark-mode .table-clean-grid td {
+    border: 1px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid thead th,
+.dark-mode .table-clean-grid thead th {
+    background-color: #181b1f !important;
+    color: #f0f6fc !important;
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .table-clean-grid tbody tr:hover,
+.dark-mode .table-clean-grid tbody tr:hover {
+    background-color: #262b32 !important;
+}
+body.dark-mode .form-control,
+.dark-mode .form-control {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #f0f6fc !important;
+}
+body.dark-mode .input-group-text,
+.dark-mode .input-group-text {
+    background-color: #181b1f !important;
+    border-color: #374151 !important;
+    color: #9ca3af !important;
+}
+body.dark-mode .saldo-cat-badge,
+.dark-mode .saldo-cat-badge {
+    background-color: #181b1f !important;
+    border: 1px solid #374151 !important;
+    color: #9ca3af !important;
+}
+body.dark-mode .saldo-card-title,
+.dark-mode .saldo-card-title {
+    color: #f0f6fc !important;
+}
+body.dark-mode .saldo-credit-value,
+.dark-mode .saldo-credit-value {
+    color: #f0f6fc !important;
+}
+body.dark-mode .saldo-history-desc,
+.dark-mode .saldo-history-desc {
+    color: #e5e7eb !important;
+}
+body.dark-mode .saldo-autobalance-alert,
+.dark-mode .saldo-autobalance-alert {
+    background-color: rgba(40, 167, 69, 0.15) !important;
+    border-color: #28a745 !important;
+    color: #34d399 !important;
+}
+</style>
 <?= $this->endSection() ?>
