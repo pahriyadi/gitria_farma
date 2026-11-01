@@ -1035,7 +1035,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                         </div>
                     </div>
                     <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
-                        <table class="table table-hover table-striped mb-0 text-sm">
+                        <table class="table table-hover mb-0 text-sm">
                             <thead class="bg-light sticky-top">
                                 <tr>
                                     <th style="width: 40px;" class="text-center">No</th>

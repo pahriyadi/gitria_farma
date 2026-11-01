@@ -1,16 +1,162 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0 text-dark font-weight-bold">
-                    <i class="fas fa-warehouse text-teal mr-2"></i> Gudang Farmasi & Multi-Depo Pelayanan
-                </h1>
+<style>
+    /* =========================================================================
+       PAPER WHITE & PAPER DARK STYLESHEET (/apotek/gudang)
+       ========================================================================= */
+    :root {
+        --gudang-border-light: #b8b8b8;
+        --gudang-border-dark: #374151;
+        --gudang-card-dark: #1f2328;
+        --gudang-sub-dark: #181b1f;
+    }
+
+    /* Cards in Paper Dark */
+    body.dark-mode .card,
+    .dark-mode .card {
+        background-color: var(--gudang-card-dark) !important;
+        border-color: var(--gudang-border-dark) !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .card-header,
+    .dark-mode .card-header {
+        background-color: var(--gudang-card-dark) !important;
+        border-bottom-color: var(--gudang-border-dark) !important;
+    }
+    body.dark-mode .card-body,
+    .dark-mode .card-body {
+        color: #f3f4f6 !important;
+    }
+
+    /* Text adaptive colors */
+    body.dark-mode .text-dark,
+    .dark-mode .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .text-muted,
+    .dark-mode .text-muted {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .text-secondary,
+    .dark-mode .text-secondary {
+        color: #cbd5e1 !important;
+    }
+
+    /* Filter & Box Elements */
+    body.dark-mode .bg-light,
+    .dark-mode .bg-light {
+        background-color: var(--gudang-sub-dark) !important;
+        border-color: var(--gudang-border-dark) !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Nav Pills */
+    .nav-pills .nav-link {
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+    body:not(.dark-mode) .nav-pills .nav-link:not(.active) {
+        color: #4b5563;
+        background-color: transparent;
+    }
+    body.dark-mode .nav-pills .nav-link:not(.active),
+    .dark-mode .nav-pills .nav-link:not(.active) {
+        color: #9ca3af !important;
+        background-color: transparent;
+    }
+    .nav-pills .nav-link.active {
+        background-color: #0d9488 !important;
+        color: #ffffff !important;
+    }
+
+    /* Modals in Dark Mode */
+    body.dark-mode .modal-content,
+    .dark-mode .modal-content {
+        background-color: var(--gudang-card-dark) !important;
+        border: 1px solid var(--gudang-border-dark) !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .modal-header,
+    .dark-mode .modal-header,
+    body.dark-mode .modal-footer,
+    .dark-mode .modal-footer {
+        border-color: var(--gudang-border-dark) !important;
+    }
+    body.dark-mode .form-control,
+    .dark-mode .form-control {
+        background-color: var(--gudang-sub-dark) !important;
+        border-color: var(--gudang-border-dark) !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .form-control:focus,
+    .dark-mode .form-control:focus {
+        border-color: #0d9488 !important;
+    }
+
+    /* Excel-style Tables (No Striped, Strict Borders) */
+    .table,
+    table.dataTable {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+    body:not(.dark-mode) .table,
+    body:not(.dark-mode) table.dataTable {
+        border: 1.5px solid #a0a0a0 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .table,
+    body.dark-mode table.dataTable,
+    .dark-mode .table,
+    .dark-mode table.dataTable {
+        border: 1.5px solid var(--gudang-border-dark) !important;
+        background-color: var(--gudang-card-dark) !important;
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .table thead th,
+    body:not(.dark-mode) table.dataTable thead th {
+        background-color: #ffffff !important;
+        color: #1f2937 !important;
+        border: 1px solid #b0b0b0 !important;
+        font-weight: 700 !important;
+    }
+    body.dark-mode .table thead th,
+    body.dark-mode table.dataTable thead th,
+    .dark-mode .table thead th,
+    .dark-mode table.dataTable thead th {
+        background-color: var(--gudang-sub-dark) !important;
+        color: #f3f4f6 !important;
+        border: 1px solid var(--gudang-border-dark) !important;
+        font-weight: 700 !important;
+    }
+    body:not(.dark-mode) .table td,
+    body:not(.dark-mode) table.dataTable td {
+        border: 1px solid var(--gudang-border-light) !important;
+        color: #374151 !important;
+        background-color: #ffffff;
+    }
+    body.dark-mode .table td,
+    body.dark-mode table.dataTable td,
+    .dark-mode .table td,
+    .dark-mode table.dataTable td {
+        border: 1px solid var(--gudang-border-dark) !important;
+        color: #e5e7eb !important;
+        background-color: var(--gudang-card-dark) !important;
+    }
+    body.dark-mode .table-hover tbody tr:hover td,
+    .dark-mode .table-hover tbody tr:hover td {
+        background-color: #262b32 !important;
+    }
+</style>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="font-weight-bold text-dark mb-0"><i class="fas fa-warehouse text-teal mr-2"></i> Gudang Farmasi & Multi-Depo Pelayanan</h4>
                 <small class="text-muted">Pemisahan stok fisik antara Gudang Induk Logistik dengan Depo Apotek, Depo UGD, dan Depo Rawat Inap serta mutasi transfer antar-lokasi</small>
             </div>
-            <div class="col-sm-6 text-right">
+            <div>
                 <button type="button" class="btn btn-teal btn-sm font-weight-bold shadow-sm mr-2" data-toggle="modal" data-target="#modalTransferStok">
                     <i class="fas fa-dolly-flatbed mr-1"></i> + Buat Mutasi Transfer Stok
                 </button>
@@ -25,10 +171,7 @@
     </div>
 </div>
 
-<div class="content">
-    <div class="container-fluid">
-
-        <!-- 4 KPI SUMMARY CARDS -->
+<!-- 4 KPI SUMMARY CARDS -->
         <div class="row mb-4">
             <div class="col-md-3 col-sm-6 mb-3">
                 <div class="card shadow-sm h-100 bg-white" style="border: 1px solid #b8b8b8; border-left: 4px solid #0d9488 !important;">
@@ -149,7 +292,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-bordered table-sm mb-0" id="table-warehouse-stock" style="font-size: 13px;">
+                            <table class="table table-hover table-bordered table-sm mb-0" id="table-warehouse-stock" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 40px;" class="text-center">NO</th>
@@ -165,11 +308,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (empty($warehouseStocks)): ?>
-                                        <tr>
-                                            <td colspan="10" class="text-center text-muted py-4">Belum ada data stok pada lokasi gudang yang dipilih.</td>
-                                        </tr>
-                                    <?php else: ?>
+                                    <?php if (!empty($warehouseStocks)): ?>
                                         <?php $no = 1; foreach ($warehouseStocks as $stk): 
                                             $isExpired = strtotime($stk->expired_date) <= time();
                                             $isNearExp = strtotime($stk->expired_date) <= strtotime('+60 days') && !$isExpired;
@@ -191,7 +330,7 @@
                                                 <?php if ($isExpired): ?>
                                                     <span class="badge badge-danger text-xs d-block">EXPIRED</span>
                                                 <?php elseif ($isNearExp): ?>
-                                                    <span class="badge badge-warning text-xs d-block">< 60 Hari</span>
+                                                    <span class="badge badge-warning text-xs d-block">&lt; 60 Hari</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td class="text-center font-weight-bold h6 mb-0 text-teal">
@@ -227,11 +366,11 @@
                     <!-- ========================================================================= -->
                     <div class="tab-pane fade" id="tab-transfer" role="tabpanel">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-bordered table-sm mb-0" id="table-transfers" style="font-size: 13px;">
+                            <table class="table table-hover table-bordered table-sm mb-0" id="table-transfers" style="font-size: 13px;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 40px;" class="text-center">NO</th>
-                                        <th style="width: 140px;">NO. SURAT MUTASI</th>
+                                        <th style="width: 150px;">NO. SURAT MUTASI</th>
                                         <th style="width: 100px;">TANGGAL</th>
                                         <th>GUDANG ASAL (DARI)</th>
                                         <th>GUDANG TUJUAN (KE)</th>
@@ -239,15 +378,11 @@
                                         <th style="width: 90px;" class="text-center">TOTAL QTY</th>
                                         <th style="width: 110px;">PETUGAS</th>
                                         <th style="width: 90px;" class="text-center">STATUS</th>
-                                        <th style="width: 110px;" class="text-center">DOKUMEN</th>
+                                        <th style="width: 120px;" class="text-center">DOKUMEN</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if (empty($transfers)): ?>
-                                        <tr>
-                                            <td colspan="10" class="text-center text-muted py-4">Belum ada transaksi mutasi transfer stok antar-gudang.</td>
-                                        </tr>
-                                    <?php else: ?>
+                                    <?php if (!empty($transfers)): ?>
                                         <?php $tNo = 1; foreach ($transfers as $trf): ?>
                                         <tr>
                                             <td class="text-center font-weight-bold text-muted"><?= $tNo++ ?></td>
@@ -287,7 +422,7 @@
                         <div class="row">
                             <?php foreach ($warehouses as $w): ?>
                             <div class="col-md-6 mb-3">
-                                <div class="card shadow-sm h-100 bg-white border">
+                                <div class="card shadow-sm h-100 bg-white border" style="border-left: 4px solid <?= $w->type === 'main' ? '#0284c7' : '#0d9488' ?> !important;">
                                     <div class="card-body p-3">
                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                             <div>
@@ -323,9 +458,6 @@
             </div>
         </div>
 
-    </div>
-</div>
-
 <!-- ========================================================================= -->
 <!-- MODAL: FORM MUTASI TRANSFER STOK ANTAR-GUDANG -->
 <!-- ========================================================================= -->
@@ -346,7 +478,7 @@
                         <!-- Source Warehouse -->
                         <div class="col-md-5 form-group mb-2">
                             <label class="text-xs font-weight-bold">Gudang / Depo Asal (DARI): <span class="text-danger">*</span></label>
-                            <select name="source_warehouse_id" id="trf-source-wh" class="form-control form-control-sm font-weight-bold border-teal" required>
+                            <select name="source_warehouse_id" id="trf-source-wh" class="form-control form-control-sm font-weight-bold border-teal" data-native="true" required>
                                 <?php foreach ($warehouses as $wh): ?>
                                     <option value="<?= $wh->id ?>"><?= esc($wh->name) ?> (<?= esc($wh->code) ?>)</option>
                                 <?php endforeach; ?>
@@ -362,7 +494,7 @@
                         <!-- Target Warehouse -->
                         <div class="col-md-5 form-group mb-2">
                             <label class="text-xs font-weight-bold">Gudang / Depo Tujuan (KE): <span class="text-danger">*</span></label>
-                            <select name="target_warehouse_id" id="trf-target-wh" class="form-control form-control-sm font-weight-bold border-teal" required>
+                            <select name="target_warehouse_id" id="trf-target-wh" class="form-control form-control-sm font-weight-bold border-teal" data-native="true" required>
                                 <?php foreach ($warehouses as $wh): ?>
                                     <option value="<?= $wh->id ?>" <?= $wh->code === 'DEPO-RJ' ? 'selected' : '' ?>><?= esc($wh->name) ?> (<?= esc($wh->code) ?>)</option>
                                 <?php endforeach; ?>
@@ -406,7 +538,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <select name="medicine_id[]" class="form-control form-control-sm select-med" required>
+                                        <select name="medicine_id[]" class="form-control form-control-sm select-med" data-native="true" required>
                                             <option value="">-- Pilih Obat --</option>
                                             <?php foreach ($medicines as $m): ?>
                                                 <option value="<?= $m->id ?>" data-unit="<?= esc($m->unit) ?>"><?= esc($m->name) ?> (<?= esc($m->code) ?>)</option>
@@ -414,7 +546,7 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <select name="batch_id[]" class="form-control form-control-sm select-batch">
+                                        <select name="batch_id[]" class="form-control form-control-sm select-batch" data-native="true">
                                             <option value="">-- Batch Otomatis --</option>
                                             <?php foreach ($batches as $b): ?>
                                                 <option value="<?= $b->id ?>" data-med-id="<?= $b->medicine_id ?>"><?= esc($b->batch_no) ?> (ED: <?= date('d/m/y', strtotime($b->expired_date)) ?> | S: <?= $b->stock ?>)</option>
@@ -452,6 +584,44 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Inisialisasi DataTables Stok Gudang
+    if ($.fn.DataTable.isDataTable('#table-warehouse-stock')) {
+        $('#table-warehouse-stock').DataTable().destroy();
+    }
+    $('#table-warehouse-stock').DataTable({
+        destroy: true,
+        order: [[1, 'asc'], [2, 'asc']],
+        columnDefs: [
+            { targets: [0, 9], orderable: false },
+            { targets: [0, 3, 4, 5, 6, 7, 9], className: 'text-center' },
+            { targets: [8], className: 'text-right' }
+        ],
+        language: window.dtIndonesianLanguage || {},
+        pageLength: 10
+    });
+
+    // Inisialisasi DataTables Riwayat Mutasi Transfer
+    if ($.fn.DataTable.isDataTable('#table-transfers')) {
+        $('#table-transfers').DataTable().destroy();
+    }
+    $('#table-transfers').DataTable({
+        destroy: true,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { targets: [0, 9], orderable: false },
+            { targets: [0, 2, 5, 6, 8, 9], className: 'text-center' }
+        ],
+        language: window.dtIndonesianLanguage || {},
+        pageLength: 10
+    });
+
+    // Sesuaikan lebar kolom saat ganti tab
+    $('#warehouseTabs a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+        if ($.fn.dataTable) {
+            $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+        }
+    });
+
     // Add row to transfer items table
     $('#btn-add-transfer-item').click(function() {
         const firstRow = $('#table-transfer-items tbody tr:first').clone();
@@ -489,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Quick transfer button on stock row
-    $('.btn-quick-transfer').click(function() {
+    $(document).on('click', '.btn-quick-transfer', function() {
         const whId = $(this).data('wh-id');
         const medId = $(this).data('med-id');
         const batchId = $(this).data('batch-id');
@@ -514,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Transfer from warehouse card
-    $('.btn-transfer-from').click(function() {
+    $(document).on('click', '.btn-transfer-from', function() {
         const whId = $(this).data('wh-id');
         $('#trf-source-wh').val(whId);
         $('#trf-target-wh option').each(function() {

@@ -1,6 +1,60 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+<style>
+    /* ========================================================================= */
+    /* KLINIK SURAT STYLING (PAPER WHITE & PAPER DARK COMPLIANCE)                */
+    /* ========================================================================= */
+    body:not(.dark-mode) .card-header-surat {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .card-header-surat,
+    .dark-mode .card-header-surat {
+        background-color: #1f2328 !important;
+        border-bottom: 1px solid #374151 !important;
+    }
+    body.dark-mode .card-header-surat .card-title,
+    .dark-mode .card-header-surat .card-title {
+        color: #f3f4f6 !important;
+    }
+
+    /* Modal Dark Mode */
+    body.dark-mode #letterAddModal .modal-content,
+    .dark-mode #letterAddModal .modal-content {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #letterAddModal .modal-body,
+    .dark-mode #letterAddModal .modal-body {
+        background-color: #1f2328 !important;
+    }
+    body.dark-mode #letterAddModal .modal-footer,
+    .dark-mode #letterAddModal .modal-footer {
+        background-color: #1f2328 !important;
+        border-top: 1px solid #374151 !important;
+    }
+    body.dark-mode #letterAddModal label,
+    .dark-mode #letterAddModal label {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #letterAddModal .form-control,
+    .dark-mode #letterAddModal .form-control {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #pane-letter-sakit,
+    body.dark-mode #pane-letter-sehat,
+    body.dark-mode #pane-letter-rujukan,
+    .dark-mode #pane-letter-sakit,
+    .dark-mode #pane-letter-sehat,
+    .dark-mode #pane-letter-rujukan {
+        background-color: #262b32 !important;
+        border: 1px solid #374151 !important;
+    }
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -20,9 +74,27 @@
 
 <div class="content">
     <div class="container-fluid">
+        <!-- Flash Alerts -->
+        <?php if (session()->getFlashdata('success')): ?>
+            <div class="alert alert-success alert-flash-card alert-dismissible fade show shadow-sm" role="alert">
+                <i class="fas fa-check-circle mr-2"></i><?= session()->getFlashdata('success') ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger alert-flash-card alert-dismissible fade show shadow-sm font-weight-bold" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i><?= session()->getFlashdata('error') ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
+
         <!-- Action Card -->
         <div class="card card-outline card-teal mb-4">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="card-header card-header-surat d-flex justify-content-between align-items-center">
                 <h3 class="card-title font-weight-bold text-dark">
                     <i class="fas fa-list-alt mr-1"></i> Daftar Penerbitan Surat Keterangan Medis
                 </h3>
@@ -34,7 +106,7 @@
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped mb-0 datatable">
+                    <table class="table table-hover mb-0 datatable">
                         <thead class="bg-light">
                             <tr>
                                 <th style="width: 40px;" class="text-center">No</th>

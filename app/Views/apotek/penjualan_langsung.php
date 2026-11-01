@@ -1,11 +1,214 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+
+<style>
+    /* ========================================================================= */
+    /* KASIR APOTEK: PAPER WHITE & PAPER DARK COMPLIANCE                         */
+    /* ========================================================================= */
+    
+    /* Card overrides */
+    .card {
+        box-shadow: none !important;
+        border-radius: 4px !important;
+    }
+    body:not(.dark-mode) .card {
+        border: 1px solid #b8b8b8 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .card,
+    .dark-mode .card {
+        border: 1px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Cards with clean gray background */
+    body:not(.dark-mode) .card-clean-gray {
+        background-color: #f8f9fa !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .card-clean-gray,
+    .dark-mode .card-clean-gray {
+        background-color: #181b1f !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Sub-panels in Summary */
+    body:not(.dark-mode) .panel-clean-box {
+        background-color: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+        color: #333333 !important;
+    }
+    body.dark-mode .panel-clean-box,
+    .dark-mode .panel-clean-box {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Nav Tabs */
+    #otc-tab {
+        border-bottom: 1px solid #b8b8b8;
+    }
+    body.dark-mode #otc-tab,
+    .dark-mode #otc-tab {
+        border-bottom: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) #otc-tab .nav-link {
+        color: #444444;
+    }
+    body.dark-mode #otc-tab .nav-link,
+    .dark-mode #otc-tab .nav-link {
+        color: #9ca3af;
+    }
+    #otc-tab .nav-link.active {
+        background-color: #0d9488 !important;
+        color: #ffffff !important;
+        border-color: #0d9488 !important;
+    }
+
+    /* Text adaptive */
+    body.dark-mode .text-adaptive-dark,
+    .dark-mode .text-adaptive-dark {
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .text-adaptive-dark {
+        color: #333333 !important;
+    }
+
+    /* Inputs, Selects & Input Groups */
+    body.dark-mode .form-control,
+    .dark-mode .form-control {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .form-control:focus,
+    .dark-mode .form-control:focus {
+        border-color: #0d9488 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .input-group-text,
+    .dark-mode .input-group-text {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #9ca3af !important;
+    }
+    body.dark-mode .form-control[readonly],
+    .dark-mode .form-control[readonly] {
+        background-color: #181b1f !important;
+        color: #9ca3af !important;
+    }
+
+    /* Modals */
+    body.dark-mode .modal-content,
+    .dark-mode .modal-content {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .modal-header,
+    .dark-mode .modal-header,
+    body.dark-mode .modal-footer,
+    .dark-mode .modal-footer {
+        border-color: #374151 !important;
+    }
+    body.dark-mode .modal-footer.bg-light,
+    .dark-mode .modal-footer.bg-light {
+        background-color: #181b1f !important;
+    }
+
+    /* Tables (Strict Excel, No Striped) */
+    .table,
+    table.dataTable {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+    body:not(.dark-mode) .table,
+    body:not(.dark-mode) table.dataTable {
+        border: 1.5px solid #a0a0a0 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .table,
+    body.dark-mode table.dataTable,
+    .dark-mode .table,
+    .dark-mode table.dataTable {
+        border: 1.5px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .table thead th,
+    body:not(.dark-mode) table.dataTable thead th {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #b0b0b0 !important;
+    }
+    body.dark-mode .table thead th,
+    body.dark-mode table.dataTable thead th,
+    .dark-mode .table thead th,
+    .dark-mode table.dataTable thead th {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) .table td,
+    body:not(.dark-mode) table.dataTable td {
+        border: 1px solid #b8b8b8 !important;
+        color: #444444 !important;
+        background-color: #ffffff;
+    }
+    body.dark-mode .table td,
+    body.dark-mode table.dataTable td,
+    .dark-mode .table td,
+    .dark-mode table.dataTable td {
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+        background-color: #1f2328 !important;
+    }
+    body:not(.dark-mode) .table-hover tbody tr:hover td {
+        background-color: #f0f7f3 !important;
+    }
+    body.dark-mode .table-hover tbody tr:hover td,
+    .dark-mode .table-hover tbody tr:hover td {
+        background-color: #262b32 !important;
+    }
+    body.dark-mode .badge-light,
+    .dark-mode .badge-light {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+    body.dark-mode .bg-light,
+    .dark-mode .bg-light {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .bg-white,
+    .dark-mode .bg-white {
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .border,
+    .dark-mode .border {
+        border-color: #374151 !important;
+    }
+    body.dark-mode .text-dark,
+    .dark-mode .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .text-secondary,
+    .dark-mode .text-secondary {
+        color: #9ca3af !important;
+    }
+</style>
+
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark font-weight-bold"><i class="fas fa-cash-register text-teal mr-2"></i> Kasir Apotek & Penjualan Obat</h1>
+                <h1 class="m-0 text-adaptive-dark font-weight-bold"><i class="fas fa-cash-register text-teal mr-2"></i> Kasir Apotek & Penjualan Obat</h1>
                 <small class="text-muted">Layanan kasir obat bebas (OTC), tebus resep dokter, obat racikan, tusla & embalase</small>
             </div>
             <div class="col-sm-6">
@@ -104,7 +307,7 @@
                             <input type="hidden" name="patient_id" id="input-patient-id" value="">
                             
                             <!-- Header Info Pelanggan & Pembayaran -->
-                            <div class="card bg-light border mb-3">
+                            <div class="card card-clean-gray mb-3">
                                 <div class="card-body p-3">
                                     <!-- Auto-Fill Member Pasien Terdaftar -->
                                     <div class="row mb-2">
@@ -126,7 +329,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <label class="text-xs font-weight-bold text-teal mb-1"><i class="fas fa-user-md mr-1"></i> Dokter Peresep / Rujukan / Konsultasi Online:</label>
-                                            <select name="doctor_id" id="input-doctor-id" class="form-control form-control-sm font-weight-bold text-dark">
+                                            <select name="doctor_id" id="input-doctor-id" class="form-control form-control-sm font-weight-bold text-adaptive-dark">
                                                 <option value="" data-type="bebas">-- Non-Resep / Tanpa Dokter (Obat Bebas) --</option>
                                                 <?php if (!empty($doctors)): ?>
                                                     <optgroup label="🌐 KONSULTASI ONLINE (Formula: KONSULTASI_ONLINE)">
@@ -151,16 +354,16 @@
 
                                     <div class="row">
                                         <div class="col-md-3 form-group mb-2">
-                                            <label class="font-weight-bold text-dark mb-1"><i class="fas fa-user text-teal mr-1"></i> Nama Pembeli / Pasien:</label>
+                                            <label class="font-weight-bold text-adaptive-dark mb-1"><i class="fas fa-user text-teal mr-1"></i> Nama Pembeli / Pasien:</label>
                                             <input type="text" name="customer_name" id="input-customer-name" class="form-control form-control-sm font-weight-bold" placeholder="Contoh: Budi Santoso" value="Pelanggan Umum" required>
                                         </div>
                                         <div class="col-md-2 form-group mb-2">
-                                            <label class="font-weight-bold text-dark mb-1"><i class="fab fa-whatsapp text-teal mr-1"></i> No. HP / WA:</label>
+                                            <label class="font-weight-bold text-adaptive-dark mb-1"><i class="fab fa-whatsapp text-teal mr-1"></i> No. HP / WA:</label>
                                             <input type="text" name="customer_phone" id="input-customer-phone" class="form-control form-control-sm" placeholder="08xxxxxxxx">
                                         </div>
                                         <div class="col-md-3 form-group mb-2">
-                                            <label class="font-weight-bold text-dark mb-1"><i class="fas fa-tags text-teal mr-1"></i> Jenis Transaksi:</label>
-                                            <select name="prescription_type" id="input-presc-type" class="form-control form-control-sm font-weight-bold text-teal">
+                                            <label class="font-weight-bold text-adaptive-dark mb-1"><i class="fas fa-tags text-teal mr-1"></i> Jenis Transaksi:</label>
+                                            <select name="prescription_type" id="input-presc-type" class="form-control form-control-sm font-weight-bold text-teal" data-native="true">
                                                 <option value="bebas">💊 Penjualan Obat Bebas (OTC)</option>
                                                 <option value="online">🌐 Konsultasi Online (Telemedisin Dokter)</option>
                                                 <option value="resep">📋 Tebus Resep Dokter (Non-Racik)</option>
@@ -168,8 +371,8 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2 form-group mb-2">
-                                            <label class="font-weight-bold text-dark mb-1"><i class="fas fa-wallet text-teal mr-1"></i> Pembayaran:</label>
-                                            <select name="payment_method" id="select-payment-method" class="form-control form-control-sm font-weight-bold text-dark" required>
+                                            <label class="font-weight-bold text-adaptive-dark mb-1"><i class="fas fa-wallet text-teal mr-1"></i> Pembayaran:</label>
+                                            <select name="payment_method" id="select-payment-method" class="form-control form-control-sm font-weight-bold text-adaptive-dark" data-native="true" required>
                                                 <?php if (!empty($paymentMethods)): ?>
                                                     <?php foreach ($paymentMethods as $pm): ?>
                                                         <option value="<?= esc($pm->code) ?>">
@@ -185,26 +388,27 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2 form-group mb-2">
-                                            <label class="font-weight-bold text-dark mb-1"><i class="fas fa-calendar text-teal mr-1"></i> Tanggal:</label>
-                                            <input type="text" class="form-control form-control-sm bg-white font-weight-bold text-center" value="<?= date('d/m/Y') ?>" readonly>
+                                            <label class="font-weight-bold text-adaptive-dark mb-1"><i class="fas fa-calendar text-teal mr-1"></i> Tanggal:</label>
+                                            <input type="text" class="form-control form-control-sm font-weight-bold text-center" value="<?= date('d/m/Y') ?>" readonly>
+                                        </div>
                                     </div>
 
                                     <!-- Panel Khusus Konsultasi Online: Input Utang Fee Dokter Manual -->
                                     <div class="row" id="row-konsul-online-fee" style="display: none;">
                                         <div class="col-12">
-                                            <div class="alert alert-info py-2 px-3 mb-2 d-flex align-items-center justify-content-between flex-wrap shadow-xs" style="border-left: 4px solid #17a2b8; border-radius: 6px; background-color: #f0f9ff;">
+                                            <div class="alert alert-info py-2 px-3 mb-2 d-flex align-items-center justify-content-between flex-wrap shadow-xs" style="border-left: 4px solid #17a2b8; border-radius: 6px;">
                                                 <div class="d-flex align-items-center mb-1 mb-md-0">
                                                     <i class="fas fa-globe fa-lg mr-2 text-info"></i>
                                                     <div>
-                                                        <strong class="text-dark">Ketentuan Formula Jurnal Konsultasi Online:</strong>
+                                                        <strong class="text-adaptive-dark">Ketentuan Formula Jurnal Konsultasi Online:</strong>
                                                         <span class="text-muted text-xs d-block">Jasa Dokter Rp 20.000 (Tetap) + Utang Fee Dokter (Diisi Sendiri) sebagai pengurang Kas. Sisa kas dialokasikan ke Obat (49%), Pajak (11%), Penunjang (9%), Resep (7%), ADM (24%).</span>
                                                     </div>
                                                 </div>
                                                 <div class="d-flex align-items-center mt-1 mt-md-0">
-                                                    <label class="font-weight-bold text-dark text-xs mb-0 mr-2"><i class="fas fa-money-bill-wave text-success mr-1"></i> Utang Fee Dokter (Rp):</label>
+                                                    <label class="font-weight-bold text-adaptive-dark text-xs mb-0 mr-2"><i class="fas fa-money-bill-wave text-success mr-1"></i> Utang Fee Dokter (Rp):</label>
                                                     <div class="input-group input-group-sm" style="width: 180px;">
                                                         <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-white font-weight-bold text-teal">Rp</span>
+                                                            <span class="input-group-text font-weight-bold text-teal">Rp</span>
                                                         </div>
                                                         <input type="number" name="doctor_fee_nominal" id="input-doctor-fee-nominal" class="form-control font-weight-bold text-teal" placeholder="0" value="0" min="0" step="any">
                                                     </div>
@@ -217,7 +421,7 @@
 
                             <!-- Daftar Item Obat & Racikan -->
                             <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 8px;">
-                                <h5 class="font-weight-bold text-dark mb-0"><i class="fas fa-pills text-teal mr-1"></i> Rincian Item Obat & Racikan</h5>
+                                <h5 class="font-weight-bold text-adaptive-dark mb-0"><i class="fas fa-pills text-teal mr-1"></i> Rincian Item Obat & Racikan</h5>
                                 <div class="d-flex align-items-center" style="gap: 6px;">
                                     <button type="button" class="btn btn-teal btn-sm font-weight-bold" id="btn-add-item">
                                         <i class="fas fa-plus mr-1"></i> Tambah Item Obat
@@ -229,8 +433,8 @@
                             </div>
 
                             <div class="table-responsive mb-4">
-                                <table class="table table-bordered table-striped" id="table-otc-items">
-                                    <thead class="bg-light">
+                                <table class="table table-bordered" id="table-otc-items">
+                                    <thead>
                                         <tr>
                                             <th style="min-width: 250px;">Nama Obat & Aturan Pakai</th>
                                             <th style="width: 170px;">Pilihan Batch (FEFO)</th>
@@ -266,7 +470,7 @@
                                                 <input type="text" name="items[0][dosage_instruction]" class="form-control form-control-sm mt-1" placeholder="Aturan pakai singkat (contoh: 3x1 tablet setelah makan)">
                                             </td>
                                             <td>
-                                                <select name="items[0][batch_id]" class="form-control form-control-sm select-batch" data-index="0" id="select-batch-0" required>
+                                                <select name="items[0][batch_id]" class="form-control form-control-sm select-batch" data-native="true" data-index="0" id="select-batch-0" required>
                                                     <option value="">-- Pilih Obat Dulu --</option>
                                                 </select>
                                             </td>
@@ -451,7 +655,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover datatable text-dark" id="table-riwayat-penjualan" style="font-size: 13px; width: 100%;">
+                            <table class="table table-bordered table-hover datatable" id="table-riwayat-penjualan" style="font-size: 13px; width: 100%;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 35px;" class="text-center">No</th>
@@ -754,6 +958,7 @@
 
     let rowIdxCounter = 1;
     let racikGroupCounter = 1;
+    let isManualPaid = false;
 
     function buildMedicineRowHtml(idx, defaultMedId = '', defaultQty = 1, defaultDosage = '', isRacikan = 0, racikName = '', racikGroup = '') {
         let medOptions = '<option value="" data-price="0" data-unit="">-- Pilih / Ketik Nama Obat --</option>';
@@ -783,12 +988,12 @@
                     <input type="text" name="items[${idx}][dosage_instruction]" class="form-control form-control-sm mt-1" placeholder="Aturan pakai singkat" value="${defaultDosage}">
                 </td>
                 <td>
-                    <select name="items[${idx}][batch_id]" class="form-control form-control-sm select-batch" data-index="${idx}" id="select-batch-${idx}" required>
+                    <select name="items[${idx}][batch_id]" class="form-control form-control-sm select-batch" data-native="true" data-index="${idx}" id="select-batch-${idx}" required>
                         <option value="">-- Pilih Batch --</option>
                     </select>
                 </td>
                 <td class="text-right align-middle">
-                    <strong id="lbl-unit-price-${idx}" class="text-dark">Rp 0</strong>
+                    <strong id="lbl-unit-price-${idx}" class="text-adaptive-dark">Rp 0</strong>
                 </td>
                 <td>
                     <input type="number" name="items[${idx}][qty]" class="form-control form-control-sm text-center input-qty font-weight-bold" data-index="${idx}" id="input-qty-${idx}" value="${defaultQty}" min="1" required>
@@ -885,8 +1090,6 @@
 
         updateChangeAmount();
     }
-
-    let isManualPaid = false;
 
     function updateChangeAmount() {
         const grandTotal = parseFloat($('#lbl-grand-total').text().replace(/[^0-9]/g, '')) || 0;
@@ -1121,7 +1324,7 @@
                         </select>
                     </td>
                     <td>
-                        <select class="form-control form-control-sm select-racik-batch" data-idx="${rIdx}">
+                        <select class="form-control form-control-sm select-racik-batch" data-native="true" data-idx="${rIdx}">
                             <option value="">-- Auto FEFO --</option>
                         </select>
                     </td>
@@ -1626,7 +1829,7 @@
                         </div>
 
                         <div class="table-responsive border rounded mb-3">
-                            <table class="table table-sm table-striped table-bordered mb-0">
+                            <table class="table table-sm table-bordered mb-0">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 35px;" class="text-center">No</th>
@@ -1689,6 +1892,8 @@
                 } else {
                     $('#modal-detail-sale-content').html('<div class="alert alert-danger mb-0"><i class="fas fa-exclamation-triangle mr-1"></i> ' + (res.message || 'Gagal memuat rincian transaksi.') + '</div>');
                 }
+            }, 'json');
+        });
         // Event Handler VOID Transaksi Apotek (Universal Anti-Fraud Modal)
         $(document).on('click', '.btn-void-pharmacy', function(e) {
             e.preventDefault();

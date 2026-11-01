@@ -1650,146 +1650,240 @@ class Apotek extends BaseController
         $db = \Config\Database::connect('default');
         
         $medicines = $db->table('medicines')
-                        ->select('medicines.*, COALESCE(SUM(medicine_batches.stock), 0) as stock')
+                        ->select('medicines.*, medicine_categories.name as category_name, COALESCE(SUM(medicine_batches.stock), 0) as stock')
+                        ->join('medicine_categories', 'medicine_categories.id = medicines.category_id', 'left')
                         ->join('medicine_batches', 'medicine_batches.medicine_id = medicines.id', 'left')
                         ->where('medicines.status', 'active')
                         ->groupBy('medicines.id')
                         ->orderBy('medicines.name', 'ASC')
                         ->get()->getResult();
+
         $selectedMedId = $this->request->getGet('medicine_id');
-        $startDate = $this->request->getGet('start_date') ?: date('Y-m-01');
+        if (!$selectedMedId && !empty($medicines)) {
+            // Prioritaskan obat yang memiliki stok fisik aktif
+            foreach ($medicines as $m) {
+                if ((int)$m->stock > 0) {
+                    $selectedMedId = $m->id;
+                    break;
+                }
+            }
+            if (!$selectedMedId) {
+                $selectedMedId = $medicines[0]->id;
+            }
+        }
+
+        $startDate = $this->request->getGet('start_date') ?: date('Y-01-01');
         $endDate   = $this->request->getGet('end_date') ?: date('Y-m-d');
 
         $selectedMedicine = null;
         $ledger = [];
         $totalIn = 0;
         $totalOut = 0;
+        $saldoAwal = 0;
 
         if ($selectedMedId) {
             $selectedMedicine = $db->table('medicines')
-                                   ->select('medicines.*, COALESCE(SUM(medicine_batches.stock), 0) as stock')
+                                   ->select('medicines.*, medicine_categories.name as category_name, COALESCE(SUM(medicine_batches.stock), 0) as stock')
+                                   ->join('medicine_categories', 'medicine_categories.id = medicines.category_id', 'left')
                                    ->join('medicine_batches', 'medicine_batches.medicine_id = medicines.id', 'left')
                                    ->where('medicines.id', $selectedMedId)
                                    ->groupBy('medicines.id')
                                    ->get()->getRow();
 
-            // 1. Goods Receipts (Masuk dari Supplier PO)
-            $grItems = $db->table('goods_receipt_items')
-                          ->select('goods_receipt_items.qty_received as qty, 
-                                    goods_receipts.receipt_no as ref_no, 
-                                    goods_receipts.received_date as trans_date, 
-                                    goods_receipt_items.batch_no,
-                                    CONCAT("Penerimaan PO: ", COALESCE(suppliers.name, "Supplier")) as notes')
-                          ->join('goods_receipts', 'goods_receipts.id = goods_receipt_items.goods_receipt_id', 'left')
-                          ->join('purchase_orders', 'purchase_orders.id = goods_receipts.purchase_order_id', 'left')
-                          ->join('suppliers', 'suppliers.id = purchase_orders.supplier_id', 'left')
-                          ->where('goods_receipt_items.medicine_id', $selectedMedId)
-                          ->get()->getResultArray();
-
-            // 2. Prescriptions (Keluar melalui e-Resep Pasien)
-            $rxItems = $db->table('prescription_details')
-                          ->select('prescription_details.qty, 
-                                    CONCAT("RX-", LPAD(prescriptions.id, 5, "0")) as ref_no, 
-                                    prescriptions.created_at as trans_date, 
-                                    COALESCE(medicine_batches.batch_no, "-") as batch_no,
-                                    CONCAT("e-Resep Pasien: ", COALESCE(patients.name, "-"), " (No RM: ", COALESCE(patients.no_rm, "-"), ")") as notes')
-                          ->join('prescriptions', 'prescriptions.id = prescription_details.prescription_id', 'left')
-                          ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
-                          ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
-                          ->join('medicine_batches', 'medicine_batches.medicine_id = prescription_details.medicine_id', 'left')
-                          ->where('prescription_details.medicine_id', $selectedMedId)
-                          ->get()->getResultArray();
-
-            // 3. Direct Sales (Keluar melalui Kasir Penjualan Obat Bebas)
-            $posItems = $db->table('pharmacy_sale_details')
-                           ->select('pharmacy_sale_details.qty, 
-                                     pharmacy_sales.sale_no as ref_no, 
-                                     pharmacy_sales.sale_date as trans_date, 
-                                     medicine_batches.batch_no,
-                                     CONCAT("Penjualan Obat Bebas: ", COALESCE(pharmacy_sales.customer_name, "Umum")) as notes')
-                           ->join('pharmacy_sales', 'pharmacy_sales.id = pharmacy_sale_details.sale_id', 'left')
-                           ->join('medicine_batches', 'medicine_batches.id = pharmacy_sale_details.batch_id', 'left')
-                           ->where('pharmacy_sale_details.medicine_id', $selectedMedId)
-                           ->get()->getResultArray();
-
-            // 4. Stock Opname Adjustments
-            $opnameItems = $db->table('stock_opname_details')
-                              ->select('stock_opname_details.physical_stock, stock_opname_details.system_stock, stock_opname_details.difference,
-                                        stock_opnames.opname_no as ref_no,
-                                        stock_opnames.opname_date as trans_date,
-                                        medicine_batches.batch_no,
-                                        CONCAT("Penyesuaian Opname (Fisik: ", stock_opname_details.physical_stock, ") - ", COALESCE(stock_opname_details.reason, "-")) as notes')
-                              ->join('stock_opnames', 'stock_opnames.id = stock_opname_details.opname_id', 'left')
-                              ->join('medicine_batches', 'medicine_batches.id = stock_opname_details.batch_id', 'left')
-                              ->where('stock_opname_details.medicine_id', $selectedMedId)
-                              ->get()->getResultArray();
-
-            $allMovements = [];
-            foreach ($grItems as $g) {
-                $allMovements[] = [
-                    'created_at' => $g['trans_date'] ?: date('Y-m-d H:i:s'),
-                    'ref_no'     => $g['ref_no'] ?: 'GRN-AUTO',
-                    'type_label' => 'Penerimaan PO',
-                    'type_badge' => 'success',
-                    'batch_no'   => $g['batch_no'],
-                    'qty_in'     => (int)$g['qty'],
-                    'qty_out'    => 0,
-                    'notes'      => $g['notes']
-                ];
+            // 1. Auto-synchronize missing initial movements for any batch of this medicine
+            $batches = $db->table('medicine_batches')->where('medicine_id', $selectedMedId)->get()->getResult();
+            foreach ($batches as $b) {
+                $hasSm = $db->table('stock_movements')->where('batch_id', $b->id)->countAllResults();
+                if ($hasSm === 0) {
+                    $db->table('stock_movements')->insert([
+                        'medicine_id'      => $selectedMedId,
+                        'batch_id'         => $b->id,
+                        'transaction_type' => 'pembelian',
+                        'reference_id'     => null,
+                        'qty_in'           => $b->stock,
+                        'qty_out'          => 0,
+                        'balance'          => $b->stock,
+                        'user_id'          => session()->get('user_id') ?: 1,
+                        'created_at'       => $b->created_at ?: date('Y-m-d H:i:s')
+                    ]);
+                }
             }
-            foreach ($rxItems as $r) {
-                $allMovements[] = [
-                    'created_at' => $r['trans_date'] ?: date('Y-m-d H:i:s'),
-                    'ref_no'     => $r['ref_no'] ?: 'RX-AUTO',
-                    'type_label' => 'e-Resep Medis',
-                    'type_badge' => 'info',
-                    'batch_no'   => $r['batch_no'],
-                    'qty_in'     => 0,
-                    'qty_out'    => (int)$r['qty'],
-                    'notes'      => $r['notes']
-                ];
+
+            // 2. Fetch all movements for this medicine chronologically
+            $allMovements = $db->table('stock_movements')
+                              ->select('stock_movements.*, medicine_batches.batch_no, medicine_batches.expired_date, users.username as user_name')
+                              ->join('medicine_batches', 'medicine_batches.id = stock_movements.batch_id', 'left')
+                              ->join('users', 'users.id = stock_movements.user_id', 'left')
+                              ->where('stock_movements.medicine_id', $selectedMedId)
+                              ->orderBy('stock_movements.created_at', 'ASC')
+                              ->orderBy('stock_movements.id', 'ASC')
+                              ->get()->getResult();
+
+            // Pre-load reference details to prevent N+1 queries
+            $rxIds = [];
+            $posIds = [];
+            $opnIds = [];
+            foreach ($allMovements as $mv) {
+                if ($mv->reference_id) {
+                    if ($mv->transaction_type === 'resep') $rxIds[] = $mv->reference_id;
+                    elseif ($mv->transaction_type === 'penjualan') $posIds[] = $mv->reference_id;
+                    elseif ($mv->transaction_type === 'opname') $opnIds[] = $mv->reference_id;
+                }
             }
-            foreach ($posItems as $p) {
-                $allMovements[] = [
-                    'created_at' => $p['trans_date'] ?: date('Y-m-d H:i:s'),
-                    'ref_no'     => $p['ref_no'] ?: 'SLS-AUTO',
-                    'type_label' => 'Penjualan Bebas',
-                    'type_badge' => 'warning',
-                    'batch_no'   => $p['batch_no'],
-                    'qty_in'     => 0,
-                    'qty_out'    => (int)$p['qty'],
-                    'notes'      => $p['notes']
-                ];
+
+            $rxMap = [];
+            if (!empty($rxIds)) {
+                $rxRows = $db->table('prescriptions')
+                             ->select('prescriptions.id, patient_visits.no_visit, patients.name as patient_name, patients.no_rm, COALESCE(doctors.name, "Dokter") as doctor_name')
+                             ->join('patient_visits', 'patient_visits.id = prescriptions.visit_id', 'left')
+                             ->join('patients', 'patients.id = patient_visits.patient_id', 'left')
+                             ->join('doctors', 'doctors.id = prescriptions.doctor_id', 'left')
+                             ->whereIn('prescriptions.id', array_unique($rxIds))
+                             ->get()->getResult();
+                foreach ($rxRows as $r) {
+                    $rxMap[$r->id] = $r;
+                }
             }
-            foreach ($opnameItems as $o) {
-                $diff = (int)$o['difference'];
-                $allMovements[] = [
-                    'created_at' => $o['trans_date'] ?: date('Y-m-d H:i:s'),
-                    'ref_no'     => $o['ref_no'] ?: 'OPN-AUTO',
-                    'type_label' => 'Stok Opname',
+
+            $posMap = [];
+            if (!empty($posIds)) {
+                $posRows = $db->table('pharmacy_sales')
+                              ->select('id, sale_no, customer_name, payment_method, cashier_id')
+                              ->whereIn('id', array_unique($posIds))
+                              ->get()->getResult();
+                foreach ($posRows as $p) {
+                    $posMap[$p->id] = $p;
+                }
+            }
+
+            $opnMap = [];
+            if (!empty($opnIds)) {
+                $opnRows = $db->table('stock_opnames')
+                              ->select('id, opname_no, opname_date, notes')
+                              ->whereIn('id', array_unique($opnIds))
+                              ->get()->getResult();
+                foreach ($opnRows as $o) {
+                    $opnMap[$o->id] = $o;
+                }
+            }
+
+            // Calculate running balance and filter by date range
+            $runningBal = 0;
+            $startTs = strtotime($startDate . ' 00:00:00');
+            $endTs   = strtotime($endDate . ' 23:59:59');
+
+            // Find saldo awal (movements prior to start date)
+            foreach ($allMovements as $mv) {
+                $mvTs = strtotime($mv->created_at);
+                if ($mvTs < $startTs) {
+                    $runningBal += ($mv->qty_in - $mv->qty_out);
+                }
+            }
+            $saldoAwal = $runningBal;
+
+            // If saldo awal exists, add the Saldo Awal row
+            if ($saldoAwal > 0 || ($saldoAwal != 0 && $this->request->getGet('start_date'))) {
+                $ledger[] = [
+                    'id'         => 0,
+                    'created_at' => $startDate . ' 00:00:00',
+                    'ref_no'     => 'SALDO-AWAL',
+                    'type_label' => 'Saldo Awal',
                     'type_badge' => 'secondary',
-                    'batch_no'   => $o['batch_no'],
-                    'qty_in'     => $diff > 0 ? $diff : 0,
-                    'qty_out'    => $diff < 0 ? abs($diff) : 0,
-                    'notes'      => $o['notes']
+                    'batch_no'   => '-',
+                    'expired_date'=> null,
+                    'qty_in'     => $saldoAwal > 0 ? $saldoAwal : 0,
+                    'qty_out'    => $saldoAwal < 0 ? abs($saldoAwal) : 0,
+                    'balance'    => $saldoAwal,
+                    'user_name'  => 'Sistem',
+                    'notes'      => 'Saldo awal persediaan sebelum ' . date('d/m/Y', strtotime($startDate))
                 ];
             }
 
-            // Sort chronologically
-            usort($allMovements, function($a, $b) {
-                return strtotime($a['created_at']) <=> strtotime($b['created_at']);
-            });
+            // Iterate over movements in date range
+            foreach ($allMovements as $mv) {
+                $mvTs = strtotime($mv->created_at);
+                if ($mvTs >= $startTs && $mvTs <= $endTs) {
+                    $runningBal += ($mv->qty_in - $mv->qty_out);
+                    $totalIn += (int)$mv->qty_in;
+                    $totalOut += (int)$mv->qty_out;
 
-            // Calculate running balance
-            $currentRunningBal = 0;
-            foreach ($allMovements as &$m) {
-                $currentRunningBal += ($m['qty_in'] - $m['qty_out']);
-                $m['balance'] = $currentRunningBal;
-                $totalIn += $m['qty_in'];
-                $totalOut += $m['qty_out'];
+                    $refNo = 'MOV-' . str_pad($mv->id, 5, '0', STR_PAD_LEFT);
+                    $typeLabel = 'Mutasi Stok';
+                    $typeBadge = 'secondary';
+                    $notes = 'Pergerakan stok internal';
+
+                    switch ($mv->transaction_type) {
+                        case 'pembelian':
+                            $typeLabel = 'Penerimaan / Stok Awal';
+                            $typeBadge = 'success';
+                            $refNo = 'BATCH-' . ($mv->batch_no ?: 'INIT');
+                            $notes = 'Penerimaan persediaan batch ' . ($mv->batch_no ?: '-') . ($mv->expired_date ? ' (ED: ' . date('d/m/Y', strtotime($mv->expired_date)) . ')' : '');
+                            break;
+                        case 'resep':
+                            $typeLabel = 'e-Resep Medis';
+                            $typeBadge = 'info';
+                            $refNo = 'RX-' . str_pad($mv->reference_id, 5, '0', STR_PAD_LEFT);
+                            if (isset($rxMap[$mv->reference_id])) {
+                                $rx = $rxMap[$mv->reference_id];
+                                $notes = 'Pelayanan e-Resep Pasien: ' . ($rx->patient_name ?: '-') . ' (No RM: ' . ($rx->no_rm ?: '-') . ') - ' . ($rx->doctor_name ?: 'Dokter');
+                            } else {
+                                $notes = 'Pelayanan e-Resep Medis Pasien';
+                            }
+                            break;
+                        case 'penjualan':
+                            $typeLabel = 'Penjualan Obat Bebas';
+                            $typeBadge = 'warning';
+                            if (isset($posMap[$mv->reference_id])) {
+                                $pos = $posMap[$mv->reference_id];
+                                $refNo = $pos->sale_no ?: 'SLS-AUTO';
+                                $notes = 'Penjualan Kasir Apotek OTC - Pelanggan: ' . ($pos->customer_name ?: 'Umum') . ' (' . strtoupper($pos->payment_method ?: 'Tunai') . ')';
+                            } else {
+                                $refNo = 'SLS-' . str_pad($mv->reference_id, 5, '0', STR_PAD_LEFT);
+                                $notes = 'Penjualan Bebas (OTC)';
+                            }
+                            break;
+                        case 'opname':
+                            $typeLabel = 'Stok Opname';
+                            $typeBadge = 'secondary';
+                            if (isset($opnMap[$mv->reference_id])) {
+                                $opn = $opnMap[$mv->reference_id];
+                                $refNo = $opn->opname_no ?: 'OPN-AUTO';
+                                $notes = 'Penyesuaian Fisik Opname: ' . ($opn->notes ?: 'Koreksi Stok Fisik');
+                            } else {
+                                $refNo = 'OPN-' . str_pad($mv->reference_id, 5, '0', STR_PAD_LEFT);
+                                $notes = 'Penyesuaian Fisik Stok Opname';
+                            }
+                            break;
+                        case 'adjustment':
+                            $typeLabel = 'Penyesuaian Batch';
+                            $typeBadge = 'dark';
+                            $refNo = 'ADJ-' . ($mv->batch_no ?: 'MANUAL');
+                            $notes = 'Koreksi penyesuaian manual stok batch ' . ($mv->batch_no ?: '-');
+                            break;
+                        case 'retur':
+                            $typeLabel = 'Retur Obat';
+                            $typeBadge = 'danger';
+                            $refNo = 'RET-' . str_pad($mv->reference_id, 5, '0', STR_PAD_LEFT);
+                            $notes = 'Retur pengembalian obat';
+                            break;
+                    }
+
+                    $ledger[] = [
+                        'id'         => $mv->id,
+                        'created_at' => $mv->created_at,
+                        'ref_no'     => $refNo,
+                        'type_label' => $typeLabel,
+                        'type_badge' => $typeBadge,
+                        'batch_no'   => $mv->batch_no ?: '-',
+                        'expired_date'=> $mv->expired_date,
+                        'qty_in'     => (int)$mv->qty_in,
+                        'qty_out'    => (int)$mv->qty_out,
+                        'balance'    => $runningBal,
+                        'user_name'  => $mv->user_name ?: 'Petugas',
+                        'notes'      => $notes
+                    ];
+                }
             }
-
-            $ledger = $allMovements;
         }
 
         $data = [
@@ -1800,6 +1894,7 @@ class Apotek extends BaseController
             'startDate'        => $startDate,
             'endDate'          => $endDate,
             'ledger'           => $ledger,
+            'saldoAwal'        => $saldoAwal,
             'totalIn'          => $totalIn,
             'totalOut'         => $totalOut
         ];
@@ -1816,6 +1911,41 @@ class Apotek extends BaseController
 
         // 1. List all warehouses
         $warehouses = $db->table('pharmacy_warehouses')->orderBy('id', 'ASC')->get()->getResult();
+        if (empty($warehouses)) {
+            $defaultWh = [
+                ['code' => 'WH-INDUK', 'name' => 'Gudang Induk Logistik Farmasi', 'type' => 'main', 'location' => 'Gedung Farmasi Pusat Lt. 1', 'pic_name' => 'Apt. Rian Santoso, S.Farm', 'phone' => '081234567890', 'status' => 'active'],
+                ['code' => 'DEPO-RJ', 'name' => 'Depo Apotek Rawat Jalan', 'type' => 'depo', 'location' => 'Lantai 1 Depan Poliklinik', 'pic_name' => 'Apt. Siti Nurhaliza, S.Farm', 'phone' => '081234567891', 'status' => 'active'],
+                ['code' => 'DEPO-UGD', 'name' => 'Depo Farmasi Gawat Darurat (UGD)', 'type' => 'depo', 'location' => 'Gedung UGD Ruang Dispensing 24 Jam', 'pic_name' => 'Apt. Budi Pratama, S.Farm', 'phone' => '081234567892', 'status' => 'active'],
+                ['code' => 'DEPO-RI', 'name' => 'Depo Farmasi Rawat Inap', 'type' => 'depo', 'location' => 'Lantai 2 Bangsal Perawatan', 'pic_name' => 'Apt. Dewi Lestari, S.Farm', 'phone' => '081234567893', 'status' => 'active']
+            ];
+            foreach ($defaultWh as $dwh) {
+                $db->table('pharmacy_warehouses')->insert($dwh);
+            }
+            $warehouses = $db->table('pharmacy_warehouses')->orderBy('id', 'ASC')->get()->getResult();
+        }
+
+        // Check if warehouse_stock has rows; if not, sync from active medicine_batches to main warehouse
+        $wsCount = $db->table('warehouse_stock')->countAllResults();
+        if ($wsCount === 0 && !empty($warehouses)) {
+            $mainWh = null;
+            foreach ($warehouses as $w) {
+                if ($w->type === 'main') { $mainWh = $w; break; }
+            }
+            if (!$mainWh && !empty($warehouses)) {
+                $mainWh = $warehouses[0];
+            }
+            if ($mainWh) {
+                $activeBatches = $db->table('medicine_batches')->where('stock >', 0)->get()->getResult();
+                foreach ($activeBatches as $ab) {
+                    $db->table('warehouse_stock')->insert([
+                        'warehouse_id' => $mainWh->id,
+                        'medicine_id'  => $ab->medicine_id,
+                        'batch_id'     => $ab->id,
+                        'stock'        => $ab->stock
+                    ]);
+                }
+            }
+        }
 
         // 2. Selected warehouse filter (default: all or Gudang Induk)
         $selectedWhId = intval($this->request->getGet('warehouse_id'));

@@ -117,7 +117,7 @@ test.describe('Klinik SOAP & Complete Cross-Module Integration Pipeline', () => 
 
     // Input e-Resep Obat 1: Paracetamol 500 mg Tablet
     await page.evaluate(() => {
-      const select0 = document.querySelector('select[name="medicines[0][medicine_id]"]');
+      const select0 = document.querySelector('select[name="medicines[0][medicine_id]"]') as HTMLSelectElement | null;
       if (select0) {
         for (let i = 0; i < select0.options.length; i++) {
           if (select0.options[i].value === '1' || select0.options[i].text.toLowerCase().includes('paracetamol')) {

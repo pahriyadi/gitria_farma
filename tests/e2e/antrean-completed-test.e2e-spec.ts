@@ -41,8 +41,8 @@ test('Inspect completed tab and active tab with data', async ({ page }) => {
       html: tr.innerHTML
     }));
     return {
-      activeTab: document.querySelector('#antrean-status-tabs .nav-link.active')?.innerText.trim(),
-      headerTitle: document.querySelector('.card-title')?.innerText.trim(),
+      activeTab: (document.querySelector('#antrean-status-tabs .nav-link.active') as HTMLElement)?.innerText.trim(),
+      headerTitle: (document.querySelector('.card-title') as HTMLElement)?.innerText.trim(),
       rowsCount: rows.length,
       rows: rows
     };

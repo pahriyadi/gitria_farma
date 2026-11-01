@@ -2,8 +2,280 @@
 
 <?= $this->section('content') ?>
 
+<style>
+    /* ========================================================================= */
+    /* APOTEK RESEP: PAPER WHITE & PAPER DARK COMPLIANCE                         */
+    /* ========================================================================= */
+    
+    /* Card overrides */
+    .card {
+        box-shadow: none !important;
+        border-radius: 4px !important;
+    }
+    body:not(.dark-mode) .card {
+        border: 1px solid #b8b8b8 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .card,
+    .dark-mode .card {
+        border: 1px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Nav Pills */
+    #resepTabs {
+        border-radius: 4px !important;
+        box-shadow: none !important;
+    }
+    body:not(.dark-mode) #resepTabs {
+        background-color: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode #resepTabs,
+    .dark-mode #resepTabs {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) #resepTabs .nav-link {
+        color: #444444;
+    }
+    body.dark-mode #resepTabs .nav-link,
+    .dark-mode #resepTabs .nav-link {
+        color: #9ca3af;
+    }
+    body:not(.dark-mode) #resepTabs .nav-link.active {
+        background-color: #0d9488 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode #resepTabs .nav-link.active,
+    .dark-mode #resepTabs .nav-link.active {
+        background-color: #0d9488 !important;
+        color: #ffffff !important;
+    }
+
+    /* Prescription Queue Items */
+    body:not(.dark-mode) .presc-item {
+        background-color: #ffffff;
+        border-color: #e5e7eb;
+        color: #333333;
+    }
+    body:not(.dark-mode) .presc-item:hover {
+        background-color: #f0f7f3 !important;
+    }
+    body:not(.dark-mode) .presc-item.active {
+        background-color: #e6f4ea !important;
+    }
+
+    body.dark-mode .presc-item,
+    .dark-mode .presc-item {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .presc-item:hover,
+    .dark-mode .presc-item:hover {
+        background-color: #262b32 !important;
+    }
+    body.dark-mode .presc-item.active,
+    .dark-mode .presc-item.active {
+        background-color: #262b32 !important;
+    }
+    body.dark-mode .presc-item .text-secondary,
+    .dark-mode .presc-item .text-secondary {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .presc-item strong,
+    .dark-mode .presc-item strong {
+        color: #f3f4f6 !important;
+    }
+
+    /* Workspace & Form */
+    body.dark-mode #workspace-card,
+    .dark-mode #workspace-card {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode #workspace-placeholder,
+    .dark-mode #workspace-placeholder {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #9ca3af !important;
+    }
+    body.dark-mode .resep-info-box,
+    .dark-mode .resep-info-box {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .resep-info-box {
+        background-color: #f8f9fa !important;
+        border-color: #e5e7eb !important;
+        color: #333333 !important;
+    }
+
+    /* Dynamic Medicine Cards */
+    body.dark-mode .med-dispense-card,
+    .dark-mode .med-dispense-card {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .med-dispense-card .card-body,
+    .dark-mode .med-dispense-card .card-body {
+        background-color: #1f2328 !important;
+    }
+    body.dark-mode .med-dispense-card label,
+    .dark-mode .med-dispense-card label {
+        color: #d1d5db !important;
+    }
+    body.dark-mode .med-dispense-card .form-control,
+    .dark-mode .med-dispense-card .form-control {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .input-group-text,
+    .dark-mode .input-group-text {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #9ca3af !important;
+    }
+
+    /* Card header and footer */
+    body:not(.dark-mode) .card-header-clean,
+    body:not(.dark-mode) .card-footer-clean {
+        background-color: #ffffff !important;
+        border-color: #b8b8b8 !important;
+        color: #333333 !important;
+    }
+    body.dark-mode .card-header-clean,
+    body.dark-mode .card-footer-clean,
+    .dark-mode .card-header-clean,
+    .dark-mode .card-footer-clean {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .text-adaptive-dark,
+    .dark-mode .text-adaptive-dark {
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .text-adaptive-dark {
+        color: #333333 !important;
+    }
+
+    /* Modal Styling */
+    body.dark-mode #modalDetailResep .modal-content,
+    .dark-mode #modalDetailResep .modal-content {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #modalDetailResep .modal-header,
+    .dark-mode #modalDetailResep .modal-header,
+    body.dark-mode #modalDetailResep .modal-footer,
+    .dark-mode #modalDetailResep .modal-footer {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #modalDetailResep .modal-body,
+    .dark-mode #modalDetailResep .modal-body {
+        background-color: #1f2328 !important;
+    }
+    body.dark-mode #modalDetailResep .close,
+    .dark-mode #modalDetailResep .close {
+        color: #f3f4f6 !important;
+    }
+
+    /* Tables (Strict Excel grid, No Striped) */
+    .table,
+    table.dataTable {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+    body:not(.dark-mode) .table,
+    body:not(.dark-mode) table.dataTable {
+        border: 1.5px solid #a0a0a0 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .table,
+    body.dark-mode table.dataTable,
+    .dark-mode .table,
+    .dark-mode table.dataTable {
+        border: 1.5px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .table thead th,
+    body:not(.dark-mode) table.dataTable thead th {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #b0b0b0 !important;
+    }
+    body.dark-mode .table thead th,
+    body.dark-mode table.dataTable thead th,
+    .dark-mode .table thead th,
+    .dark-mode table.dataTable thead th {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) .table td,
+    body:not(.dark-mode) table.dataTable td {
+        border: 1px solid #b8b8b8 !important;
+        color: #444444 !important;
+        background-color: #ffffff;
+    }
+    body.dark-mode .table td,
+    body.dark-mode table.dataTable td,
+    .dark-mode .table td,
+    .dark-mode table.dataTable td {
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+        background-color: #1f2328 !important;
+    }
+    body:not(.dark-mode) .table-hover tbody tr:hover td {
+        background-color: #f0f7f3 !important;
+    }
+    body.dark-mode .table-hover tbody tr:hover td,
+    .dark-mode .table-hover tbody tr:hover td {
+        background-color: #262b32 !important;
+    }
+    body:not(.dark-mode) .table tfoot td,
+    body:not(.dark-mode) .table tfoot th {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #b0b0b0 !important;
+    }
+    body.dark-mode .table tfoot td,
+    body.dark-mode .table tfoot th,
+    .dark-mode .table tfoot td,
+    .dark-mode .table tfoot th {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .btn-outline-dark,
+    .dark-mode .btn-outline-dark {
+        color: #d1d5db !important;
+        border-color: #4b5563 !important;
+    }
+    body.dark-mode .btn-outline-dark:hover,
+    .dark-mode .btn-outline-dark:hover {
+        background-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode .badge-light,
+    .dark-mode .badge-light {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+</style>
+
 <!-- Nav Tabs: Antrean Resep Aktif & Riwayat e-Resep Selesai -->
-<ul class="nav nav-pills mb-3 bg-white p-2 rounded shadow-sm border" id="resepTabs" role="tablist">
+<ul class="nav nav-pills mb-3 p-2 rounded border" id="resepTabs" role="tablist">
     <li class="nav-item mr-2">
         <a class="nav-link active font-weight-bold" id="tab-antrean-link" data-toggle="pill" href="#tab-antrean" role="tab" aria-controls="tab-antrean" aria-selected="true">
             <i class="fas fa-prescription-bottle-medical mr-1 text-teal"></i> Resep Menunggu Penyiapan
@@ -26,9 +298,9 @@
         <div class="row">
             <!-- Active e-Prescriptions Queue -->
             <div class="col-md-5">
-                <div class="card card-outline card-teal shadow sticky-card">
-                    <div class="card-header d-flex justify-content-between align-items-center py-2">
-                        <h6 class="card-title font-weight-bold text-dark mb-0">
+                <div class="card card-outline card-teal sticky-card">
+                    <div class="card-header card-header-clean d-flex justify-content-between align-items-center py-2">
+                        <h6 class="card-title font-weight-bold text-adaptive-dark mb-0">
                             <i class="fas fa-file-prescription text-teal mr-1"></i> Antrean Resep Menunggu
                         </h6>
                         <span class="badge badge-teal ml-auto font-weight-normal"><?= count($prescriptions) ?> Resep</span>
@@ -86,7 +358,7 @@
 
             <!-- Dispense e-Prescription Workspace -->
             <div class="col-md-7">
-                <div class="card card-teal shadow" id="workspace-card" style="display:none;">
+                <div class="card card-teal" id="workspace-card" style="display:none;">
                     <div class="card-header d-flex justify-content-between align-items-center py-2">
                         <h6 class="card-title font-weight-bold mb-0" id="workspace-title">
                             <i class="fas fa-prescription-bottle-medical mr-1"></i> Penyiapan & Dispensing Resep
@@ -107,7 +379,7 @@
                             <!-- Status Banner Tagihan Kasir (Live-Sync Alert) -->
                             <div id="box-payment-status" class="mb-3"></div>
 
-                            <div class="row border-bottom pb-2 mb-3 text-sm bg-light p-2 rounded">
+                            <div class="row border-bottom pb-2 mb-3 text-sm resep-info-box p-2 rounded">
                                 <div class="col-md-6">
                                     <strong>Pasien:</strong> <span id="lbl-patient" class="text-teal font-weight-bold"></span><br>
                                     <strong>No RM:</strong> <span id="lbl-rm"></span>
@@ -126,7 +398,7 @@
                             <!-- Container for dynamic prescription medicines -->
                             <div id="medicines-container"></div>
                         </div>
-                        <div class="card-footer bg-white border-top">
+                        <div class="card-footer card-footer-clean border-top">
                             <button type="submit" id="btn-submit-dispense" class="btn btn-teal btn-block font-weight-bold btn-lg shadow-sm">
                                 <i class="fas fa-check-double mr-1"></i> Selesai Dispensing & Serahkan Obat
                             </button>
@@ -135,7 +407,7 @@
                 </div>
 
                 <!-- Empty state placeholder -->
-                <div class="card shadow-none border bg-light text-center py-5" id="workspace-placeholder">
+                <div class="card shadow-none border text-center py-5" id="workspace-placeholder">
                     <div class="py-4">
                         <i class="fas fa-hand-holding-medical fa-3x text-muted mb-3"></i>
                         <h6 class="font-weight-bold text-secondary">Pilih Resep untuk Mulai Menyiapkan</h6>
@@ -150,9 +422,9 @@
     <!-- TAB 2: DAFTAR RIWAYAT e-RESEP SELESAI (LENGKAP DENGAN AKSI CETAK)      -->
     <!-- ===================================================================== -->
     <div class="tab-pane fade" id="tab-riwayat" role="tabpanel" aria-labelledby="tab-riwayat-link">
-        <div class="card card-outline card-teal shadow-none bg-white border">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center py-2 border-bottom">
-                <h6 class="card-title font-weight-bold text-dark mb-0">
+        <div class="card card-outline card-teal shadow-none border">
+            <div class="card-header card-header-clean d-flex justify-content-between align-items-center py-2 border-bottom">
+                <h6 class="card-title font-weight-bold text-adaptive-dark mb-0">
                     <i class="fas fa-history text-teal mr-1"></i> Daftar Riwayat e-Resep Pasien yang Telah Selesai
                 </h6>
                 <span class="badge badge-light border text-xs font-weight-bold">
@@ -161,8 +433,8 @@
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover datatable-full text-dark" id="table-riwayat-resep" style="width: 100%; font-size: 13px;">
-                        <thead class="bg-light">
+                    <table class="table table-bordered table-hover datatable-full" id="table-riwayat-resep" style="width: 100%; font-size: 13px;">
+                        <thead>
                             <tr>
                                 <th style="width: 40px;" class="text-center">No</th>
                                 <th style="width: 135px;">Waktu Selesai</th>
@@ -185,7 +457,7 @@
                                     <tr>
                                         <td class="text-center align-middle"><?= $no++ ?></td>
                                         <td class="align-middle">
-                                            <span class="font-weight-bold text-dark d-block"><?= $timeStr ?></span>
+                                            <span class="font-weight-bold text-adaptive-dark d-block"><?= $timeStr ?></span>
                                             <small class="text-muted"><i class="fas fa-clock mr-1"></i>WITA</small>
                                         </td>
                                         <td class="align-middle">
@@ -194,7 +466,7 @@
                                             <small class="badge badge-light border"><?= esc($cp->no_visit ?? '-') ?></small>
                                         </td>
                                         <td class="align-middle">
-                                            <strong class="text-dark d-block"><?= esc($cp->patient_name ?? 'Pasien Umum') ?></strong>
+                                            <strong class="text-adaptive-dark d-block"><?= esc($cp->patient_name ?? 'Pasien Umum') ?></strong>
                                             <span class="badge badge-secondary"><?= esc($cp->no_rm ?? '-') ?></span>
                                         </td>
                                         <td class="align-middle">
@@ -254,11 +526,11 @@
 <div class="modal fade" id="modalDetailResep" tabindex="-1" role="dialog" aria-labelledby="modalDetailResepLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border">
-            <div class="modal-header bg-light border-bottom py-2">
-                <h6 class="modal-title font-weight-bold text-dark" id="modalDetailResepLabel">
+            <div class="modal-header border-bottom py-2">
+                <h6 class="modal-title font-weight-bold text-adaptive-dark" id="modalDetailResepLabel">
                     <i class="fas fa-file-prescription text-teal mr-1"></i> Rincian Lengkap e-Resep Pasien
                 </h6>
-                <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -270,14 +542,14 @@
 
                 <div id="modal-detail-content" style="display: none;">
                     <!-- Patient & Presc Info -->
-                    <div class="row bg-light p-2 rounded mb-3 border text-sm">
+                    <div class="row resep-info-box p-2 rounded mb-3 border text-sm">
                         <div class="col-md-6">
                             <span class="text-muted">Nama Pasien:</span> <strong id="mdl-patient-name" class="text-teal"></strong><br>
                             <span class="text-muted">No. Rekam Medis:</span> <span id="mdl-no-rm" class="badge badge-secondary font-weight-bold"></span><br>
-                            <span class="text-muted">No. Rawat / Kunjungan:</span> <span id="mdl-no-visit" class="font-weight-bold text-dark"></span>
+                            <span class="text-muted">No. Rawat / Kunjungan:</span> <span id="mdl-no-visit" class="font-weight-bold text-adaptive-dark"></span>
                         </div>
                         <div class="col-md-6 text-md-right">
-                            <span class="text-muted">Dokter Peresep:</span> <strong id="mdl-doctor-name" class="text-dark"></strong><br>
+                            <span class="text-muted">Dokter Peresep:</span> <strong id="mdl-doctor-name" class="text-adaptive-dark"></strong><br>
                             <span class="text-muted">No. Resep:</span> <strong id="mdl-presc-no" class="text-teal"></strong><br>
                             <span class="text-muted">Waktu Selesai:</span> <span id="mdl-dispensed-time" class="font-weight-bold text-secondary"></span><br>
                             <span class="text-muted">Status Bayar:</span> <span id="mdl-payment-badge"></span>
@@ -286,8 +558,8 @@
 
                     <!-- Items Table -->
                     <div class="table-responsive mb-3 border rounded">
-                        <table class="table table-bordered table-striped table-sm mb-0" style="font-size: 12.5px;">
-                            <thead class="bg-light">
+                        <table class="table table-bordered table-sm mb-0" style="font-size: 12.5px;">
+                            <thead>
                                 <tr>
                                     <th style="width: 30px;" class="text-center">No</th>
                                     <th>Nama Obat &amp; Aturan Pakai</th>
@@ -300,14 +572,14 @@
                             <tbody id="mdl-medicines-body">
                                 <!-- Dynamic rows -->
                             </tbody>
-                            <tfoot class="bg-light font-weight-bold" id="mdl-medicines-foot">
+                            <tfoot class="font-weight-bold" id="mdl-medicines-foot">
                                 <!-- Dynamic totals -->
                             </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light border-top d-flex justify-content-between">
+            <div class="modal-footer border-top d-flex justify-content-between">
                 <div>
                     <!-- Shortcut Cetak Buttons -->
                     <a href="#" id="btn-mdl-etiket" target="_blank" class="btn btn-sm btn-outline-primary font-weight-bold mr-1">
@@ -350,11 +622,11 @@
             }
 
             html += `
-                <div class="card card-outline card-secondary mb-3 shadow-none border">
+                <div class="card card-outline card-secondary mb-3 shadow-none border med-dispense-card">
                     <div class="card-body p-3">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <div>
-                                <h6 class="font-weight-bold text-dark mb-1">
+                                <h6 class="font-weight-bold text-adaptive-dark mb-1">
                                     <i class="fas fa-capsules text-teal mr-1"></i> ${item.medicine_name}
                                 </h6>
                                 <span class="badge badge-info">Dosis: ${item.dosage || '-'}</span>
@@ -362,7 +634,7 @@
                             </div>
                             <div style="min-width: 170px;">
                                 <label class="text-xs text-muted mb-0 font-weight-bold">Status Penyerahan:</label>
-                                <select name="dispense[${item.medicine_id}][action]" class="form-control form-control-sm select-action" data-medid="${item.medicine_id}">
+                                <select name="dispense[${item.medicine_id}][action]" class="form-control form-control-sm select-action" data-native="true" data-medid="${item.medicine_id}">
                                     <option value="internal" ${hasStock ? 'selected' : ''}>Serahkan di Apotek</option>
                                     <option value="beli_luar" ${!hasStock ? 'selected' : ''}>Resep Luar (Beli di Luar)</option>
                                     <option value="cancel">Batalkan Item Ini</option>
@@ -374,33 +646,33 @@
                             <div id="batch-box-${item.medicine_id}" style="${hasStock ? 'display:block;' : 'display:none;'}">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <label class="text-xs text-dark font-weight-bold mb-1">Pilih Batch (FEFO / Expired Terdekat):</label>
-                                        <select name="dispense[${item.medicine_id}][batch_id]" class="form-control form-control-sm" ${hasStock ? 'required' : ''}>
+                                        <label class="text-xs text-adaptive-dark font-weight-bold mb-1">Pilih Batch (FEFO / Expired Terdekat):</label>
+                                        <select name="dispense[${item.medicine_id}][batch_id]" class="form-control form-control-sm" data-native="true" ${hasStock ? 'required' : ''}>
                                             ${batchOptions}
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <label class="text-xs text-dark font-weight-bold mb-1">Jumlah Diambil:</label>
+                                        <label class="text-xs text-adaptive-dark font-weight-bold mb-1">Jumlah Diambil:</label>
                                         <input type="number" min="1" max="${item.qty}" name="dispense[${item.medicine_id}][qty]" class="form-control form-control-sm" value="${item.qty}" ${hasStock ? 'required' : ''}>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <label class="text-xs text-dark font-weight-bold mb-1">Diskon Item (Rp):</label>
+                                        <label class="text-xs text-adaptive-dark font-weight-bold mb-1">Diskon Item (Rp):</label>
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
                                             <input type="number" step="100" min="0" name="dispense[${item.medicine_id}][discount]" class="form-control form-control-sm" placeholder="0" value="0">
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="text-xs text-dark font-weight-bold mb-1">Tuslah (Rp):</label>
+                                        <label class="text-xs text-adaptive-dark font-weight-bold mb-1">Tuslah (Rp):</label>
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
                                             <input type="number" step="100" min="0" name="dispense[${item.medicine_id}][tusla]" class="form-control form-control-sm" placeholder="0" value="0">
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="text-xs text-dark font-weight-bold mb-1">Embalase (Rp):</label>
+                                        <label class="text-xs text-adaptive-dark font-weight-bold mb-1">Embalase (Rp):</label>
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend"><span class="input-group-text">Rp</span></div>
                                             <input type="number" step="100" min="0" name="dispense[${item.medicine_id}][embalase]" class="form-control form-control-sm" placeholder="0" value="0">
@@ -518,8 +790,17 @@
         // Initialize DataTable on Riwayat Table
         if ($.fn.DataTable && $('#table-riwayat-resep').length) {
             $('#table-riwayat-resep').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
+                "language": window.dtIndonesianLanguage || {
+                    "search": "Cari Riwayat:",
+                    "lengthMenu": "Tampilkan _MENU_ data",
+                    "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    "infoEmpty": "Tidak ada data riwayat",
+                    "paginate": {
+                        "first": "Awal",
+                        "last": "Akhir",
+                        "next": "Berikutnya",
+                        "previous": "Sebelumnya"
+                    }
                 },
                 "order": [[1, "desc"]],
                 "pageLength": 15,
@@ -654,7 +935,7 @@
                                 <tr>
                                     <td class="text-center">${no++}</td>
                                     <td>
-                                        <strong class="text-dark">${item.medicine_name}</strong>
+                                        <strong class="text-adaptive-dark">${item.medicine_name}</strong>
                                         ${item.dosage && item.dosage !== '-' ? `<div class="text-xs text-muted font-italic"><i class="fas fa-info-circle text-teal mr-1"></i>${item.dosage}</div>` : ''}
                                     </td>
                                     <td class="text-center font-weight-bold">${qty}</td>
@@ -682,8 +963,8 @@
                             `;
                         }
                         footHtml += `
-                            <tr class="bg-light" style="border-top: 2px solid #0d9488;">
-                                <td colspan="5" class="text-right font-weight-bold text-dark" style="font-size: 13px;">GRAND TOTAL RESEP:</td>
+                            <tr style="border-top: 2px solid #0d9488;">
+                                <td colspan="5" class="text-right font-weight-bold text-adaptive-dark" style="font-size: 13px;">GRAND TOTAL RESEP:</td>
                                 <td class="text-right font-weight-bold text-teal" style="font-size: 14px;">Rp ${s.grand_total.toLocaleString('id-ID')}</td>
                             </tr>
                         `;

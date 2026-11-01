@@ -1,6 +1,195 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+
+<style>
+    /* ========================================================================= */
+    /* STOK OBAT & MASTER FARMASI: PAPER WHITE & PAPER DARK COMPLIANCE            */
+    /* ========================================================================= */
+    
+    /* Card overrides */
+    .card {
+        box-shadow: none !important;
+        border-radius: 4px !important;
+    }
+    body:not(.dark-mode) .card {
+        border: 1px solid #b8b8b8 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .card,
+    .dark-mode .card {
+        border: 1px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Info Boxes */
+    body:not(.dark-mode) .info-box {
+        background-color: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .info-box,
+    .dark-mode .info-box {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Sub-panels */
+    body:not(.dark-mode) .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    body.dark-mode .bg-light,
+    .dark-mode .bg-light {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+    }
+
+    body.dark-mode .bg-white,
+    .dark-mode .bg-white {
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* Nav Tabs */
+    #custom-tabs-stok {
+        border-bottom: 1px solid #b8b8b8;
+    }
+    body.dark-mode #custom-tabs-stok,
+    .dark-mode #custom-tabs-stok {
+        border-bottom: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) #custom-tabs-stok .nav-link {
+        color: #444444;
+    }
+    body.dark-mode #custom-tabs-stok .nav-link,
+    .dark-mode #custom-tabs-stok .nav-link {
+        color: #9ca3af;
+    }
+    #custom-tabs-stok .nav-link.active {
+        background-color: #0d9488 !important;
+        color: #ffffff !important;
+        border-color: #0d9488 !important;
+    }
+
+    /* Text adaptive */
+    body.dark-mode .text-adaptive-dark,
+    .dark-mode .text-adaptive-dark,
+    body.dark-mode .text-dark,
+    .dark-mode .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .text-adaptive-dark {
+        color: #333333 !important;
+    }
+    body.dark-mode .text-secondary,
+    .dark-mode .text-secondary {
+        color: #9ca3af !important;
+    }
+
+    /* Inputs, Selects & Input Groups */
+    body.dark-mode .form-control,
+    .dark-mode .form-control {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .form-control:focus,
+    .dark-mode .form-control:focus {
+        border-color: #0d9488 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .form-control[readonly],
+    .dark-mode .form-control[readonly] {
+        background-color: #181b1f !important;
+        color: #9ca3af !important;
+    }
+
+    /* Modals */
+    body.dark-mode .modal-content,
+    .dark-mode .modal-content {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .modal-header,
+    .dark-mode .modal-header,
+    body.dark-mode .modal-footer,
+    .dark-mode .modal-footer {
+        border-color: #374151 !important;
+    }
+
+    /* Tables (Strict Excel, No Striped) */
+    .table,
+    table.dataTable {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+    body:not(.dark-mode) .table,
+    body:not(.dark-mode) table.dataTable {
+        border: 1.5px solid #a0a0a0 !important;
+        background-color: #ffffff !important;
+    }
+    body.dark-mode .table,
+    body.dark-mode table.dataTable,
+    .dark-mode .table,
+    .dark-mode table.dataTable {
+        border: 1.5px solid #374151 !important;
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body:not(.dark-mode) .table thead th,
+    body:not(.dark-mode) table.dataTable thead th {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border: 1px solid #b0b0b0 !important;
+    }
+    body.dark-mode .table thead th,
+    body.dark-mode table.dataTable thead th,
+    .dark-mode .table thead th,
+    .dark-mode table.dataTable thead th {
+        background-color: #181b1f !important;
+        color: #f3f4f6 !important;
+        border: 1px solid #374151 !important;
+    }
+    body:not(.dark-mode) .table td,
+    body:not(.dark-mode) table.dataTable td {
+        border: 1px solid #b8b8b8 !important;
+        color: #444444 !important;
+        background-color: #ffffff;
+    }
+    body.dark-mode .table td,
+    body.dark-mode table.dataTable td,
+    .dark-mode .table td,
+    .dark-mode table.dataTable td {
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+        background-color: #1f2328 !important;
+    }
+    body:not(.dark-mode) .table-hover tbody tr:hover td {
+        background-color: #f0f7f3 !important;
+    }
+    body.dark-mode .table-hover tbody tr:hover td,
+    .dark-mode .table-hover tbody tr:hover td {
+        background-color: #262b32 !important;
+    }
+    body.dark-mode .badge-light,
+    .dark-mode .badge-light {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+    body:not(.dark-mode) .bg-teal-light {
+        background-color: #e6fcf5 !important;
+        color: #0ca678 !important;
+    }
+    body.dark-mode .bg-teal-light,
+    .dark-mode .bg-teal-light {
+        background-color: #133934 !important;
+        color: #2dd4bf !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-12">
 
@@ -93,7 +282,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-medicines" class="table table-bordered table-striped table-hover datatable-serverside" style="width: 100%;">
+                            <table id="table-medicines" class="table table-bordered table-hover datatable-serverside" style="width: 100%;">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 35px;" class="text-center">NO</th>
@@ -132,7 +321,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover datatable">
+                            <table class="table table-bordered table-hover datatable">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 35px;" class="text-center">NO</th>
@@ -244,20 +433,22 @@
                     <div class="row">
                         <div class="col-md-4 form-group">
                             <label>Golongan / Kategori Obat <span class="text-danger">*</span></label>
-                            <select name="type" class="form-control font-weight-bold" required>
+                            <select name="type" class="form-control font-weight-bold" data-native="true" required>
+                                <option value="bebas">Obat Bebas / Bebas Terbatas</option>
+                                <option value="keras">Obat Keras (Resep Dokter)</option>
+                                <option value="obat_bebas">Obat Bebas (Standar BPOM)</option>
+                                <option value="obat_keras">Obat Keras (Standar BPOM)</option>
+                                <option value="suplemen">Suplemen & Vitamin</option>
                                 <?php if (!empty($medicineCategories)): ?>
                                     <?php foreach ($medicineCategories as $mc): ?>
                                         <option value="<?= esc($mc->drug_class) ?>"><?= esc($mc->name) ?> (<?= strtoupper(str_replace('_', ' ', $mc->drug_class)) ?>)</option>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <option value="bebas">Obat Bebas / Bebas Terbatas</option>
-                                    <option value="keras">Obat Keras (Resep Dokter)</option>
                                 <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-md-4 form-group">
                             <label>Satuan Eceran Terkecil <span class="text-danger">*</span></label>
-                            <select name="unit" class="form-control font-weight-bold" required>
+                            <select name="unit" class="form-control font-weight-bold" data-native="true" required>
                                 <?php if (!empty($units)): ?>
                                     <?php foreach ($units as $u): ?>
                                         <option value="<?= esc($u->name) ?>"><?= esc($u->name) ?> (<?= esc($u->code) ?>)</option>
@@ -287,7 +478,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Status Obat</label>
-                            <select name="status" class="form-control font-weight-bold">
+                            <select name="status" class="form-control font-weight-bold" data-native="true">
                                 <option value="active">ACTIVE (Dapat Diresepkan)</option>
                                 <option value="inactive">INACTIVE (Nonaktif)</option>
                             </select>
@@ -356,20 +547,22 @@
                     <div class="row">
                         <div class="col-md-4 form-group">
                             <label>Golongan / Kategori Obat <span class="text-danger">*</span></label>
-                            <select name="type" id="edit-med-type" class="form-control font-weight-bold" required>
+                            <select name="type" id="edit-med-type" class="form-control font-weight-bold" data-native="true" required>
+                                <option value="bebas">Obat Bebas / Bebas Terbatas</option>
+                                <option value="keras">Obat Keras (Resep Dokter)</option>
+                                <option value="obat_bebas">Obat Bebas (Standar BPOM)</option>
+                                <option value="obat_keras">Obat Keras (Standar BPOM)</option>
+                                <option value="suplemen">Suplemen & Vitamin</option>
                                 <?php if (!empty($medicineCategories)): ?>
                                     <?php foreach ($medicineCategories as $mc): ?>
                                         <option value="<?= esc($mc->drug_class) ?>"><?= esc($mc->name) ?> (<?= strtoupper(str_replace('_', ' ', $mc->drug_class)) ?>)</option>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <option value="bebas">Obat Bebas / Bebas Terbatas</option>
-                                    <option value="keras">Obat Keras (Resep Dokter)</option>
                                 <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-md-4 form-group">
                             <label>Satuan Kemasan <span class="text-danger">*</span></label>
-                            <select name="unit" id="edit-med-unit" class="form-control font-weight-bold" required>
+                            <select name="unit" id="edit-med-unit" class="form-control font-weight-bold" data-native="true" required>
                                 <?php if (!empty($units)): ?>
                                     <?php foreach ($units as $u): ?>
                                         <option value="<?= esc($u->name) ?>"><?= esc($u->name) ?> (<?= esc($u->code) ?>)</option>
@@ -396,7 +589,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Status Obat</label>
-                            <select name="status" id="edit-med-status" class="form-control font-weight-bold">
+                            <select name="status" id="edit-med-status" class="form-control font-weight-bold" data-native="true">
                                 <option value="active">ACTIVE (Dapat Diresepkan)</option>
                                 <option value="inactive">INACTIVE (Nonaktif)</option>
                             </select>
@@ -430,7 +623,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Pilih Obat Terkait <span class="text-danger">*</span></label>
-                        <select name="medicine_id" class="form-control font-weight-bold" required>
+                        <select name="medicine_id" id="add-batch-medicine-id" class="form-control font-weight-bold" data-native="true" required>
                             <option value="">-- Cari Kode atau Nama Obat --</option>
                             <?php foreach ($medicines as $m): ?>
                                 <option value="<?= $m->id ?>">[<?= esc($m->code) ?>] <?= esc($m->name) ?> (<?= esc($m->unit) ?>)</option>
@@ -540,11 +733,28 @@
             $('#edit-med-id').val($(this).data('id'));
             $('#edit-med-code').val($(this).data('code'));
             $('#edit-med-name').val($(this).data('name'));
-            $('#edit-med-type').val($(this).data('type'));
-            $('#edit-med-unit').val($(this).data('unit'));
+
+            var medType = $(this).data('type') || 'bebas';
+            $('#edit-med-type').val(medType);
+            if (!$('#edit-med-type').val()) {
+                if (medType === 'bebas') $('#edit-med-type').val('obat_bebas');
+                else if (medType === 'keras') $('#edit-med-type').val('obat_keras');
+                else if (medType === 'obat_bebas') $('#edit-med-type').val('bebas');
+                else if (medType === 'obat_keras') $('#edit-med-type').val('keras');
+            }
+            if (!$('#edit-med-type').val()) {
+                $('#edit-med-type').prop('selectedIndex', 0);
+            }
+
+            var medUnit = $(this).data('unit');
+            $('#edit-med-unit').val(medUnit);
+            if (!$('#edit-med-unit').val()) {
+                $('#edit-med-unit').prop('selectedIndex', 0);
+            }
+
             $('#edit-med-price').val($(this).data('price'));
             $('#edit-med-min').val($(this).data('min'));
-            $('#edit-med-status').val($(this).data('status'));
+            $('#edit-med-status').val($(this).data('status') || 'active');
             $('#medicineEditModal').modal('show');
         });
 

@@ -1,6 +1,106 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+<style>
+    /* ========================================================================= */
+    /* KLINIK LAPORAN STYLING (PAPER WHITE & PAPER DARK COMPLIANCE)              */
+    /* ========================================================================= */
+    body:not(.dark-mode) .laporan-filter-card {
+        background-color: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .laporan-filter-card,
+    .dark-mode .laporan-filter-card {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .laporan-filter-card label,
+    .dark-mode .laporan-filter-card label {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .laporan-filter-card .form-control,
+    .dark-mode .laporan-filter-card .form-control {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+
+    /* KPI Info Boxes */
+    body:not(.dark-mode) .laporan-info-box {
+        background-color: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .laporan-info-box,
+    .dark-mode .laporan-info-box {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .laporan-info-box .info-box-text,
+    .dark-mode .laporan-info-box .info-box-text {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .laporan-info-box .info-box-number,
+    .dark-mode .laporan-info-box .info-box-number {
+        color: #f3f4f6 !important;
+    }
+
+    /* Tabs & Cards */
+    body.dark-mode .card-outline-tabs,
+    .dark-mode .card-outline-tabs {
+        background-color: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .card-outline-tabs .card-header,
+    .dark-mode .card-outline-tabs .card-header {
+        background-color: #181b1f !important;
+        border-bottom: 1px solid #374151 !important;
+    }
+    body.dark-mode .card-outline-tabs .nav-tabs .nav-link,
+    .dark-mode .card-outline-tabs .nav-tabs .nav-link {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .card-outline-tabs .nav-tabs .nav-link.active,
+    .dark-mode .card-outline-tabs .nav-tabs .nav-link.active {
+        background-color: #1f2328 !important;
+        color: #f3f4f6 !important;
+        border-color: #374151 !important;
+    }
+
+    /* SLA KPI Cards */
+    body:not(.dark-mode) .sla-kpi-card {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    body.dark-mode .sla-kpi-card,
+    .dark-mode .sla-kpi-card {
+        background-color: #262b32 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .sla-kpi-card .h3,
+    .dark-mode .sla-kpi-card .h3 {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .sla-kpi-card .text-muted,
+    .dark-mode .sla-kpi-card .text-muted {
+        color: #9ca3af !important;
+    }
+
+    /* Gender Cards */
+    body:not(.dark-mode) .laporan-gender-card {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    body.dark-mode .laporan-gender-card,
+    .dark-mode .laporan-gender-card {
+        background-color: #262b32 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .laporan-gender-card .text-secondary,
+    .dark-mode .laporan-gender-card .text-secondary {
+        color: #9ca3af !important;
+    }
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -22,7 +122,7 @@
     <div class="container-fluid">
 
         <!-- Filter Card -->
-        <div class="card bg-light border mb-4">
+        <div class="card laporan-filter-card mb-4">
             <div class="card-body p-3">
                 <form action="<?= base_url('klinik/laporan') ?>" method="get" class="form-inline d-flex flex-wrap justify-content-between align-items-center">
                     <div class="d-flex align-items-center mb-2 mb-md-0">
@@ -52,7 +152,7 @@
         <!-- Summary KPI Cards -->
         <div class="row">
             <div class="col-md-4 col-sm-6 mb-3">
-                <div class="info-box border elevation-0 bg-white">
+                <div class="info-box elevation-0 laporan-info-box">
                     <span class="info-box-icon bg-teal elevation-0"><i class="fas fa-users"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-muted">Total Kunjungan Pasien</span>
@@ -62,7 +162,7 @@
                 </div>
             </div>
             <div class="col-md-4 col-sm-6 mb-3">
-                <div class="info-box border elevation-0 bg-white">
+                <div class="info-box elevation-0 laporan-info-box">
                     <span class="info-box-icon bg-info elevation-0"><i class="fas fa-file-medical"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-muted">Surat Medis Diterbitkan</span>
@@ -72,7 +172,7 @@
                 </div>
             </div>
             <div class="col-md-4 col-sm-6 mb-3">
-                <div class="info-box border elevation-0 bg-white">
+                <div class="info-box elevation-0 laporan-info-box">
                     <span class="info-box-icon bg-success elevation-0"><i class="fas fa-vial"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-muted">Tes Laboratorium</span>
@@ -119,7 +219,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-hover">
                                 <thead class="bg-light">
                                     <tr>
                                         <th style="width: 50px;" class="text-center">Ranking</th>
@@ -183,7 +283,7 @@
                             <!-- Kunjungan Berdasarkan Poli -->
                             <div class="col-md-6 mb-4">
                                 <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-clinic-medical text-teal mr-1"></i> Kunjungan per Poliklinik / Ruang Tindakan</h6>
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered table-hover">
                                     <thead class="bg-light">
                                         <tr>
                                             <th>Poliklinik / Layanan</th>
@@ -208,7 +308,7 @@
                             <!-- Distribusi Gender & Cara Bayar -->
                             <div class="col-md-6 mb-4">
                                 <h6 class="font-weight-bold text-dark mb-3"><i class="fas fa-wallet text-teal mr-1"></i> Distribusi Pasien & Cara Bayar</h6>
-                                <table class="table table-bordered table-striped mb-4">
+                                <table class="table table-bordered table-hover mb-4">
                                     <thead class="bg-light">
                                         <tr>
                                             <th>Metode Pembayaran</th>
@@ -229,7 +329,7 @@
                                 <div class="row">
                                     <?php foreach ($genderStats as $gs): ?>
                                         <div class="col-6">
-                                            <div class="card p-3 border text-center">
+                                            <div class="card p-3 border text-center laporan-gender-card">
                                                 <div class="text-secondary small font-weight-bold text-uppercase">
                                                     <?= $gs->gender === 'L' ? 'Laki-laki (L)' : 'Perempuan (P)' ?>
                                                 </div>
@@ -251,7 +351,7 @@
                                 <h5 class="font-weight-bold text-dark mb-0">
                                     <i class="fas fa-stopwatch text-teal mr-1"></i> Evaluasi Durasi & Waktu Tunggu Pelayanan Pasien (SLA / Lead Time)
                                 </h5>
-                                <small class="text-muted">Mengukur durasi riil setiap tahapan: Kedatangan $\rightarrow$ TTV Perawat $\rightarrow$ Pemeriksaan Dokter $\rightarrow$ Kasir Utama $\rightarrow$ Apotek Farmasi</small>
+                                <small class="text-muted">Mengukur durasi riil setiap tahapan: Kedatangan &rarr; TTV Perawat &rarr; Pemeriksaan Dokter &rarr; Kasir Utama &rarr; Apotek Farmasi</small>
                             </div>
                             <span class="badge badge-teal px-3 py-2 font-weight-bold shadow-sm" style="font-size: 13px;">
                                 <i class="fas fa-check-circle mr-1"></i> <?= number_format($avgMetrics['count_served'] ?? 0) ?> Pasien Selesai Dievaluasi
@@ -261,35 +361,35 @@
                         <!-- 5 KPI Cards: Rata-Rata Waktu Tiap Pos Layanan -->
                         <div class="row mb-3">
                             <div class="col-lg col-md-4 col-sm-6 mb-2">
-                                <div class="card p-3 border shadow-none bg-light text-center h-100" style="border-left: 4px solid #0ea5e9 !important;">
+                                <div class="card p-3 border shadow-none text-center h-100 sla-kpi-card" style="border-left: 4px solid #0ea5e9 !important;">
                                     <div class="text-xs font-weight-bold text-muted text-uppercase mb-1"><i class="fas fa-user-nurse text-info mr-1"></i> 1. Tunggu TTV Perawat</div>
                                     <div class="h3 font-weight-bold text-dark mb-0"><?= $avgMetrics['avg_ttv'] ?? 0 ?> <span class="text-sm font-weight-normal text-muted">mnt</span></div>
-                                    <small class="text-muted">Target: $\le 10$ mnt</small>
+                                    <small class="text-muted">Target: &le; 10 mnt</small>
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-sm-6 mb-2">
-                                <div class="card p-3 border shadow-none bg-light text-center h-100" style="border-left: 4px solid #10b981 !important;">
+                                <div class="card p-3 border shadow-none text-center h-100 sla-kpi-card" style="border-left: 4px solid #10b981 !important;">
                                     <div class="text-xs font-weight-bold text-muted text-uppercase mb-1"><i class="fas fa-stethoscope text-success mr-1"></i> 2. Konsultasi Dokter</div>
                                     <div class="h3 font-weight-bold text-dark mb-0"><?= $avgMetrics['avg_doc'] ?? 0 ?> <span class="text-sm font-weight-normal text-muted">mnt</span></div>
-                                    <small class="text-muted">Target: $\le 15$ mnt</small>
+                                    <small class="text-muted">Target: &le; 15 mnt</small>
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-sm-6 mb-2">
-                                <div class="card p-3 border shadow-none bg-light text-center h-100" style="border-left: 4px solid #f59e0b !important;">
+                                <div class="card p-3 border shadow-none text-center h-100 sla-kpi-card" style="border-left: 4px solid #f59e0b !important;">
                                     <div class="text-xs font-weight-bold text-muted text-uppercase mb-1"><i class="fas fa-cash-register text-warning mr-1"></i> 3. Pembayaran Kasir</div>
                                     <div class="h3 font-weight-bold text-dark mb-0"><?= $avgMetrics['avg_cashier'] ?? 0 ?> <span class="text-sm font-weight-normal text-muted">mnt</span></div>
-                                    <small class="text-muted">Target: $\le 7$ mnt</small>
+                                    <small class="text-muted">Target: &le; 7 mnt</small>
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-sm-6 mb-2">
-                                <div class="card p-3 border shadow-none bg-light text-center h-100" style="border-left: 4px solid #0d9488 !important;">
+                                <div class="card p-3 border shadow-none text-center h-100 sla-kpi-card" style="border-left: 4px solid #0d9488 !important;">
                                     <div class="text-xs font-weight-bold text-muted text-uppercase mb-1"><i class="fas fa-pills text-teal mr-1"></i> 4. Serah Obat Apotek</div>
                                     <div class="h3 font-weight-bold text-dark mb-0"><?= $avgMetrics['avg_pharmacy'] ?? 0 ?> <span class="text-sm font-weight-normal text-muted">mnt</span></div>
-                                    <small class="text-muted">Target: $\le 15$ mnt</small>
+                                    <small class="text-muted">Target: &le; 15 mnt</small>
                                 </div>
                             </div>
                             <div class="col-lg col-md-4 col-sm-6 mb-2">
-                                <div class="card p-3 border shadow-none bg-white text-center h-100 shadow-sm" style="border-left: 4px solid #6366f1 !important; background:#f8fafc;">
+                                <div class="card p-3 border shadow-none text-center h-100 shadow-sm sla-kpi-card" style="border-left: 4px solid #6366f1 !important;">
                                     <div class="text-xs font-weight-bold text-indigo text-uppercase mb-1"><i class="fas fa-flag-checkered text-primary mr-1"></i> TOTAL WAKTU LAYANAN</div>
                                     <div class="h3 font-weight-bold text-teal mb-0"><?= $avgMetrics['avg_overall'] ?? 0 ?> <span class="text-sm font-weight-normal text-muted">mnt</span></div>
                                     <small class="text-muted font-weight-bold">End-to-End Layanan</small>
@@ -311,11 +411,11 @@
                                         <th rowspan="2" style="width: 130px;">Status Evaluasi</th>
                                     </tr>
                                     <tr class="text-center" style="font-size: 11px;">
-                                        <th title="Waktu Pendaftaran / Datang">Daftar ($T_0$)</th>
-                                        <th title="Waktu Mulai TTV Perawat">TTV ($T_1$)</th>
-                                        <th title="Waktu Selesai SOAP Dokter">Dokter ($T_2$)</th>
-                                        <th title="Waktu Lunas di Kasir">Kasir ($T_3$)</th>
-                                        <th title="Waktu Selesai Obat Apotek">Apotek ($T_4$)</th>
+                                        <th title="Waktu Pendaftaran / Datang">Daftar (T0)</th>
+                                        <th title="Waktu Mulai TTV Perawat">TTV (T1)</th>
+                                        <th title="Waktu Selesai SOAP Dokter">Dokter (T2)</th>
+                                        <th title="Waktu Lunas di Kasir">Kasir (T3)</th>
+                                        <th title="Waktu Selesai Obat Apotek">Apotek (T4)</th>
                                         <th title="Waktu Tunggu TTV">Tunggu</th>
                                         <th title="Durasi Periksa Dokter">Dokter</th>
                                         <th title="Durasi di Kasir">Kasir</th>

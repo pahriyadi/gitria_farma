@@ -51,7 +51,7 @@ test('Deep inspect /klinik/antrean styles and functionality', async ({ page }) =
       btnTv: getStyles('a:has(i.fa-tv)'),
       btnKiosk: getStyles('a:has(i.fa-desktop)'),
       navTabs: Array.from(document.querySelectorAll('#antrean-status-tabs .nav-link')).map(a => ({
-        text: a.innerText.trim(),
+        text: (a as HTMLElement).innerText.trim(),
         className: a.className,
         color: window.getComputedStyle(a).color,
         backgroundColor: window.getComputedStyle(a).backgroundColor,
@@ -132,7 +132,7 @@ test('Deep inspect /klinik/antrean styles and functionality', async ({ page }) =
     return {
       toolbarCard: getStyles('.card.bg-light'),
       navTabs: Array.from(document.querySelectorAll('#antrean-status-tabs .nav-link')).map(a => ({
-        text: a.innerText.trim(),
+        text: (a as HTMLElement).innerText.trim(),
         className: a.className,
         color: window.getComputedStyle(a).color,
         backgroundColor: window.getComputedStyle(a).backgroundColor

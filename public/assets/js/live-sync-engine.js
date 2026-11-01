@@ -777,6 +777,12 @@
             var $body = $('#live-lab-results-body');
             if (!$body.length || !res.data) return;
 
+            // If table is managed by DataTables, skip raw innerHTML overwrite to prevent breaking DataTables pagination & search
+            var $table = $body.closest('table');
+            if ($table.length && $.fn.DataTable && $.fn.DataTable.isDataTable($table[0])) {
+                return;
+            }
+
             if (res.data.length === 0) {
                 $body.html('<tr><td colspan="9" class="text-center text-muted py-4"><i class="fas fa-vials text-teal mr-1"></i> Belum ada hasil lab hari ini.</td></tr>');
                 return;
