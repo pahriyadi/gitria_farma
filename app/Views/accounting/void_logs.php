@@ -75,20 +75,20 @@
 <!-- ========================================================================= -->
 <!-- PANDUAN RINGKAS ANTI-FRAUD VOID CENTER                                    -->
 <!-- ========================================================================= -->
-<div class="alert alert-light border shadow-sm d-flex align-items-start mb-3" style="border-left: 4px solid #dc3545 !important; border-radius: 6px;">
+<div class="alert void-alert-guide shadow-sm d-flex align-items-start mb-3">
     <div class="mr-3 text-danger mt-1" style="font-size: 20px;">
         <i class="fas fa-shield-halved"></i>
     </div>
     <div class="text-sm flex-grow-1">
         <div class="d-flex justify-content-between align-items-center">
-            <h6 class="font-weight-bold text-dark mb-1">
+            <h6 class="font-weight-bold mb-1">
                 <i class="fas fa-circle-info text-danger mr-1"></i> Panduan Singkat Sistem Pembatalan Transaksi (Void Anti-Fraud)
             </h6>
-            <button type="button" class="btn btn-xs btn-outline-danger font-weight-bold" data-toggle="modal" data-target="#modalReadmeVoid">
+            <button type="button" class="btn btn-xs btn-outline-danger font-weight-bold shadow-xs" data-toggle="modal" data-target="#modalReadmeVoid">
                 <i class="fas fa-book-open mr-1"></i> Baca README Lengkap
             </button>
         </div>
-        <p class="text-muted mb-0" style="line-height: 1.5;">
+        <p class="mb-0" style="line-height: 1.5;">
             Sistem Anti-Fraud ini mengamankan seluruh transaksi kasir klinik, apotek retail, distributor B2B, kas operasional, dan resto gizi. Setiap pembatalan wajib melalui <strong>Otorisasi PIN Supervisor (6 Digit)</strong>, otomatis menerbitkan <strong>Jurnal Pembalik Simetris (Reversing Entry)</strong>, mengembalikan <strong>Batch Mutasi Stok FIFO/FEFO</strong>, dan menerbitkan <strong>Berita Acara Pembatalan Resmi (PDF)</strong>.
         </p>
     </div>
@@ -99,49 +99,49 @@
 <!-- ========================================================================= -->
 <div class="row mb-3">
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-danger-soft">
                     <i class="fas fa-ban fa-lg text-danger"></i>
                 </div>
                 <div>
                     <span class="text-muted text-xs font-weight-bold text-uppercase">Void Hari Ini</span>
-                    <h4 class="font-weight-bold mb-0 text-dark">Rp <?= number_format($kpi['todayAmount'], 0, ',', '.') ?></h4>
+                    <h4 class="font-weight-bold mb-0 kpi-value">Rp <?= number_format($kpi['todayAmount'], 0, ',', '.') ?></h4>
                     <small class="text-muted"><?= $kpi['todayCount'] ?> Transaksi dibatalkan</small>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-warning-soft">
                     <i class="fas fa-calendar-xmark fa-lg text-warning"></i>
                 </div>
                 <div>
                     <span class="text-muted text-xs font-weight-bold text-uppercase">Void Bulan Ini</span>
-                    <h4 class="font-weight-bold mb-0 text-dark">Rp <?= number_format($kpi['monthAmount'], 0, ',', '.') ?></h4>
+                    <h4 class="font-weight-bold mb-0 kpi-value">Rp <?= number_format($kpi['monthAmount'], 0, ',', '.') ?></h4>
                     <small class="text-muted"><?= $kpi['monthCount'] ?> Transaksi dibatalkan</small>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-primary-soft">
                     <i class="fas fa-layer-group fa-lg text-primary"></i>
                 </div>
                 <div>
                     <span class="text-muted text-xs font-weight-bold text-uppercase">Modul Terbanyak Void</span>
-                    <h5 class="font-weight-bold mb-0 text-dark"><?= esc($kpi['topModuleName']) ?></h5>
+                    <h5 class="font-weight-bold mb-0 kpi-value"><?= esc($kpi['topModuleName']) ?></h5>
                     <small class="text-muted"><?= $kpi['topModuleCount'] ?> Kali Pembatalan</small>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-success-soft">
                     <i class="fas fa-scale-balanced fa-lg text-success"></i>
@@ -159,7 +159,7 @@
 <!-- ========================================================================= -->
 <!-- FILTER BAR                                                                -->
 <!-- ========================================================================= -->
-<div class="card shadow-sm border-0 mb-3 bg-white">
+<div class="card shadow-sm mb-3 void-filter-card">
     <div class="card-body p-3">
         <form method="get" action="<?= base_url('accounting/void-logs') ?>" class="row align-items-end" style="gap: 4px 0;">
             <div class="col-md-3 col-sm-6">
@@ -206,21 +206,21 @@
 <!-- ========================================================================= -->
 <!-- MAIN TABLE LOG AUDIT VOID                                                 -->
 <!-- ========================================================================= -->
-<div class="card card-outline card-danger shadow-sm border-0 mb-4">
-    <div class="card-header bg-white border-bottom py-3">
+<div class="card card-outline card-danger shadow-sm mb-4">
+    <div class="card-header border-bottom py-3">
         <div class="d-flex justify-content-between align-items-center">
-            <h5 class="card-title font-weight-bold text-dark mb-0">
+            <h5 class="card-title font-weight-bold mb-0">
                 <i class="fas fa-list-check text-danger mr-1"></i> Riwayat Transaksi Dibatalkan &amp; Reversing Entry
             </h5>
-            <span class="badge badge-light border text-muted font-weight-bold">
+            <span class="badge void-total-badge font-weight-bold">
                 Total: <?= count($logs) ?> Catatan Void
             </span>
         </div>
     </div>
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table id="table-void-logs" class="table table-hover table-striped table-bordered datatable w-100" style="font-size: 12px;">
-                <thead class="bg-light text-dark">
+            <table id="table-void-logs" class="table table-hover table-bordered datatable table-clean-grid w-100" style="font-size: 12px;">
+                <thead>
                     <tr>
                         <th style="width: 45px;" class="text-center">NO</th>
                         <th style="width: 140px;">NO. VOID &amp; WAKTU</th>
@@ -268,8 +268,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <strong class="text-dark"><?= esc($l->reference_number) ?></strong>
-                                    <small class="d-block text-muted">Metode: <span class="badge badge-light border text-uppercase font-weight-bold"><?= esc($l->payment_method) ?></span></small>
+                                    <strong class="void-ref-num"><?= esc($l->reference_number) ?></strong>
+                                    <small class="d-block text-muted">Metode: <span class="badge void-reason-badge text-uppercase font-weight-bold"><?= esc($l->payment_method) ?></span></small>
                                 </td>
                                 <td class="text-right font-weight-bold text-danger">
                                     Rp <?= number_format($l->total_amount, 0, ',', '.') ?>
@@ -277,7 +277,7 @@
                                 <td>
                                     <div>
                                         <small class="text-muted font-weight-bold">Kasir:</small>
-                                        <span class="text-dark font-weight-bold"><?= esc($l->cashier_name ?: $l->cashier_username) ?></span>
+                                        <span class="void-person-name font-weight-bold"><?= esc($l->cashier_name ?: $l->cashier_username) ?></span>
                                     </div>
                                     <div class="mt-0.5">
                                         <small class="text-muted font-weight-bold">Supervisor:</small>
@@ -285,7 +285,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge badge-light border text-dark font-weight-bold mb-1">
+                                    <span class="badge void-reason-badge font-weight-bold mb-1">
                                         <?= esc($l->reason_category) ?>
                                     </span>
                                     <p class="text-secondary text-xs mb-0" style="line-height: 1.3;">
@@ -298,7 +298,7 @@
                                             <i class="fas fa-check-circle mr-1"></i> <?= esc($l->reversal_journal_no) ?>
                                         </span>
                                     <?php else: ?>
-                                        <span class="badge badge-light border text-muted">Tanpa Jurnal</span>
+                                        <span class="badge void-reason-badge text-muted">Tanpa Jurnal</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center text-nowrap">
@@ -340,7 +340,7 @@
                     <p>Memuat snapshot data transaksi...</p>
                 </div>
             </div>
-            <div class="modal-footer bg-light py-2">
+            <div class="modal-footer void-modal-footer py-2">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
                 <a href="#" id="btnCetakBeritaAcara" target="_blank" class="btn btn-danger btn-sm font-weight-bold shadow-sm">
                     <i class="fas fa-print mr-1"></i> Cetak Berita Acara Void (PDF)
@@ -356,7 +356,7 @@
 <div class="modal fade" id="modalManagePin" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-dark text-white py-3">
+            <div class="modal-header void-pin-modal-header text-white py-3">
                 <h5 class="modal-title font-weight-bold">
                     <i class="fas fa-key mr-1"></i> Atur PIN Supervisor Void
                 </h5>
@@ -371,7 +371,7 @@
                         <i class="fas fa-info-circle mr-1"></i> PIN 6 digit ini digunakan untuk mengotorisasi setiap pembatalan transaksi kasir (Anti-Fraud Gate).
                     </div>
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">Pilih Akun Supervisor / Pimpinan <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold void-modal-label text-sm">Pilih Akun Supervisor / Pimpinan <span class="text-danger">*</span></label>
                         <select name="user_id" class="form-control select2" required>
                             <?php foreach ($supervisors as $spv): ?>
                                 <option value="<?= $spv->id ?>">
@@ -381,15 +381,15 @@
                         </select>
                     </div>
                     <div class="form-group mb-3">
-                        <label class="font-weight-bold text-dark text-sm">PIN Baru (Minimal 6 Digit Angka) <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold void-modal-label text-sm">PIN Baru (Minimal 6 Digit Angka) <span class="text-danger">*</span></label>
                         <input type="password" name="new_pin" class="form-control font-weight-bold text-center" maxlength="12" placeholder="••••••" required autocomplete="new-password">
                     </div>
                     <div class="form-group mb-0">
-                        <label class="font-weight-bold text-dark text-sm">Konfirmasi PIN Baru <span class="text-danger">*</span></label>
+                        <label class="font-weight-bold void-modal-label text-sm">Konfirmasi PIN Baru <span class="text-danger">*</span></label>
                         <input type="password" name="confirm_pin" class="form-control font-weight-bold text-center" maxlength="12" placeholder="••••••" required autocomplete="new-password">
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
+                <div class="modal-footer void-modal-footer py-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-teal btn-sm font-weight-bold shadow-sm">
                         <i class="fas fa-save mr-1"></i> Simpan PIN
@@ -419,30 +419,30 @@
             </div>
             <div class="modal-body p-0">
                 <!-- Nav Tabs Modal -->
-                <div class="bg-light border-bottom px-4 pt-3">
+                <div class="void-readme-tab-header border-bottom px-4 pt-3">
                     <ul class="nav nav-tabs border-0" id="readmeTabs" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active font-weight-bold text-dark" id="tab-prinsip-tab" data-toggle="tab" href="#tab-prinsip" role="tab">
+                            <a class="nav-link active font-weight-bold void-readme-nav-link" id="tab-prinsip-tab" data-toggle="tab" href="#tab-prinsip" role="tab">
                                 <i class="fas fa-shield-halved text-danger mr-1"></i> 1. Prinsip Anti-Fraud
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold text-dark" id="tab-modul-tab" data-toggle="tab" href="#tab-modul" role="tab">
+                            <a class="nav-link font-weight-bold void-readme-nav-link" id="tab-modul-tab" data-toggle="tab" href="#tab-modul" role="tab">
                                 <i class="fas fa-layer-group text-primary mr-1"></i> 2. Cakupan 8 Modul
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold text-dark" id="tab-langkah-tab" data-toggle="tab" href="#tab-langkah" role="tab">
+                            <a class="nav-link font-weight-bold void-readme-nav-link" id="tab-langkah-tab" data-toggle="tab" href="#tab-langkah" role="tab">
                                 <i class="fas fa-list-ol text-success mr-1"></i> 3. Langkah Pembatalan
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold text-dark" id="tab-pin-tab" data-toggle="tab" href="#tab-pin" role="tab">
+                            <a class="nav-link font-weight-bold void-readme-nav-link" id="tab-pin-tab" data-toggle="tab" href="#tab-pin" role="tab">
                                 <i class="fas fa-key text-warning mr-1"></i> 4. PIN &amp; Keamanan
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link font-weight-bold text-dark" id="tab-faq-tab" data-toggle="tab" href="#tab-faq" role="tab">
+                            <a class="nav-link font-weight-bold void-readme-nav-link" id="tab-faq-tab" data-toggle="tab" href="#tab-faq" role="tab">
                                 <i class="fas fa-circle-question text-info mr-1"></i> 5. FAQ &amp; Solusi
                             </a>
                         </li>
@@ -452,16 +452,16 @@
                 <div class="tab-content p-4" id="readmeTabsContent" style="font-size: 13.5px; line-height: 1.6;">
                     <!-- TAB 1: PRINSIP ANTI-FRAUD -->
                     <div class="tab-pane fade show active" id="tab-prinsip" role="tabpanel">
-                        <div class="alert alert-warning border-0 p-3 mb-3" style="background-color: #fff3cd; color: #856404; border-radius: 8px;">
+                        <div class="alert void-readme-warning p-3 mb-3">
                             <i class="fas fa-triangle-exclamation mr-1 font-weight-bold"></i>
                             <strong>Aturan Baku Pembukuan Akuntansi &amp; Medis:</strong> Seluruh transaksi yang telah tersimpan <u>DILARANG KERAS DIHAPUS SECARA FISIK (Hard Delete)</u>. Setiap pembatalan wajib melalui Reversing Entry agar integritas neraca, arus kas, dan audit trail tetap seimbang 100%.
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <div class="card border h-100 shadow-xs">
+                                <div class="card border h-100 shadow-xs void-readme-card">
                                     <div class="card-body p-3">
-                                        <h6 class="font-weight-bold text-dark mb-2">
+                                        <h6 class="font-weight-bold void-readme-title mb-2">
                                             <i class="fas fa-scale-balanced text-teal mr-1"></i> Reversing Entry Otomatis
                                         </h6>
                                         <p class="text-muted mb-0">
@@ -471,9 +471,9 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="card border h-100 shadow-xs">
+                                <div class="card border h-100 shadow-xs void-readme-card">
                                     <div class="card-body p-3">
-                                        <h6 class="font-weight-bold text-dark mb-2">
+                                        <h6 class="font-weight-bold void-readme-title mb-2">
                                             <i class="fas fa-boxes-stacked text-primary mr-1"></i> Restorasi Batch Stok (FIFO/FEFO)
                                         </h6>
                                         <p class="text-muted mb-0">
@@ -484,9 +484,9 @@
                             </div>
                         </div>
 
-                        <div class="card border bg-light shadow-xs mt-2">
+                        <div class="card border shadow-xs mt-2 void-readme-card">
                             <div class="card-body p-3">
-                                <h6 class="font-weight-bold text-dark mb-2">
+                                <h6 class="font-weight-bold void-readme-title mb-2">
                                     <i class="fas fa-camera-retro text-danger mr-1"></i> Snapshot Data Permanen (JSON Immutaible Payload)
                                 </h6>
                                 <p class="text-muted mb-0">
@@ -498,10 +498,10 @@
 
                     <!-- TAB 2: CAKUPAN 8 MODUL -->
                     <div class="tab-pane fade" id="tab-modul" role="tabpanel">
-                        <h6 class="font-weight-bold text-dark mb-3">Tabel Matriks Efek Pembatalan per Modul:</h6>
+                        <h6 class="font-weight-bold void-readme-title mb-3">Tabel Matriks Efek Pembatalan per Modul:</h6>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm table-striped" style="font-size: 12px;">
-                                <thead class="bg-light text-dark">
+                            <table class="table table-bordered table-sm table-clean-grid" style="font-size: 12px;">
+                                <thead>
                                     <tr>
                                         <th>Modul Transaksi</th>
                                         <th>Tindakan Status</th>
@@ -567,23 +567,23 @@
                     <div class="tab-pane fade" id="tab-langkah" role="tabpanel">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <div class="p-3 border rounded bg-light text-center h-100">
+                                <div class="p-3 rounded void-step-box text-center h-100">
                                     <div class="rounded-circle bg-danger text-white d-inline-flex align-items-center justify-content-center mb-2" style="width: 38px; height: 38px; font-size: 16px; font-weight: bold;">1</div>
-                                    <h6 class="font-weight-bold text-dark">Klik Tombol Void</h6>
+                                    <h6 class="font-weight-bold void-readme-title">Klik Tombol Void</h6>
                                     <p class="text-muted text-xs mb-0">Petugas kasir/apoteker menemukan transaksi yang salah pada riwayat dan menekan tombol <span class="badge badge-outline-danger"><i class="fas fa-ban"></i> Void</span>.</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <div class="p-3 border rounded bg-light text-center h-100">
+                                <div class="p-3 rounded void-step-box text-center h-100">
                                     <div class="rounded-circle bg-warning text-dark d-inline-flex align-items-center justify-content-center mb-2" style="width: 38px; height: 38px; font-size: 16px; font-weight: bold;">2</div>
-                                    <h6 class="font-weight-bold text-dark">Otorisasi Supervisor &amp; Alasan</h6>
+                                    <h6 class="font-weight-bold void-readme-title">Otorisasi Supervisor &amp; Alasan</h6>
                                     <p class="text-muted text-xs mb-0">Pilih kategori alasan resmi, ketik kronologi pembatalan, lalu minta Supervisor memasukkan <strong>PIN 6 Digit</strong> pada popup otorisasi.</p>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <div class="p-3 border rounded bg-light text-center h-100">
+                                <div class="p-3 rounded void-step-box text-center h-100">
                                     <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-2" style="width: 38px; height: 38px; font-size: 16px; font-weight: bold;">3</div>
-                                    <h6 class="font-weight-bold text-dark">Cetak Berita Acara (PDF)</h6>
+                                    <h6 class="font-weight-bold void-readme-title">Cetak Berita Acara (PDF)</h6>
                                     <p class="text-muted text-xs mb-0">Sistem mengeksekusi reversing journal dan otomatis menyediakan tautan cetak dokumen resmi Berita Acara untuk ditandatangani.</p>
                                 </div>
                             </div>
@@ -594,8 +594,8 @@
                     <div class="tab-pane fade" id="tab-pin" role="tabpanel">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <div class="card border p-3 shadow-xs h-100">
-                                    <h6 class="font-weight-bold text-dark mb-2"><i class="fas fa-id-badge text-teal mr-1"></i> Siapa Saja yang Memiliki Hak PIN?</h6>
+                                <div class="card void-readme-card p-3 shadow-xs h-100">
+                                    <h6 class="font-weight-bold void-readme-title mb-2"><i class="fas fa-id-badge text-teal mr-1"></i> Siapa Saja yang Memiliki Hak PIN?</h6>
                                     <p class="text-muted text-xs mb-2">PIN otorisasi hanya diberikan kepada akun pengguna dengan wewenang pengawasan (Supervisor Level), antara lain:</p>
                                     <ul class="text-xs text-muted pl-3 mb-0">
                                         <li>Super Admin &amp; IT Administrator</li>
@@ -606,8 +606,8 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="card border p-3 shadow-xs h-100">
-                                    <h6 class="font-weight-bold text-dark mb-2"><i class="fas fa-lock text-danger mr-1"></i> Proteksi Anti-Brute Force Lockout</h6>
+                                <div class="card void-readme-card p-3 shadow-xs h-100">
+                                    <h6 class="font-weight-bold void-readme-title mb-2"><i class="fas fa-lock text-danger mr-1"></i> Proteksi Anti-Brute Force Lockout</h6>
                                     <p class="text-muted text-xs mb-2">Untuk mencegah percobaan tebak PIN oleh pihak yang tidak berwenang:</p>
                                     <ul class="text-xs text-muted pl-3 mb-0">
                                         <li>PIN tersimpan dalam enkripsi <strong>Bcrypt Hash</strong> standar perbankan.</li>
@@ -622,9 +622,9 @@
                     <!-- TAB 5: FAQ & SOLUSI -->
                     <div class="tab-pane fade" id="tab-faq" role="tabpanel">
                         <div class="accordion" id="accordionFaqVoid">
-                            <div class="card border mb-2 shadow-xs">
-                                <div class="card-header bg-white p-2" id="faqHeading1">
-                                    <button class="btn btn-link btn-block text-left text-dark font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol1">
+                            <div class="card void-readme-card mb-2 shadow-xs">
+                                <div class="card-header void-faq-header p-2" id="faqHeading1">
+                                    <button class="btn btn-link btn-block text-left void-faq-btn font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol1">
                                         <i class="fas fa-question-circle text-teal mr-1"></i> Apakah transaksi yang sudah di-void bisa dibatalkan kembali (di-unvoid)?
                                     </button>
                                 </div>
@@ -635,9 +635,9 @@
                                 </div>
                             </div>
 
-                            <div class="card border mb-2 shadow-xs">
-                                <div class="card-header bg-white p-2" id="faqHeading2">
-                                    <button class="btn btn-link btn-block text-left text-dark font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol2">
+                            <div class="card void-readme-card mb-2 shadow-xs">
+                                <div class="card-header void-faq-header p-2" id="faqHeading2">
+                                    <button class="btn btn-link btn-block text-left void-faq-btn font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol2">
                                         <i class="fas fa-question-circle text-teal mr-1"></i> Bagaimana jika Supervisor lupa PIN otorisasi?
                                     </button>
                                 </div>
@@ -648,9 +648,9 @@
                                 </div>
                             </div>
 
-                            <div class="card border mb-0 shadow-xs">
-                                <div class="card-header bg-white p-2" id="faqHeading3">
-                                    <button class="btn btn-link btn-block text-left text-dark font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol3">
+                            <div class="card void-readme-card mb-0 shadow-xs">
+                                <div class="card-header void-faq-header p-2" id="faqHeading3">
+                                    <button class="btn btn-link btn-block text-left void-faq-btn font-weight-bold text-xs p-0 text-decoration-none" type="button" data-toggle="collapse" data-target="#faqCol3">
                                         <i class="fas fa-question-circle text-teal mr-1"></i> Di mana bukti fisik Berita Acara disimpan?
                                     </button>
                                 </div>
@@ -664,7 +664,15 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer bg-light py-2 px-4 d-flex justify-content-between">
+            <div class="modal-footer void-modal-footer py-2 px-4 d-flex justify-content-between">
+                <small class="text-muted"><i class="fas fa-shield-halved text-teal mr-1"></i> ERP Gitria Farma - Sawamawa Medical Center Anti-Fraud System</small>
+                <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i> Tutup Panduan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
                 <small class="text-muted"><i class="fas fa-shield-halved text-teal mr-1"></i> ERP Gitria Farma - Sawamawa Medical Center Anti-Fraud System</small>
                 <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal">
                     <i class="fas fa-times mr-1"></i> Tutup Panduan
@@ -693,7 +701,7 @@ function viewVoidDetail(id) {
                     <div class="row mb-3 pb-2 border-bottom text-sm">
                         <div class="col-md-6">
                             <span class="text-muted d-block text-xs">NO. REFERENSI ASAL:</span>
-                            <strong class="text-dark font-monospace" style="font-size: 15px;">${log.reference_number}</strong>
+                            <strong class="void-detail-ref font-monospace" style="font-size: 15px;">${log.reference_number}</strong>
                         </div>
                         <div class="col-md-6 text-md-right">
                             <span class="text-muted d-block text-xs">TOTAL DIBATALKAN:</span>
@@ -702,7 +710,7 @@ function viewVoidDetail(id) {
                     </div>
                     <div class="row mb-3 text-xs">
                         <div class="col-md-6">
-                            <p class="mb-1"><strong>Modul:</strong> <span class="badge badge-light border text-uppercase">${log.transaction_type}</span></p>
+                            <p class="mb-1"><strong>Modul:</strong> <span class="badge void-reason-badge text-uppercase">${log.transaction_type}</span></p>
                             <p class="mb-1"><strong>Waktu Void:</strong> ${log.created_at}</p>
                             <p class="mb-1"><strong>Metode Bayar:</strong> ${log.payment_method.toUpperCase()}</p>
                         </div>
@@ -712,16 +720,16 @@ function viewVoidDetail(id) {
                             <p class="mb-1"><strong>Jurnal Pembalik:</strong> <code>${log.reversal_journal_no || 'None'}</code></p>
                         </div>
                     </div>
-                    <div class="alert alert-light border p-2 mb-3 text-xs">
+                    <div class="alert void-detail-reason-alert border p-2 mb-3 text-xs">
                         <strong class="d-block text-danger mb-0.5"><i class="fas fa-circle-exclamation mr-1"></i> Alasan Pembatalan (${log.reason_category}):</strong>
-                        <span class="text-secondary">${log.reason_detail}</span>
+                        <span class="void-detail-reason-desc">${log.reason_detail}</span>
                     </div>
                 `;
 
                 if (log.item_snapshot_json) {
                     html += `
-                        <h6 class="font-weight-bold text-dark text-xs text-uppercase mb-2">Item Snapshot Transaksi:</h6>
-                        <pre class="bg-light p-2 border rounded" style="font-size: 11px; max-height: 200px; overflow: auto;">${JSON.stringify(log.snapshot_decoded, null, 2)}</pre>
+                        <h6 class="font-weight-bold void-readme-title text-xs text-uppercase mb-2">Item Snapshot Transaksi:</h6>
+                        <pre class="void-json-pre p-2 border rounded" style="font-size: 11px; max-height: 200px; overflow: auto;">${JSON.stringify(log.snapshot_decoded, null, 2)}</pre>
                     `;
                 }
 

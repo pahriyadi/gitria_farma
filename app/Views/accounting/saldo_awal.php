@@ -4,35 +4,35 @@
 <!-- Quick Switcher Tabs -->
 <div class="mb-3">
     <div class="accounting-tabs-scroll-wrapper">
-        <ul class="nav nav-tabs-modern">
+        <ul class="nav nav-tabs-modern flex-nowrap" id="accountingNavTabs" role="tablist">
             <li class="nav-item">
-                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/jurnal') ?>">
-                    <i class="fas fa-file-lines mr-1"></i> 1. Jurnal Umum
+                <a class="nav-link font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/jurnal') ?>">
+                    <i class="fas fa-file-lines text-teal mr-1"></i> 1. Jurnal Umum
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/buku-besar') ?>">
-                    <i class="fas fa-book-journal-whills mr-1"></i> 2. Buku Mutasi Akun
+                <a class="nav-link font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/buku-besar') ?>">
+                    <i class="fas fa-book-journal-whills text-info mr-1"></i> 2. Buku Mutasi Akun
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/laporan') ?>">
-                    <i class="fas fa-chart-pie mr-1"></i> 3. Laporan Keuangan
+                <a class="nav-link font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/laporan') ?>">
+                    <i class="fas fa-chart-pie text-success mr-1"></i> 3. Laporan Keuangan
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/coa') ?>">
-                    <i class="fas fa-book-bookmark mr-1"></i> 4. Bagan Akun (COA)
+                <a class="nav-link font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/coa') ?>">
+                    <i class="fas fa-book-bookmark text-primary mr-1"></i> 4. Bagan Akun (COA)
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link font-weight-bold" href="<?= base_url('accounting/aturan-jurnal') ?>">
-                    <i class="fas fa-sliders mr-1"></i> 5. Template &amp; Aturan Jurnal
+                <a class="nav-link font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/aturan-jurnal') ?>">
+                    <i class="fas fa-sliders text-teal mr-1"></i> 5. Template &amp; Aturan Jurnal
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active font-weight-bold" href="<?= base_url('accounting/saldo-awal') ?>">
-                    <i class="fas fa-scale-balanced mr-1"></i> 6. Saldo Awal
+                <a class="nav-link active font-weight-bold py-2 text-truncate" href="<?= base_url('accounting/saldo-awal') ?>">
+                    <i class="fas fa-scale-balanced text-secondary mr-1"></i> 6. Saldo Awal
                 </a>
             </li>
         </ul>
@@ -42,24 +42,24 @@
 <div class="row">
     <!-- Kolom Kiri: Form Setup Saldo Awal Seluruh Akun -->
     <div class="col-md-8">
-        <div class="card p-0 mb-3">
-            <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+        <div class="card p-0 mb-3 saldo-awal-main-card shadow-sm">
+            <div class="card-header border-bottom d-flex flex-column flex-lg-row justify-content-between align-items-lg-center py-3" style="gap: 10px;">
                 <div>
-                    <h5 class="card-title font-weight-bold text-dark mb-0">
+                    <h5 class="card-title font-weight-bold mb-0">
                         <i class="fas fa-coins text-teal mr-1"></i> Form Pengaturan Saldo Awal Pembukuan Sistem
                     </h5>
-                    <small class="text-secondary d-block">
+                    <small class="text-muted d-block mt-0.5">
                         Masukkan saldo kas di tangan, rekening bank operasional, persediaan awal, dan modal awal ketika sistem pertama kali mulai digunakan.
                     </small>
                 </div>
-                <div class="d-flex align-items-center">
-                    <button type="button" class="btn btn-outline-warning btn-sm font-weight-bold mr-2" onclick="clearAllInputs()" title="Setel semua input nominal menjadi 0">
-                        <i class="fas fa-eraser mr-1"></i> Bersihkan Input ke 0
+                <div class="d-flex flex-wrap align-items-center" style="gap: 6px;">
+                    <button type="button" class="btn btn-outline-warning btn-sm font-weight-bold shadow-xs" onclick="clearAllInputs()" title="Setel semua input nominal menjadi 0">
+                        <i class="fas fa-eraser mr-1"></i> Bersihkan ke 0
                     </button>
-                    <a href="<?= base_url('accounting/reset-saldo-awal') ?>" class="btn btn-outline-danger btn-sm font-weight-bold mr-2" onclick="return confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS / MERESET seluruh saldo awal sistem kembali menjadi Rp 0,00? Jurnal saldo awal lama akan dihapus.');" title="Hapus semua saldo awal di database">
-                        <i class="fas fa-trash-can mr-1"></i> Hapus &amp; Reset Semua Saldo ke 0
+                    <a href="<?= base_url('accounting/reset-saldo-awal') ?>" class="btn btn-outline-danger btn-sm font-weight-bold shadow-xs" onclick="return confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS / MERESET seluruh saldo awal sistem kembali menjadi Rp 0,00? Jurnal saldo awal lama akan dihapus.');" title="Hapus semua saldo awal di database">
+                        <i class="fas fa-trash-can mr-1"></i> Reset ke 0
                     </a>
-                    <a href="<?= base_url('accounting/coa') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                    <a href="<?= base_url('accounting/coa') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-xs">
                         <i class="fas fa-list mr-1"></i> Master COA
                     </a>
                 </div>
@@ -75,20 +75,20 @@
                     </div>
 
                     <!-- KELOMPOK 1: AKTIVA / ASSET (KAS, BANK, PERSEDIAAN & ASET) -->
-                    <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom saldo-group-header">
                         <h6 class="font-weight-bold text-teal mb-0">
                             <i class="fas fa-wallet mr-1"></i> 1. Saldo Kas, Bank, Stok Obat &amp; Aset (Kekayaan Klinik)
                         </h6>
                         <small class="text-muted">Uang tunai kasir, saldo rekening bank, nilai stok obat, &amp; aset fisik</small>
                     </div>
                     <div class="table-responsive mb-4">
-                        <table class="table table-sm table-bordered">
-                            <thead class="bg-light">
+                        <table class="table table-sm table-bordered table-hover table-clean-grid mb-0">
+                            <thead class="saldo-thead">
                                 <tr>
                                     <th style="width: 120px;">Kode Akun</th>
                                     <th>Nama Rekening Akun</th>
-                                    <th style="width: 120px;">Kategori</th>
-                                    <th style="width: 220px;" class="text-right">Nominal Saldo Awal (Rp)</th>
+                                    <th style="width: 120px;" class="text-center">Kategori</th>
+                                    <th style="width: 230px;" class="text-right">Nominal Saldo Awal (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,7 +102,7 @@
                                                     <span class="badge badge-success ml-1" style="font-size: 9px;">Laci Kasir Utama</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td><span class="badge badge-light border text-uppercase" style="font-size: 9.5px;"><?= esc($ast->type) ?></span></td>
+                                            <td class="text-center"><span class="badge saldo-cat-badge text-uppercase font-weight-bold"><?= esc($ast->type) ?></span></td>
                                             <td>
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
@@ -119,20 +119,20 @@
                     </div>
 
                     <!-- KELOMPOK 2: KEWAJIBAN / HUTANG (LIABILITIES) -->
-                    <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom saldo-group-header">
                         <h6 class="font-weight-bold text-danger mb-0">
                             <i class="fas fa-file-invoice-dollar mr-1"></i> 2. Saldo Hutang Usaha &amp; Kewajiban
                         </h6>
                         <small class="text-muted">Sisa tagihan obat dari PBF/supplier atau hutang lainnya yang belum lunas</small>
                     </div>
                     <div class="table-responsive mb-4">
-                        <table class="table table-sm table-bordered">
-                            <thead class="bg-light">
+                        <table class="table table-sm table-bordered table-hover table-clean-grid mb-0">
+                            <thead class="saldo-thead">
                                 <tr>
                                     <th style="width: 120px;">Kode Akun</th>
                                     <th>Nama Rekening Akun</th>
-                                    <th style="width: 120px;">Kategori</th>
-                                    <th style="width: 220px;" class="text-right">Nominal Saldo Awal (Rp)</th>
+                                    <th style="width: 120px;" class="text-center">Kategori</th>
+                                    <th style="width: 230px;" class="text-right">Nominal Saldo Awal (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,7 +141,7 @@
                                         <tr>
                                             <td class="font-monospace font-weight-bold text-danger"><?= esc($lia->code) ?></td>
                                             <td><strong><?= esc($lia->name) ?></strong></td>
-                                            <td><span class="badge badge-light border text-uppercase" style="font-size: 9.5px;"><?= esc($lia->type) ?></span></td>
+                                            <td class="text-center"><span class="badge saldo-cat-badge text-uppercase font-weight-bold"><?= esc($lia->type) ?></span></td>
                                             <td>
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
@@ -154,7 +154,7 @@
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="4" class="text-muted text-center text-xs">Belum ada akun kewajiban terdaftar.</td>
+                                        <td colspan="4" class="text-muted text-center text-xs py-3">Belum ada akun kewajiban terdaftar.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -162,29 +162,29 @@
                     </div>
 
                     <!-- KELOMPOK 3: EKUITAS & MODAL (EQUITY) -->
-                    <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom saldo-group-header">
                         <h6 class="font-weight-bold text-primary mb-0">
                             <i class="fas fa-landmark mr-1"></i> 3. Modal Awal Disetor Pemilik (Ekuitas)
                         </h6>
                         <small class="text-muted">Total modal uang/aset yang ditanamkan pemilik untuk mendirikan klinik</small>
                     </div>
                     <div class="table-responsive mb-4">
-                        <table class="table table-sm table-bordered">
-                            <thead class="bg-light">
+                        <table class="table table-sm table-bordered table-hover table-clean-grid mb-0">
+                            <thead class="saldo-thead">
                                 <tr>
                                     <th style="width: 120px;">Kode Akun</th>
                                     <th>Nama Rekening Akun</th>
-                                    <th style="width: 120px;">Kategori</th>
-                                    <th style="width: 220px;" class="text-right">Nominal Saldo Awal (Rp)</th>
+                                    <th style="width: 120px;" class="text-center">Kategori</th>
+                                    <th style="width: 230px;" class="text-right">Nominal Saldo Awal (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (!empty($grouped['equity'])): ?>
                                     <?php foreach ($grouped['equity'] as $eq): ?>
                                         <tr>
-                                            <td class="font-monospace font-weight-bold text-dark"><?= esc($eq->code) ?></td>
+                                            <td class="font-monospace font-weight-bold text-primary"><?= esc($eq->code) ?></td>
                                             <td><strong><?= esc($eq->name) ?></strong></td>
-                                            <td><span class="badge badge-light border text-uppercase" style="font-size: 9.5px;"><?= esc($eq->type) ?></span></td>
+                                            <td class="text-center"><span class="badge saldo-cat-badge text-uppercase font-weight-bold"><?= esc($eq->type) ?></span></td>
                                             <td>
                                                 <div class="input-group input-group-sm">
                                                     <div class="input-group-prepend">
@@ -201,20 +201,20 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label class="text-xs font-weight-bold text-dark">Catatan / Keterangan Pembukuan Saldo Awal:</label>
-                        <input type="text" name="notes" class="form-control" placeholder="Contoh: Cut-off pembukuan saldo awal faskes per 1 Januari 2026 / Peresmian Operasional." value="Setup Saldo Awal Pembukuan Sistem">
+                        <label class="text-xs font-weight-bold mb-1">Catatan / Keterangan Pembukuan Saldo Awal:</label>
+                        <input type="text" name="notes" class="form-control font-weight-bold" placeholder="Contoh: Cut-off pembukuan saldo awal faskes per 1 Januari 2026 / Peresmian Operasional." value="Setup Saldo Awal Pembukuan Sistem">
                     </div>
 
                 </div>
 
-                <div class="card-footer bg-white border-top d-flex justify-content-between align-items-center p-3">
+                <div class="card-footer border-top d-flex flex-column flex-sm-row justify-content-between align-items-sm-center p-3" style="gap: 10px;">
                     <div>
                         <span class="text-secondary text-xs">
                             <i class="fas fa-shield-alt text-teal mr-1"></i> Data diverifikasi otomatis dan dicatat ke Audit Trail.
                         </span>
                     </div>
-                    <button type="submit" class="btn btn-teal font-weight-bold px-4">
-                        <i class="fas fa-save mr-1"></i> Simpan & Terapkan Saldo Awal Sistem
+                    <button type="submit" class="btn btn-teal font-weight-bold px-4 shadow-sm">
+                        <i class="fas fa-save mr-1"></i> Simpan &amp; Terapkan Saldo Awal Sistem
                     </button>
                 </div>
             </form>
@@ -224,8 +224,8 @@
     <!-- Kolom Kanan: Status Keseimbangan & Riwayat Saldo Awal -->
     <div class="col-md-4" style="position: sticky; top: 15px; align-self: flex-start;">
         <!-- Card Ringkasan Keseimbangan (Balance Checker) -->
-        <div class="card p-3 mb-3">
-            <h6 class="font-weight-bold text-dark mb-2 pb-2 border-bottom">
+        <div class="card p-3 mb-3 saldo-balance-card shadow-sm">
+            <h6 class="font-weight-bold mb-2 pb-2 border-bottom saldo-card-title">
                 <i class="fas fa-scale-balanced text-teal mr-1"></i> Keseimbangan Neraca Saldo Awal
             </h6>
             
@@ -235,7 +235,7 @@
             </div>
             <div class="d-flex justify-content-between text-xs py-1 border-bottom">
                 <span class="text-muted">Total Pasiva (Kredit):</span>
-                <strong class="text-dark" id="sum-total-credit">Rp <?= number_format($totalCredit, 2, ',', '.') ?></strong>
+                <strong class="saldo-credit-value" id="sum-total-credit">Rp <?= number_format($totalCredit, 2, ',', '.') ?></strong>
             </div>
             <div class="d-flex justify-content-between text-xs py-2">
                 <span class="text-muted">Status Keseimbangan:</span>
@@ -248,14 +248,14 @@
                 </span>
             </div>
 
-            <div class="alert alert-success alert-excel text-xs mt-2 mb-0" style="background:#f0fdf4; border-color:#bbf7d0;">
+            <div class="alert alert-success alert-excel text-xs mt-2 mb-0 saldo-autobalance-alert">
                 <i class="fas fa-check-circle mr-1"></i> <strong>Smart Auto-Balance:</strong> Jika Anda belum mengisi modal, sistem secara cerdas menyeimbangkan selisih aset ke akun <strong>Modal Awal Disetor</strong> secara otomatis.
             </div>
         </div>
 
         <!-- Card Riwayat Jurnal Saldo Awal -->
-        <div class="card p-3">
-            <h6 class="font-weight-bold text-dark mb-2 pb-2 border-bottom">
+        <div class="card p-3 saldo-history-card shadow-sm">
+            <h6 class="font-weight-bold mb-2 pb-2 border-bottom saldo-card-title">
                 <i class="fas fa-history text-teal mr-1"></i> Riwayat Jurnal Saldo Awal
             </h6>
             <div style="max-height: 300px; overflow-y: auto;">
@@ -267,7 +267,7 @@
                                     <strong class="text-teal font-monospace"><?= esc($oj->journal_no) ?></strong>
                                     <span class="text-muted"><?= date('d/m/Y', strtotime($oj->entry_date)) ?></span>
                                 </div>
-                                <div class="text-dark mt-1"><?= esc($oj->description) ?></div>
+                                <div class="saldo-history-desc mt-1"><?= esc($oj->description) ?></div>
                             </li>
                         <?php endforeach; ?>
                     </ul>

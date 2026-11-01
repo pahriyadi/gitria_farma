@@ -5,13 +5,13 @@
     <div class="col-md-12">
         
         <!-- Bar Pengawasan & Filter Dokter / Poli (Time Keeper Toolbar) -->
-        <div class="card bg-light border shadow-sm mb-3">
+        <div class="card antrean-toolbar-card mb-3">
             <div class="card-body p-3">
                 <form action="<?= base_url('klinik/antrean') ?>" method="get" id="form-filter-antrean">
                     <input type="hidden" name="tab" value="<?= esc($current_tab ?? 'active') ?>">
                     <div class="row align-items-center">
                         <div class="col-md-3 mb-2 mb-md-0">
-                            <label class="text-xs font-weight-bold text-secondary mb-1"><i class="fas fa-stethoscope text-teal mr-1"></i> Filter Poliklinik:</label>
+                            <label class="text-xs font-weight-bold mb-1 antrean-filter-label"><i class="fas fa-stethoscope text-teal mr-1"></i> Filter Poliklinik:</label>
                             <select name="poly_id" id="filter-poly-select" class="form-control form-control-sm" onchange="$('#form-filter-antrean').submit();">
                                 <option value="all">-- Semua Poliklinik --</option>
                                 <?php if (!empty($polyclinics)): foreach ($polyclinics as $poly): ?>
@@ -22,7 +22,7 @@
                             </select>
                         </div>
                         <div class="col-md-3 mb-2 mb-md-0">
-                            <label class="text-xs font-weight-bold text-secondary mb-1"><i class="fas fa-user-doctor text-teal mr-1"></i> Filter Dokter Pemeriksa:</label>
+                            <label class="text-xs font-weight-bold mb-1 antrean-filter-label"><i class="fas fa-user-doctor text-teal mr-1"></i> Filter Dokter Pemeriksa:</label>
                             <select name="doctor_id" id="filter-doctor-select" class="form-control form-control-sm" onchange="$('#form-filter-antrean').submit();">
                                 <option value="all">-- Semua Dokter (Mode Time Keeper) --</option>
                                 <?php if (!empty($doctors)): foreach ($doctors as $doc): ?>
@@ -33,7 +33,7 @@
                             </select>
                         </div>
                         <div class="col-md-3 mb-2 mb-md-0">
-                            <label class="text-xs font-weight-bold text-secondary mb-1"><i class="fas fa-stopwatch text-teal mr-1"></i> Status SLA Waktu Tunggu:</label>
+                            <label class="text-xs font-weight-bold mb-1 antrean-filter-label"><i class="fas fa-stopwatch text-teal mr-1"></i> Status SLA Waktu Tunggu:</label>
                             <div class="d-flex align-items-center" style="gap: 4px;">
                                 <span class="badge badge-success py-1 px-2 font-weight-bold" style="font-size: 11px;"><i class="fas fa-check-circle mr-1"></i> &lt;15m</span>
                                 <span class="badge badge-warning text-dark py-1 px-2 font-weight-bold" style="font-size: 11px;"><i class="fas fa-exclamation-triangle mr-1"></i> 15-30m</span>
@@ -60,27 +60,27 @@
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
             <ul class="nav nav-pills" id="antrean-status-tabs">
                 <li class="nav-item mr-2 mb-2">
-                    <a class="nav-link font-weight-bold <?= ($current_tab === 'active') ? 'active bg-teal shadow-sm' : 'bg-white text-dark shadow-xs' ?>" href="<?= base_url('klinik/antrean?tab=active' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
+                    <a class="nav-link font-weight-bold antrean-tab-link <?= ($current_tab === 'active') ? 'active tab-active' : '' ?>" href="<?= base_url('klinik/antrean?tab=active' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
                         <i class="fas fa-hourglass-half mr-1"></i> Antrean Aktif / Belum Selesai 
-                        <span class="badge badge-light ml-1 font-weight-bold" id="stat-active"><?= esc($count_active ?? 0) ?></span>
+                        <span class="badge antrean-tab-badge ml-1 font-weight-bold" id="stat-active"><?= esc($count_active ?? 0) ?></span>
                     </a>
                 </li>
                 <li class="nav-item mr-2 mb-2">
-                    <a class="nav-link font-weight-bold <?= ($current_tab === 'completed') ? 'active bg-success shadow-sm' : 'bg-white text-dark shadow-xs' ?>" href="<?= base_url('klinik/antrean?tab=completed' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
+                    <a class="nav-link font-weight-bold antrean-tab-link <?= ($current_tab === 'completed') ? 'active tab-completed' : '' ?>" href="<?= base_url('klinik/antrean?tab=completed' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
                         <i class="fas fa-check-circle mr-1"></i> Selesai Dilayani Hari Ini 
-                        <span class="badge badge-light ml-1 font-weight-bold" id="stat-done"><?= esc($count_completed ?? 0) ?></span>
+                        <span class="badge antrean-tab-badge ml-1 font-weight-bold" id="stat-done"><?= esc($count_completed ?? 0) ?></span>
                     </a>
                 </li>
                 <li class="nav-item mr-2 mb-2">
-                    <a class="nav-link font-weight-bold <?= ($current_tab === 'cancelled') ? 'active bg-danger shadow-sm' : 'bg-white text-dark shadow-xs' ?>" href="<?= base_url('klinik/antrean?tab=cancelled' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
+                    <a class="nav-link font-weight-bold antrean-tab-link <?= ($current_tab === 'cancelled') ? 'active tab-cancelled' : '' ?>" href="<?= base_url('klinik/antrean?tab=cancelled' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
                         <i class="fas fa-times-circle mr-1"></i> Dibatalkan 
-                        <span class="badge badge-light ml-1 font-weight-bold"><?= esc($count_cancelled ?? 0) ?></span>
+                        <span class="badge antrean-tab-badge ml-1 font-weight-bold" id="stat-cancelled"><?= esc($count_cancelled ?? 0) ?></span>
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a class="nav-link font-weight-bold <?= ($current_tab === 'all') ? 'active bg-dark shadow-sm' : 'bg-white text-dark shadow-xs' ?>" href="<?= base_url('klinik/antrean?tab=all' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
+                    <a class="nav-link font-weight-bold antrean-tab-link <?= ($current_tab === 'all') ? 'active tab-all' : '' ?>" href="<?= base_url('klinik/antrean?tab=all' . ($selected_doctor_id ? '&doctor_id='.$selected_doctor_id : '') . ($selected_poly_id ? '&poly_id='.$selected_poly_id : '')) ?>">
                         <i class="fas fa-list mr-1"></i> Semua Kunjungan 
-                        <span class="badge badge-light ml-1 font-weight-bold" id="stat-total"><?= esc($count_total ?? 0) ?></span>
+                        <span class="badge antrean-tab-badge ml-1 font-weight-bold" id="stat-total"><?= esc($count_total ?? 0) ?></span>
                     </a>
                 </li>
             </ul>
@@ -88,7 +88,7 @@
 
         <div class="card card-outline <?= ($current_tab === 'completed') ? 'card-success' : (($current_tab === 'cancelled') ? 'card-danger' : 'card-teal') ?> shadow">
             <div class="card-header d-flex justify-content-between align-items-center flex-wrap py-2">
-                <h3 class="card-title font-weight-bold text-dark mb-0" style="font-size: 16px;">
+                <h3 class="card-title font-weight-bold mb-0" style="font-size: 16px;">
                     <?php if ($current_tab === 'completed'): ?>
                         <i class="fas fa-check-circle text-success mr-1"></i> Riwayat Pasien yang Sudah Selesai Dilayani Hari Ini
                     <?php elseif ($current_tab === 'cancelled'): ?>
@@ -102,8 +102,8 @@
                 </span>
             </div>
             <div class="card-body p-0 table-responsive">
-                <table class="table table-striped table-hover mb-0" id="table-antrean">
-                    <thead class="bg-light">
+                <table class="table table-hover mb-0 table-clean-grid" id="table-antrean">
+                    <thead>
                         <tr>
                             <th style="width: 140px;" class="text-center">Urutan &amp; No. Antrean</th>
                             <th>No. Kunjungan</th>
@@ -120,13 +120,13 @@
                             <tr>
                                 <td colspan="9" class="text-center text-muted py-5">
                                     <i class="fas fa-ticket text-teal mr-2"></i> 
-                                    <?= ($current_tab === 'completed') ? 'Belum ada pasien yang selesai dilayani hari ini.' : 'Tidak ada antrean pasien untuk filter ini.' ?>
+                                    <?= ($current_tab === 'completed') ? 'Belum ada pasien yang selesai dilayani hari ini.' : (($current_tab === 'cancelled') ? 'Belum ada antrean yang dibatalkan.' : 'Tidak ada antrean pasien untuk filter ini.') ?>
                                 </td>
                             </tr>
                         <?php else: ?>
                         <?php foreach ($queues as $q): ?>
                             <?php $tier = strtolower($q->membership_tier ?? 'regular'); ?>
-                            <tr class="<?= ($tier === 'vip' || $tier === 'platinum') ? 'table-warning' : (($tier === 'gold') ? 'table-light' : '') ?>">
+                            <tr class="<?= ($tier === 'vip' || $tier === 'platinum') ? 'row-tier-vip' : (($tier === 'gold') ? 'row-tier-gold' : 'row-tier-regular') ?>">
                                 <td class="text-center align-middle">
                                     <span class="badge badge-warning text-dark font-weight-bold mr-1" style="font-size:12px;" title="Urutan Pendaftar #<?= esc($q->arrival_seq ?? 1) ?>"><i class="fas fa-arrow-down-1-9 mr-1"></i>#<?= esc($q->arrival_seq ?? 1) ?></span>
                                     <?php if ($tier === 'vip' || $tier === 'platinum'): ?>
@@ -250,6 +250,8 @@
                                         <a href="<?= base_url('klinik/antrean/delete/' . $q->id) ?>" class="btn btn-outline-danger btn-sm font-weight-bold shadow-sm ml-1" onclick="return confirm('Batalkan antrean pasien <?= esc($q->patient_name) ?> (No. <?= esc($q->queue_no) ?>)?');" title="Hapus / Batalkan Antrean">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                    <?php elseif ($st === 'cancelled'): ?>
+                                        <span class="badge badge-danger py-1 px-2 font-weight-bold"><i class="fas fa-ban mr-1"></i> Dibatalkan</span>
                                     <?php else: ?>
                                         <span class="badge badge-success py-1 px-2 font-weight-bold"><i class="fas fa-check mr-1"></i> Pelayanan Tuntas</span>
                                     <?php endif; ?>
@@ -267,7 +269,7 @@
 <!-- Modal Alihkan Dokter Pemeriksa (Time Keeper Feature) -->
 <div class="modal fade" id="modal-reassign-doctor" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <div class="modal-content antrean-modal-content">
             <div class="modal-header bg-info text-white py-2">
                 <h5 class="modal-title font-weight-bold" style="font-size: 16px;"><i class="fas fa-user-doctor mr-2"></i> Alihkan Dokter Pemeriksa</h5>
                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
@@ -277,19 +279,19 @@
                 <input type="hidden" name="action" value="reassign_doctor">
                 <input type="hidden" name="visit_id" id="reassign-visit-id" value="">
                 <div class="modal-body p-3">
-                    <p class="text-sm text-secondary mb-2">
-                        Alihkan antrean pasien <strong id="reassign-patient-name" class="text-dark"></strong> ke dokter jaga lainnya untuk mempercepat pelayanan:
+                    <p class="text-sm mb-2 antrean-modal-text">
+                        Alihkan antrean pasien <strong id="reassign-patient-name" class="font-weight-bold"></strong> ke dokter jaga lainnya untuk mempercepat pelayanan:
                     </p>
                     <div class="form-group mb-2">
-                        <label class="font-weight-bold text-dark mb-1">Pilih Dokter Pengganti:</label>
-                        <select name="doctor_id" id="reassign-doctor-select" class="form-control" required>
+                        <label class="font-weight-bold mb-1 antrean-modal-label">Pilih Dokter Pengganti:</label>
+                        <select name="doctor_id" id="reassign-doctor-select" class="form-control" data-native="true" required>
                             <?php if (!empty($doctors)): foreach ($doctors as $d): ?>
                                 <option value="<?= $d->id ?>"><?= esc($d->name) ?></option>
                             <?php endforeach; endif; ?>
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer py-2 bg-light">
+                <div class="modal-footer py-2 antrean-modal-footer">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-info btn-sm font-weight-bold"><i class="fas fa-check mr-1"></i> Simpan Pengalihan</button>
                 </div>

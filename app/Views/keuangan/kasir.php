@@ -1,6 +1,266 @@
 <?= $this->extend('layouts/layout') ?>
 
 <?= $this->section('content') ?>
+<style>
+    /* ========================================================================= */
+    /* KASIR & UNIFIED BILLING STYLING (PAPER WHITE & PAPER DARK COMPLIANCE)     */
+    /* ========================================================================= */
+    
+    /* Summary Stat Info Boxes */
+    body:not(.dark-mode) .kasir-info-box {
+        background: #ffffff !important;
+        border: 1px solid #b8b8b8 !important;
+    }
+    body.dark-mode .kasir-info-box,
+    .dark-mode .kasir-info-box {
+        background: #1f2328 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .kasir-info-box .info-box-text,
+    .dark-mode .kasir-info-box .info-box-text {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .kasir-info-box .info-box-number,
+    .dark-mode .kasir-info-box .info-box-number {
+        color: #f3f4f6 !important;
+    }
+
+    /* Queue Sidebar Item */
+    body:not(.dark-mode) .bill-item {
+        background-color: #ffffff;
+        border-color: #e2e8f0;
+    }
+    body:not(.dark-mode) .bill-item:hover {
+        background-color: #f8fafc;
+    }
+    body.dark-mode .bill-item,
+    .dark-mode .bill-item {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .bill-item:hover,
+    .dark-mode .bill-item:hover {
+        background-color: #262b32 !important;
+    }
+    body.dark-mode .bill-item.active,
+    .dark-mode .bill-item.active {
+        background-color: rgba(13, 148, 136, 0.2) !important;
+        border-color: #0d9488 !important;
+    }
+
+    /* Patient Identifiers Header & Category Breakdown */
+    body:not(.dark-mode) .kasir-patient-info-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    body.dark-mode .kasir-patient-info-box,
+    .dark-mode .kasir-patient-info-box {
+        background: #181b1f !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .kasir-patient-info-box strong,
+    body.dark-mode .kasir-patient-info-box span.text-dark,
+    .dark-mode .kasir-patient-info-box strong,
+    .dark-mode .kasir-patient-info-box span.text-dark {
+        color: #f3f4f6 !important;
+    }
+
+    body:not(.dark-mode) .kasir-breakdown-box {
+        background: #ffffff;
+        border: 1px dashed #cbd5e1 !important;
+    }
+    body.dark-mode .kasir-breakdown-box,
+    .dark-mode .kasir-breakdown-box {
+        background: #181b1f !important;
+        border: 1px dashed #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .kasir-breakdown-box strong,
+    .dark-mode .kasir-breakdown-box strong {
+        color: #f3f4f6 !important;
+    }
+
+    /* Kasir Summary Calculation Box */
+    body:not(.dark-mode) .kasir-summary-card {
+        background: #f1f5f9;
+        border: 1.5px solid #cbd5e1 !important;
+    }
+    body.dark-mode .kasir-summary-card,
+    .dark-mode .kasir-summary-card {
+        background: #181b1f !important;
+        border: 1.5px solid #374151 !important;
+    }
+    body.dark-mode .kasir-summary-card .text-secondary,
+    .dark-mode .kasir-summary-card .text-secondary {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .kasir-summary-card .text-dark,
+    .dark-mode .kasir-summary-card .text-dark {
+        color: #f3f4f6 !important;
+    }
+
+    /* Cash Calculator Tendered Panel */
+    body:not(.dark-mode) #cash-calculator-panel {
+        background-color: #f8fafc;
+        border: 1.5px solid #cbd5e1 !important;
+    }
+    body.dark-mode #cash-calculator-panel,
+    .dark-mode #cash-calculator-panel {
+        background-color: #181b1f !important;
+        border: 1.5px solid #374151 !important;
+    }
+    body.dark-mode #cash-calculator-panel label,
+    .dark-mode #cash-calculator-panel label {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #cash-calculator-panel .input-group-text,
+    .dark-mode #cash-calculator-panel .input-group-text {
+        background-color: #0d9488 !important;
+        border-color: #0d9488 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode #input-paid-amount,
+    .dark-mode #input-paid-amount {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #34d399 !important;
+    }
+    body:not(.dark-mode) .btn-quick-money {
+        background-color: #ffffff;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+    body.dark-mode .btn-quick-money,
+    .dark-mode .btn-quick-money {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .btn-quick-money:hover,
+    .dark-mode .btn-quick-money:hover {
+        background-color: #374151 !important;
+        border-color: #4b5563 !important;
+        color: #ffffff !important;
+    }
+
+    /* Live Change Display (Adaptive Neutral / Success / Danger) */
+    .change-box-display {
+        border-radius: 6px;
+        padding: 10px 14px !important;
+        transition: all 0.2s ease-in-out;
+    }
+    /* State 1: Neutral */
+    body:not(.dark-mode) .change-box-neutral {
+        background-color: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    body:not(.dark-mode) .change-box-neutral #lbl-change-title,
+    body:not(.dark-mode) .change-box-neutral #lbl-change-amount {
+        color: #475569 !important;
+    }
+    body.dark-mode .change-box-neutral,
+    .dark-mode .change-box-neutral {
+        background-color: #262b32 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode .change-box-neutral #lbl-change-title,
+    body.dark-mode .change-box-neutral #lbl-change-amount,
+    .dark-mode .change-box-neutral #lbl-change-title,
+    .dark-mode .change-box-neutral #lbl-change-amount {
+        color: #9ca3af !important;
+    }
+
+    /* State 2: Success (Lunas Pas & Uang Kembalian) */
+    body:not(.dark-mode) .change-box-success {
+        background-color: #dcfce7 !important;
+        border: 1px solid #86efac !important;
+    }
+    body:not(.dark-mode) .change-box-success #lbl-change-title {
+        color: #166534 !important;
+    }
+    body:not(.dark-mode) .change-box-success #lbl-change-amount {
+        color: #15803d !important;
+    }
+    body.dark-mode .change-box-success,
+    .dark-mode .change-box-success {
+        background-color: rgba(16, 185, 129, 0.18) !important;
+        border: 1px solid rgba(16, 185, 129, 0.45) !important;
+    }
+    body.dark-mode .change-box-success #lbl-change-title,
+    .dark-mode .change-box-success #lbl-change-title {
+        color: #a7f3d0 !important;
+    }
+    body.dark-mode .change-box-success #lbl-change-amount,
+    .dark-mode .change-box-success #lbl-change-amount {
+        color: #34d399 !important;
+    }
+
+    /* State 3: Danger (Kurang Bayar) */
+    body:not(.dark-mode) .change-box-danger {
+        background-color: #fee2e2 !important;
+        border: 1px solid #fca5a5 !important;
+    }
+    body:not(.dark-mode) .change-box-danger #lbl-change-title {
+        color: #991b1b !important;
+    }
+    body:not(.dark-mode) .change-box-danger #lbl-change-amount {
+        color: #dc2626 !important;
+    }
+    body.dark-mode .change-box-danger,
+    .dark-mode .change-box-danger {
+        background-color: rgba(239, 68, 68, 0.18) !important;
+        border: 1px solid rgba(239, 68, 68, 0.45) !important;
+    }
+    body.dark-mode .change-box-danger #lbl-change-title,
+    .dark-mode .change-box-danger #lbl-change-title {
+        color: #fca5a5 !important;
+    }
+    body.dark-mode .change-box-danger #lbl-change-amount,
+    .dark-mode .change-box-danger #lbl-change-amount {
+        color: #f87171 !important;
+    }
+
+    /* Welcome Pane & Card Footer in Dark Mode */
+    body.dark-mode #welcome-pane,
+    .dark-mode #welcome-pane {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #welcome-pane .text-dark,
+    .dark-mode #welcome-pane .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #welcome-pane .text-secondary,
+    .dark-mode #welcome-pane .text-secondary {
+        color: #9ca3af !important;
+    }
+    body.dark-mode #settlement-card .card-footer,
+    .dark-mode #settlement-card .card-footer {
+        background-color: #181b1f !important;
+        border-top: 1px solid #374151 !important;
+    }
+    body.dark-mode #details-table-foot td,
+    .dark-mode #details-table-foot td {
+        background-color: #181b1f !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .btn-discount-preset,
+    .dark-mode .btn-discount-preset {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .btn-discount-preset:hover,
+    .dark-mode .btn-discount-preset:hover {
+        background-color: #374151 !important;
+        color: #ffffff !important;
+    }
+</style>
 <div class="row">
     <div class="col-md-12">
 
@@ -77,7 +337,7 @@
         <!-- Quick Summary Cards -->
         <div class="row mb-3">
             <div class="col-md-6 col-sm-6 col-12">
-                <div class="info-box bg-white shadow-none border" style="border: 1px solid #b8b8b8 !important;">
+                <div class="info-box kasir-info-box shadow-none border">
                     <span class="info-box-icon bg-warning elevation-0"><i class="fas fa-clock text-white"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-secondary text-uppercase font-weight-bold">Antrean Kasir Menunggu Bayar</span>
@@ -86,7 +346,7 @@
                 </div>
             </div>
             <div class="col-md-6 col-sm-6 col-12">
-                <div class="info-box bg-white shadow-none border" style="border: 1px solid #b8b8b8 !important;">
+                <div class="info-box kasir-info-box shadow-none border">
                     <span class="info-box-icon bg-teal elevation-0"><i class="fas fa-receipt text-white"></i></span>
                     <div class="info-box-content">
                         <span class="info-box-text text-secondary text-uppercase font-weight-bold">Transaksi Pembayaran Lunas</span>
@@ -200,7 +460,7 @@
                                         <input type="hidden" name="billing_id" id="modal-billing-id">
                                         <div class="card-body">
                                             <!-- Patient & Billing Identifiers -->
-                                            <div class="row border-bottom pb-2 mb-3 text-sm bg-light p-2 rounded" style="border: 1px solid #e2e8f0;">
+                                            <div class="row border-bottom pb-2 mb-3 text-sm kasir-patient-info-box p-2 rounded">
                                                 <div class="col-md-6">
                                                     <span class="text-muted">Nama Pasien:</span> <strong id="lbl-patient" class="text-teal font-weight-bold h6 mb-0 d-inline-block"></strong><br>
                                                     <span class="text-muted">No. Rekam Medis:</span> <span id="lbl-rm" class="badge badge-secondary"></span>
@@ -250,7 +510,7 @@
                                             </div>
 
                                             <!-- Category Breakdown Badges -->
-                                            <div class="d-flex flex-wrap justify-content-between align-items-center p-2 mb-3 bg-white border rounded" style="border: 1px dashed #cbd5e1 !important; font-size: 12px;">
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center p-2 mb-3 kasir-breakdown-box border rounded" style="font-size: 12px;">
                                                 <div>
                                                     <i class="fas fa-stethoscope text-teal mr-1"></i> Layanan Medis: <strong id="lbl-breakdown-serv" class="text-dark">Rp 0</strong>
                                                 </div>
@@ -301,7 +561,7 @@
                                             </div>
 
                                             <!-- Summary Box: Subtotal, Diskon, Total Tagihan Bersih -->
-                                            <div class="card p-3 mb-3 shadow-none border" style="background:#f1f5f9; border: 1.5px solid #cbd5e1 !important; border-radius: 6px;">
+                                            <div class="card p-3 mb-3 shadow-none border kasir-summary-card" style="border-radius: 6px;">
                                                 <div class="row align-items-center">
                                                     <div class="col-6">
                                                         <span class="text-secondary text-sm">Total Subtotal Kotor:</span><br>
@@ -317,7 +577,7 @@
                                             </div>
 
                                             <!-- Cash Tendered & Change Calculator Panel -->
-                                            <div class="p-3 mb-3 rounded border" id="cash-calculator-panel" style="background-color: #f8fafc; border: 1.5px solid #cbd5e1 !important;">
+                                            <div class="p-3 mb-3 rounded border" id="cash-calculator-panel">
                                                 <label class="font-weight-bold text-dark mb-1">
                                                     <i class="fas fa-money-bill-wave text-success mr-1"></i> Uang Tunai Diterima dari Pasien (Rp): <span class="text-danger">*</span>
                                                 </label>
@@ -338,9 +598,9 @@
                                                 </div>
 
                                                 <!-- Live Change Display -->
-                                                <div class="d-flex justify-content-between align-items-center p-2 rounded" id="box-change-display" style="background: #e2e8f0;">
-                                                    <span class="font-weight-bold text-dark">UANG KEMBALIAN:</span>
-                                                    <span class="h4 font-weight-bold mb-0 text-success" id="lbl-change-amount">Rp 0</span>
+                                                <div class="d-flex justify-content-between align-items-center p-2 rounded change-box-display change-box-neutral" id="box-change-display">
+                                                    <span class="font-weight-bold" id="lbl-change-title">UANG KEMBALIAN:</span>
+                                                    <span class="h4 font-weight-bold mb-0" id="lbl-change-amount">Rp 0</span>
                                                 </div>
                                             </div>
 
@@ -945,17 +1205,27 @@
             const change = paid - grandTotal;
 
             const changeBox = $('#box-change-display');
+            const changeTitle = $('#lbl-change-title');
             const changeLbl = $('#lbl-change-amount');
 
-            if (change < 0) {
-                changeBox.css('background', '#fee2e2');
-                changeLbl.removeClass('text-success text-info').addClass('text-danger').text('- ' + formatRupiah(Math.abs(change)) + ' (Kurang Bayar)');
+            changeBox.removeClass('change-box-neutral change-box-success change-box-danger');
+
+            if (paid === 0 && grandTotal > 0) {
+                changeBox.addClass('change-box-neutral');
+                changeTitle.text('UANG KEMBALIAN:');
+                changeLbl.text('Rp 0');
+            } else if (change < 0) {
+                changeBox.addClass('change-box-danger');
+                changeTitle.text('KURANG BAYAR:');
+                changeLbl.text('- ' + formatRupiah(Math.abs(change)));
             } else if (change === 0) {
-                changeBox.css('background', '#dcfce7');
-                changeLbl.removeClass('text-danger text-info').addClass('text-success').text(formatRupiah(0) + ' (Lunas Pas)');
+                changeBox.addClass('change-box-success');
+                changeTitle.text('STATUS:');
+                changeLbl.text(formatRupiah(0) + ' (Lunas Pas)');
             } else {
-                changeBox.css('background', '#dcfce7');
-                changeLbl.removeClass('text-danger text-info').addClass('text-success').text(formatRupiah(change) + ' (Uang Kembalian)');
+                changeBox.addClass('change-box-success');
+                changeTitle.text('UANG KEMBALIAN:');
+                changeLbl.text(formatRupiah(change));
             }
         };
 

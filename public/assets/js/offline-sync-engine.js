@@ -314,7 +314,11 @@
                 base + '/resto/pos'
             ];
 
+            const currentCleanUrl = window.location.href.split('?')[0].replace(/\/+$/, '');
             pagesToWarm.forEach((pageUrl, idx) => {
+                const cleanPageUrl = pageUrl.replace(/\/+$/, '');
+                if (cleanPageUrl === currentCleanUrl) return; // Skip currently active page
+
                 setTimeout(async () => {
                     try {
                         const res = await fetch(pageUrl, { credentials: 'same-origin', cache: 'reload' });

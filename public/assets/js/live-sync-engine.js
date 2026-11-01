@@ -107,9 +107,11 @@
             var self = this;
             var docFilter = $('#filter-doctor-select').val() || window.activeDoctorFilter || '';
             var polyFilter = $('#filter-poly-select').val() || window.activePolyFilter || '';
+            var currentTab = (new URLSearchParams(window.location.search)).get('tab') || $('input[name="tab"]').val() || 'active';
             var queryParams = [];
             if (docFilter) queryParams.push('doctor_id=' + encodeURIComponent(docFilter));
             if (polyFilter) queryParams.push('poly_id=' + encodeURIComponent(polyFilter));
+            if (currentTab) queryParams.push('tab=' + encodeURIComponent(currentTab));
             var queryString = queryParams.length > 0 ? ('?' + queryParams.join('&')) : '';
 
             $.ajax({
@@ -160,19 +162,28 @@
             var $body = $('#live-antrean-body');
             if (!$body.length) return;
 
+            var currentTab = (new URLSearchParams(window.location.search)).get('tab') || $('input[name="tab"]').val() || 'active';
+
             if (stats) {
                 $('#stat-total').text(stats.total || 0);
                 $('#stat-active').text(stats.active || 0);
                 $('#stat-waiting').text(stats.waiting || 0);
                 $('#stat-called').text((stats.called || 0) + (stats.triage || 0));
-                $('#stat-done').text(stats.completed || 0);
+                $('#stat-done').text(stats.completed_tab !== undefined ? stats.completed_tab : (stats.completed || 0));
+                $('#stat-cancelled').text(stats.cancelled || 0);
             }
 
             if (!data || data.length === 0) {
+                var emptyMsg = 'Tidak ada antrean pasien untuk filter ini.';
+                if (currentTab === 'completed') {
+                    emptyMsg = 'Belum ada pasien yang selesai dilayani hari ini.';
+                } else if (currentTab === 'cancelled') {
+                    emptyMsg = 'Belum ada antrean yang dibatalkan.';
+                }
                 $body.html(
                     '<tr><td colspan="9" class="text-center text-muted py-5">' +
                     '<i class="fas fa-ticket text-teal mr-2"></i>' +
-                    'Tidak ada antrean pasien untuk filter ini.</td></tr>'
+                    emptyMsg + '</td></tr>'
                 );
                 return;
             }
@@ -184,7 +195,7 @@
             var rows = '';
             $.each(data, function (i, q) {
                 var tier = (q.membership_tier || 'regular').toLowerCase();
-                var rowClass = (tier === 'vip' || tier === 'platinum') ? 'table-warning' : (tier === 'gold' ? 'table-light' : '');
+                var rowClass = (tier === 'vip' || tier === 'platinum') ? 'row-tier-vip' : (tier === 'gold' ? 'row-tier-gold' : 'row-tier-regular');
 
                 var arrSeqBadge = '<span class="badge badge-warning text-dark font-weight-bold mr-1" style="font-size:12px;" title="Urutan Pendaftar #' + (q.arrival_seq || (i+1)) + '"><i class="fas fa-arrow-down-1-9 mr-1"></i>#' + (q.arrival_seq || (i+1)) + '</span>';
                 var queueBadge = '<span class="badge badge-teal h4 py-2 px-3 font-weight-bold" style="font-size: 16px;">' + esc(q.queue_number || q.queue_no || '-') + '</span>';
@@ -222,58 +233,64 @@
                 var slaBadge = '<span class="badge badge-' + (q.sla_badge || 'success') + ' font-weight-bold ml-1" style="font-size:10.5px;" title="Lama Menunggu"><i class="fas fa-stopwatch mr-1"></i>' + (q.wait_minutes || 0) + ' mnt</span>';
 
                 var actionButtons = '';
-                // 1. Voice Call Button
-                actionButtons +=
-                    '<button type="button" class="btn btn-warning btn-sm font-weight-bold shadow-sm mr-1 btn-voice-call" ' +
-                    'data-queue="' + esc(q.queue_number || q.queue_no || '') + '" ' +
-                    'data-name="' + esc(q.patient_name) + '" ' +
-                    'data-target="' + esc(targetCall) + '" ' +
-                    'data-doctor="' + esc(q.doctor_name || 'Dokter Jaga') + '" ' +
-                    'title="Panggil Antrean dengan Suara Audio">' +
-                    '<i class="fas fa-volume-up"></i> Panggil Suara</button>';
-
-                // 2. Reassign Doctor / Time Keeper Switch Button
-                actionButtons +=
-                    '<button type="button" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm mr-1 btn-reassign-doc" ' +
-                    'data-visitid="' + esc(q.visit_id || q.id) + '" ' +
-                    'data-name="' + esc(q.patient_name) + '" ' +
-                    'data-doctorid="' + esc(q.doctor_id || '') + '" ' +
-                    'title="Alihkan / Ganti Dokter Pemeriksa"><i class="fas fa-user-doctor"></i></button>';
-
-                // 3. Status Transition Form
-                if (status === 'waiting') {
+                if (status === 'completed') {
+                    actionButtons = '<span class="badge badge-success py-1 px-2 font-weight-bold"><i class="fas fa-check mr-1"></i> Pelayanan Tuntas</span>';
+                } else if (status === 'cancelled') {
+                    actionButtons = '<span class="badge badge-danger py-1 px-2 font-weight-bold"><i class="fas fa-ban mr-1"></i> Dibatalkan</span>';
+                } else {
+                    // 1. Voice Call Button
                     actionButtons +=
-                        '<form action="' + self.baseUrl + 'klinik/antrean" method="post" class="d-inline-block mr-1">' +
-                        csrfInput +
-                        '<input type="hidden" name="queue_id" value="' + esc(q.queue_id || q.id) + '">' +
-                        '<input type="hidden" name="status" value="called">' +
-                        '<button type="submit" class="btn btn-primary btn-sm font-weight-bold shadow-sm btn-status-call" ' +
+                        '<button type="button" class="btn btn-warning btn-sm font-weight-bold shadow-sm mr-1 btn-voice-call" ' +
                         'data-queue="' + esc(q.queue_number || q.queue_no || '') + '" ' +
                         'data-name="' + esc(q.patient_name) + '" ' +
                         'data-target="' + esc(targetCall) + '" ' +
-                        'data-doctor="' + esc(q.doctor_name || 'Dokter Jaga') + '">' +
-                        '<i class="fas fa-bullhorn mr-1"></i> Mulai</button>' +
-                        '</form>';
-                } else if (status === 'called' || status === 'triage') {
-                    actionButtons +=
-                        '<form action="' + self.baseUrl + 'klinik/antrean" method="post" class="d-inline-block mr-1">' +
-                        csrfInput +
-                        '<input type="hidden" name="queue_id" value="' + esc(q.queue_id || q.id) + '">' +
-                        '<input type="hidden" name="status" value="completed">' +
-                        '<button type="submit" class="btn btn-success btn-sm font-weight-bold shadow-sm">' +
-                        '<i class="fas fa-check mr-1"></i> Selesai Perawat</button>' +
-                        '</form>';
-                } else {
-                    actionButtons += '<span class="text-secondary font-weight-bold mr-2" style="font-size: 12px;"><i class="fas fa-lock"></i> Selesai Diproses</span>';
-                }
+                        'data-doctor="' + esc(q.doctor_name || 'Dokter Jaga') + '" ' +
+                        'title="Panggil Antrean dengan Suara Audio">' +
+                        '<i class="fas fa-volume-up"></i> Panggil</button>';
 
-                // 4. Delete Queue Button
-                actionButtons +=
-                    '<a href="' + self.baseUrl + 'klinik/antrean/delete/' + esc(q.queue_id || q.id) + '" ' +
-                    'class="btn btn-outline-danger btn-sm font-weight-bold shadow-sm ml-1" ' +
-                    'onclick="return confirm(\'Batalkan antrean pasien ' + esc(q.patient_name) + ' (No. ' + esc(q.queue_number || q.queue_no || '') + ')?\');" ' +
-                    'title="Hapus / Batalkan Antrean">' +
-                    '<i class="fas fa-trash"></i></a>';
+                    // 2. Reassign Doctor / Time Keeper Switch Button
+                    actionButtons +=
+                        '<button type="button" class="btn btn-outline-info btn-sm font-weight-bold shadow-sm mr-1 btn-reassign-doc" ' +
+                        'data-visitid="' + esc(q.visit_id || q.id) + '" ' +
+                        'data-name="' + esc(q.patient_name) + '" ' +
+                        'data-doctorid="' + esc(q.doctor_id || '') + '" ' +
+                        'title="Alihkan / Ganti Dokter Pemeriksa"><i class="fas fa-user-doctor"></i></button>';
+
+                    // 3. Status Transition Form
+                    if (status === 'waiting') {
+                        actionButtons +=
+                            '<form action="' + self.baseUrl + 'klinik/antrean" method="post" class="d-inline-block mr-1">' +
+                            csrfInput +
+                            '<input type="hidden" name="queue_id" value="' + esc(q.queue_id || q.id) + '">' +
+                            '<input type="hidden" name="status" value="called">' +
+                            '<button type="submit" class="btn btn-primary btn-sm font-weight-bold shadow-sm btn-status-call" ' +
+                            'data-queue="' + esc(q.queue_number || q.queue_no || '') + '" ' +
+                            'data-name="' + esc(q.patient_name) + '" ' +
+                            'data-target="' + esc(targetCall) + '" ' +
+                            'data-doctor="' + esc(q.doctor_name || 'Dokter Jaga') + '">' +
+                            '<i class="fas fa-play mr-1"></i> Skrining</button>' +
+                            '</form>';
+                    } else if (status === 'called' || status === 'triage') {
+                        actionButtons +=
+                            '<form action="' + self.baseUrl + 'klinik/antrean" method="post" class="d-inline-block mr-1">' +
+                            csrfInput +
+                            '<input type="hidden" name="queue_id" value="' + esc(q.queue_id || q.id) + '">' +
+                            '<input type="hidden" name="status" value="completed">' +
+                            '<button type="submit" class="btn btn-success btn-sm font-weight-bold shadow-sm">' +
+                            '<i class="fas fa-check mr-1"></i> Selesai</button>' +
+                            '</form>';
+                    } else {
+                        actionButtons += '<span class="text-secondary font-weight-bold mr-2" style="font-size: 12px;"><i class="fas fa-lock"></i> Selesai Diproses</span>';
+                    }
+
+                    // 4. Delete Queue Button
+                    actionButtons +=
+                        '<a href="' + self.baseUrl + 'klinik/antrean/delete/' + esc(q.queue_id || q.id) + '" ' +
+                        'class="btn btn-outline-danger btn-sm font-weight-bold shadow-sm ml-1" ' +
+                        'onclick="return confirm(\'Batalkan antrean pasien ' + esc(q.patient_name) + ' (No. ' + esc(q.queue_number || q.queue_no || '') + ')?\');" ' +
+                        'title="Hapus / Batalkan Antrean">' +
+                        '<i class="fas fa-trash"></i></a>';
+                }
 
                 rows +=
                     '<tr class="' + rowClass + '">' +

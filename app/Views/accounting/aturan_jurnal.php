@@ -25,13 +25,13 @@ foreach ($categories as $c) {
                 <small class="text-muted">Konfigurasi pembagian bagi hasil (Dynamic COA Split) &amp; integrasi penjurnalan otomatis multi-modul</small>
             </div>
             <div class="col-sm-5 text-sm-right mt-2 mt-sm-0">
-                <span class="badge badge-pill badge-light border text-teal px-3 py-2 font-weight-bold shadow-xs mr-1">
+                <span class="badge badge-pill aturan-header-badge text-teal px-3 py-2 font-weight-bold mr-1">
                     <i class="fas fa-folder-tree mr-1"></i> <?= $totalCat ?> Kategori
                 </span>
-                <span class="badge badge-pill badge-light border text-success px-3 py-2 font-weight-bold shadow-xs mr-1">
+                <span class="badge badge-pill aturan-header-badge text-success px-3 py-2 font-weight-bold mr-1">
                     <i class="fas fa-scale-balanced mr-1"></i> <?= $balancedCat ?> / <?= $totalCat ?> Balanced
                 </span>
-                <span class="badge badge-pill badge-light border text-primary px-3 py-2 font-weight-bold shadow-xs">
+                <span class="badge badge-pill aturan-header-badge text-primary px-3 py-2 font-weight-bold">
                     <i class="fas fa-list-check mr-1"></i> <?= $totalRulesCount ?> Sub-Pos Akun
                 </span>
             </div>
@@ -81,18 +81,18 @@ foreach ($categories as $c) {
 <!-- ========================================================================= -->
 <!-- PANDUAN RINGKAS DYNAMIC COA SPLIT                                         -->
 <!-- ========================================================================= -->
-<div class="alert alert-light border shadow-sm d-flex align-items-start mb-3" style="border-left: 4px solid #20c997 !important; border-radius: 6px;">
+<div class="alert aturan-alert-guide shadow-sm d-flex align-items-start mb-3">
     <div class="mr-3 text-teal mt-1" style="font-size: 20px;">
         <i class="fas fa-circle-info"></i>
     </div>
     <div class="text-sm flex-grow-1">
         <div class="d-flex justify-content-between align-items-center">
-            <h6 class="font-weight-bold text-dark mb-1">Panduan Formula Dynamic COA Split &amp; Penjurnalan Otomatis</h6>
+            <h6 class="font-weight-bold mb-1">Panduan Formula Dynamic COA Split &amp; Penjurnalan Otomatis</h6>
             <button type="button" class="close text-muted" data-dismiss="alert" aria-label="Close" style="font-size: 16px;">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <p class="text-muted mb-0" style="line-height: 1.5;">
+        <p class="mb-0" style="line-height: 1.5;">
             Halaman ini mengatur formula pembagian transaksi (Bagi Hasil / Revenue Split) multi-akun secara dinamis.
             Setiap transaksi di <strong>Farmasi Apotek</strong> (Obat Bebas, Resep Dokter, Konsul Online), <strong>Kasir Pelayanan Medis / Poli</strong>, dan <strong>Resto Gizi Sehat</strong> akan langsung dijurnal otomatis berpasangan (*Double-Entry*) berdasarkan komposisi pos akun yang ditentukan.
         </p>
@@ -104,20 +104,20 @@ foreach ($categories as $c) {
 <!-- ========================================================================= -->
 <div class="row mb-3">
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-teal-soft">
                     <i class="fas fa-folder-tree fa-lg"></i>
                 </div>
                 <div>
                     <span class="text-muted text-xs font-weight-bold text-uppercase">Total Kategori Template</span>
-                    <h4 class="font-weight-bold mb-0 text-dark"><?= $totalCat ?> <span class="text-xs font-weight-normal text-muted">(<?= $activeCat ?> Aktif)</span></h4>
+                    <h4 class="font-weight-bold mb-0 kpi-value"><?= $totalCat ?> <span class="text-xs font-weight-normal text-muted">(<?= $activeCat ?> Aktif)</span></h4>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-success-soft">
                     <i class="fas fa-scale-balanced fa-lg"></i>
@@ -130,7 +130,7 @@ foreach ($categories as $c) {
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-primary-soft">
                     <i class="fas fa-list-check fa-lg"></i>
@@ -143,14 +143,14 @@ foreach ($categories as $c) {
         </div>
     </div>
     <div class="col-lg-3 col-sm-6 mb-2">
-        <div class="card shadow-xs border-0 bg-white h-100 kpi-card">
+        <div class="card shadow-xs h-100 kpi-card">
             <div class="card-body p-3 d-flex align-items-center">
                 <div class="rounded-circle p-3 mr-3 bg-warning-soft">
                     <i class="fas fa-arrows-split-up-and-left fa-lg"></i>
                 </div>
                 <div>
                     <span class="text-muted text-xs font-weight-bold text-uppercase">Modul Terintegrasi</span>
-                    <h4 class="font-weight-bold mb-0 text-dark" style="font-size: 15px;">Apotek, Kasir, Resto</h4>
+                    <h4 class="font-weight-bold mb-0 kpi-value" style="font-size: 15px;">Apotek, Kasir, Resto</h4>
                 </div>
             </div>
         </div>
@@ -160,11 +160,11 @@ foreach ($categories as $c) {
 <!-- ========================================================================= -->
 <!-- MAIN CARD & TABLE DAFTAR KATEGORI ATURAN JURNAL                           -->
 <!-- ========================================================================= -->
-<div class="card card-outline card-teal shadow-sm border-0 mb-4">
-    <div class="card-header bg-white border-bottom py-3">
+<div class="card card-outline card-teal shadow-sm mb-4">
+    <div class="card-header border-bottom py-3">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
             <div class="mb-2 mb-md-0">
-                <h5 class="card-title font-weight-bold text-dark mb-0">
+                <h5 class="card-title font-weight-bold mb-0">
                     <i class="fas fa-table-list text-teal mr-1"></i> Daftar Kategori Template &amp; Formula Jurnal Per-Akun
                 </h5>
                 <small class="text-muted d-block mt-0.5">Konfigurasi pos alokasi Debet &amp; Kredit untuk penjurnalan otomatis transaksi kasir faskes</small>
@@ -181,8 +181,8 @@ foreach ($categories as $c) {
     </div>
     <div class="card-body p-3">
         <div class="table-responsive">
-            <table id="table-aturan-jurnal" class="table table-hover table-striped table-bordered datatable w-100" style="font-size: 12px;">
-                <thead class="bg-light text-dark">
+            <table id="table-aturan-jurnal" class="table table-hover table-bordered datatable table-clean-grid w-100" style="font-size: 12px;">
+                <thead>
                     <tr>
                         <th style="width: 45px;" class="text-center">NO</th>
                         <th style="min-width: 180px;">KODE &amp; NAMA TEMPLATE KATEGORI</th>
@@ -218,7 +218,7 @@ foreach ($categories as $c) {
                                             <?= esc($cat->category_name) ?>
                                         </a>
                                         <div class="mt-0.5">
-                                            <span class="badge badge-light border text-muted font-monospace font-weight-bold">
+                                            <span class="badge aturan-code-badge font-monospace font-weight-bold">
                                                 <code><?= esc($cat->category_code) ?></code>
                                             </span>
                                         </div>
@@ -264,7 +264,7 @@ foreach ($categories as $c) {
                                                 }
                                                 ?>
                                                 <span class="badge <?= $pillColor ?> font-weight-normal py-1 px-2" style="font-size: 11px;">
-                                                    <strong><?= strtoupper($r->position[0]) ?>:</strong> <?= esc($r->item_name) ?> <span class="badge badge-light text-dark font-weight-bold"><?= $valStr ?></span>
+                                                    <strong><?= strtoupper($r->position[0]) ?>:</strong> <?= esc($r->item_name) ?> <span class="badge aturan-val-badge font-weight-bold"><?= $valStr ?></span>
                                                 </span>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
@@ -374,7 +374,7 @@ foreach ($categories as $c) {
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
+                <div class="modal-footer aturan-modal-footer py-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
                     <button type="submit" id="btn-save-cat" class="btn btn-teal btn-sm font-weight-bold shadow-sm">
                         <i class="fas fa-save mr-1"></i> Simpan Kategori
@@ -410,51 +410,51 @@ foreach ($categories as $c) {
                     <h6 class="font-weight-bold text-dark mb-2 text-sm">Daftar Template Standar yang Akan Dibuat:</h6>
                     <div class="row mb-3" style="font-size: 11.5px;">
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-teal font-weight-bold text-uppercase mb-1">Apotek</span>
-                                <strong class="d-block text-dark">1. Penjualan Obat Bebas (OTC)</strong>
+                                <strong class="d-block">1. Penjualan Obat Bebas (OTC)</strong>
                                 <small class="text-muted">Kas (Dr 100%) vs Obat (49%), Pajak (11%), Penunjang (9%), Resep (7%), ADM (24%).</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-teal font-weight-bold text-uppercase mb-1">Apotek</span>
-                                <strong class="d-block text-dark">2. Penjualan Obat Resep Dokter</strong>
+                                <strong class="d-block">2. Penjualan Obat Resep Dokter</strong>
                                 <small class="text-muted">Kas (Dr 100%) vs Fee Dokter (5%), Obat (44%), Pajak (11%), Penunjang (9%), Resep (7%), ADM (24%).</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-primary font-weight-bold text-uppercase mb-1">Klinik / Apotek</span>
-                                <strong class="d-block text-dark">3. Konsultasi Online &amp; Telemedis</strong>
+                                <strong class="d-block">3. Konsultasi Online &amp; Telemedis</strong>
                                 <small class="text-muted">Kas (Dr 100%) vs Jasa Dokter Tetap (Rp 20rb), Utang Fee Dr, &amp; Alokasi 5 Pos Obat.</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-primary font-weight-bold text-uppercase mb-1">Klinik</span>
-                                <strong class="d-block text-dark">4. Rawat Jalan Poli &amp; Tindakan Medis</strong>
+                                <strong class="d-block">4. Rawat Jalan Poli &amp; Tindakan Medis</strong>
                                 <small class="text-muted">Kas Utama (Dr 100%) vs Jasa Medis Dokter (66.67%) &amp; Sarana Fasilitas Klinik (33.33%).</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-warning text-dark font-weight-bold text-uppercase mb-1">Resto Gizi</span>
-                                <strong class="d-block text-dark">5. Penjualan Resto Gizi Sehat</strong>
+                                <strong class="d-block">5. Penjualan Resto Gizi Sehat</strong>
                                 <small class="text-muted">Kas Resto (Dr 100%) vs Pendapatan Resto Gizi Sehat (Cr 100%).</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <div class="p-2 border rounded bg-light h-100">
+                            <div class="p-2 rounded h-100 aturan-template-box">
                                 <span class="badge badge-success font-weight-bold text-uppercase mb-1">Distributor</span>
-                                <strong class="d-block text-dark">6. Penjualan Grosir B2B</strong>
+                                <strong class="d-block">6. Penjualan Grosir B2B</strong>
                                 <small class="text-muted">Kas/Bank (Dr 100%) vs Pendapatan Penjualan Grosir B2B (Cr 100%).</small>
                             </div>
                         </div>
                     </div>
 
                     <h6 class="font-weight-bold text-dark mb-2 text-sm">Pilih Metode Pemuatan Template:</h6>
-                    <div class="card border p-3 mb-0 bg-light">
+                    <div class="card p-3 mb-0 aturan-template-mode-box">
                         <div class="custom-control custom-radio mb-2">
                             <input type="radio" id="mode_merge" name="mode" value="merge" class="custom-control-input" checked>
                             <label class="custom-control-label font-weight-bold text-dark" for="mode_merge">
@@ -471,7 +471,7 @@ foreach ($categories as $c) {
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
+                <div class="modal-footer aturan-modal-footer py-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
                     <button type="submit" id="btn-load-default" class="btn btn-teal btn-sm font-weight-bold shadow-sm">
                         <i class="fas fa-play mr-1"></i> Proses Muat Template
@@ -578,10 +578,30 @@ function deleteCategory(id, name) {
     border-bottom: 3px solid #b2dfdb;
     background-color: #f8f9fa;
 }
-.nav-tabs-modern .nav-link.active {
+body:not(.dark-mode) .nav-tabs-modern .nav-link.active {
     color: #00796b !important;
     border-bottom: 3px solid #20c997 !important;
     background-color: #ffffff !important;
+}
+body.dark-mode .nav-tabs-modern,
+.dark-mode .nav-tabs-modern {
+    border-bottom: 2px solid #374151 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link,
+.dark-mode .nav-tabs-modern .nav-link {
+    color: #9ca3af !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link:hover,
+.dark-mode .nav-tabs-modern .nav-link:hover {
+    color: #34d399 !important;
+    border-bottom: 3px solid #34d399 !important;
+    background-color: #262b32 !important;
+}
+body.dark-mode .nav-tabs-modern .nav-link.active,
+.dark-mode .nav-tabs-modern .nav-link.active {
+    color: #34d399 !important;
+    border-bottom: 3px solid #20c997 !important;
+    background-color: #1f2328 !important;
 }
 .kpi-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;

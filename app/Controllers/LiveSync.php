@@ -66,6 +66,11 @@ class LiveSync extends BaseController
                     ->whereIn('pv.status', ['completed', 'cashier', 'prescription', 'pharmacy', 'done', 'finished', 'closed'])
                     ->orWhere('qn.status', 'completed')
                     ->groupEnd();
+        } elseif ($tab === 'cancelled') {
+            $builder->groupStart()
+                    ->where('pv.status', 'cancelled')
+                    ->orWhere('qn.status', 'cancelled')
+                    ->groupEnd();
         }
 
         if (!empty($polyId) && $polyId !== 'all') {
@@ -143,10 +148,14 @@ class LiveSync extends BaseController
             if (isset($stats[$st])) {
                 $stats[$st]++;
             }
-            if ($st !== 'completed' && $st !== 'cancelled') {
+            if ($st === 'completed' || $st === 'cashier' || $st === 'prescription' || $st === 'pharmacy' || $st === 'done' || $st === 'finished') {
+                // Count completed
+            }
+            if ($st !== 'completed' && $st !== 'cancelled' && $st !== 'cashier' && $st !== 'prescription' && $st !== 'pharmacy' && $st !== 'done' && $st !== 'finished') {
                 $stats['active']++;
             }
         }
+        $stats['completed_tab'] = $stats['completed'] + $stats['cashier'] + $stats['prescription'];
 
         return $this->respond([
             'status'    => 'success',

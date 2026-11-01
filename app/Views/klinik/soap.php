@@ -16,51 +16,90 @@
         flex-direction: column;
     }
     .emr-sidebar-card {
-        border: 1px solid #e2e8f0 !important;
-        background: #ffffff !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
         display: flex;
         flex-direction: column;
         max-height: calc(100vh - 85px);
         overflow: hidden;
     }
+    body:not(.dark-mode) .emr-sidebar-card {
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    }
+    body.dark-mode .emr-sidebar-card,
+    .dark-mode .emr-sidebar-card {
+        border: 1px solid #374151 !important;
+        background: #1f2328 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    }
+
     .emr-sidebar-card .card-header-streamlined {
         flex-shrink: 0;
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
         padding: 10px 12px;
     }
+    body:not(.dark-mode) .emr-sidebar-card .card-header-streamlined {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    body.dark-mode .emr-sidebar-card .card-header-streamlined,
+    .dark-mode .emr-sidebar-card .card-header-streamlined {
+        background: #1f2328 !important;
+        border-bottom: 1px solid #374151 !important;
+    }
+    body.dark-mode .card-header-streamlined h6,
+    .dark-mode .card-header-streamlined h6 {
+        color: #f3f4f6 !important;
+    }
+
     .sidebar-queue-scroll {
         flex: 1;
         overflow-y: auto;
         padding: 8px 10px;
-        background: #f8fafc;
         max-height: calc(100vh - 210px);
         min-height: 300px;
         scrollbar-width: thin;
+    }
+    body:not(.dark-mode) .sidebar-queue-scroll {
+        background: #f8fafc;
         scrollbar-color: #94a3b8 #f1f5f9;
+    }
+    body.dark-mode .sidebar-queue-scroll,
+    .dark-mode .sidebar-queue-scroll {
+        background: #181b1f !important;
+        scrollbar-color: #374151 #181b1f !important;
     }
     .sidebar-queue-scroll::-webkit-scrollbar {
         width: 6px;
     }
-    .sidebar-queue-scroll::-webkit-scrollbar-track {
+    body:not(.dark-mode) .sidebar-queue-scroll::-webkit-scrollbar-track {
         background: #f1f5f9;
         border-radius: 4px;
     }
-    .sidebar-queue-scroll::-webkit-scrollbar-thumb {
+    body:not(.dark-mode) .sidebar-queue-scroll::-webkit-scrollbar-thumb {
         background-color: #cbd5e1;
         border-radius: 4px;
     }
-    .sidebar-queue-scroll::-webkit-scrollbar-thumb:hover {
+    body:not(.dark-mode) .sidebar-queue-scroll::-webkit-scrollbar-thumb:hover {
         background-color: #94a3b8;
+    }
+    body.dark-mode .sidebar-queue-scroll::-webkit-scrollbar-track,
+    .dark-mode .sidebar-queue-scroll::-webkit-scrollbar-track {
+        background: #181b1f !important;
+    }
+    body.dark-mode .sidebar-queue-scroll::-webkit-scrollbar-thumb,
+    .dark-mode .sidebar-queue-scroll::-webkit-scrollbar-thumb {
+        background-color: #374151 !important;
+        border-radius: 4px;
+    }
+    body.dark-mode .sidebar-queue-scroll::-webkit-scrollbar-thumb:hover,
+    .dark-mode .sidebar-queue-scroll::-webkit-scrollbar-thumb:hover {
+        background-color: #4b5563 !important;
     }
 
     /* Queue Patient Item Card Styling (Kompak & Bersih) */
     .visit-item {
-        border: 1px solid #e2e8f0 !important;
         border-radius: 7px !important;
-        background: #ffffff !important;
         transition: all 0.15s ease-in-out;
         padding: 8px 10px !important;
         margin-bottom: 7px !important;
@@ -71,24 +110,51 @@
         position: relative !important;
         overflow: visible !important;
     }
-    .visit-item:hover {
+    body:not(.dark-mode) .visit-item {
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+    }
+    body:not(.dark-mode) .visit-item:hover {
         background-color: #f8fafc !important;
         border-color: #94a3b8 !important;
     }
-    .visit-item.active {
+    body:not(.dark-mode) .visit-item.active {
         background-color: #f0fdfa !important;
         border-color: #0d9488 !important;
         border-left: 4px solid #0d9488 !important;
         box-shadow: 0 2px 8px rgba(13, 148, 136, 0.08);
     }
-    .visit-item .dropdown-menu {
-        position: absolute !important;
-        right: 0 !important;
-        top: 100% !important;
-        z-index: 1060 !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 6px !important;
+    body.dark-mode .visit-item,
+    .dark-mode .visit-item {
+        border: 1px solid #374151 !important;
+        background: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .visit-item:hover,
+    .dark-mode .visit-item:hover {
+        background-color: #262b32 !important;
+        border-color: #4b5563 !important;
+    }
+    body.dark-mode .visit-item.active,
+    .dark-mode .visit-item.active {
+        background-color: rgba(13, 148, 136, 0.15) !important;
+        border-color: #0d9488 !important;
+        border-left: 4px solid #14b8a6 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    body.dark-mode .visit-item strong,
+    body.dark-mode .visit-item h6,
+    body.dark-mode .visit-item .text-dark,
+    .dark-mode .visit-item strong,
+    .dark-mode .visit-item h6,
+    .dark-mode .visit-item .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .visit-item .text-muted,
+    body.dark-mode .visit-item .text-secondary,
+    .dark-mode .visit-item .text-muted,
+    .dark-mode .visit-item .text-secondary {
+        color: #9ca3af !important;
     }
 
     /* Micro Action Buttons in Queue Item */
@@ -107,45 +173,100 @@
     }
 
     .emr-workspace-card {
+        border-radius: 10px !important;
+    }
+    body:not(.dark-mode) .emr-workspace-card {
         border: 1px solid #e2e8f0 !important;
         background: #ffffff !important;
-        border-radius: 10px !important;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+    }
+    body.dark-mode .emr-workspace-card,
+    .dark-mode .emr-workspace-card {
+        border: 1px solid #374151 !important;
+        background: #1f2328 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+        color: #f3f4f6 !important;
     }
 
     /* Top EMR Patient Banner */
     .emr-patient-hero {
+        padding: 16px 20px;
+    }
+    body:not(.dark-mode) .emr-patient-hero {
         background: #ffffff;
         border-bottom: 1px solid #e2e8f0;
-        padding: 16px 20px;
+    }
+    body.dark-mode .emr-patient-hero,
+    .dark-mode .emr-patient-hero {
+        background: #1f2328 !important;
+        border-bottom: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .emr-patient-hero h5,
+    body.dark-mode .emr-patient-hero .text-dark,
+    .dark-mode .emr-patient-hero h5,
+    .dark-mode .emr-patient-hero .text-dark {
+        color: #f3f4f6 !important;
     }
 
     /* Vitals Bar */
     .emr-vitals-bar {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
         border-radius: 6px;
         padding: 8px 14px;
         margin-top: 10px;
     }
+    body:not(.dark-mode) .emr-vitals-bar {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+    body.dark-mode .emr-vitals-bar,
+    .dark-mode .emr-vitals-bar {
+        background: #181b1f !important;
+        border: 1px solid #374151 !important;
+    }
+
     .vital-chip {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
         border-radius: 5px;
         padding: 5px 10px;
         text-align: center;
         min-width: 95px;
     }
+    body:not(.dark-mode) .vital-chip {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+    body.dark-mode .vital-chip,
+    .dark-mode .vital-chip {
+        background: #262b32 !important;
+        border: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .vital-chip small,
+    .dark-mode .vital-chip small {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .vital-chip strong,
+    body.dark-mode .vital-chip span,
+    .dark-mode .vital-chip strong,
+    .dark-mode .vital-chip span {
+        color: #f3f4f6 !important;
+    }
 
     /* Tab Navigasi RME */
     .emr-nav-tabs {
+        padding: 8px 16px 0 16px;
+    }
+    body:not(.dark-mode) .emr-nav-tabs {
         background: #f8fafc;
         border-bottom: 1px solid #e2e8f0;
-        padding: 8px 16px 0 16px;
+    }
+    body.dark-mode .emr-nav-tabs,
+    .dark-mode .emr-nav-tabs {
+        background: #181b1f !important;
+        border-bottom: 1px solid #374151 !important;
     }
     .emr-nav-tabs .nav-link {
         border: none !important;
-        color: #64748b !important;
         font-weight: 600 !important;
         background: transparent !important;
         padding: 10px 18px !important;
@@ -153,11 +274,29 @@
         border-bottom: 2.5px solid transparent !important;
         transition: all 0.15s ease;
     }
-    .emr-nav-tabs .nav-link:hover {
+    body:not(.dark-mode) .emr-nav-tabs .nav-link {
+        color: #64748b !important;
+    }
+    body:not(.dark-mode) .emr-nav-tabs .nav-link:hover {
         color: #0d9488 !important;
     }
-    .emr-nav-tabs .nav-link.active {
+    body:not(.dark-mode) .emr-nav-tabs .nav-link.active {
         color: #0d9488 !important;
+        border-bottom: 2.5px solid #0d9488 !important;
+        background: transparent !important;
+        font-weight: 700 !important;
+    }
+    body.dark-mode .emr-nav-tabs .nav-link,
+    .dark-mode .emr-nav-tabs .nav-link {
+        color: #9ca3af !important;
+    }
+    body.dark-mode .emr-nav-tabs .nav-link:hover,
+    .dark-mode .emr-nav-tabs .nav-link:hover {
+        color: #2dd4bf !important;
+    }
+    body.dark-mode .emr-nav-tabs .nav-link.active,
+    .dark-mode .emr-nav-tabs .nav-link.active {
+        color: #2dd4bf !important;
         border-bottom: 2.5px solid #0d9488 !important;
         background: transparent !important;
         font-weight: 700 !important;
@@ -165,30 +304,56 @@
 
     /* Full-Width Spacious Section Cards */
     .emr-section-card {
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        background: #ffffff;
-        margin-bottom: 16px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        border-radius: 12px !important;
+        margin-bottom: 20px !important;
+        overflow: visible !important;
     }
+    body:not(.dark-mode) .emr-section-card {
+        border: 1px solid #e2e8f0 !important;
+        background: #ffffff !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+    }
+    body.dark-mode .emr-section-card,
+    .dark-mode .emr-section-card {
+        border: 1px solid #374151 !important;
+        background: #1f2328 !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+        color: #f3f4f6 !important;
+    }
+
     .emr-section-header {
         padding: 10px 16px;
-        background: #f8fafc;
-        border-bottom: 1px solid #f1f5f9;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-top-left-radius: 7px;
-        border-top-right-radius: 7px;
+        border-top-left-radius: 11px;
+        border-top-right-radius: 11px;
     }
-    .emr-section-card {
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 12px !important;
-        background: #ffffff !important;
-        margin-bottom: 20px !important;
-        overflow: visible !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+    body:not(.dark-mode) .emr-section-header {
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
     }
+    body.dark-mode .emr-section-header,
+    .dark-mode .emr-section-header {
+        background: #181b1f !important;
+        border-bottom: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .emr-section-header h6,
+    body.dark-mode .emr-section-header strong,
+    body.dark-mode .emr-section-header .text-dark,
+    .dark-mode .emr-section-header h6,
+    .dark-mode .emr-section-header strong,
+    .dark-mode .emr-section-header .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .emr-section-header small,
+    body.dark-mode .emr-section-header .text-muted,
+    .dark-mode .emr-section-header small,
+    .dark-mode .emr-section-header .text-muted {
+        color: #9ca3af !important;
+    }
+
     .emr-section-header-s { border-left: 4px solid #10b981; }
     .emr-section-header-o { border-left: 4px solid #0284c7; }
     .emr-section-header-a { border-left: 4px solid #7c3aed; }
@@ -198,23 +363,57 @@
     /* e-Resep Prescription Section Spacious & 100% Responsive */
     .prescription-table-wrapper {
         width: 100%;
-        overflow: visible !important;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
         position: relative;
-        border-radius: 8px;
+        border-radius: 6px;
+        scrollbar-width: thin;
+        box-sizing: border-box;
     }
     .prescription-table-wrapper.macos-select-parent-elevated,
     .prescription-table-wrapper:has(.macos-select-wrapper.is-open) {
         overflow: visible !important;
         z-index: 1085 !important;
     }
+    .prescription-table-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+    body:not(.dark-mode) .prescription-table-wrapper::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    body:not(.dark-mode) .prescription-table-wrapper::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+    }
+    body.dark-mode .prescription-table-wrapper::-webkit-scrollbar-track,
+    .dark-mode .prescription-table-wrapper::-webkit-scrollbar-track {
+        background: #181b1f !important;
+    }
+    body.dark-mode .prescription-table-wrapper::-webkit-scrollbar-thumb,
+    .dark-mode .prescription-table-wrapper::-webkit-scrollbar-thumb {
+        background-color: #374151 !important;
+        border-radius: 4px;
+    }
+
     #prescription-table {
         margin-bottom: 0;
+        table-layout: fixed;
         border-collapse: separate;
         border-spacing: 0;
-        width: 100%;
-        min-width: 100%;
+        width: 100% !important;
+        max-width: 100%;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    body:not(.dark-mode) #prescription-table {
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
+    }
+    body.dark-mode #prescription-table,
+    .dark-mode #prescription-table {
+        border: 1px solid #374151 !important;
+        background: #1f2328 !important;
     }
     #prescription-table th,
     #prescription-table td {
@@ -229,75 +428,236 @@
         z-index: 1085 !important;
     }
     #prescription-table thead th {
-        background: #f8fafc;
-        font-size: 11.5px;
+        font-size: 11px;
         font-weight: 700;
-        color: #475569;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 10px 12px;
+        padding: 9px 8px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    body:not(.dark-mode) #prescription-table thead th {
+        background: #f8fafc;
+        color: #475569;
         border-bottom: 2px solid #e2e8f0;
     }
+    body.dark-mode #prescription-table thead th,
+    .dark-mode #prescription-table thead th {
+        background: #181b1f !important;
+        color: #9ca3af !important;
+        border-bottom: 2px solid #374151 !important;
+    }
     #prescription-table tbody tr {
-        background: #ffffff;
         transition: background 0.15s ease;
     }
-    #prescription-table tbody tr:hover {
+    body:not(.dark-mode) #prescription-table tbody tr {
+        background: #ffffff;
+    }
+    body:not(.dark-mode) #prescription-table tbody tr:hover {
         background: #fbfdff;
     }
+    body.dark-mode #prescription-table tbody tr,
+    .dark-mode #prescription-table tbody tr {
+        background: #1f2328 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #prescription-table tbody tr:hover,
+    .dark-mode #prescription-table tbody tr:hover {
+        background: #262b32 !important;
+    }
     #prescription-table td {
-        padding: 10px 10px;
+        padding: 8px 8px;
         vertical-align: middle;
-        border-top: 1px solid #f1f5f9;
         position: relative;
     }
+    body:not(.dark-mode) #prescription-table td {
+        border-top: 1px solid #f1f5f9;
+    }
+    body.dark-mode #prescription-table td,
+    .dark-mode #prescription-table td {
+        border-top: 1px solid #374151 !important;
+        color: #f3f4f6 !important;
+    }
+
     #prescription-table .macos-select-wrapper {
-        min-width: 260px;
+        min-width: 180px;
         width: 100%;
+    }
+    #prescription-table .macos-select-trigger {
+        min-height: 32px !important;
+        height: 32px !important;
+        padding: 4px 10px !important;
+        font-size: 12.5px !important;
     }
     #prescription-table .macos-select-menu {
         min-width: 100% !important;
         max-width: 480px !important;
-        max-height: 320px !important;
+        max-height: 300px !important;
         z-index: 1090 !important;
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2) !important;
-        border: 1px solid rgba(0, 0, 0, 0.14) !important;
     }
     #prescription-table .macos-select-options-list {
-        max-height: 260px !important;
+        max-height: 240px !important;
+    }
+    #prescription-table .input-qty {
+        height: 32px;
+        font-size: 12.5px;
+        padding: 4px 6px;
+    }
+    #prescription-table .input-dosage {
+        height: 32px;
+        font-size: 12.5px;
+        padding: 4px 10px;
     }
 
     .triage-compact-badge {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
         border-radius: 6px;
         padding: 7px 12px;
         font-size: 12px;
         margin-bottom: 10px;
     }
+    body:not(.dark-mode) .triage-compact-badge {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+    }
+    body.dark-mode .triage-compact-badge,
+    .dark-mode .triage-compact-badge {
+        background: rgba(16, 185, 129, 0.15) !important;
+        border: 1px solid rgba(16, 185, 129, 0.3) !important;
+        color: #a7f3d0 !important;
+    }
 
     .form-control-spacious {
-        border: 1px solid #cbd5e1;
         border-radius: 6px;
         padding: 10px 12px;
         font-size: 13.5px;
         line-height: 1.5;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
-    .form-control-spacious:focus {
+    body:not(.dark-mode) .form-control-spacious {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #1e293b;
+    }
+    body:not(.dark-mode) .form-control-spacious:focus {
         border-color: #0d9488;
         box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.15);
     }
+    body.dark-mode .form-control-spacious,
+    .dark-mode .form-control-spacious {
+        border: 1px solid #374151 !important;
+        background: #262b32 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode .form-control-spacious:focus,
+    .dark-mode .form-control-spacious:focus {
+        border-color: #0d9488 !important;
+        box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.25) !important;
+    }
 
     .sticky-submit-bar {
-        background: #ffffff;
-        border-top: 1px solid #e2e8f0;
         padding: 14px 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
+    }
+    body:not(.dark-mode) .sticky-submit-bar {
+        background: #ffffff;
+        border-top: 1px solid #e2e8f0;
+    }
+    body.dark-mode .sticky-submit-bar,
+    .dark-mode .sticky-submit-bar {
+        background: #181b1f !important;
+        border-top: 1px solid #374151 !important;
+    }
+
+    /* EMR Dark Mode Overrides for Forms, Welcome Pane, Search, and Odontogram */
+    body.dark-mode #welcome-pane,
+    .dark-mode #welcome-pane {
+        background: #1f2328 !important;
+        border: 1px solid #374151 !important;
+    }
+    body.dark-mode #welcome-pane h4,
+    .dark-mode #welcome-pane h4 {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #welcome-pane p,
+    .dark-mode #welcome-pane p {
+        color: #9ca3af !important;
+    }
+    body.dark-mode #welcome-pane .bg-light,
+    .dark-mode #welcome-pane .bg-light {
+        background: #181b1f !important;
+        border: 1px solid #374151 !important;
+        color: #9ca3af !important;
+    }
+
+    body.dark-mode #search-queue-input,
+    .dark-mode #search-queue-input {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode #filter-doctor-select,
+    .dark-mode #filter-doctor-select {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode .card-header-streamlined .input-group-text,
+    .dark-mode .card-header-streamlined .input-group-text {
+        background-color: #262b32 !important;
+        border-color: #374151 !important;
+        color: #9ca3af !important;
+    }
+
+    body.dark-mode .odontogram-chart-wrapper,
+    .dark-mode .odontogram-chart-wrapper {
+        background: #181b1f !important;
+        border-color: #374151 !important;
+    }
+    body.dark-mode .tooth-box,
+    .dark-mode .tooth-box {
+        background: #262b32 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode .tooth-box.active,
+    .dark-mode .tooth-box.active {
+        background: rgba(13, 148, 136, 0.25) !important;
+        border-color: #0d9488 !important;
+    }
+
+    body.dark-mode #soap-tabs-content .card,
+    .dark-mode #soap-tabs-content .card {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #soap-tabs-content .card-header,
+    .dark-mode #soap-tabs-content .card-header {
+        background-color: #181b1f !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #soap-tabs-content .bg-light,
+    body.dark-mode #soap-tabs-content .bg-white,
+    .dark-mode #soap-tabs-content .bg-light,
+    .dark-mode #soap-tabs-content .bg-white {
+        background-color: #1f2328 !important;
+        border-color: #374151 !important;
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #soap-tabs-content .text-dark,
+    .dark-mode #soap-tabs-content .text-dark {
+        color: #f3f4f6 !important;
+    }
+    body.dark-mode #soap-tabs-content .text-muted,
+    body.dark-mode #soap-tabs-content .text-secondary,
+    .dark-mode #soap-tabs-content .text-muted,
+    .dark-mode #soap-tabs-content .text-secondary {
+        color: #9ca3af !important;
     }
 </style>
 
@@ -786,12 +1146,12 @@
                                     <table class="table mb-0 bg-white" id="prescription-table">
                                         <thead>
                                             <tr>
-                                                <th style="min-width: 380px;">Nama Obat &amp; Satuan (Stok Apotek)</th>
-                                                <th style="width: 100px;" class="text-center">Jumlah (Qty)</th>
-                                                <th style="width: 130px;" class="text-right">Harga Satuan</th>
-                                                <th style="width: 130px;" class="text-right">Subtotal</th>
-                                                <th style="min-width: 250px;">Dosis &amp; Aturan Pakai (Signa)</th>
-                                                <th style="width: 50px;" class="text-center">Aksi</th>
+                                                <th style="width: 32%;">Nama Obat &amp; Satuan (Stok Apotek)</th>
+                                                <th style="width: 60px;" class="text-center">Qty</th>
+                                                <th style="width: 90px;" class="text-right">Harga</th>
+                                                <th style="width: 95px;" class="text-right">Subtotal</th>
+                                                <th style="width: 30%;">Aturan Pakai (Signa)</th>
+                                                <th style="width: 45px;" class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>

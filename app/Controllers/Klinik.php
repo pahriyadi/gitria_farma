@@ -46,6 +46,11 @@ class Klinik extends BaseController
                 $res = $this->clinicService->registerPatient($patientData);
                 if ($res['status'] === 'success') {
                     session()->setFlashdata('success', $res['message'] . ' No RM: ' . $res['no_rm']);
+                    session()->setFlashdata('registered_patient', [
+                        'id' => $res['patient_id'],
+                        'name' => $patientData['name'],
+                        'no_rm' => $res['no_rm']
+                    ]);
                     session()->setFlashdata('last_registered_patient_id', $res['patient_id']);
                     session()->setFlashdata('last_registered_patient_name', $patientData['name']);
                     session()->setFlashdata('last_registered_patient_rm', $res['no_rm']);
@@ -385,6 +390,25 @@ class Klinik extends BaseController
                 return $this->processDeleteQueue($queueId);
             }
 
+            if ($action === 'reassign_doctor') {
+                $visitId = (int)$this->request->getPost('visit_id');
+                $newDocId = (int)$this->request->getPost('doctor_id');
+                if ($visitId > 0 && $newDocId > 0) {
+                    $db->table('patient_visits')->where('id', $visitId)->update([
+                        'doctor_id'  => $newDocId,
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+                    if ($this->request->isAJAX() || $this->request->getPost('is_ajax') === '1') {
+                        return $this->response->setJSON([
+                            'status'  => 'success',
+                            'message' => 'Dokter pemeriksa pasien berhasil dialihkan.'
+                        ]);
+                    }
+                    session()->setFlashdata('success', 'Dokter pemeriksa pasien berhasil dialihkan.');
+                }
+                return redirect()->to(base_url('klinik/antrean'));
+            }
+
             $queueId = (int)$this->request->getPost('queue_id');
             $newStatus = $this->request->getPost('status') ?: 'called';
             $now = date('Y-m-d H:i:s');
@@ -439,19 +463,6 @@ class Klinik extends BaseController
                     'new_status' => $newStatus,
                     'call_time'  => $now
                 ]);
-            }
-
-            if ($this->request->getPost('action') === 'reassign_doctor') {
-                $visitId = (int)$this->request->getPost('visit_id');
-                $newDocId = (int)$this->request->getPost('doctor_id');
-                if ($visitId > 0 && $newDocId > 0) {
-                    $db->table('patient_visits')->where('id', $visitId)->update([
-                        'doctor_id'  => $newDocId,
-                        'updated_at' => date('Y-m-d H:i:s')
-                    ]);
-                    session()->setFlashdata('success', 'Dokter pemeriksa pasien berhasil dialihkan.');
-                }
-                return redirect()->to(base_url('klinik/antrean'));
             }
 
             session()->setFlashdata('success', 'Status antrean berhasil diperbarui.');

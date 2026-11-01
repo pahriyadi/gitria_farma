@@ -1287,7 +1287,7 @@ class System extends BaseController
             session()->setFlashdata('success', "Status aturan notifikasi '{$rule->rule_name}' berhasil diperbarui.");
         }
 
-        return redirect()->to(base_url('system/notifications') . '#tab-rules');
+        return redirect()->to(base_url('system/notifications?tab=rules') . '#tab-rules');
     }
 
     /**

@@ -297,6 +297,15 @@ if (!function_exists('datatable_server_side')) {
      */
     function datatable_server_side(string $tableName, array $columns, array $options = [])
     {
+        // Preserve any session flashdata so background DataTables calls do not discard user messages
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $sess = session();
+            $keys = $sess->getFlashKeys();
+            if (!empty($keys)) {
+                $sess->keepFlashdata($keys);
+            }
+        }
+
         $request = \Config\Services::request();
         $response = \Config\Services::response();
         $db = \Config\Database::connect('default');

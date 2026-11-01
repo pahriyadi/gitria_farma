@@ -20,7 +20,7 @@
 <!-- ========================================================================= -->
 <!-- CATEGORY OVERVIEW HEADER CARD                                             -->
 <!-- ========================================================================= -->
-<div class="card shadow-sm border-0 mb-3 bg-white">
+<div class="card shadow-sm mb-3 aturan-detail-header-card">
     <div class="card-body p-3 p-md-4">
         <div class="row align-items-center">
             <div class="col-lg-8 mb-3 mb-lg-0">
@@ -36,7 +36,7 @@
                     <span class="badge <?= $modBadge ?> text-uppercase font-weight-bold px-2 py-1">
                         <i class="fas <?= $modIcon ?> mr-1"></i> <?= esc($category->module) ?>
                     </span>
-                    <span class="badge badge-light border font-monospace text-muted">
+                    <span class="badge aturan-code-badge font-monospace">
                         <code><?= esc($category->category_code) ?></code>
                     </span>
                     <?php if ($category->is_active): ?>
@@ -45,13 +45,13 @@
                         <span class="badge badge-secondary px-2 py-1 font-weight-bold">Non-Aktif</span>
                     <?php endif; ?>
                 </div>
-                <h3 class="font-weight-bold text-dark mb-1" style="font-size: 1.35rem;"><?= esc($category->category_name) ?></h3>
+                <h3 class="font-weight-bold mb-1 aturan-header-title" style="font-size: 1.35rem;"><?= esc($category->category_name) ?></h3>
                 <p class="text-muted text-sm mb-0">
                     <?= esc($category->description ?: 'Aturan formula pembagian jurnal otomatis multi-akun per transaksi.') ?>
                 </p>
             </div>
             <div class="col-lg-4 text-lg-right">
-                <div class="p-3 bg-light rounded border text-center text-lg-right d-inline-block w-100 w-lg-auto" style="min-width: 240px;">
+                <div class="p-3 rounded text-center text-lg-right d-inline-block w-100 w-lg-auto aturan-summary-box" style="min-width: 240px;">
                     <?php if (!empty($isFixedAmount)): ?>
                         <div class="d-flex justify-content-between text-sm mb-1">
                             <span class="text-muted font-weight-bold">Total Debet:</span>
@@ -92,11 +92,11 @@
     <!-- LEFT COLUMN: SUB-RULES TABLE MANAGER                                  -->
     <!-- ===================================================================== -->
     <div class="col-lg-8">
-        <div class="card card-outline card-teal shadow-sm border-0 mb-3">
-            <div class="card-header bg-white border-bottom py-3">
+        <div class="card card-outline card-teal shadow-sm mb-3">
+            <div class="card-header border-bottom py-3">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                     <div class="mb-2 mb-md-0">
-                        <h5 class="card-title font-weight-bold text-dark mb-0">
+                        <h5 class="card-title font-weight-bold mb-0">
                             <i class="fas fa-list-ol text-teal mr-1"></i> Sub-Pos Akun &amp; Formula Alokasi Jurnal
                         </h5>
                         <small class="text-muted d-block mt-0.5">Daftar rekening COA target penerimaan &amp; pembagian nilai transaksi</small>
@@ -110,8 +110,8 @@
             </div>
             <div class="card-body p-3">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped table-bordered datatable w-100 mb-0" style="font-size: 12px;">
-                        <thead class="bg-light text-dark">
+                    <table class="table table-hover table-bordered datatable table-clean-grid w-100 mb-0" style="font-size: 12px;">
+                        <thead>
                             <tr>
                                 <th style="width: 45px;" class="text-center">URUT</th>
                                 <th style="width: 80px;" class="text-center">POSISI</th>
@@ -142,15 +142,15 @@
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <strong class="text-dark"><?= esc($r->item_name) ?></strong>
+                                            <strong><?= esc($r->item_name) ?></strong>
                                             <?php if (!empty($r->formula_code)): ?>
                                                 <small class="d-block text-muted font-monospace"><code>[<?= esc($r->formula_code) ?>]</code></small>
                                             <?php endif; ?>
                                         </td>
                                         <td>
                                             <?php if ($r->account_code): ?>
-                                                <span class="badge badge-light border font-weight-bold text-teal"><?= esc($r->account_code) ?></span>
-                                                <span class="font-weight-bold text-secondary"><?= esc($r->account_name) ?></span>
+                                                <span class="badge aturan-code-badge font-weight-bold text-teal"><?= esc($r->account_code) ?></span>
+                                                <span class="font-weight-bold aturan-acc-name"><?= esc($r->account_name) ?></span>
                                             <?php else: ?>
                                                 <span class="text-danger font-italic">Akun COA Belum Terhubung</span>
                                             <?php endif; ?>
@@ -173,7 +173,7 @@
                                                     <?= $formattedPct ?>
                                                 </span>
                                             <?php else: ?>
-                                                <span class="badge badge-light border text-muted">0%</span>
+                                                <span class="badge aturan-code-badge text-muted">0%</span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="text-center">
@@ -207,9 +207,9 @@
     <!-- RIGHT COLUMN: INTERACTIVE REAL-TIME SPLIT SIMULATOR                  -->
     <!-- ===================================================================== -->
     <div class="col-lg-4">
-        <div class="card card-outline card-teal shadow-sm border-0 mb-3">
-            <div class="card-header bg-white border-bottom py-2">
-                <h6 class="card-title font-weight-bold text-dark mb-0">
+        <div class="card card-outline card-teal shadow-sm mb-3">
+            <div class="card-header border-bottom py-2">
+                <h6 class="card-title font-weight-bold mb-0">
                     <i class="fas fa-calculator text-teal mr-1"></i> Simulator Kalkulasi Bagi Hasil
                 </h6>
             </div>
@@ -224,16 +224,16 @@
                 <?php if ($isOnlineCategory): ?>
                     <div class="alert alert-info py-2 px-2 mb-2 text-xs font-weight-bold shadow-xs border-0" style="border-left: 3px solid #17a2b8 !important; line-height: 1.4;">
                         <i class="fas fa-info-circle text-info mr-1"></i> Formula Konsultasi Online:<br>
-                        <span class="font-weight-normal text-dark">Jasa Dokter <strong>Rp 20.000 (Tetap)</strong> + Utang Fee Dokter (Diisi Sendiri) sebagai pengurang Kas. Sisa kas dikalikan 5 pos (Obat, Pajak, Penunjang, Resep, ADM).</span>
+                        <span class="font-weight-normal">Jasa Dokter <strong>Rp 20.000 (Tetap)</strong> + Utang Fee Dokter (Diisi Sendiri) sebagai pengurang Kas. Sisa kas dikalikan 5 pos (Obat, Pajak, Penunjang, Resep, ADM).</span>
                     </div>
                 <?php endif; ?>
                 <div class="form-group mb-2">
                     <label class="text-xs font-weight-bold text-muted text-uppercase mb-1">Nominal Transaksi Simulasi (Rp)</label>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
-                            <span class="input-group-text bg-light font-weight-bold">Rp</span>
+                            <span class="input-group-text font-weight-bold">Rp</span>
                         </div>
-                        <input type="number" id="sim_amount" class="form-control font-weight-bold text-dark" value="<?= $defaultSimAmt ?>" min="0" step="any">
+                        <input type="number" id="sim_amount" class="form-control font-weight-bold" value="<?= $defaultSimAmt ?>" min="0" step="any">
                     </div>
                 </div>
 
@@ -254,9 +254,9 @@
                 <div class="form-group mb-2" id="grp_sim_pct" style="<?= $isOnlineCategory ? 'display:none;' : '' ?>">
                     <label class="text-xs font-weight-bold text-muted text-uppercase mb-1">Fee Jasa Medis (%)</label>
                     <div class="input-group input-group-sm">
-                        <input type="number" id="sim_doc_fee" class="form-control font-weight-bold text-dark" value="<?= $defaultDocFee ?>" min="0" max="100" step="any">
+                        <input type="number" id="sim_doc_fee" class="form-control font-weight-bold" value="<?= $defaultDocFee ?>" min="0" max="100" step="any">
                         <div class="input-group-append">
-                            <span class="input-group-text bg-light font-weight-bold">%</span>
+                            <span class="input-group-text font-weight-bold">%</span>
                         </div>
                     </div>
                 </div>
@@ -265,7 +265,7 @@
                     <label class="text-xs font-weight-bold text-muted text-uppercase mb-1"><?= $isOnlineCategory ? 'Utang Fee Dokter Manual (Rp)' : 'Fee Jasa Medis Tetap (Rp)' ?></label>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
-                            <span class="input-group-text bg-light font-weight-bold">Rp</span>
+                            <span class="input-group-text font-weight-bold">Rp</span>
                         </div>
                         <input type="number" id="sim_doc_fee_nom" class="form-control font-weight-bold text-teal" value="<?= $defaultDocFeeNom ?>" min="0" step="any">
                     </div>
@@ -289,12 +289,12 @@
                 </div>
 
                 <!-- Live Simulation Output Box -->
-                <div class="border rounded bg-light p-2 mb-0">
+                <div class="rounded p-2 mb-0 aturan-sim-box">
                     <div class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom">
                         <span class="text-xs font-weight-bold text-muted text-uppercase">Hasil Simulasi Double-Entry:</span>
                         <span id="sim_balance_badge" class="badge badge-success text-xs font-weight-bold">Balance 100%</span>
                     </div>
-                    <div id="sim_results_box" style="max-height: 280px; overflow-y: auto; font-size: 11px;">
+                    <div id="sim_results_box" class="aturan-sim-results-box" style="max-height: 280px; overflow-y: auto; font-size: 11px;">
                         <div class="text-center py-3 text-muted">
                             <i class="fas fa-spinner fa-spin mr-1"></i> Menghitung simulasi jurnal...
                         </div>
@@ -405,7 +405,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
+                <div class="modal-footer aturan-modal-footer py-2">
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Batal</button>
                     <button type="submit" id="btn-save-rule" class="btn btn-teal btn-sm font-weight-bold shadow-sm">
                         <i class="fas fa-save mr-1"></i> Simpan Sub-Pos
@@ -590,21 +590,21 @@ function runSimulation() {
                     
                     // Debits
                     html += '<div class="font-weight-bold text-primary mb-1"><i class="fas fa-arrow-down mr-1"></i> SISI DEBET (Kas Masuk):</div>';
-                    html += '<table class="table table-sm table-bordered mb-2 bg-white" style="font-size: 11px;">';
+                    html += '<table class="table table-sm table-bordered mb-2 sim-result-table" style="font-size: 11px;">';
                     res.debits.forEach(d => {
                         html += `<tr>
                             <td><strong>[${d.account_code}]</strong> ${d.item_name}</td>
                             <td class="text-right font-weight-bold text-primary">${d.amount_fmt}</td>
                         </tr>`;
                     });
-                    html += `<tr class="bg-light font-weight-bold">
+                    html += `<tr class="sim-tr-total font-weight-bold">
                         <td>Total Debet</td>
                         <td class="text-right text-primary">Rp ${new Intl.NumberFormat('id-ID').format(res.total_debit)}</td>
                     </tr></table>`;
 
                     // Credits
                     html += '<div class="font-weight-bold text-info mb-1"><i class="fas fa-arrow-up mr-1"></i> SISI KREDIT (Alokasi Bagi Hasil):</div>';
-                    html += '<table class="table table-sm table-bordered mb-0 bg-white" style="font-size: 11px;">';
+                    html += '<table class="table table-sm table-bordered mb-0 sim-result-table" style="font-size: 11px;">';
                     res.credits.forEach(c => {
                         let pctNum = parseFloat(c.pct);
                         let pctDisplay = (!isNaN(pctNum)) ? (pctNum % 1 === 0 ? pctNum + '%' : pctNum.toFixed(2) + '%') : (c.pct + '%');
@@ -613,7 +613,7 @@ function runSimulation() {
                             <td class="text-right font-weight-bold text-info">${c.amount_fmt}</td>
                         </tr>`;
                     });
-                    html += `<tr class="bg-light font-weight-bold">
+                    html += `<tr class="sim-tr-total font-weight-bold">
                         <td>Total Kredit</td>
                         <td class="text-right text-info">Rp ${new Intl.NumberFormat('id-ID').format(res.total_credit)}</td>
                     </tr></table>`;

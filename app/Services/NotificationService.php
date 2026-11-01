@@ -262,7 +262,7 @@ class NotificationService
                     'icon'         => 'fas fa-scale-unbalanced',
                     'title'        => 'PERINGATAN KRITIS: Jurnal Akuntansi Tidak Seimbang!',
                     'message'      => "Ditemukan {$count} entri jurnal tidak seimbang. Contoh Jurnal {$first->journal_no} selisih Rp {$diffFormatted} (Debit: Rp " . number_format($first->total_debit, 0, ',', '.') . " vs Kredit: Rp " . number_format($first->total_credit, 0, ',', '.') . "). Segera lakukan rekonsiliasi!",
-                    'link'         => base_url('akuntansi/jurnal'),
+                    'link'         => base_url('accounting/jurnal'),
                     'target_roles' => 'accounting,keuangan,super admin,administrator',
                     'time'         => date('H:i') . ' WIB'
                 ];

@@ -3,7 +3,13 @@
 <?= $this->section('content') ?>
 <div class="row">
     <!-- Quick Flash Card for Newly Registered Patient -->
-    <?php if (session()->getFlashdata('last_registered_patient_id')): ?>
+    <?php 
+        $regPatient = session()->getFlashdata('registered_patient');
+        $regId = $regPatient['id'] ?? session()->getFlashdata('last_registered_patient_id');
+        $regName = $regPatient['name'] ?? session()->getFlashdata('last_registered_patient_name');
+        $regRm = $regPatient['no_rm'] ?? session()->getFlashdata('last_registered_patient_rm');
+    ?>
+    <?php if ($regId): ?>
         <div class="col-md-12 mb-3">
             <div class="card p-3" style="background:#ffffff; border:1px solid #b8b8b8; border-left:5px solid #0d9f4f; border-radius:4px; box-shadow:none;">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
@@ -15,25 +21,25 @@
                             <div class="d-flex align-items-center mb-1">
                                 <h6 class="font-weight-bold text-dark mb-0 mr-2" style="font-size:15px;">Pasien Baru Berhasil Terdaftar!</h6>
                                 <span class="badge badge-dark px-2 py-1 font-weight-bold" style="font-size:12px;">
-                                    <?= esc(session()->getFlashdata('last_registered_patient_rm')) ?>
+                                    <?= esc($regRm) ?>
                                 </span>
                             </div>
                             <span class="text-secondary text-xs">
-                                Pasien atas nama <strong><?= esc(session()->getFlashdata('last_registered_patient_name')) ?></strong> siap dicetak kartu identitasnya atau dibagikan ke WhatsApp.
+                                Pasien atas nama <strong><?= esc($regName) ?></strong> siap dicetak kartu identitasnya atau dibagikan ke WhatsApp.
                             </span>
                         </div>
                     </div>
                     <div class="d-flex align-items-center mt-2 mt-md-0">
                         <button type="button" 
                                 class="btn btn-warning btn-sm font-weight-bold text-dark btn-visit mr-2 shadow-sm" 
-                                data-id="<?= esc(session()->getFlashdata('last_registered_patient_id')) ?>" 
-                                data-name="<?= esc(session()->getFlashdata('last_registered_patient_name')) ?>" 
-                                data-rm="<?= esc(session()->getFlashdata('last_registered_patient_rm')) ?>" 
+                                data-id="<?= esc($regId) ?>" 
+                                data-name="<?= esc($regName) ?>" 
+                                data-rm="<?= esc($regRm) ?>" 
                                 data-toggle="modal" 
                                 data-target="#visitModal">
                             <i class="fas fa-calendar-plus mr-1"></i> Daftarkan Kunjungan & Antrean
                         </button>
-                        <a href="<?= base_url('klinik/kartu-pasien/' . session()->getFlashdata('last_registered_patient_id')) ?>" class="btn btn-outline-teal btn-sm font-weight-bold">
+                        <a href="<?= base_url('klinik/kartu-pasien/' . $regId) ?>" class="btn btn-outline-teal btn-sm font-weight-bold">
                             <i class="fas fa-id-card mr-1"></i> Kartu Pasien (JPG / WA)
                         </a>
                     </div>
@@ -194,7 +200,7 @@
             </div>
             <div class="card-body p-2 p-md-3">
                 <div class="table-responsive">
-                    <table id="table-patients" class="table table-bordered table-striped datatable-serverside dt-responsive nowrap w-100" style="width: 100%;">
+                    <table id="table-patients" class="table table-bordered datatable-serverside dt-responsive nowrap w-100" style="width: 100%;">
                         <thead>
                             <tr>
                                 <th style="width: 90px;">No RM</th>
@@ -1620,7 +1626,7 @@
                                     </h6>
                                 </div>
                                 <div class="card-body p-0 table-responsive">
-                                    <table class="table table-bordered table-striped mb-0 text-dark" style="font-size: 12px;">
+                                    <table class="table table-bordered mb-0 text-dark" style="font-size: 12px;">
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>Tanggal Kunjungan</th>
@@ -1652,7 +1658,7 @@
                                     </h6>
                                 </div>
                                 <div class="card-body p-0 table-responsive">
-                                    <table class="table table-bordered table-striped mb-0 text-dark" style="font-size: 12px;">
+                                    <table class="table table-bordered mb-0 text-dark" style="font-size: 12px;">
                                         <thead class="bg-light">
                                             <tr>
                                                 <th style="width: 40px;" class="text-center">No</th>
@@ -1917,7 +1923,7 @@
                     </div>
 
                     <div id="photo-preview-container" class="text-center my-2 p-2 border rounded bg-light" style="display: none;">
-                        <img id="photo-preview-img" src="#" alt="Preview Foto" style="max-height: 180px; max-width: 100%; object-fit: contain; border-radius: 4px;">
+                        <img id="photo-preview-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="Preview Foto" style="max-height: 180px; max-width: 100%; object-fit: contain; border-radius: 4px;">
                     </div>
 
                     <div class="form-group">
