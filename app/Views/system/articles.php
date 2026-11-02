@@ -195,11 +195,17 @@
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Kategori Artikel:</label>
                             <select name="category" class="form-control form-control-sm font-weight-bold" data-native="true">
-                                <option value="Edukasi Kesehatan">Edukasi Kesehatan</option>
-                                <option value="Tips Medis">Tips Medis</option>
-                                <option value="Berita Klinik">Berita Klinik</option>
-                                <option value="Layanan & Fasilitas">Layanan &amp; Fasilitas</option>
-                                <option value="Promo & Kegiatan">Promo &amp; Kegiatan</option>
+                                <?php if (!empty($categories)): ?>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?= esc($cat->name) ?>"><?= esc($cat->name) ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Edukasi Kesehatan">Edukasi Kesehatan</option>
+                                    <option value="Tips Medis">Tips Medis</option>
+                                    <option value="Berita Klinik">Berita Klinik</option>
+                                    <option value="Layanan & Fasilitas">Layanan &amp; Fasilitas</option>
+                                    <option value="Promo & Kegiatan">Promo &amp; Kegiatan</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-md-4 form-group mb-3">
@@ -264,11 +270,17 @@
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Kategori Artikel:</label>
                             <select name="category" id="edit_category" class="form-control form-control-sm font-weight-bold">
-                                <option value="Edukasi Kesehatan">Edukasi Kesehatan</option>
-                                <option value="Tips Medis">Tips Medis</option>
-                                <option value="Berita Klinik">Berita Klinik</option>
-                                <option value="Layanan & Fasilitas">Layanan &amp; Fasilitas</option>
-                                <option value="Promo & Kegiatan">Promo &amp; Kegiatan</option>
+                                <?php if (!empty($categories)): ?>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?= esc($cat->name) ?>"><?= esc($cat->name) ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Edukasi Kesehatan">Edukasi Kesehatan</option>
+                                    <option value="Tips Medis">Tips Medis</option>
+                                    <option value="Berita Klinik">Berita Klinik</option>
+                                    <option value="Layanan & Fasilitas">Layanan &amp; Fasilitas</option>
+                                    <option value="Promo & Kegiatan">Promo &amp; Kegiatan</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                         <div class="col-md-4 form-group mb-3">

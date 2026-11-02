@@ -364,12 +364,18 @@
                         <div class="col-md-6 form-group mb-2">
                             <label class="text-xs font-weight-bold">Departemen / Divisi: <span class="text-danger">*</span></label>
                             <select name="department" id="emp-dept" class="form-control form-control-sm font-weight-bold" required>
-                                <option value="Klinik">Pelayanan Medis & Poliklinik</option>
-                                <option value="Apotek">Apotek & Farmasi</option>
-                                <option value="Laboratorium">Laboratorium Medis</option>
-                                <option value="Restoran">POS Resto & Kuliner Sehat</option>
-                                <option value="Keuangan">Keuangan, Kasir & Akuntansi</option>
-                                <option value="Sarpras">Umum, Logistik & IT</option>
+                                <?php if (!empty($departments)): ?>
+                                    <?php foreach ($departments as $d): ?>
+                                        <option value="<?= esc($d->name) ?>"><?= esc($d->name) ?> - <?= esc($d->description) ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Klinik">Pelayanan Medis & Poliklinik</option>
+                                    <option value="Apotek">Apotek & Farmasi</option>
+                                    <option value="Laboratorium">Laboratorium Medis</option>
+                                    <option value="Restoran">POS Resto & Kuliner Sehat</option>
+                                    <option value="Keuangan">Keuangan, Kasir & Akuntansi</option>
+                                    <option value="Sarpras">Umum, Logistik & IT</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                     </div>

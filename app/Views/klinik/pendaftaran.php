@@ -1107,9 +1107,17 @@
                             <div class="form-group mb-2.5">
                                 <label class="font-weight-bold text-dark text-xs mb-1">Metode Penjamin Bayar <span class="text-danger">*</span></label>
                                 <select name="payment_method" id="modal-payment-method" class="form-control form-control-sm font-weight-bold">
-                                    <option value="umum">🟢 Umum (Mandiri / Bayar Sendiri)</option>
-                                    <option value="bpjs">🟢 Klaim BPJS Kesehatan</option>
-                                    <option value="asuransi">🔵 Asuransi Swasta / Korporasi</option>
+                                    <?php if (!empty($paymentMethods)): ?>
+                                        <?php foreach ($paymentMethods as $pm): ?>
+                                            <option value="<?= esc($pm->code) ?>">
+                                                <?= $pm->category === 'insurance' ? '🔵' : '🟢' ?> <?= esc($pm->name) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <option value="umum">🟢 Umum (Mandiri / Bayar Sendiri)</option>
+                                        <option value="bpjs">🟢 Klaim BPJS Kesehatan</option>
+                                        <option value="asuransi">🔵 Asuransi Swasta / Korporasi</option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
 

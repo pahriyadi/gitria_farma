@@ -42,6 +42,7 @@ class Help extends BaseController
                        ->getResult();
 
         $latestUpdate = $db->table('system_updates')->orderBy('id', 'DESC')->limit(1)->get()->getRow();
+        $roles        = $db->table('roles')->orderBy('id', 'ASC')->get()->getResult();
 
         $data = [
             'title'        => 'Pusat Bantuan & Panduan Alur Sistem',
@@ -50,6 +51,7 @@ class Help extends BaseController
             'roleGuides'   => $roleGuides,
             'faqs'         => $faqs,
             'policies'     => $policies,
+            'roles'        => $roles,
             'latestUpdate' => $latestUpdate
         ];
 

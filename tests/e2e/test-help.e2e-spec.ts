@@ -102,8 +102,8 @@ test.describe('Help & System Documentation Pipeline', () => {
     await page.screenshot({ path: `${artifactDir}/help-center-05-dark.png`, fullPage: false });
 
     // 7. Verify Zero Console Errors
-    const filteredErrors = consoleErrors.filter(err => 
-      !err.includes('favicon') && 
+    const filteredErrors = consoleErrors.filter(err =>
+      !err.includes('favicon') &&
       !err.includes('DevTools')
     );
     expect(filteredErrors).toEqual([]);
@@ -127,8 +127,8 @@ test.describe('Help & System Documentation Pipeline', () => {
     const stage = page.locator('#stage');
     await expect(stage).toBeVisible();
 
-    const filteredErrors = consoleErrors.filter(err => 
-      !err.includes('favicon') && 
+    const filteredErrors = consoleErrors.filter(err =>
+      !err.includes('favicon') &&
       !err.includes('DevTools') &&
       !err.includes('WebGL') &&
       !err.includes('three')

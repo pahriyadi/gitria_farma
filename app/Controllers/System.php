@@ -1837,13 +1837,15 @@ class System extends BaseController
             }
         }
 
-        // 4. Fetch all articles
-        $articles = $db->table('articles')->orderBy('id', 'DESC')->get()->getResult();
+        // 4. Fetch all articles & dynamic categories
+        $articles   = $db->table('articles')->orderBy('id', 'DESC')->get()->getResult();
+        $categories = $db->table('article_categories')->where('is_active', 1)->orderBy('id', 'ASC')->get()->getResult();
 
         $data = [
             'title'       => 'Manajemen Publikasi Artikel & Berita Medis',
             'active_menu' => 'system-articles',
-            'articles'    => $articles
+            'articles'    => $articles,
+            'categories'  => $categories
         ];
 
         return view('system/articles', $data);

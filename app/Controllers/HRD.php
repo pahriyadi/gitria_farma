@@ -118,10 +118,14 @@ class HRD extends BaseController
             $totalMonthlyBaseSalary += ($e->salary + ($e->allowance_position ?? 0) + ($e->allowance_transport ?? 0));
         }
 
+        // Fetch Departments & Master Data
+        $departments = $db->table('departments')->where('status', 'active')->orderBy('id', 'ASC')->get()->getResult();
+
         $data = [
             'title'                  => 'HRD & Payroll Penggajian Pegawai',
             'active_menu'            => 'hrd-payroll',
             'employees'              => $employees,
+            'departments'            => $departments,
             'doctorAccruals'         => $doctorAccruals,
             'payrolls'               => $payrolls,
             'totalEmployees'         => count($employees),
@@ -449,13 +453,14 @@ class HRD extends BaseController
         $employees = $db->table('employees')->where('status', 'active')->orderBy('name', 'ASC')->get()->getResult();
         $shifts    = $db->table('work_shifts')->where('status', 'active')->orderBy('start_time', 'ASC')->get()->getResult();
 
-        // 3. Fetch Leaves & Permits
-        $leaves = $db->table('employee_leaves')
-                     ->select('employee_leaves.*, employees.name as employee_name, employees.nip, employees.department')
-                     ->join('employees', 'employees.id = employee_leaves.employee_id')
-                     ->orderBy('employee_leaves.created_at', 'DESC')
-                     ->get()
-                     ->getResult();
+        // 3. Fetch Leaves, Permits & Master Leave Types
+        $leaves     = $db->table('employee_leaves')
+                         ->select('employee_leaves.*, employees.name as employee_name, employees.nip, employees.department')
+                         ->join('employees', 'employees.id = employee_leaves.employee_id')
+                         ->orderBy('employee_leaves.created_at', 'DESC')
+                         ->get()
+                         ->getResult();
+        $leaveTypes = $db->table('leave_types')->where('status', 'active')->orderBy('id', 'ASC')->get()->getResult();
 
         // 4. Monthly Attendance Recapitulation
         $monthlyRecap = $db->table('employee_attendances')
@@ -503,6 +508,7 @@ class HRD extends BaseController
             'employees'             => $employees,
             'shifts'                => $shifts,
             'leaves'                => $leaves,
+            'leaveTypes'            => $leaveTypes,
             'monthlyRecap'          => $monthlyRecap,
             'totalPresentToday'     => $totalPresentToday,
             'totalLateToday'        => $totalLateToday,

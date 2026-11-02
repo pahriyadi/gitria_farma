@@ -390,16 +390,22 @@
                             <label class="font-weight-bold text-dark text-xs">Target Peran / Profesi Staf</label>
                             <select name="target_role" id="doc_target_role" class="form-control form-control-sm" data-native="true">
                                 <option value="Semua Peran">Semua Peran Staf</option>
-                                <option value="Pendaftaran / FO">Pendaftaran / Front Office</option>
-                                <option value="Perawat">Perawat / Triase</option>
-                                <option value="Dokter">Dokter Spesialis & Umum</option>
-                                <option value="Apoteker">Farmasi & Apoteker</option>
-                                <option value="Kasir">Kasir Utama</option>
-                                <option value="Resto & Dapur Gizi">Restoran Sehat & Koki</option>
-                                <option value="Akuntansi & Keuangan">Akuntansi & Keuangan</option>
-                                <option value="Farmasi & Pengadaan">Pengadaan & Logistik</option>
-                                <option value="Manajemen / Direktur">Direktur & Manajemen</option>
-                                <option value="IT Admin">Administrator IT</option>
+                                <?php if (!empty($roles)): ?>
+                                    <?php foreach ($roles as $r): ?>
+                                        <option value="<?= esc($r->name) ?>"><?= esc($r->name) ?><?= !empty($r->description) ? ' - ' . esc($r->description) : '' ?></option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Pendaftaran / FO">Pendaftaran / Front Office</option>
+                                    <option value="Perawat">Perawat / Triase</option>
+                                    <option value="Dokter">Dokter Spesialis & Umum</option>
+                                    <option value="Apoteker">Farmasi & Apoteker</option>
+                                    <option value="Kasir">Kasir Utama</option>
+                                    <option value="Resto & Dapur Gizi">Restoran Sehat & Koki</option>
+                                    <option value="Akuntansi & Keuangan">Akuntansi & Keuangan</option>
+                                    <option value="Farmasi & Pengadaan">Pengadaan & Logistik</option>
+                                    <option value="Manajemen / Direktur">Direktur & Manajemen</option>
+                                    <option value="IT Admin">Administrator IT</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                     </div>

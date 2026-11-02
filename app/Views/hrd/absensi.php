@@ -591,11 +591,19 @@
                     <div class="form-group mb-2">
                         <label class="text-xs font-weight-bold">Jenis Ketidakhadiran: <span class="text-danger">*</span></label>
                         <select name="leave_type" class="form-control form-control-sm font-weight-bold" required>
-                            <option value="cuti_tahunan">Cuti Tahunan Pegawai</option>
-                            <option value="sakit">Sakit (Dengan Surat Keterangan Dokter)</option>
-                            <option value="izin">Izin Kepentingan Pribadi / Keluarga</option>
-                            <option value="cuti_melahirkan">Cuti Melahirkan</option>
-                            <option value="dinas_luar">Tugas Luar / Dinas Pendidikan</option>
+                            <?php if (!empty($leaveTypes)): ?>
+                                <?php foreach ($leaveTypes as $lt): ?>
+                                    <option value="<?= esc($lt->code) ?>">
+                                        <?= esc($lt->name) ?> <?= $lt->days_allowed > 0 ? '(Maks ' . $lt->days_allowed . ' Hari)' : '' ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="cuti_tahunan">Cuti Tahunan Pegawai</option>
+                                <option value="sakit">Sakit (Dengan Surat Keterangan Dokter)</option>
+                                <option value="izin">Izin Kepentingan Pribadi / Keluarga</option>
+                                <option value="cuti_melahirkan">Cuti Melahirkan</option>
+                                <option value="dinas_luar">Tugas Luar / Dinas Pendidikan</option>
+                            <?php endif; ?>
                         </select>
                     </div>
 

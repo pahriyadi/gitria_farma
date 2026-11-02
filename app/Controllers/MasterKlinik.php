@@ -165,7 +165,7 @@ class MasterKlinik extends BaseController
     }
 
     /**
-     * CRUD 2: SUB KATEGORI PELAYANAN (POLIKLINIK)
+     * CRUD 2: SUB KATEGORI PELAYANAN (POLIKLINIK) - UNIFIED DUAL-SYNC
      */
     public function managePoliklinikBaru()
     {
@@ -173,33 +173,67 @@ class MasterKlinik extends BaseController
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
+            $name   = strtoupper(trim((string)$this->request->getPost('name')));
+            $desc   = $this->request->getPost('description');
+            $status = $this->request->getPost('status') ?: 'active';
+            $catId  = $this->request->getPost('category_id') ?: 1;
+
             $db->table('polikliniks')->insert([
-                'category_id' => $this->request->getPost('category_id') ?: 1, // Default POLI
-                'name'        => strtoupper($this->request->getPost('name')),
-                'description' => $this->request->getPost('description'),
-                'status'      => $this->request->getPost('status') ?: 'active'
+                'category_id' => $catId,
+                'name'        => $name,
+                'description' => $desc,
+                'status'      => $status
             ]);
-            // Sync to legacy polyclinics table
+            $insertedId = $db->insertID();
+
+            // Sync to legacy polyclinics table with matching ID
             $db->table('polyclinics')->insert([
-                'name'        => strtoupper($this->request->getPost('name')),
-                'description' => $this->request->getPost('description'),
-                'status'      => $this->request->getPost('status') ?: 'active'
+                'id'          => $insertedId,
+                'name'        => $name,
+                'description' => $desc,
+                'status'      => $status
             ]);
             session()->setFlashdata('success', 'Sub Kategori (Poli) berhasil ditambahkan.');
         } elseif ($action === 'update') {
-            $id = $this->request->getPost('id');
-            $name = strtoupper($this->request->getPost('name'));
+            $id     = $this->request->getPost('id');
+            $name   = strtoupper(trim((string)$this->request->getPost('name')));
+            $desc   = $this->request->getPost('description');
+            $status = $this->request->getPost('status') ?: 'active';
+            $catId  = $this->request->getPost('category_id') ?: 1;
+
+            $oldPoli = $db->table('polikliniks')->where('id', $id)->get()->getRow();
+
             $db->table('polikliniks')->where('id', $id)->update([
-                'category_id' => $this->request->getPost('category_id') ?: 1,
+                'category_id' => $catId,
                 'name'        => $name,
-                'description' => $this->request->getPost('description'),
-                'status'      => $this->request->getPost('status') ?: 'active'
+                'description' => $desc,
+                'status'      => $status
             ]);
+
+            // Sync update to polyclinics table (by ID or old name)
+            $db->table('polyclinics')->where('id', $id)->update([
+                'name'        => $name,
+                'description' => $desc,
+                'status'      => $status
+            ]);
+            if ($oldPoli && $oldPoli->name !== $name) {
+                $db->table('polyclinics')->where('name', $oldPoli->name)->update([
+                    'name'        => $name,
+                    'description' => $desc,
+                    'status'      => $status
+                ]);
+            }
             session()->setFlashdata('success', 'Sub Kategori (Poli) berhasil diperbarui.');
         } elseif ($action === 'delete') {
             $id = $this->request->getPost('id');
+            $oldPoli = $db->table('polikliniks')->where('id', $id)->get()->getRow();
+
             $db->query("SET FOREIGN_KEY_CHECKS = 0;");
             $db->table('polikliniks')->where('id', $id)->delete();
+            $db->table('polyclinics')->where('id', $id)->delete();
+            if ($oldPoli) {
+                $db->table('polyclinics')->where('name', $oldPoli->name)->delete();
+            }
             $db->query("SET FOREIGN_KEY_CHECKS = 1;");
             session()->setFlashdata('success', 'Sub Kategori (Poli) berhasil dihapus.');
         }
@@ -208,7 +242,7 @@ class MasterKlinik extends BaseController
     }
 
     /**
-     * CRUD 3: SUB KATEGORI & SUB KECIL PELAYANAN (TINDAKAN & HARGA)
+     * CRUD 3: SUB KATEGORI & SUB KECIL PELAYANAN (TINDAKAN & HARGA) - UNIFIED DUAL-SYNC
      */
     public function manageService()
     {
@@ -216,33 +250,83 @@ class MasterKlinik extends BaseController
         $action = $this->request->getPost('action');
 
         if ($action === 'create') {
+            $code  = strtoupper(trim((string)$this->request->getPost('code')));
+            $name  = strtoupper(trim((string)$this->request->getPost('name')));
+            $desc  = $this->request->getPost('description');
+            $catId = $this->request->getPost('category_id') ?: 2;
+            $parId = $this->request->getPost('parent_id') ?: null;
+            $price = $this->request->getPost('price') ?: 0.00;
+            $stat  = $this->request->getPost('status') ?: 'active';
+
             $db->table('tindakan')->insert([
-                'code'        => strtoupper($this->request->getPost('code')),
-                'name'        => strtoupper($this->request->getPost('name')),
-                'description' => $this->request->getPost('description'),
-                'category_id' => $this->request->getPost('category_id') ?: 2, // Default TINDAKAN
-                'parent_id'   => $this->request->getPost('parent_id') ?: null,
-                'price'       => $this->request->getPost('price') ?: 0.00,
-                'status'      => $this->request->getPost('status') ?: 'active'
+                'code'        => $code,
+                'name'        => $name,
+                'description' => $desc,
+                'category_id' => $catId,
+                'parent_id'   => $parId,
+                'price'       => $price,
+                'status'      => $stat
             ]);
+            $insertedId = $db->insertID();
+
+            // Mirror to services and service_prices
+            $db->table('services')->insert([
+                'id'        => $insertedId,
+                'code'      => $code,
+                'name'      => $name,
+                'category'  => 'TINDAKAN',
+                'parent_id' => $parId,
+                'status'    => $stat
+            ]);
+            $db->table('service_prices')->insert([
+                'service_id' => $insertedId,
+                'price'      => $price
+            ]);
+
             session()->setFlashdata('success', 'Tindakan/Pelayanan berhasil ditambahkan.');
         } elseif ($action === 'update') {
-            $id = $this->request->getPost('id');
+            $id    = $this->request->getPost('id');
+            $code  = strtoupper(trim((string)$this->request->getPost('code')));
+            $name  = strtoupper(trim((string)$this->request->getPost('name')));
+            $desc  = $this->request->getPost('description');
+            $catId = $this->request->getPost('category_id') ?: 2;
+            $parId = $this->request->getPost('parent_id') ?: null;
+            $price = $this->request->getPost('price') ?: 0.00;
+            $stat  = $this->request->getPost('status') ?: 'active';
+
             $db->table('tindakan')->where('id', $id)->update([
-                'code'        => strtoupper($this->request->getPost('code')),
-                'name'        => strtoupper($this->request->getPost('name')),
-                'description' => $this->request->getPost('description'),
-                'category_id' => $this->request->getPost('category_id') ?: 2,
-                'parent_id'   => $this->request->getPost('parent_id') ?: null,
-                'price'       => $this->request->getPost('price') ?: 0.00,
-                'status'      => $this->request->getPost('status') ?: 'active'
+                'code'        => $code,
+                'name'        => $name,
+                'description' => $desc,
+                'category_id' => $catId,
+                'parent_id'   => $parId,
+                'price'       => $price,
+                'status'      => $stat
             ]);
+
+            // Mirror to services & service_prices
+            $db->table('services')->where('id', $id)->update([
+                'code'      => $code,
+                'name'      => $name,
+                'parent_id' => $parId,
+                'status'    => $stat
+            ]);
+            $priceExists = $db->table('service_prices')->where('service_id', $id)->get()->getRow();
+            if ($priceExists) {
+                $db->table('service_prices')->where('service_id', $id)->update(['price' => $price]);
+            } else {
+                $db->table('service_prices')->insert(['service_id' => $id, 'price' => $price]);
+            }
+
             session()->setFlashdata('success', 'Tindakan/Pelayanan berhasil diperbarui.');
         } elseif ($action === 'delete') {
             $id = $this->request->getPost('id');
             $db->query("SET FOREIGN_KEY_CHECKS = 0;");
             $db->table('tindakan')->where('parent_id', $id)->delete();
             $db->table('tindakan')->where('id', $id)->delete();
+            $db->table('services')->where('parent_id', $id)->delete();
+            $db->table('services')->where('id', $id)->delete();
+            $db->table('service_prices')->where('service_id', $id)->delete();
             $db->query("SET FOREIGN_KEY_CHECKS = 1;");
             session()->setFlashdata('success', 'Tindakan berhasil dihapus.');
         }

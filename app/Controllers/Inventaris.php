@@ -126,6 +126,7 @@ class Inventaris extends BaseController
                             ->getResult();
 
         $suppliers = $db->table('suppliers')->where('status', 'active')->orderBy('name', 'ASC')->get()->getResult();
+        $assetCategories = $db->table('asset_categories')->where('status', 'active')->orderBy('id', 'ASC')->get()->getResult();
 
         // KPI Calculations
         $totalAcquisition = 0;
@@ -144,6 +145,7 @@ class Inventaris extends BaseController
             'title'            => 'Inventaris & Manajemen Aset Klinik',
             'active_menu'      => 'inventaris-aset',
             'assets'           => $assets,
+            'assetCategories'  => $assetCategories,
             'mutations'        => $mutations,
             'maintenances'     => $maintenances,
             'depreciations'    => $depreciations,

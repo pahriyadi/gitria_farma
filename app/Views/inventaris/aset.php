@@ -383,11 +383,19 @@
                         <div class="col-md-6 form-group mb-2">
                             <label class="text-xs font-weight-bold">Kategori Aset: <span class="text-danger">*</span></label>
                             <select name="category" id="ast-category" class="form-control form-control-sm font-weight-bold" required>
-                                <option value="Medis">Peralatan Medis & Laboratorium</option>
-                                <option value="Elektronik">Peralatan Elektronik & IT</option>
-                                <option value="Mebel">Mebel & Furnitur Ruangan</option>
-                                <option value="Kendaraan">Kendaraan & Ambulans</option>
-                                <option value="Umum">Sarana & Prasarana Umum</option>
+                                <?php if (!empty($assetCategories)): ?>
+                                    <?php foreach ($assetCategories as $ac): ?>
+                                        <option value="<?= esc($ac->code) ?>">
+                                            <?= esc($ac->name) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="Medis">Peralatan Medis & Laboratorium</option>
+                                    <option value="Elektronik">Peralatan Elektronik & IT</option>
+                                    <option value="Mebel">Mebel & Furnitur Ruangan</option>
+                                    <option value="Kendaraan">Kendaraan & Ambulans</option>
+                                    <option value="Umum">Sarana & Prasarana Umum</option>
+                                <?php endif; ?>
                             </select>
                         </div>
                     </div>

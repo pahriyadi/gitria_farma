@@ -651,6 +651,7 @@ class Klinik extends BaseController
                 }
 
                 $db->table('patient_visits')->where('id', $visitId)->update(['status' => 'examining']);
+                $db->table('queue_numbers')->where('visit_id', $visitId)->update(['status' => 'called', 'updated_at' => date('Y-m-d H:i:s')]);
 
                 if ($this->request->isAJAX() || $this->request->getPost('is_ajax') === '1') {
                     return $this->response->setJSON([

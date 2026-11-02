@@ -426,6 +426,26 @@ class ClinicService
             if ($hasMedis == 0) {
                 $polyObj  = !empty($visit->polyclinic_id) ? $this->db->table('polyclinics')->where('id', $visit->polyclinic_id)->get()->getRow() : null;
                 $polyName = $polyObj ? trim($polyObj->name) : 'Poli / Tindakan';
+
+                // Cari tarif konsultasi dinamis dari master tindakan / dokter
+                $docObj = !empty($visit->doctor_id) ? $this->db->table('doctors')->where('id', $visit->doctor_id)->get()->getRow() : null;
+                if ($docObj && !empty($docObj->tindakan_id)) {
+                    $tindObj = $this->db->table('tindakan')->where('id', $docObj->tindakan_id)->get()->getRow();
+                    if ($tindObj && (float)$tindObj->price > 0) {
+                        $consultPrice = (float)$tindObj->price;
+                    }
+                } elseif ($polyName === 'Poli Umum') {
+                    $tindObj = $this->db->table('tindakan')->where('code', 'KONS-UMUM')->get()->getRow();
+                    if ($tindObj && (float)$tindObj->price > 0) {
+                        $consultPrice = (float)$tindObj->price;
+                    }
+                } else {
+                    $tindObj = $this->db->table('tindakan')->where('code', 'KONS-SPESIALIS')->get()->getRow();
+                    if ($tindObj && (float)$tindObj->price > 0) {
+                        $consultPrice = (float)$tindObj->price;
+                    }
+                }
+
                 if ($polyName === 'Tindakan Saja' || stripos($polyName, 'Tindakan') !== false) {
                     $serviceItemName = 'Konsultasi & Tindakan Medis Dokter';
                 } else {
@@ -455,8 +475,12 @@ class ClinicService
             }
         }
 
-        // 3. Update Patient Visit Status to 'examining'
+        // 3. Update Patient Visit & Queue Status in sync
         $this->db->table('patient_visits')->where('id', $visitId)->update(['status' => 'examining']);
+        $this->db->table('queue_numbers')->where('visit_id', $visitId)->update([
+            'status'     => 'called',
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
 
         $this->db->transComplete();
 
