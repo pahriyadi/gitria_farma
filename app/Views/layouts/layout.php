@@ -817,6 +817,14 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                                     <p>Apa yang Baru? <span class="badge badge-warning text-dark right font-weight-bold"><?= clinic_latest_version() ?></span></p>
                                 </a>
                             </li>
+                            <?php if (in_array((string) session('role_name'), ['Super Admin', 'IT'], true)): ?>
+                            <li class="nav-item">
+                                <a href="<?= base_url('system/dev-center') ?>" class="nav-link <?= ($active_menu ?? '') === 'system-dev-center' || $currUri === 'system/dev-center' ? 'active' : '' ?>">
+                                    <i class="fas fa-terminal nav-icon text-danger"></i>
+                                    <p>Ruang Pengembang <span class="badge badge-danger right font-weight-bold">DEV</span></p>
+                                </a>
+                            </li>
+                            <?php endif; ?>
                             <?php endif; ?>
                         </ul>
                     </li>

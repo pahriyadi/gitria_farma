@@ -260,6 +260,14 @@ $routes->group('', ['filter' => 'auth'], function($routes) {
     $routes->post('system/optimize-db', 'System::optimizeDb');
     $routes->match(['GET', 'POST'], 'system/reset-transactions', 'System::resetTransactions');
     $routes->get('system/audit', 'System::audit');
+
+    // Ruang Khusus Pengembang (Developer Command Center)
+    $routes->get('system/dev-center', 'DevCenter::index');
+    $routes->get('system/dev-center/telemetry', 'DevCenter::telemetryJson');
+    $routes->get('system/dev-center/read-log', 'DevCenter::readLogFile');
+    $routes->post('system/dev-center/clear-log', 'DevCenter::clearLogFile');
+    $routes->post('system/dev-center/resolve-error/(:num)', 'DevCenter::resolveError/$1');
+    $routes->post('system/dev-center/clear-cache', 'DevCenter::clearCacheQuick');
     $routes->get('system/notif-api', 'System::notifApi');
     $routes->get('system/csrf-token', 'System::csrfToken');
     $routes->get('system/notifications', 'System::notifications');
