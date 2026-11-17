@@ -79,7 +79,12 @@ if (!function_exists('clinic_setting')) {
             'voice_chime_type'      => 'hospital_2tone',
             'voice_rate'            => '0.85',
             'voice_pitch'           => '1.0',
-            'voice_volume'          => '1.0'
+            'voice_volume'          => '1.0',
+
+            // Integrasi Login Akun Google (OAuth 2.0)
+            'google_login_enabled'  => '0',
+            'google_login_mode'     => 'both',
+            'google_client_id'      => ''
         ];
 
         return $cachedSettings[$key] ?? ($defaults[$key] ?? $default);

@@ -105,12 +105,15 @@ class System extends BaseController
         $status        = $this->request->getPost('status') ?: 'active';
         $selectedPerms = $this->request->getPost('permissions') ?: []; // Array of checked permission names
 
-        // Check if username/email already taken by other user
+        // Check if username/email already taken by other user (case-insensitive & trimmed for email)
+        $emailNormalized = strtolower(trim($email));
         $checkUser = $db->table('users')
                         ->groupStart()
-                            ->where('username', $username)
-                            ->orWhere('email', $email)
-                        ->groupEnd();
+                            ->where('username', $username);
+        if ($emailNormalized !== '') {
+            $checkUser->orWhere('LOWER(TRIM(email))', $emailNormalized);
+        }
+        $checkUser->groupEnd();
         if ($id > 0) {
             $checkUser->where('id !=', $id);
         }
@@ -1385,7 +1388,12 @@ class System extends BaseController
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_id', 'setting_value' => 'MOCK-CLIENT-ID-SAWAMAWA', 'description' => 'Client ID DTO Kemenkes'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_secret', 'setting_value' => 'MOCK-CLIENT-SECRET-SAWAMAWA', 'description' => 'Client Secret DTO Kemenkes'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_auth_url', 'setting_value' => 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1', 'description' => 'URL OAuth2 Auth Token SATUSEHAT'],
-            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_fhir_url', 'setting_value' => 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1', 'description' => 'Base URL HL7 FHIR R4 SATUSEHAT']
+            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_fhir_url', 'setting_value' => 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1', 'description' => 'Base URL HL7 FHIR R4 SATUSEHAT'],
+
+            // Integrasi Login Akun Google (OAuth 2.0 / Google Identity Services)
+            ['setting_group' => 'security', 'setting_key' => 'google_login_enabled', 'setting_value' => '0', 'description' => 'Status Login Akun Google (0 = Nonaktif, 1 = Aktif)'],
+            ['setting_group' => 'security', 'setting_key' => 'google_login_mode', 'setting_value' => 'both', 'description' => 'Mode Login Google (both / staff_google_only / google_only)'],
+            ['setting_group' => 'security', 'setting_key' => 'google_client_id', 'setting_value' => '', 'description' => 'OAuth 2.0 Client ID dari Google Cloud Console']
         ];
 
         foreach ($defaults as $def) {
@@ -1418,7 +1426,8 @@ class System extends BaseController
                 'voice_pitch' => 'voice', 'voice_volume' => 'voice',
                 'satusehat_active' => 'satusehat', 'satusehat_mode' => 'satusehat', 'satusehat_org_id' => 'satusehat',
                 'satusehat_client_id' => 'satusehat', 'satusehat_client_secret' => 'satusehat',
-                'satusehat_auth_url' => 'satusehat', 'satusehat_fhir_url' => 'satusehat'
+                'satusehat_auth_url' => 'satusehat', 'satusehat_fhir_url' => 'satusehat',
+                'google_login_enabled' => 'security', 'google_login_mode' => 'security', 'google_client_id' => 'security'
             ];
 
             if (is_array($settingsInput)) {
@@ -1883,15 +1892,18 @@ class System extends BaseController
             $phone    = trim(strip_tags((string)$this->request->getPost('phone')));
             $bio      = trim(strip_tags((string)$this->request->getPost('bio')));
 
-            // Check email uniqueness if changed
-            $existing = $db->table('users')
-                           ->where('email', $email)
-                           ->where('id !=', $userId)
-                           ->get()
-                           ->getRow();
-            if ($existing) {
-                session()->setFlashdata('error', 'Alamat email sudah digunakan oleh akun pengguna lain.');
-                return redirect()->to(base_url('profile'));
+            // Check email uniqueness if changed (case-insensitive & trimmed)
+            $emailNormalized = strtolower(trim($email));
+            if ($emailNormalized !== '') {
+                $existing = $db->table('users')
+                               ->where('LOWER(TRIM(email))', $emailNormalized)
+                               ->where('id !=', $userId)
+                               ->get()
+                               ->getRow();
+                if ($existing) {
+                    session()->setFlashdata('error', 'Alamat email sudah digunakan oleh akun pengguna lain.');
+                    return redirect()->to(base_url('profile'));
+                }
             }
 
             $updateData = [

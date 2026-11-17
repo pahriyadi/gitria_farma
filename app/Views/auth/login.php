@@ -429,6 +429,96 @@
                 padding: 32px 24px;
             }
         }
+
+        /* ============================================================== */
+        /* DARK MODE SUPPORT (Adaptif untuk Tombol Google Identity)       */
+        /* ============================================================== */
+        .macos-theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+        .macos-theme-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .google-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 16px 0;
+            color: #86868b;
+            font-size: 11.5px;
+            font-weight: 500;
+        }
+        .google-divider::before,
+        .google-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .google-divider::before { margin-right: 10px; }
+        .google-divider::after { margin-left: 10px; }
+
+        body.dark-mode .macos-window-card {
+            background: rgba(24, 27, 31, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        }
+        body.dark-mode .macos-window-header {
+            background: rgba(31, 35, 40, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        body.dark-mode .macos-window-title,
+        body.dark-mode .showcase-heading,
+        body.dark-mode .macos-feature-text,
+        body.dark-mode .macos-form-title,
+        body.dark-mode .macos-trust-pill strong {
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .macos-showcase-panel {
+            background: linear-gradient(180deg, rgba(20, 23, 26, 0.7) 0%, rgba(28, 32, 38, 0.5) 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        body.dark-mode .showcase-subtext,
+        body.dark-mode .macos-feature-desc,
+        body.dark-mode .macos-form-subtitle,
+        body.dark-mode .macos-input-label,
+        body.dark-mode .macos-trust-pill small,
+        body.dark-mode .google-divider {
+            color: #9ca3af !important;
+        }
+        body.dark-mode .macos-form-control {
+            background: #14171a !important;
+            border: 1px solid #374151 !important;
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .macos-form-control:focus {
+            background: #181b1f !important;
+            border-color: #3b82f6 !important;
+        }
+        body.dark-mode .macos-trust-pill {
+            background: rgba(31, 35, 40, 0.8);
+            border: 1px solid #374151;
+        }
+        body.dark-mode .google-divider::before,
+        body.dark-mode .google-divider::after {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        body.dark-mode .badge-light {
+            background: #1f2328 !important;
+            border-color: #374151 !important;
+            color: #9ca3af !important;
+        }
     </style>
 </head>
 <body>
@@ -451,6 +541,9 @@
         <a href="<?= base_url() ?>" class="text-white text-decoration-none mr-2">
             <i class="fas fa-house mr-1"></i> Beranda Publik
         </a>
+        <button type="button" class="macos-theme-btn" id="btn-login-theme-toggle" title="Ganti Mode Terang / Gelap">
+            <i class="fas fa-moon" id="icon-login-theme"></i> <span id="label-login-theme">Gelap</span>
+        </button>
         <span><i class="fas fa-wifi mr-1"></i> Online</span>
         <span id="macos-clock"><?= date('D, d M H:i') ?></span>
         <i class="fas fa-sliders"></i>
@@ -571,41 +664,77 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="<?= base_url('login') ?>" method="post" id="form-auth-login">
-                        <?= csrf_field() ?>
+                    <?php
+                        $isGoogleAuthActive      = !empty($isGoogleAuthActive);
+                        $googleClientId          = (string) ($googleClientId ?? '');
+                        $hideManualFormByDefault = !empty($hideManualFormByDefault);
+                    ?>
 
-                        <!-- Username Input -->
-                        <div class="macos-input-wrapper">
-                            <label class="macos-input-label" for="username_input">
-                                <span>Username / Email</span>
-                                <small class="text-muted font-weight-normal">Kredensial Petugas</small>
-                            </label>
-                            <div class="macos-input-group">
-                                <i class="fas fa-user macos-input-icon"></i>
-                                <input type="text" name="username" id="username_input" class="macos-form-control" placeholder="Masukkan username / email" autocomplete="username" required autofocus>
+                    <?php if ($isGoogleAuthActive): ?>
+                        <!-- Hidden Form untuk Submit Google ID Token (JWT) ke Backend -->
+                        <form action="<?= base_url('login') ?>" method="post" id="form-google-login" class="d-none">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="auth_type" value="google">
+                            <input type="hidden" name="google_credential" id="google_credential_input">
+                        </form>
+
+                        <!-- Google Sign-In Button Container -->
+                        <div id="google-signin-wrapper" class="mb-2">
+                            <div id="google-signin-button" class="d-flex justify-content-center"></div>
+                            <div id="google-signin-loading" class="text-center text-primary small font-weight-bold mt-2 d-none">
+                                <i class="fas fa-spinner fa-spin mr-1"></i> Memverifikasi akun Google Anda...
                             </div>
                         </div>
 
-                        <!-- Password Input -->
-                        <div class="macos-input-wrapper mb-4">
-                            <label class="macos-input-label" for="login-password">
-                                <span>Kata Sandi (Password)</span>
-                                <small class="text-muted font-weight-normal">Sensitif Huruf</small>
-                            </label>
-                            <div class="macos-input-group">
-                                <i class="fas fa-key macos-input-icon"></i>
-                                <input type="password" name="password" id="login-password" class="macos-form-control" placeholder="Masukkan kata sandi akun" autocomplete="current-password" required style="padding-right: 40px;">
-                                <button type="button" class="macos-btn-toggle-pwd" id="btn-toggle-login-pwd" title="Lihat Password" tabindex="-1">
-                                    <i class="fas fa-eye" id="icon-login-pwd"></i>
-                                </button>
+                        <?php if ($hideManualFormByDefault): ?>
+                            <div class="text-center mt-2 mb-3">
+                                <a href="javascript:void(0)" id="btn-toggle-emergency-login" class="text-muted small" style="font-size: 11.5px; text-decoration: underline;">
+                                    <i class="fas fa-key mr-1"></i> Login Darurat Admin
+                                </a>
                             </div>
-                        </div>
+                        <?php else: ?>
+                            <div class="google-divider">atau masuk dengan kredensial</div>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="macos-btn-submit" id="btn-submit-login">
-                            <i class="fas fa-right-to-bracket"></i> Masuk ke Sistem
-                        </button>
-                    </form>
+                    <div id="manual-login-container" style="<?= $hideManualFormByDefault ? 'display:none;' : '' ?>">
+                        <form action="<?= base_url('login') ?>" method="post" id="form-auth-login">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="auth_type" value="password">
+
+                            <!-- Username Input -->
+                            <div class="macos-input-wrapper">
+                                <label class="macos-input-label" for="username_input">
+                                    <span>Username / Email</span>
+                                    <small class="text-muted font-weight-normal">Kredensial Petugas</small>
+                                </label>
+                                <div class="macos-input-group">
+                                    <i class="fas fa-user macos-input-icon"></i>
+                                    <input type="text" name="username" id="username_input" class="macos-form-control" placeholder="Masukkan username / email" autocomplete="username" required autofocus>
+                                </div>
+                            </div>
+
+                            <!-- Password Input -->
+                            <div class="macos-input-wrapper mb-4">
+                                <label class="macos-input-label" for="login-password">
+                                    <span>Kata Sandi (Password)</span>
+                                    <small class="text-muted font-weight-normal">Sensitif Huruf</small>
+                                </label>
+                                <div class="macos-input-group">
+                                    <i class="fas fa-key macos-input-icon"></i>
+                                    <input type="password" name="password" id="login-password" class="macos-form-control" placeholder="Masukkan kata sandi akun" autocomplete="current-password" required style="padding-right: 40px;">
+                                    <button type="button" class="macos-btn-toggle-pwd" id="btn-toggle-login-pwd" title="Lihat Password" tabindex="-1">
+                                        <i class="fas fa-eye" id="icon-login-pwd"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="macos-btn-submit" id="btn-submit-login">
+                                <i class="fas fa-right-to-bracket"></i> Masuk ke Sistem
+                            </button>
+                        </form>
+                    </div>
 
                     <!-- Trust Bar -->
                     <div class="macos-trust-pill">
@@ -672,8 +801,84 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             $('#macos-clock').text(`${dayName}, ${date} ${monthName} ${hours}:${minutes}`);
         }, 1000);
+
+        // Toggle Login Darurat Admin (Mode google_only)
+        $('#btn-toggle-emergency-login').on('click', function() {
+            $('#manual-login-container').slideToggle(200);
+            $('#username_input').focus();
+        });
+
+        // Dark / Light Mode Toggle dengan Sinkronisasi Tombol Google
+        function applyLoginTheme(theme) {
+            const isDark = theme === 'dark';
+            $('body').toggleClass('dark-mode', isDark);
+            if (isDark) {
+                $('#icon-login-theme').removeClass('fa-moon').addClass('fa-sun text-warning');
+                $('#label-login-theme').text('Terang');
+            } else {
+                $('#icon-login-theme').removeClass('fa-sun text-warning').addClass('fa-moon');
+                $('#label-login-theme').text('Gelap');
+            }
+            if (typeof window.renderGoogleButton === 'function') {
+                window.renderGoogleButton();
+            }
+        }
+
+        const savedTheme = localStorage.getItem('login_theme') || localStorage.getItem('theme') || 'light';
+        applyLoginTheme(savedTheme);
+
+        $('#btn-login-theme-toggle').on('click', function() {
+            const nextTheme = $('body').hasClass('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem('login_theme', nextTheme);
+            applyLoginTheme(nextTheme);
+        });
     });
 </script>
+
+<?php if ($isGoogleAuthActive): ?>
+<script>
+    window.handleGoogleCredentialResponse = function(response) {
+        if (!response || !response.credential) {
+            return;
+        }
+        $('#google-signin-loading').removeClass('d-none');
+        $('#google_credential_input').val(response.credential);
+        document.getElementById('form-google-login').submit();
+    };
+
+    window.renderGoogleButton = function() {
+        const btnContainer = document.getElementById('google-signin-button');
+        if (!btnContainer || typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+            return;
+        }
+        btnContainer.innerHTML = '';
+        const isDark = document.body.classList.contains('dark-mode');
+        google.accounts.id.renderButton(btnContainer, {
+            theme: isDark ? 'filled_black' : 'outline',
+            size: 'large',
+            type: 'standard',
+            shape: 'rectangular',
+            text: 'signin_with',
+            logo_alignment: 'left',
+            width: 340
+        });
+    };
+
+    window.initGoogleSignIn = function() {
+        if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) {
+            return;
+        }
+        google.accounts.id.initialize({
+            client_id: '<?= esc($googleClientId, 'js') ?>',
+            callback: window.handleGoogleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true
+        });
+        window.renderGoogleButton();
+    };
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
+<?php endif; ?>
 
 </body>
 </html>

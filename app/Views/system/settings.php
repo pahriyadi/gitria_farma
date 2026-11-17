@@ -102,6 +102,11 @@
                                 <i class="fas fa-heart-pulse text-danger mr-1"></i> 8. SATUSEHAT Kemenkes
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link font-weight-bold py-3 text-truncate" id="google-sso-tab" data-toggle="pill" href="#google-sso" role="tab">
+                                <i class="fab fa-google text-primary mr-1"></i> 9. Login Google
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 
@@ -952,6 +957,115 @@
                                                 <i class="fas fa-shield-alt text-teal mr-1"></i> Seluruh payload rekam medis dienkripsi dan dicatat ke log audit database untuk kepatuhan Permenkes No. 24/2022.
                                             </div>
 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================================================================= -->
+                        <!-- TAB 9: INTEGRASI LOGIN AKUN GOOGLE (OAUTH 2.0 / GIS) -->
+                        <!-- ========================================================================= -->
+                        <div class="tab-pane fade" id="google-sso" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                <div>
+                                    <h5 class="font-weight-bold text-dark mb-0">
+                                        <i class="fab fa-google text-primary mr-2"></i>Integrasi Login Akun Google (OAuth 2.0)
+                                    </h5>
+                                    <small class="text-muted">Autentikasi Single Sign-On menggunakan Google Identity Services (GIS) dengan verifikasi JWT server-side.</small>
+                                </div>
+                                <span class="badge badge-pill badge-light border text-primary px-3 py-1 font-weight-bold">
+                                    <i class="fas fa-shield-halved mr-1"></i> Server-Side JWT Verified
+                                </span>
+                            </div>
+
+                            <div class="row">
+                                <!-- Kolom Kiri: Form Pengaturan Google OAuth -->
+                                <div class="col-lg-7 mb-4">
+                                    <div class="card h-100 border shadow-none">
+                                        <div class="card-header bg-light py-2 px-3">
+                                            <h6 class="font-weight-bold text-dark mb-0 text-sm">
+                                                <i class="fas fa-sliders text-primary mr-1"></i> Konfigurasi Autentikasi Google
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3">
+
+                                            <!-- Status Login Google -->
+                                            <div class="form-group mb-3 pb-3 border-bottom">
+                                                <div class="custom-control custom-switch">
+                                                    <input type="hidden" name="settings[google_login_enabled]" value="0">
+                                                    <input type="checkbox" class="custom-control-input" id="google_login_enabled" name="settings[google_login_enabled]" value="1" <?= in_array(clinic_setting('google_login_enabled', '0'), ['1', 'true', 'on', 1], true) ? 'checked' : '' ?>>
+                                                    <label class="custom-control-label font-weight-bold text-dark" for="google_login_enabled">
+                                                        Aktifkan Login Menggunakan Akun Google
+                                                    </label>
+                                                </div>
+                                                <small class="text-muted text-xs d-block mt-1">
+                                                    Jika diaktifkan dan Client ID terisi, tombol <strong>Sign in with Google</strong> akan muncul di halaman login.
+                                                </small>
+                                            </div>
+
+                                            <!-- Mode Login Google -->
+                                            <div class="form-group mb-3">
+                                                <label class="text-xs font-weight-bold text-dark">Mode Autentikasi Login: <span class="text-danger">*</span></label>
+                                                <?php $currentGoogleMode = clinic_setting('google_login_mode', 'both'); ?>
+                                                <select name="settings[google_login_mode]" id="google_login_mode" class="form-control form-control-sm font-weight-bold">
+                                                    <option value="both" <?= $currentGoogleMode === 'both' ? 'selected' : '' ?>>
+                                                        Keduanya (Manual &amp; Google) — Form password &amp; tombol Google tampil bersama
+                                                    </option>
+                                                    <option value="staff_google_only" <?= $currentGoogleMode === 'staff_google_only' ? 'selected' : '' ?>>
+                                                        Wajib Google (Staf) + Manual (Admin) — Staf wajib via Google, Admin bisa manual
+                                                    </option>
+                                                    <option value="google_only" <?= $currentGoogleMode === 'google_only' ? 'selected' : '' ?>>
+                                                        Hanya Akun Google — Form manual disembunyikan (+ tautan Login Darurat Admin)
+                                                    </option>
+                                                </select>
+                                                <small class="text-muted text-xs">
+                                                    Mengatur apakah pengguna masih diperbolehkan login menggunakan username &amp; password manual.
+                                                </small>
+                                            </div>
+
+                                            <!-- Google OAuth Client ID -->
+                                            <div class="form-group mb-2">
+                                                <label class="text-xs font-weight-bold text-dark">Google OAuth 2.0 Client ID:</label>
+                                                <div class="input-group input-group-sm">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text bg-light"><i class="fab fa-google text-primary"></i></span>
+                                                    </div>
+                                                    <input type="text" name="settings[google_client_id]" id="google_client_id" class="form-control font-monospace" value="<?= esc(clinic_setting('google_client_id', '')) ?>" placeholder="xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
+                                                </div>
+                                                <small class="text-muted text-xs">
+                                                    Salin dari <strong>Google Cloud Console → APIs &amp; Services → Credentials → OAuth 2.0 Client IDs</strong>.
+                                                </small>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kolom Kanan: Panduan Pengaturan Google Cloud Console -->
+                                <div class="col-lg-5 mb-4">
+                                    <div class="card h-100 border shadow-none bg-light">
+                                        <div class="card-header bg-white py-2 px-3 border-bottom">
+                                            <h6 class="font-weight-bold text-dark mb-0 text-sm">
+                                                <i class="fas fa-book text-teal mr-1"></i> Panduan Google Cloud Console
+                                            </h6>
+                                        </div>
+                                        <div class="card-body p-3 text-xs text-muted">
+                                            <ol class="pl-3 mb-3">
+                                                <li class="mb-2">Buka <strong>Google Cloud Console &rarr; Credentials</strong> dan klik OAuth 2.0 Client ID Anda.</li>
+                                                <li class="mb-2">Pada bagian <strong>Authorized JavaScript origins</strong>, tambahkan URI berikut (tanpa garis miring <code>/</code> di akhir):
+                                                    <div class="mt-1 p-2 bg-white border rounded font-monospace text-dark">
+                                                        http://localhost<br>
+                                                        https://sawamawamedicalcenter.id
+                                                    </div>
+                                                </li>
+                                                <li class="mb-2">Pastikan status di <strong>OAuth consent screen</strong> sudah <strong>In production</strong>.</li>
+                                                <li class="mb-0">Pastikan setiap staf yang diizinkan login telah memiliki alamat <strong>Email Google</strong> yang terdaftar di menu <em>Manajemen Pengguna</em>.</li>
+                                            </ol>
+
+                                            <div class="alert alert-info border-0 p-2 mb-0 text-xs">
+                                                <i class="fas fa-lock mr-1"></i> <strong>Keamanan:</strong> Hanya akun yang emailnya sudah terdaftar dan berstatus <em>Active</em> di sistem yang dapat masuk menggunakan Google.
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
