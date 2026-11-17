@@ -282,6 +282,7 @@
             .reg-header-banner { padding: 24px 0 40px; }
         }
     </style>
+    <?= view('public/_theme_assets') ?>
 </head>
 <body>
 
@@ -300,6 +301,9 @@
             </div>
         </a>
         <div class="d-flex align-items-center" style="gap: 8px;">
+            <button type="button" class="btn-public-theme" id="btn-public-theme-toggle" title="Ganti Mode Terang / Gelap">
+                <i class="fas fa-moon" id="icon-public-theme"></i>
+            </button>
             <button type="button" class="btn btn-outline-success btn-sm font-weight-bold" data-toggle="modal" data-target="#modalDaftarWa">
                 <i class="fab fa-whatsapp mr-1"></i> <span class="d-none d-md-inline">Daftar via</span> WhatsApp
             </button>

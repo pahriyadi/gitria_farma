@@ -136,6 +136,7 @@
             }
         }
     </style>
+    <?= view('public/_theme_assets') ?>
 </head>
 <body>
 

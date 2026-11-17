@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($title ?? 'Artikel Kesehatan - Sawamawa Medical Center') ?></title>
+    <?php if (clinic_favicon()): ?>
+        <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
+        <link rel="shortcut icon" href="<?= clinic_favicon() ?>">
+    <?php endif; ?>
     
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -75,6 +79,7 @@
             text-decoration: none;
         }
     </style>
+    <?= view('public/_theme_assets') ?>
 </head>
 <body>
 
@@ -89,8 +94,11 @@
             <?php endif; ?>
             <span><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></span>
         </a>
-        <div class="ml-auto">
-            <a href="<?= base_url('berita') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold mr-2">
+        <div class="ml-auto d-flex align-items-center" style="gap: 8px;">
+            <button type="button" class="btn-public-theme" id="btn-public-theme-toggle" title="Ganti Mode Terang / Gelap">
+                <i class="fas fa-moon" id="icon-public-theme"></i>
+            </button>
+            <a href="<?= base_url('berita') ?>" class="btn btn-outline-secondary btn-sm font-weight-bold">
                 <i class="fas fa-arrow-left mr-1"></i> Semua Artikel
             </a>
             <a href="<?= base_url('daftar-online') ?>" class="btn btn-teal btn-sm font-weight-bold text-white" style="background:#0d9488;">
