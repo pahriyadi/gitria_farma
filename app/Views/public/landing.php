@@ -667,11 +667,32 @@
         body.dark-mode .doctor-card,
         body.dark-mode .article-card,
         body.dark-mode .step-card,
+        body.dark-mode .step-item-card,
         body.dark-mode .card,
         body.dark-mode .modal-content {
             background: #1f2328 !important;
             border-color: #374151 !important;
             color: #f0f6fc !important;
+        }
+        body.dark-mode .alert-light {
+            background: #181b1f !important;
+            border-color: #374151 !important;
+            color: #d1d5db !important;
+        }
+        body.dark-mode .status-pill-closed {
+            background: rgba(239, 68, 68, 0.14) !important;
+            border-color: rgba(239, 68, 68, 0.35) !important;
+            color: #fca5a5 !important;
+        }
+        body.dark-mode .status-pill-open {
+            background: rgba(16, 185, 129, 0.14) !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+            color: #6ee7b7 !important;
+        }
+        body.dark-mode .doctor-avatar-box,
+        body.dark-mode .article-thumb {
+            background: #181b1f !important;
+            border-bottom: 1px solid #374151;
         }
         body.dark-mode .modal-body.bg-light,
         body.dark-mode .bg-light,
