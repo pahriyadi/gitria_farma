@@ -2498,8 +2498,9 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
             const $wrapper = $('.content-wrapper');
             $wrapper.css({ opacity: 0.5, transition: 'opacity 0.12s ease' });
 
-            // Clean up open modal backdrops and active select dropdowns
+            // Clean up open modal backdrops, tooltips, popovers, and active select dropdowns
             $('.modal-backdrop').remove();
+            $('.tooltip, .popover, .daterangepicker').remove();
             $('body').removeClass('modal-open').css('padding-right', '');
             $('.select2-container--open').remove();
             $('.macos-select-wrapper.is-open').removeClass('is-open');
@@ -2509,7 +2510,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 $('.dataTable, table[id]').each(function() {
                     if ($.fn.DataTable.isDataTable(this)) {
                         try {
-                            $(this).DataTable().destroy(false);
+                            $(this).DataTable().clear().destroy(false);
                         } catch(e) {}
                     }
                 });
@@ -2530,6 +2531,50 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 fetchUrl = u.toString();
             } catch(e) {}
 
+            // Helper untuk mengeksekusi script secara berurutan (tepat 1x) tanpa bentrok
+            const executePageScriptsSequentially = function(scriptNodes) {
+                let chain = Promise.resolve();
+                scriptNodes.forEach(function(node) {
+                    const src = node.getAttribute('src');
+                    const type = (node.getAttribute('type') || '').trim();
+                    if (type && type !== 'text/javascript' && type !== 'application/javascript') {
+                        return;
+                    }
+                    if (src) {
+                        chain = chain.then(function() {
+                            return new Promise(function(resolve) {
+                                if ($('script[src="' + src + '"]').length) {
+                                    resolve();
+                                    return;
+                                }
+                                const s = document.createElement('script');
+                                s.src = src;
+                                s.async = false;
+                                s.onload = resolve;
+                                s.onerror = resolve;
+                                document.body.appendChild(s);
+                            });
+                        });
+                    } else {
+                        const code = node.textContent || node.innerText || '';
+                        if (code && !code.includes('spa-progressbar') && !code.includes('navigateSpa')) {
+                            chain = chain.then(function() {
+                                try {
+                                    (0, eval)(code);
+                                } catch (err) {
+                                    // Jika terjadi bentrok deklarasi ulang const/let pada SPA, lakukan hard-reload mulus agar halaman 100% bersih
+                                    if (err instanceof SyntaxError && /already been declared/i.test(err.message)) {
+                                        throw new Error('SPA_REDECLARE_FALLBACK');
+                                    }
+                                    console.warn('SPA script eval warning:', err);
+                                }
+                            });
+                        }
+                    }
+                });
+                return chain;
+            };
+
             $.ajax({
                 url: fetchUrl,
                 type: 'GET',
@@ -2540,72 +2585,84 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     'Pragma': 'no-cache'
                 },
                 success: function(html) {
-                    $prog.css({ width: '90%' });
+                    $prog.css({ width: '85%' });
+
+                    // Gunakan DOMParser agar inline <script> tidak otomatis dijalankan jQuery saat parsing
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+
+                    if (doc.title) {
+                        document.title = doc.title;
+                    }
+
+                    const newContentEl = doc.querySelector('.content-wrapper') || doc.querySelector('.content, #main-content');
+                    if (!newContentEl) {
+                        window.location.href = url;
+                        return;
+                    }
+
+                    // Kumpulkan seluruh script halaman (baik di dalam .content-wrapper maupun di #spa-page-scripts)
+                    const scriptNodes = [];
+                    newContentEl.querySelectorAll('script').forEach(function(sc) {
+                        scriptNodes.push(sc);
+                        sc.parentNode && sc.parentNode.removeChild(sc);
+                    });
+                    const newPageScriptsEl = doc.querySelector('#spa-page-scripts');
+                    if (newPageScriptsEl) {
+                        newPageScriptsEl.querySelectorAll('script').forEach(function(sc) {
+                            scriptNodes.push(sc);
+                        });
+                    }
 
                     if (pushHistory) {
                         window.history.pushState({ spaUrl: url }, '', url);
                     }
 
-                    // Extract new title & content
-                    const $temp = $('<div>').html(html);
-                    const newTitle = $temp.find('title').text();
-                    if (newTitle) document.title = newTitle;
+                    // Sisipkan HTML bersih tanpa <script> sehingga tidak tereksekusi 2x
+                    $wrapper[0].innerHTML = newContentEl.innerHTML;
+                    window.scrollTo({ top: 0, behavior: 'instant' });
 
-                    let $newContent = $temp.find('.content-wrapper');
-                    if (!$newContent.length) {
-                        $newContent = $temp.find('.content, #main-content');
+                    if (typeof window.initCompactRowActionMenus === 'function') {
+                        window.initCompactRowActionMenus($wrapper[0]);
+                    }
+                    if (typeof window.initCompactHeaderActionMenus === 'function') {
+                        window.initCompactHeaderActionMenus($wrapper[0]);
                     }
 
-                    if ($newContent.length) {
-                        $wrapper.html($newContent.html());
-                        if (typeof window.initCompactRowActionMenus === 'function') {
-                            window.initCompactRowActionMenus($wrapper[0]);
-                        }
-                        if (typeof window.initCompactHeaderActionMenus === 'function') {
-                            window.initCompactHeaderActionMenus($wrapper[0]);
-                        }
-                    } else {
-                        window.location.href = url;
-                        return;
-                    }
-
-                    // Update active nav status
+                    // Update active nav status & page shell
                     updateActiveNavLinks(url);
                     if (typeof window.initGlobalPageShell === 'function') {
                         window.initGlobalPageShell($wrapper[0]);
                     }
 
-                    // Run page-specific scripts
-                    $newContent.find('script').each(function() {
-                        const src = $(this).attr('src');
-                        if (src) {
-                            if (!$('script[src="' + src + '"]').length) {
-                                $.getScript(src);
+                    // Jalankan script halaman tepat 1x secara berurutan
+                    executePageScriptsSequentially(scriptNodes).then(function() {
+                        setTimeout(function() {
+                            if (window.initSearchableSelects) {
+                                window.initSearchableSelects();
                             }
-                        } else {
-                            const code = $(this).text();
-                            if (code && !code.includes('spa-progressbar') && !code.includes('navigateSpa')) {
+                            if (typeof window.initCompactRowActionMenus === 'function') {
+                                window.initCompactRowActionMenus($wrapper[0]);
+                            }
+                            if ($.fn.dataTable) {
                                 try {
-                                    window.eval(code);
-                                } catch(err) {
-                                    console.warn('SPA script eval error:', err);
-                                }
+                                    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+                                } catch (dtErr) {}
                             }
+                            $(document).trigger('spa:navigated', [url]);
+                            $(window).trigger('resize');
+                            $wrapper.css({ opacity: 1 });
+                            $prog.css({ width: '100%' });
+                            setTimeout(() => $prog.css({ opacity: 0, width: '0%' }), 200);
+                        }, 60);
+                    }).catch(function(err) {
+                        if (err && err.message === 'SPA_REDECLARE_FALLBACK') {
+                            window.location.href = url;
+                        } else {
+                            $wrapper.css({ opacity: 1 });
+                            $prog.css({ opacity: 0, width: '0%' });
                         }
                     });
-
-                    // Re-initialize plugins
-                    setTimeout(function() {
-                        if (window.initSearchableSelects) {
-                            window.initSearchableSelects();
-                        }
-                        if ($.fn.dataTable) {
-                            $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
-                        }
-                        $wrapper.css({ opacity: 1 });
-                        $prog.css({ width: '100%' });
-                        setTimeout(() => $prog.css({ opacity: 0, width: '0%' }), 200);
-                    }, 80);
                 },
                 error: function() {
                     window.location.href = url;
@@ -4196,6 +4253,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateThemeUI(isDark);
 });
 </script>
+<div id="spa-page-scripts">
 <?= $this->renderSection('scripts') ?>
+</div>
 </body>
 </html>
