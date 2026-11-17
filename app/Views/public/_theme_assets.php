@@ -135,6 +135,47 @@
         border-color: #374151;
         color: #facc15;
     }
+
+    /* Daftar Online Specific Dark Mode Overrides (mengatasi inline background) */
+    body.dark-mode .status-indicator-bar {
+        background: #181b1f !important;
+        border-bottom: 1px solid #374151 !important;
+    }
+    body.dark-mode .status-open {
+        background: rgba(16, 185, 129, 0.14) !important;
+        color: #6ee7b7 !important;
+        border-color: rgba(16, 185, 129, 0.35) !important;
+    }
+    body.dark-mode .status-closed {
+        background: rgba(239, 68, 68, 0.14) !important;
+        color: #fca5a5 !important;
+        border-color: rgba(239, 68, 68, 0.35) !important;
+    }
+    body.dark-mode .patient-type-card.active,
+    body.dark-mode .visit-type-pill.active,
+    body.dark-mode .patient-type-select-wa[style*="0d9488"] {
+        background: rgba(13, 148, 136, 0.18) !important;
+        border-color: #14b8a6 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .visit-type-pill,
+    body.dark-mode .patient-type-card,
+    body.dark-mode .patient-type-select-wa {
+        background: #181b1f !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+    body.dark-mode .reg-card .card[style*="f0fdf4"],
+    body.dark-mode .container .card[style*="f0fdf4"],
+    body.dark-mode #box-old-patient-verified {
+        background: #181b1f !important;
+        border-color: #374151 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .form-section-title,
+    body.dark-mode label {
+        color: #e5e7eb !important;
+    }
 </style>
 
 <script>
