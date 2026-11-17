@@ -8,8 +8,13 @@
     <!-- Meta SEO & Open Graph -->
     <meta name="description" content="Sawamawa Medical Center - Pusat Pelayanan Medis Terpadu, Poliklinik Dokter Spesialis, Farmasi E-Resep, Laboratorium, dan Resto Sehat di Sumbawa Besar.">
     <meta name="keywords" content="klinik sumbawa, dokter spesialis sumbawa, sawamawa medical center, daftar online klinik, rekam medis elektronik, satusehat">
-    <meta name="author" content="Sawamawa Medical Center">
+    <meta name="author" content="<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>">
     <meta name="theme-color" content="#0d9488">
+
+    <?php if (clinic_favicon()): ?>
+        <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
+        <link rel="shortcut icon" href="<?= clinic_favicon() ?>">
+    <?php endif; ?>
 
     <!-- Google Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -574,6 +579,126 @@
                 margin: 4px;
             }
         }
+
+        /* ============================================================== */
+        /* PENYELARASAN STYLE SISTEM: STRICT TABLE & PAPER DARK MODE      */
+        /* ============================================================== */
+        .table-clean-grid {
+            border-collapse: collapse !important;
+        }
+        .table-clean-grid th,
+        .table-clean-grid td {
+            border: 1px solid #b8b8b8 !important;
+        }
+
+        .btn-public-theme {
+            background: rgba(13, 148, 136, 0.08);
+            border: 1px solid rgba(13, 148, 136, 0.25);
+            color: #0d9488;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-public-theme:hover {
+            background: rgba(13, 148, 136, 0.16);
+        }
+
+        body.dark-mode {
+            background-color: #14171a !important;
+            color: #f0f6fc !important;
+        }
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6,
+        body.dark-mode .text-dark,
+        body.dark-mode .section-title,
+        body.dark-mode .navbar-brand {
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .text-muted,
+        body.dark-mode .section-desc,
+        body.dark-mode .hero-subtitle {
+            color: #9ca3af !important;
+        }
+        body.dark-mode .navbar-main {
+            background: rgba(24, 27, 31, 0.92) !important;
+            border-bottom: 1px solid #374151 !important;
+        }
+        body.dark-mode .navbar-main .nav-link {
+            color: #d1d5db !important;
+        }
+        body.dark-mode .navbar-main .nav-link:hover {
+            color: #14b8a6 !important;
+            background: rgba(20, 184, 166, 0.1);
+        }
+        body.dark-mode .navbar-toggler {
+            background: #1f2328 !important;
+        }
+        body.dark-mode .navbar-toggler i {
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .hero-section {
+            background: radial-gradient(circle at 80% 20%, rgba(13, 148, 136, 0.16), transparent 45%), #14171a !important;
+        }
+        body.dark-mode .hero-badge,
+        body.dark-mode .section-tag {
+            background: rgba(20, 184, 166, 0.15) !important;
+            color: #5eead4 !important;
+            border-color: rgba(20, 184, 166, 0.3) !important;
+        }
+        body.dark-mode #layanan,
+        body.dark-mode #artikel,
+        body.dark-mode #tarif {
+            background: #14171a !important;
+            border-bottom-color: #374151 !important;
+        }
+        body.dark-mode #dokter,
+        body.dark-mode #cara-daftar {
+            background: #181b1f !important;
+            border-bottom-color: #374151 !important;
+        }
+        body.dark-mode .quick-booking-card,
+        body.dark-mode .service-card,
+        body.dark-mode .doctor-card,
+        body.dark-mode .article-card,
+        body.dark-mode .step-card,
+        body.dark-mode .card,
+        body.dark-mode .modal-content {
+            background: #1f2328 !important;
+            border-color: #374151 !important;
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .modal-body.bg-light,
+        body.dark-mode .bg-light,
+        body.dark-mode thead.bg-light {
+            background: #181b1f !important;
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .form-control {
+            background: #14171a !important;
+            border-color: #374151 !important;
+            color: #f0f6fc !important;
+        }
+        body.dark-mode .table-clean-grid th,
+        body.dark-mode .table-clean-grid td {
+            border-color: #374151 !important;
+            color: #e5e7eb !important;
+        }
+        body.dark-mode .badge-light {
+            background: #181b1f !important;
+            border-color: #374151 !important;
+            color: #d1d5db !important;
+        }
+        body.dark-mode .btn-public-theme {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #374151;
+            color: #facc15;
+        }
     </style>
 </head>
 <body>
@@ -616,7 +741,11 @@
                 <li class="nav-item"><a class="nav-link" href="#artikel"><i class="fas fa-newspaper d-lg-none mr-2 text-teal"></i>Artikel &amp; Berita</a></li>
                 <li class="nav-item"><a class="nav-link" href="#cara-daftar"><i class="fas fa-list-ol d-lg-none mr-2 text-teal"></i>Alur Daftar</a></li>
                 <li class="nav-item"><a class="nav-link" href="#tarif"><i class="fas fa-receipt d-lg-none mr-2 text-teal"></i>Tarif</a></li>
-                <li class="nav-item ml-lg-2 mt-2 mt-lg-0">
+                <li class="nav-item ml-lg-2 mt-2 mt-lg-0 d-flex align-items-center" style="gap: 8px;">
+                    <button type="button" class="btn-public-theme" id="btn-public-theme-toggle" title="Ganti Mode Terang / Gelap">
+                        <i class="fas fa-moon" id="icon-public-theme"></i>
+                        <span class="d-lg-none" id="label-public-theme">Mode Gelap</span>
+                    </button>
                     <a href="<?= base_url('login') ?>" class="btn btn-brand-outline btn-sm font-weight-bold w-100 w-lg-auto">
                         <i class="fas fa-user-doctor mr-1"></i> Portal Nakes
                     </a>
@@ -1389,8 +1518,29 @@
         // Share Article to WhatsApp
         $('#btn-share-article-wa').click(function() {
             const shareUrl = window.location.origin + '<?= base_url('berita/') ?>' + currentArticleSlug;
-            const text = `*${currentArticleTitle}*\nBaca selengkapnya artikel kesehatan dari Sawamawa Medical Center di:\n${shareUrl}`;
+            const text = `*${currentArticleTitle}*\nBaca selengkapnya artikel kesehatan dari <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center'), 'js') ?> di:\n${shareUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        });
+
+        // Public Landing Dark / Light Mode Toggle (Selaras dengan Sistem ERP)
+        function applyPublicTheme(theme) {
+            const isDark = theme === 'dark';
+            $('body').toggleClass('dark-mode', isDark);
+            if (isDark) {
+                $('#icon-public-theme').removeClass('fa-moon').addClass('fa-sun');
+                $('#label-public-theme').text('Mode Terang');
+            } else {
+                $('#icon-public-theme').removeClass('fa-sun').addClass('fa-moon');
+                $('#label-public-theme').text('Mode Gelap');
+            }
+        }
+        const savedPublicTheme = localStorage.getItem('public_theme') || localStorage.getItem('theme') || 'light';
+        applyPublicTheme(savedPublicTheme);
+
+        $('#btn-public-theme-toggle').on('click', function() {
+            const nextTheme = $('body').hasClass('dark-mode') ? 'light' : 'dark';
+            localStorage.setItem('public_theme', nextTheme);
+            applyPublicTheme(nextTheme);
         });
     });
 </script>
