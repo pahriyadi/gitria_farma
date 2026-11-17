@@ -2094,6 +2094,20 @@ class System extends BaseController
         $db = \Config\Database::connect('default');
         $isSuper = (session('role_name') === 'Super Admin' || session('role_name') === 'IT');
 
+        // Auto-seed log rilis v2.12.0 secara otomatis setelah git pull / deploy
+        try {
+            $hasV2120 = $db->table('system_updates')->where('version', 'v2.12.0')->countAllResults();
+            if ($hasV2120 === 0 && class_exists(\App\Database\Seeds\UpdateV2120Seeder::class)) {
+                ob_start();
+                \Config\Database::seeder()->call(\App\Database\Seeds\UpdateV2120Seeder::class);
+                ob_end_clean();
+            }
+        } catch (\Throwable $e) {
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+        }
+
         $builder = $db->table('system_updates');
         if (!$isSuper) {
             $builder->where('is_published', 1);
