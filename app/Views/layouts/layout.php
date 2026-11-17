@@ -1620,8 +1620,10 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
         };
 
         // Init regular client-side datatables (only if not marked for server-side)
-        if ($('.datatable').length > 0) {
-            $('.datatable').each(function() {
+        window.initAutoDataTables = function(root) {
+            if (!$.fn.DataTable) return;
+            var $scope = root ? $(root) : $(document);
+            $scope.find('.datatable').each(function() {
                 if (!$(this).hasClass('datatable-serverside') && !$.fn.DataTable.isDataTable(this)) {
                     var $tbody = $(this).find('tbody');
                     if ($tbody.find('tr').length === 1 && $tbody.find('td[colspan]').length > 0) {
@@ -1638,7 +1640,8 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     }
                 }
             });
-        }
+        };
+        window.initAutoDataTables(document);
 
         // =========================================================================
         // REALTIME NOTIFIKASI INTERKONEKSI & SUARA PERINGATAN KERAS
@@ -2635,8 +2638,35 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                         window.initGlobalPageShell($wrapper[0]);
                     }
 
+                    // Tangkap DOMContentLoaded callbacks dari script halaman agar ikut jalan di mode SPA
+                    const origDocAddEventListener = document.addEventListener.bind(document);
+                    const spaDomReadyCallbacks = [];
+                    document.addEventListener = function(type, listener, options) {
+                        if (type === 'DOMContentLoaded' && typeof listener === 'function') {
+                            spaDomReadyCallbacks.push(listener);
+                            return;
+                        }
+                        return origDocAddEventListener(type, listener, options);
+                    };
+
                     // Jalankan script halaman tepat 1x secara berurutan
                     executePageScriptsSequentially(scriptNodes).then(function() {
+                        document.addEventListener = origDocAddEventListener;
+
+                        // Jalankan seluruh DOMContentLoaded handler yang didaftarkan halaman
+                        spaDomReadyCallbacks.forEach(function(cb) {
+                            try {
+                                cb.call(document, new Event('DOMContentLoaded'));
+                            } catch (cbErr) {
+                                console.warn('SPA DOMContentLoaded callback warning:', cbErr);
+                            }
+                        });
+
+                        // Inisialisasi ulang DataTables client-side (.datatable) pada konten baru
+                        if (typeof window.initAutoDataTables === 'function') {
+                            window.initAutoDataTables($wrapper[0]);
+                        }
+
                         setTimeout(function() {
                             if (window.initSearchableSelects) {
                                 window.initSearchableSelects();
@@ -2656,6 +2686,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                             setTimeout(() => $prog.css({ opacity: 0, width: '0%' }), 200);
                         }, 60);
                     }).catch(function(err) {
+                        document.addEventListener = origDocAddEventListener;
                         if (err && err.message === 'SPA_REDECLARE_FALLBACK') {
                             window.location.href = url;
                         } else {

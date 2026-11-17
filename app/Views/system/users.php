@@ -848,7 +848,8 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+(function() {
+    function initUsersRbacPage() {
         const rolePermissionsMap = <?= json_encode($rolePermissionsMap ?? []) ?>;
 
         // Auto-switch to tab from URL hash (e.g. #tab-roles)
@@ -860,11 +861,13 @@
                 $('#tab-users-link').tab('show');
             }
         }
-        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        $('a[data-toggle="pill"]').off('shown.bs.tab.usersRbac').on('shown.bs.tab.usersRbac', function (e) {
             window.location.hash = $(e.target).attr('href');
             // Adjust DataTables layout on tab switch
             if ($.fn.dataTable) {
-                $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                try {
+                    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+                } catch (err) {}
             }
         });
 
@@ -892,10 +895,13 @@
             return [];
         }
 
+        // Bersihkan seluruh delegated handler lama sebelum mendaftarkan ulang (mencegah double-fire di mode SPA)
+        $(document).off('.usersRbac');
+
         // =========================================================================
         // 1. LIHAT / SEMBUNYIKAN PASSWORD (DELEGATED EVENT UNTUK DATATABLES)
         // =========================================================================
-        $(document).on('click', '.btn-peek-pwd', function(e) {
+        $(document).on('click.usersRbac', '.btn-peek-pwd', function(e) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -929,7 +935,7 @@
         });
 
         // Toggle modal password input visibility
-        $(document).on('click', '#btn-toggle-modal-pwd', function(e) {
+        $(document).on('click.usersRbac', '#btn-toggle-modal-pwd', function(e) {
             e.preventDefault();
             const input = $('#usr-password');
             const icon = $(this).find('i');
@@ -945,30 +951,30 @@
         });
 
         // When changing role in dropdown, automatically apply default role permissions
-        $('#usr-role').on('change', function() {
+        $('#usr-role').off('change.usersRbac').on('change.usersRbac', function() {
             applyPermissionsForRole($(this).val());
         });
 
         // Select All / Deselect All Permission Checkboxes for User
-        $('#btn-select-all-perms').on('click', function() {
+        $('#btn-select-all-perms').off('click.usersRbac').on('click.usersRbac', function() {
             $('.chk-perm').prop('checked', true);
         });
-        $('#btn-deselect-all-perms').on('click', function() {
+        $('#btn-deselect-all-perms').off('click.usersRbac').on('click.usersRbac', function() {
             $('.chk-perm').prop('checked', false);
         });
 
         // Select All / Deselect All Permission Checkboxes for Role
-        $('#btn-role-select-all').on('click', function() {
+        $('#btn-role-select-all').off('click.usersRbac').on('click.usersRbac', function() {
             $('.chk-role-perm').prop('checked', true);
         });
-        $('#btn-role-deselect-all').on('click', function() {
+        $('#btn-role-deselect-all').off('click.usersRbac').on('click.usersRbac', function() {
             $('.chk-role-perm').prop('checked', false);
         });
 
         // =========================================================================
         // 2. EDIT USER & OTORISASI AKSES (DELEGATED EVENT)
         // =========================================================================
-        $(document).on('click', '.btn-edit-user', function(e) {
+        $(document).on('click.usersRbac', '.btn-edit-user', function(e) {
             e.preventDefault();
             const $btn = $(this);
 
@@ -1005,7 +1011,7 @@
         });
 
         // Reset Add User Modal
-        $(document).on('click', '#btn-open-add-user, [data-target="#modalAddUser"]', function() {
+        $(document).on('click.usersRbac', '#btn-open-add-user, [data-target="#modalAddUser"]', function() {
             $('#titleUserModal').html('<i class="fas fa-user-plus mr-1 text-teal"></i> Daftarkan Pengguna &amp; Atur Hak Akses');
             $('#usr-id').val('');
             $('#usr-username').val('');
@@ -1021,7 +1027,7 @@
         // =========================================================================
         // 3. EDIT ROLE & PERMISSIONS DEFAULT (DELEGATED EVENT)
         // =========================================================================
-        $(document).on('click', '.btn-edit-role', function(e) {
+        $(document).on('click.usersRbac', '.btn-edit-role', function(e) {
             e.preventDefault();
             const $btn = $(this);
 
@@ -1045,14 +1051,21 @@
         });
 
         // Reset Add Role Modal
-        $(document).on('click', '#btn-open-add-role', function() {
+        $(document).on('click.usersRbac', '#btn-open-add-role', function() {
             $('#titleRoleModal').html('<i class="fas fa-plus-circle mr-1 text-primary"></i> Tambah Peran Jabatan Baru (Role Master)');
             $('#role-id').val('');
             $('#role-name').val('');
             $('#role-description').val('');
             $('.chk-role-perm').prop('checked', false);
         });
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUsersRbacPage);
+    } else {
+        initUsersRbacPage();
+    }
+})();
 </script>
 
 <style>
