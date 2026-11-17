@@ -131,9 +131,9 @@
 </div>
 
 <div class="header">
-    <h3>SAWAMAWA PHARMACY</h3>
+    <h3>GITRIA KLINIK PHARMACY</h3>
     <p><strong>INSTALASI FARMASI & APOTEK</strong></p>
-    <p>Jl. Kebangsaan No. 12, Sumbawa Besar</p>
+    <p>Kelurahan Brang Biji, Sumbawa Besar</p>
     <p>Telp: (0371) 23456 | WA: 0812-3456-7890</p>
 </div>
 

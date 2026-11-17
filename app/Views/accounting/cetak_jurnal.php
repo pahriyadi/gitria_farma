@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Cetak Buku Jurnal Umum') ?> - <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
+    <title><?= esc($title ?? 'Cetak Buku Jurnal Umum') ?> - <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></title>
     
     <!-- Google Font & FontAwesome -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
@@ -145,7 +145,7 @@
             <?php endif; ?>
             <div>
                 <h4 class="font-weight-bold mb-0 text-dark" style="font-family:'Outfit', sans-serif; letter-spacing: -0.3px;">
-                    <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?>
+                    <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?>
                 </h4>
                 <small class="text-secondary d-block font-weight-bold" style="font-size: 10px;">
                     Izin Operasional Fasilitas Pelayanan Kesehatan No: <?= esc(clinic_setting('clinic_license_number', '445/012/DINKES/2024')) ?>
@@ -289,7 +289,7 @@
                 <div class="font-weight-bold text-dark text-xs">Supervisor Keuangan / Akuntan</div>
                 <div style="height: 55px;"></div>
                 <div class="font-weight-bold text-dark text-xs" style="text-decoration: underline;">( Kepala Keuangan &amp; Akuntansi )</div>
-                <small class="text-muted d-block" style="font-size: 9px;">Sawamawa Medical Center</small>
+                <small class="text-muted d-block" style="font-size: 9px;">Gitria Klinik</small>
             </div>
             <div class="col-4">
                 <small class="text-muted d-block mb-1">Disetujui Oleh,</small>

@@ -22,18 +22,37 @@ if (!function_exists('clinic_setting')) {
                     foreach ($rows as $r) {
                         $cachedSettings[$r->setting_key] = $r->setting_value;
                     }
+
+                    // Auto-migrate brand identity from legacy Sawamawa to Gitria Klinik on first load
+                    if (isset($cachedSettings['clinic_name']) && stripos($cachedSettings['clinic_name'], 'sawamawa') !== false) {
+                        $db->table('system_settings')->where('setting_key', 'clinic_name')->update(['setting_value' => 'Gitria Klinik']);
+                        $cachedSettings['clinic_name'] = 'Gitria Klinik';
+                    }
+                    if (isset($cachedSettings['clinic_address']) && stripos($cachedSettings['clinic_address'], 'kebangsaan') !== false) {
+                        $db->table('system_settings')->where('setting_key', 'clinic_address')->update(['setting_value' => 'Kelurahan Brang Biji, Sumbawa Besar, NTB']);
+                        $cachedSettings['clinic_address'] = 'Kelurahan Brang Biji, Sumbawa Besar, NTB';
+                    }
+                    if (isset($cachedSettings['clinic_watermark']) && stripos($cachedSettings['clinic_watermark'], 'sawamawa') !== false) {
+                        $db->table('system_settings')->where('setting_key', 'clinic_watermark')->update(['setting_value' => 'GITRIA KLINIK']);
+                        $cachedSettings['clinic_watermark'] = 'GITRIA KLINIK';
+                    }
+                    if (isset($cachedSettings['clinic_footer_note']) && stripos($cachedSettings['clinic_footer_note'], 'sawamawa') !== false) {
+                        $newNote = 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Gitria Klinik.';
+                        $db->table('system_settings')->where('setting_key', 'clinic_footer_note')->update(['setting_value' => $newNote]);
+                        $cachedSettings['clinic_footer_note'] = $newNote;
+                    }
                 }
             } catch (\Exception $e) {
                 // Fallback default
             }
         }
 
-        // Global default fallbacks if not yet in database (Sawamawa Medical Center Single Source of Truth)
+        // Global default fallbacks if not yet in database (Gitria Klinik Single Source of Truth)
         $defaults = [
             // Identitas & Profil Resmi
-            'clinic_name'           => 'Sawamawa Medical Center',
+            'clinic_name'           => 'Gitria Klinik',
             'clinic_tagline'        => 'Pusat Layanan Medis Terpadu & Terpercaya',
-            'clinic_address'        => 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB',
+            'clinic_address'        => 'Kelurahan Brang Biji, Sumbawa Besar, NTB',
             'clinic_phone'          => '(0371) 23456 / 081122334455',
             'clinic_email'          => 'info@sawamawamedicalcenter.id',
             'clinic_website'        => 'www.sawamawamedicalcenter.id',
@@ -49,8 +68,8 @@ if (!function_exists('clinic_setting')) {
             'clinic_logo'           => '',
             'clinic_favicon'        => '',
             'clinic_stamp'          => '',
-            'clinic_watermark'      => 'SAWAMAWA',
-            'clinic_footer_note'    => 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.',
+            'clinic_watermark'      => 'GITRIA KLINIK',
+            'clinic_footer_note'    => 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.',
             
             // Parameter Bisnis Farmasi & Resto
             'pharmacy_min_stock_alert'       => '10',

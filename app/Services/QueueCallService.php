@@ -124,7 +124,7 @@ class QueueCallService
         $queueText = $this->formatQueueSpoken($queueNumber);
 
         if ($callAction === 'completed') {
-            return "Nomor antrean {$queueText}, atas nama {$patientName}, penyerahan obat telah selesai. Terima kasih banyak atas kunjungan Anda di Sawamawa Medical Center, semoga lekas sembuh.";
+            return "Nomor antrean {$queueText}, atas nama {$patientName}, penyerahan obat telah selesai. Terima kasih banyak atas kunjungan Anda di Gitria Klinik, semoga lekas sembuh.";
         }
 
         switch ($serviceType) {

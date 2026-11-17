@@ -1,6 +1,6 @@
 <style>
     /* ====================================================================== */
-    /* SHARED PUBLIC THEME & PAPER DARK MODE (SAWAMAWA MEDICAL CENTER)        */
+    /* SHARED PUBLIC THEME & PAPER DARK MODE (GITRIA KLINIK)        */
     /* ====================================================================== */
     .btn-public-theme {
         background: rgba(13, 148, 136, 0.08);

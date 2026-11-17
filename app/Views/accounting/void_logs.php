@@ -661,7 +661,7 @@
                 </div>
             </div>
             <div class="modal-footer void-modal-footer py-2 px-4 d-flex justify-content-between">
-                <small class="text-muted"><i class="fas fa-shield-halved text-teal mr-1"></i> ERP Gitria Farma - Sawamawa Medical Center Anti-Fraud System</small>
+                <small class="text-muted"><i class="fas fa-shield-halved text-teal mr-1"></i> ERP Gitria Farma - Gitria Klinik Anti-Fraud System</small>
                 <button type="button" class="btn btn-secondary btn-sm font-weight-bold" data-dismiss="modal">
                     <i class="fas fa-times mr-1"></i> Tutup Panduan
                 </button>

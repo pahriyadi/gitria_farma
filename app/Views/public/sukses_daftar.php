@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Bukti Pendaftaran Online') ?> - <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
+    <title><?= esc($title ?? 'Bukti Pendaftaran Online') ?> - <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></title>
     
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
@@ -150,7 +150,7 @@
             Pendaftaran Berhasil Dikonfirmasi!
         </h4>
         <p class="mb-0 text-xs" style="opacity: 0.9;">
-            <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?> &bull; Sistem Antrean Terpadu
+            <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?> &bull; Sistem Antrean Terpadu
         </p>
     </div>
 
@@ -249,7 +249,7 @@
                             <span class="text-teal font-weight-bold mr-2" style="color: var(--brand-primary);"><i class="fas fa-hospital"></i></span>
                         <?php endif; ?>
                         <div>
-                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 11.5px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></h6>
+                            <h6 class="font-weight-bold text-dark mb-0" style="font-size: 11.5px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></h6>
                             <small class="text-secondary d-block" style="font-size: 8px; line-height: 1;"><?= esc(clinic_setting('clinic_address', 'Sumbawa Besar, NTB')) ?></small>
                         </div>
                     </div>
@@ -293,7 +293,7 @@
                             <div class="card-chip-gold"></div>
                         </div>
                         <?php 
-                        $qrData = urlencode("SAWAMAWA|" . $visit->no_rm . "|" . $visit->patient_name . "|" . $visit->nik);
+                        $qrData = urlencode("GITRIA KLINIK|" . $visit->no_rm . "|" . $visit->patient_name . "|" . $visit->nik);
                         $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data=" . $qrData;
                         ?>
                         <div style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 4px; padding: 2px; display: inline-block;">

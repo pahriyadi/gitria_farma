@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= esc($title) ?> | <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
+    <title><?= esc($title) ?> | <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></title>
     <meta name="description" content="Peta alur kerja sistem ERP dalam bentuk kantor 3D: lihat permintaan dan pengembalian data bergerak antar modul, lalu atur alur sendiri.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,7 @@
     </a>
     <div class="topbar__title">
         <h1>Peta Alur Sistem 3D</h1>
-        <p><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></p>
+        <p><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></p>
     </div>
     <div class="topbar__actions">
         <button type="button" class="btn btn-ghost" id="btnResetCam" title="Kembalikan sudut kamera (C)">

@@ -280,7 +280,7 @@ class ComprehensiveHelpSeeder extends Seeder
                 'icon'         => 'fas fa-circle-question',
                 'flow_steps'   => null,
                 'summary'      => 'Solusi jika jurnal akuntansi tidak seimbang atau terjadi anomali transaksi database.',
-                'content'      => "Sistem Sawamawa Medical Center telah dilengkapi dengan **ACID Transaction Engine** dan **Error Tracking APM**.\n1. Jika transaksi terputus di tengah jalan, sistem otomatis melakukan *Rollback* sehingga tidak ada data menggantung.\n2. Untuk memverifikasi keseimbangan seluruh jurnal secara instan, jalankan perintah CLI: `php spark audit:transactions`.\n3. Rincian galat teknis dapat dilihat langsung pada menu *Administrasi Sistem > Error Tracker & APM*.",
+                'content'      => "Sistem Gitria Klinik telah dilengkapi dengan **ACID Transaction Engine** dan **Error Tracking APM**.\n1. Jika transaksi terputus di tengah jalan, sistem otomatis melakukan *Rollback* sehingga tidak ada data menggantung.\n2. Untuk memverifikasi keseimbangan seluruh jurnal secara instan, jalankan perintah CLI: `php spark audit:transactions`.\n3. Rincian galat teknis dapat dilihat langsung pada menu *Administrasi Sistem > Error Tracker & APM*.",
                 'order_num'    => 1,
                 'is_published' => 1,
                 'created_by'   => 1

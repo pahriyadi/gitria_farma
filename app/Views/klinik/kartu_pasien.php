@@ -282,7 +282,7 @@ $currentTier = strtolower($patient->membership_tier ?? 'regular');
                                 </span>
                             <?php endif; ?>
                             <div>
-                                <h6 class="font-weight-bold mb-0 card-title-name" style="font-size: 14px; letter-spacing: 0.3px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></h6>
+                                <h6 class="font-weight-bold mb-0 card-title-name" style="font-size: 14px; letter-spacing: 0.3px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></h6>
                                 <small class="text-secondary d-block" style="font-size: 9.5px; line-height: 1.1;"><?= esc(clinic_setting('clinic_address', 'Layanan Kesehatan Paripurna & Resto Gizi')) ?></small>
                             </div>
                         </div>
@@ -360,7 +360,7 @@ $currentTier = strtolower($patient->membership_tier ?? 'regular');
                             
                             <!-- Dynamic QR Code -->
                             <?php 
-                            $qrData = urlencode("SAWAMAWA|" . $patient->no_rm . "|" . $patient->name . "|" . $patient->nik . "|" . $currentTier);
+                            $qrData = urlencode("GITRIA KLINIK|" . $patient->no_rm . "|" . $patient->name . "|" . $patient->nik . "|" . $currentTier);
                             $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=0&data=" . $qrData;
                             ?>
                             <div class="qr-container">
@@ -415,7 +415,7 @@ $currentTier = strtolower($patient->membership_tier ?? 'regular');
                     $rawPhone = '62' . $rawPhone;
                 }
 
-                $clinicName = clinic_setting('clinic_name', 'SAWAMAWA Medical Center');
+                $clinicName = clinic_setting('clinic_name', 'GITRIA KLINIK Medical Center');
                 $tierText = ($currentTier === 'gold') ? 'Gold Priority Member' : (($currentTier === 'vip' || $currentTier === 'platinum') ? 'VIP Executive Member' : 'Reguler');
                 
                 $waMessage = "Halo Bpk/Ibu *" . $patient->name . "*,\n\n"

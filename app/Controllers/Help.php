@@ -190,7 +190,7 @@ class Help extends BaseController
         $faqs = $db->table('system_documentations')->where('category', 'faq')->where('is_published', 1)->orderBy('order_num', 'ASC')->get()->getResult();
 
         $data = [
-            'title'      => 'Panduan Operasional & Dokumentasi Alur Sistem ERP Sawamawa',
+            'title'      => 'Panduan Operasional & Dokumentasi Alur Sistem ERP Gitria Klinik',
             'workflows'  => $workflows,
             'roleGuides' => $roleGuides,
             'faqs'       => $faqs

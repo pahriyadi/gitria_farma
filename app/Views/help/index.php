@@ -14,7 +14,7 @@
                         Pusat Bantuan & Dokumentasi Alur Sistem
                     </h4>
                     <span class="text-secondary" style="font-size: 13.5px;">
-                        Panduan Operasional & Alur Bisnis <strong><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center & Resto Gizi')) ?></strong>
+                        Panduan Operasional & Alur Bisnis <strong><?= esc(clinic_setting('clinic_name', 'Gitria Klinik & Resto Gizi')) ?></strong>
                     </span>
                 </div>
             </div>

@@ -119,7 +119,7 @@
 
     <!-- Header -->
     <div class="header">
-        <h3>SAWAMAWA HEALTHY CORNER</h3>
+        <h3>GITRIA KLINIK HEALTHY CORNER</h3>
         <p>Resto Sehat, Terapi Nutrisi & Dermal Care</p>
         <p>Jl. Mawar Merah No. 12, Sumbawa / Jakarta</p>
         <p>Telp: (021) 8920-1928</p>

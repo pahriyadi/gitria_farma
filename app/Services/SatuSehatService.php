@@ -319,7 +319,7 @@ class SatuSehatService
             'location'     => [
                 [
                     'location' => [
-                        'display' => 'Poliklinik ' . ($visit->poly_name ?: 'Umum') . ' - Sawamawa Medical Center'
+                        'display' => 'Poliklinik ' . ($visit->poly_name ?: 'Umum') . ' - Gitria Klinik'
                     ]
                 ]
             ],

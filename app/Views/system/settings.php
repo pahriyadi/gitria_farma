@@ -130,7 +130,7 @@
                             <div class="row">
                                 <div class="col-md-6 form-group mb-3">
                                     <label class="text-xs font-weight-bold text-dark">Nama Resmi Fasilitas Pelayanan: <span class="text-danger">*</span></label>
-                                    <input type="text" name="settings[clinic_name]" id="input-clinic-name" class="form-control form-control-sm font-weight-bold text-teal" value="<?= esc(clinic_setting('clinic_name')) ?>" required placeholder="Sawamawa Medical Center">
+                                    <input type="text" name="settings[clinic_name]" id="input-clinic-name" class="form-control form-control-sm font-weight-bold text-teal" value="<?= esc(clinic_setting('clinic_name')) ?>" required placeholder="Gitria Klinik">
                                     <small class="text-muted text-xs">Otomatis muncul di header cetak, kartu pasien, dan judul portal web.</small>
                                 </div>
                                 <div class="col-md-6 form-group mb-3">
@@ -142,7 +142,7 @@
 
                             <div class="form-group mb-3">
                                 <label class="text-xs font-weight-bold text-dark">Alamat Lengkap Kantor / Gedung Fasilitas: <span class="text-danger">*</span></label>
-                                <textarea name="settings[clinic_address]" id="input-clinic-address" class="form-control form-control-sm" rows="2" required placeholder="Jl. Kebangsaan No. 12, Sumbawa Besar, NTB"><?= esc(clinic_setting('clinic_address')) ?></textarea>
+                                <textarea name="settings[clinic_address]" id="input-clinic-address" class="form-control form-control-sm" rows="2" required placeholder="Kelurahan Brang Biji, Sumbawa Besar, NTB"><?= esc(clinic_setting('clinic_address')) ?></textarea>
                                 <small class="text-muted text-xs">Alamat fisik lengkap yang tercantum pada kop surat dinas dan footer website.</small>
                             </div>
 
@@ -298,12 +298,12 @@
                             <div class="row">
                                 <div class="col-md-6 form-group mb-3">
                                     <label class="text-xs font-weight-bold text-dark">Teks Watermark Dokumen Kertas:</label>
-                                    <input type="text" name="settings[clinic_watermark]" id="input-clinic-watermark" class="form-control form-control-sm font-weight-bold" value="<?= esc(clinic_setting('clinic_watermark')) ?>" placeholder="SAWAMAWA">
+                                    <input type="text" name="settings[clinic_watermark]" id="input-clinic-watermark" class="form-control form-control-sm font-weight-bold" value="<?= esc(clinic_setting('clinic_watermark')) ?>" placeholder="GITRIA KLINIK">
                                     <small class="text-muted text-xs">Muncul samar transparan di latar belakang dokumen e-resep, surat sakit, dan PO/PR.</small>
                                 </div>
                                 <div class="col-md-6 form-group mb-3">
                                     <label class="text-xs font-weight-bold text-dark">Catatan Kaki (Footer Note) Dokumen Resmi:</label>
-                                    <input type="text" name="settings[clinic_footer_note]" id="input-clinic-footer" class="form-control form-control-sm" value="<?= esc(clinic_setting('clinic_footer_note')) ?>" placeholder="Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.">
+                                    <input type="text" name="settings[clinic_footer_note]" id="input-clinic-footer" class="form-control form-control-sm" value="<?= esc(clinic_setting('clinic_footer_note')) ?>" placeholder="Dokumen resmi ini diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.">
                                     <small class="text-muted text-xs">Tercetak di bagian paling bawah pada seluruh lembaran formal klinik.</small>
                                 </div>
                             </div>
@@ -326,7 +326,7 @@
                                         
                                         <!-- Watermark Simulation -->
                                         <div id="sim-watermark" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 58px; font-weight: bold; color: rgba(0,0,0,0.04); pointer-events: none; text-transform: uppercase; white-space: nowrap;">
-                                            <?= esc(clinic_setting('clinic_watermark', 'SAWAMAWA')) ?>
+                                            <?= esc(clinic_setting('clinic_watermark', 'GITRIA KLINIK')) ?>
                                         </div>
 
                                         <!-- Header Kop Surat -->
@@ -339,7 +339,7 @@
                                             </div>
                                             <div class="flex-grow-1 text-center pr-4">
                                                 <h4 id="sim-name" class="font-weight-bold mb-0 text-uppercase" style="letter-spacing: 1px; font-size: 19px; line-height: 1.2;">
-                                                    <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>
+                                                    <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>
                                                 </h4>
                                                 <div id="sim-tagline" class="font-italic text-secondary" style="font-size: 12px; line-height: 1.2;">
                                                     <?= esc(clinic_setting('clinic_tagline', 'Pusat Layanan Medis Terpadu & Terpercaya')) ?>
@@ -348,7 +348,7 @@
                                                     Izin Dinkes: <?= esc(clinic_setting('clinic_license_number', '445/012/DINKES/2024')) ?> &bull; Kode Faskes: <?= esc(clinic_setting('clinic_faskes_code', '52040101')) ?>
                                                 </div>
                                                 <div id="sim-address" style="font-size: 10.5px; line-height: 1.2; margin-top: 2px;">
-                                                    <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB')) ?>
+                                                    <?= esc(clinic_setting('clinic_address', 'Kelurahan Brang Biji, Sumbawa Besar, NTB')) ?>
                                                 </div>
                                                 <div id="sim-contacts" style="font-size: 10.5px;">
                                                     Telp: <?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?> | Email: <?= esc(clinic_setting('clinic_email', 'info@sawamawamedicalcenter.id')) ?> | Web: <?= esc(clinic_setting('clinic_website', 'www.sawamawamedicalcenter.id')) ?>
@@ -384,7 +384,7 @@
 
                                             <!-- Footer Note Simulation -->
                                             <div class="mt-4 pt-3 border-top text-center text-muted" style="font-size: 9.5px;" id="sim-footer">
-                                                <?= esc(clinic_setting('clinic_footer_note', 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.')) ?>
+                                                <?= esc(clinic_setting('clinic_footer_note', 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.')) ?>
                                             </div>
                                         </div>
 
@@ -714,7 +714,7 @@
                                         <table class="table table-sm table-borderless text-xs mb-0">
                                             <tr>
                                                 <td class="text-muted" style="width: 40%;">Aplikasi:</td>
-                                                <td class="font-weight-bold text-teal">Sawamawa Medical Center SIM-ERP</td>
+                                                <td class="font-weight-bold text-teal">Gitria Klinik SIM-ERP</td>
                                             </tr>
                                             <tr>
                                                 <td class="text-muted">Framework:</td>
@@ -791,7 +791,7 @@
                                     <div>
                                         <strong class="text-dark d-block mb-1">Mekanisme Bridging Cerdas (Outbound HTTPS & Mock Sandbox Engine)</strong>
                                         <p class="text-muted text-xs mb-1">
-                                            Sistem ERP Sawamawa Medical Center berkomunikasi dengan SATUSEHAT melalui <strong>Outbound HTTPS Request</strong> (koneksi keluar dari server).
+                                            Sistem ERP Gitria Klinik berkomunikasi dengan SATUSEHAT melalui <strong>Outbound HTTPS Request</strong> (koneksi keluar dari server).
                                             Baik saat Anda menjalankan sistem di <strong>XAMPP Lokal</strong> maupun di <strong>Hosting Production</strong>, integrasi dapat berjalan lancar.
                                         </p>
                                         <p class="text-muted text-xs mb-0">
@@ -853,7 +853,7 @@
                                                     </div>
                                                     <input type="text" name="settings[satusehat_org_id]" id="satusehat_org_id" class="form-control" value="<?= esc(clinic_setting('satusehat_org_id', '10000004')) ?>" required placeholder="Contoh: 10000004">
                                                 </div>
-                                                <small class="text-muted text-xs">ID Organisasi Klinik Sawamawa yang terdaftar pada portal SATUSEHAT Platform Kemenkes.</small>
+                                                <small class="text-muted text-xs">ID Organisasi Gitria Klinik yang terdaftar pada portal SATUSEHAT Platform Kemenkes.</small>
                                             </div>
 
                                             <!-- Client ID -->
@@ -863,7 +863,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text bg-light"><i class="fas fa-id-badge text-secondary"></i></span>
                                                     </div>
-                                                    <input type="text" name="settings[satusehat_client_id]" id="satusehat_client_id" class="form-control" value="<?= esc(clinic_setting('satusehat_client_id', 'MOCK-CLIENT-ID-SAWAMAWA')) ?>" required placeholder="Client ID dari portal SatuSehat">
+                                                    <input type="text" name="settings[satusehat_client_id]" id="satusehat_client_id" class="form-control" value="<?= esc(clinic_setting('satusehat_client_id', 'MOCK-CLIENT-ID-GITRIA KLINIK')) ?>" required placeholder="Client ID dari portal SatuSehat">
                                                 </div>
                                             </div>
 
@@ -874,7 +874,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text bg-light"><i class="fas fa-lock text-secondary"></i></span>
                                                     </div>
-                                                    <input type="password" name="settings[satusehat_client_secret]" id="satusehat_client_secret" class="form-control" value="<?= esc(clinic_setting('satusehat_client_secret', 'MOCK-CLIENT-SECRET-SAWAMAWA')) ?>" required placeholder="Client Secret dari portal SatuSehat">
+                                                    <input type="password" name="settings[satusehat_client_secret]" id="satusehat_client_secret" class="form-control" value="<?= esc(clinic_setting('satusehat_client_secret', 'MOCK-CLIENT-SECRET-GITRIA KLINIK')) ?>" required placeholder="Client Secret dari portal SatuSehat">
                                                     <div class="input-group-append">
                                                         <button class="btn btn-outline-secondary btn-toggle-pw" type="button" data-target="satusehat_client_secret">
                                                             <i class="fas fa-eye"></i>
@@ -1117,13 +1117,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 2. Real-time Live Kop Surat Simulator Binding
     const bindMap = [
-        { input: 'input-clinic-name', sim: ['sim-name', 'sim-doc-clinic'], def: 'Sawamawa Medical Center' },
+        { input: 'input-clinic-name', sim: ['sim-name', 'sim-doc-clinic'], def: 'Gitria Klinik' },
         { input: 'input-clinic-tagline', sim: ['sim-tagline'], def: 'Pusat Layanan Medis Terpadu & Terpercaya' },
-        { input: 'input-clinic-address', sim: ['sim-address'], def: 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB' },
+        { input: 'input-clinic-address', sim: ['sim-address'], def: 'Kelurahan Brang Biji, Sumbawa Besar, NTB' },
         { input: 'input-clinic-director', sim: ['sim-director'], def: 'dr. Andi Wijaya, Sp.PD' },
         { input: 'input-clinic-sip', sim: ['sim-sip'], def: '503/449/SIP-D/2022' },
-        { input: 'input-clinic-footer', sim: ['sim-footer'], def: 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.' },
-        { input: 'input-clinic-watermark', sim: ['sim-watermark'], def: 'SAWAMAWA' }
+        { input: 'input-clinic-footer', sim: ['sim-footer'], def: 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.' },
+        { input: 'input-clinic-watermark', sim: ['sim-watermark'], def: 'GITRIA KLINIK' }
     ];
 
     bindMap.forEach(item => {

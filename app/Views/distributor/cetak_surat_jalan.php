@@ -43,7 +43,7 @@
         <tr>
             <td style="width: 60%;">
                 <h2 style="margin: 0; color: #0d9488; font-size: 18px; font-weight: 800;">
-                    <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER & DISTRIBUSI')) ?>
+                    <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK & DISTRIBUSI')) ?>
                 </h2>
                 <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
                     <strong>Logistik &amp; Gudang Distribusi Farmasi</strong><br>

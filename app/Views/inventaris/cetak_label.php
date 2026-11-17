@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -145,7 +145,7 @@
 <div class="asset-tag">
     <div class="tag-header">
         <div>
-            <div class="tag-title"><i class="fas fa-hospital mr-1"></i> <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+            <div class="tag-title"><i class="fas fa-hospital mr-1"></i> <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
             <div class="tag-subtitle">LABEL INVENTARIS ASET KLINIK RESMI</div>
         </div>
         <div class="text-right">
@@ -171,7 +171,7 @@
 
     <div class="tag-footer">
         <span>DILARANG MELEPAS / MERUSAK LABEL INI</span>
-        <span>SIM-KLINIK SAWAMAWA</span>
+        <span>SIM-KLINIK GITRIA KLINIK</span>
     </div>
 </div>
 

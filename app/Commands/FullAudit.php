@@ -14,7 +14,7 @@ class FullAudit extends BaseCommand
     public function run(array $params)
     {
         CLI::write("==================================================", 'yellow');
-        CLI::write("🔍 MEMULAI AUDIT MENYELURUH SAWAMAWA MEDICAL CENTER", 'yellow');
+        CLI::write("🔍 MEMULAI AUDIT MENYELURUH GITRIA KLINIK", 'yellow');
         CLI::write("==================================================", 'yellow');
 
         $issuesFound = [];

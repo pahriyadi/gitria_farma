@@ -2170,7 +2170,7 @@ class Klinik extends BaseController
                 $visitId     = (int)$this->request->getPost('visit_id');
                 $patientId   = (int)$this->request->getPost('patient_id');
                 $doctorId    = (int)$this->request->getPost('doctor_id') ?: 1;
-                $officerName = trim($this->request->getPost('officer_name') ?: 'Analis Lab Sawamawa');
+                $officerName = trim($this->request->getPost('officer_name') ?: 'Analis Lab Gitria Klinik');
                 $testDate    = $this->request->getPost('test_date') ?: date('Y-m-d');
                 $testType    = $this->request->getPost('test_type');
                 $resultVal   = $this->request->getPost('result_value');
@@ -2337,7 +2337,7 @@ class Klinik extends BaseController
         }
 
         $data = [
-            'title'        => 'Layar Display Antrean Poliklinik - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+            'title'        => 'Layar Display Antrean Poliklinik - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
             'polyclinics'  => $polyclinics,
             'activeQueues' => $activeQueues,
             'tvMediaType'  => clinic_setting('tv_media_type', 'slideshow'),
@@ -2445,7 +2445,7 @@ class Klinik extends BaseController
                              ->getResult();
 
         $data = [
-            'title'            => 'Anjungan Pendaftaran Mandiri (Kiosk) - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+            'title'            => 'Anjungan Pendaftaran Mandiri (Kiosk) - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
             'polyclinics'      => $polyclinics,
             'doctors'          => $doctors,
             'tindakanServices' => $tindakanServices,
@@ -2471,7 +2471,7 @@ class Klinik extends BaseController
             ]);
         }
 
-        // 1. Parsing jika hasil scan QR berformat: SAWAMAWA|RM-000001|Nama|NIK
+        // 1. Parsing jika hasil scan QR berformat: GITRIA KLINIK|RM-000001|Nama|NIK
         $keyword = $rawKeyword;
         if (str_contains($rawKeyword, '|')) {
             $parts = explode('|', $rawKeyword);
@@ -2676,7 +2676,7 @@ class Klinik extends BaseController
                 'membership_tier' => strtolower($patient->membership_tier ?? 'regular'),
                 'created_at'      => date('d-m-Y H:i:s'),
                 'waiting_count'   => max(0, $waitingCount - 1),
-                'clinic_name'     => clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+                'clinic_name'     => clinic_setting('clinic_name', 'Gitria Klinik'),
                 'clinic_tagline'  => clinic_setting('clinic_tagline', 'Pusat Layanan Medis Terpadu'),
                 'clinic_address'  => clinic_setting('clinic_address', 'Sumbawa Besar, NTB')
             ]
@@ -2777,7 +2777,7 @@ class Klinik extends BaseController
                 'membership_tier' => strtolower($patientData['membership_tier']),
                 'created_at'      => date('d-m-Y H:i:s'),
                 'waiting_count'   => max(0, $waitingCount - 1),
-                'clinic_name'     => clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+                'clinic_name'     => clinic_setting('clinic_name', 'Gitria Klinik'),
                 'clinic_tagline'  => clinic_setting('clinic_tagline', 'Pusat Layanan Medis Terpadu'),
                 'clinic_address'  => clinic_setting('clinic_address', 'Sumbawa Besar, NTB')
             ]
@@ -3207,7 +3207,7 @@ class Klinik extends BaseController
         ];
 
         $data = [
-            'title'      => 'Laporan Pelayanan Klinik Sawamawa Medical Center',
+            'title'      => 'Laporan Pelayanan Gitria Klinik Medical Center',
             'startDate'  => $startDate,
             'endDate'    => $endDate,
             'type'       => $type,
@@ -3490,7 +3490,7 @@ class Klinik extends BaseController
             ]);
         }
 
-        // 1. Parsing jika hasil scan QR berformat: SAWAMAWA|RM-000001|Nama|NIK
+        // 1. Parsing jika hasil scan QR berformat: GITRIA KLINIK|RM-000001|Nama|NIK
         $keyword = $rawKeyword;
         if (str_contains($rawKeyword, '|')) {
             $parts = explode('|', $rawKeyword);

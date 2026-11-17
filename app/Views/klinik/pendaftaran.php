@@ -85,7 +85,7 @@
                                 if (str_starts_with($cleanPhone, '0')) {
                                     $cleanPhone = '62' . substr($cleanPhone, 1);
                                 }
-                                $clinicName = clinic_setting('clinic_name', 'Sawamawa Medical Center');
+                                $clinicName = clinic_setting('clinic_name', 'Gitria Klinik');
                                 $waMsg = rawurlencode("*TIKET ANTREAN PASIEN*\n{$clinicName}\n\n" .
                                     "Halo Bpk/Ibu *" . $vt['patient_name'] . "*,\n" .
                                     "Kunjungan Anda berhasil didaftarkan.\n\n" .
@@ -1194,10 +1194,10 @@
                 <div id="thermal-ticket-slip" class="p-3 bg-white border rounded shadow-xs" style="font-family: 'Courier New', Courier, monospace; color: #111827; font-size: 13px; line-height: 1.35;">
                     <div class="text-center pb-2 border-bottom border-dark">
                         <div class="font-weight-bold" style="font-size: 15px; text-transform: uppercase;">
-                            <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>
+                            <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>
                         </div>
                         <div style="font-size: 10px;" class="text-muted">
-                            <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa')) ?>
+                            <?= esc(clinic_setting('clinic_address', 'Kelurahan Brang Biji, Sumbawa')) ?>
                         </div>
                         <div style="font-size: 9.5px;" class="text-muted">
                             Telp: <?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?>
@@ -1277,7 +1277,7 @@
                         if (str_starts_with($cleanPhone, '0')) {
                             $cleanPhone = '62' . substr($cleanPhone, 1);
                         }
-                        $clinicName = clinic_setting('clinic_name', 'Sawamawa Medical Center');
+                        $clinicName = clinic_setting('clinic_name', 'Gitria Klinik');
                         $waMsg = rawurlencode("*TIKET ANTREAN PASIEN*\n{$clinicName}\n\n" .
                             "Halo Bpk/Ibu *" . $vt['patient_name'] . "*,\n" .
                             "Kunjungan Anda berhasil didaftarkan.\n\n" .

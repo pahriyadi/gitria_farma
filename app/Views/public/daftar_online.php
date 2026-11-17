@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Pendaftaran Pasien Online - Sawamawa Medical Center') ?></title>
+    <title><?= esc($title ?? 'Pendaftaran Pasien Online - Gitria Klinik') ?></title>
     
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
@@ -296,7 +296,7 @@
                 <span class="text-teal mr-2" style="font-size: 24px; color: var(--brand-primary);"><i class="fas fa-hospital-user"></i></span>
             <?php endif; ?>
             <div>
-                <span class="navbar-brand-title d-block"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span>
+                <span class="navbar-brand-title d-block"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span>
                 <small class="text-muted d-none d-sm-block" style="font-size: 10.5px;">Pusat Pelayanan Medis Terpadu &amp; Rekam Medis Elektronik</small>
             </div>
         </a>
@@ -446,7 +446,7 @@
                                     </label>
                                 </div>
                                 <small class="text-secondary d-block mt-2" style="font-size: 12px; line-height: 1.45;">
-                                    Saya <strong>belum pernah berobat</strong> atau belum memiliki Nomor Rekam Medis (No. RM) di Sawamawa Medical Center.
+                                    Saya <strong>belum pernah berobat</strong> atau belum memiliki Nomor Rekam Medis (No. RM) di Gitria Klinik.
                                 </small>
                             </div>
                         </div>
@@ -712,7 +712,7 @@
             <img src="<?= base_url('assets/images/ssl-secure.svg') ?>" alt="256-Bit SSL" style="height: 30px; width: auto;">
         </div>
         <div class="text-xs mb-1" style="color: #94a3b8;">
-            &copy; <?= date('Y') ?> <strong><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></strong>. Seluruh data rekam medis dilindungi kerahasiaannya.
+            &copy; <?= date('Y') ?> <strong><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></strong>. Seluruh data rekam medis dilindungi kerahasiaannya.
         </div>
     </div>
 </footer>
@@ -726,7 +726,7 @@
                     <h5 class="modal-title font-weight-bold d-flex align-items-center mb-0" id="modalDaftarWaTitle">
                         <i class="fab fa-whatsapp fa-lg mr-2"></i> Pendaftaran Berobat via WhatsApp
                     </h5>
-                    <small class="text-white-50">Layanan reservasi langsung ke WhatsApp Admin Sawamawa Medical Center</small>
+                    <small class="text-white-50">Layanan reservasi langsung ke WhatsApp Admin Gitria Klinik Medical Center</small>
                 </div>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -738,7 +738,7 @@
                         <i class="fas fa-clock text-warning fa-lg mr-1"></i> <strong class="text-dark">Layanan Pendaftaran Berobat via WhatsApp Sedang Ditutup</strong>
                         <div class="text-xs text-secondary mt-1"><?= esc($closedMessage) ?></div>
                         <div class="mt-2 text-xs font-weight-bold text-dark">
-                            <i class="fas fa-hospital mr-1 text-teal"></i> Untuk kondisi darurat medis, silakan langsung menuju IGD Sawamawa Medical Center (Siaga 24 Jam).
+                            <i class="fas fa-hospital mr-1 text-teal"></i> Untuk kondisi darurat medis, silakan langsung menuju IGD Gitria Klinik (Siaga 24 Jam).
                         </div>
                     </div>
                 <?php endif; ?>
@@ -996,7 +996,7 @@
             }
 
             msg = `*PENDAFTARAN BEROBAT VIA WHATSAPP*\n` +
-                  `*<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>*\n` +
+                  `*<?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>*\n` +
                   `---------------------------------------\n` +
                   `• *Status Pasien:* PASIEN BARU\n` +
                   `• *Nama Lengkap:* ${name}\n` +
@@ -1022,7 +1022,7 @@
             }
 
             msg = `*PENDAFTARAN BEROBAT VIA WHATSAPP*\n` +
-                  `*<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>*\n` +
+                  `*<?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>*\n` +
                   `---------------------------------------\n` +
                   `• *Status Pasien:* PASIEN LAMA\n` +
                   `• *No. Rekam Medis (RM) / NIK:* ${rm}\n` +

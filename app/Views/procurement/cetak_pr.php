@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -51,7 +51,7 @@
 
         /* Watermark */
         .paper-document::before {
-            content: "SAWAMAWA";
+            content: "GITRIA KLINIK";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -334,7 +334,7 @@
                 </div>
             <?php endif; ?>
             <div>
-                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <div class="clinic-subtitle"><?= esc(clinic_setting('clinic_tagline', 'Sistem Informasi Pengadaan Farmasi & Logistik Medis')) ?></div>
                 <div class="clinic-address"><?= esc(clinic_setting('clinic_address')) ?> | Telp: <?= esc(clinic_setting('clinic_phone')) ?> | Izin: <?= esc(clinic_setting('clinic_license_number', '503/012/K-CLINIC/2024')) ?></div>
             </div>
@@ -483,7 +483,7 @@
     <!-- Footer Security Seal -->
     <div class="doc-footer">
         <div>
-            <i class="fas fa-shield-alt mr-1 text-teal"></i> Dokumen resmi ini digenerate secara elektronik melalui SIM-Klinik Sawamawa Medical Center.
+            <i class="fas fa-shield-alt mr-1 text-teal"></i> Dokumen resmi ini digenerate secara elektronik melalui SIM-Gitria Klinik Medical Center.
         </div>
         <div>
             ID: <?= md5($pr->request_no . $pr->created_at) ?> | <?= date('d/m/Y H:i:s') ?> WITA

@@ -127,9 +127,9 @@
     <!-- Header -->
     <div class="header">
         <div>
-            <div class="clinic-name">SAWAMAWA MEDICAL CENTER</div>
+            <div class="clinic-name">GITRIA KLINIK</div>
             <div class="clinic-sub">Instalasi Farmasi, Gudang Logistik & Depo Pelayanan Medis</div>
-            <div class="clinic-sub">Jl. Kebangsaan No. 12, Sumbawa Besar, NTB | Telp: (0371) 22334</div>
+            <div class="clinic-sub">Kelurahan Brang Biji, Sumbawa Besar, NTB | Telp: (0371) 22334</div>
         </div>
         <div class="doc-title">
             <span class="doc-badge">SURAT JALAN MUTASI STOK</span>

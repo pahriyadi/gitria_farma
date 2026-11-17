@@ -44,7 +44,7 @@
             </div>
 
             <p class="text-secondary text-xs mb-3 px-2">
-                <?= esc($user->bio ?: 'Pengguna terdaftar sistem SAWAMAWA Medical Center.') ?>
+                <?= esc($user->bio ?: 'Pengguna terdaftar sistem GITRIA KLINIK Medical Center.') ?>
             </p>
 
             <div class="border-top pt-3 text-left">

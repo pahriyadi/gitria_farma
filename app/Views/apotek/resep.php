@@ -1006,7 +1006,7 @@
                                 window.speechSynthesis.resume();
                             }
                             const spokenQ = qNo.replace(/-/g, ' ');
-                            const speechText = 'Nomor antrean ' + spokenQ + ', atas nama ' + pName + ', penyerahan obat telah selesai. Terima kasih banyak atas kunjungan Anda di Sawamawa Medical Center, semoga lekas sembuh.';
+                            const speechText = 'Nomor antrean ' + spokenQ + ', atas nama ' + pName + ', penyerahan obat telah selesai. Terima kasih banyak atas kunjungan Anda di Gitria Klinik, semoga lekas sembuh.';
                             const utt = new SpeechSynthesisUtterance(speechText);
                             utt.lang = 'id-ID';
                             utt.rate = 0.85;

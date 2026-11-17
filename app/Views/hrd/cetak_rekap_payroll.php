@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -152,7 +152,7 @@
                 </div>
             <?php endif; ?>
             <div>
-                <div class="clinic-title text-teal font-weight-bold" style="font-size: 18px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="clinic-title text-teal font-weight-bold" style="font-size: 18px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <div class="text-secondary small font-weight-bold">Rekapitulasi Penggajian Karyawan & Jasa Medis Dokter</div>
                 <div class="text-muted text-xs"><?= esc(clinic_setting('clinic_address')) ?> | Telp: <?= esc(clinic_setting('clinic_phone')) ?></div>
             </div>
@@ -248,13 +248,13 @@
         <div class="sign-card">
             <div class="small text-muted mb-4">Dibuat Oleh (Bagian HRD & Payroll),</div>
             <div class="sign-name">Staff HRD / Payroll</div>
-            <div class="small text-muted">Sawamawa Medical Center</div>
+            <div class="small text-muted">Gitria Klinik</div>
         </div>
 
         <div class="sign-card">
             <div class="small text-muted mb-4">Disetujui Oleh (Direktur Keuangan / Operasional),</div>
             <div class="sign-name">Direktur Utama</div>
-            <div class="small text-muted">Sawamawa Medical Center</div>
+            <div class="small text-muted">Gitria Klinik</div>
         </div>
     </div>
 </div>

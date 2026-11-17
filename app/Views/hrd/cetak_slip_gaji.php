@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -221,7 +221,7 @@
                 </div>
             <?php endif; ?>
             <div>
-                <div class="clinic-title text-teal font-weight-bold" style="font-size: 18px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="clinic-title text-teal font-weight-bold" style="font-size: 18px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <div class="text-secondary small font-weight-bold">Slip Gaji & Bukti Penerimaan Penghasilan Pegawai (Confidential)</div>
                 <div class="text-muted text-xs"><?= esc(clinic_setting('clinic_address')) ?> | Telp: <?= esc(clinic_setting('clinic_phone')) ?></div>
             </div>
@@ -370,13 +370,13 @@
         <div class="sign-card">
             <div class="small text-muted mb-4">Mengetahui (HRD & Keuangan),</div>
             <div class="sign-name">Manager HRD & Payroll</div>
-            <div class="small text-muted">Sawamawa Medical Center</div>
+            <div class="small text-muted">Gitria Klinik</div>
         </div>
     </div>
 
     <!-- Footer -->
     <div class="text-center text-muted text-xs mt-4 pt-2 border-top">
-        Dokumen slip gaji ini bersifat rahasia (*confidential*) dan diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.
+        Dokumen slip gaji ini bersifat rahasia (*confidential*) dan diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.
     </div>
 </div>
 

@@ -435,7 +435,7 @@
                                             <span class="badge badge-success px-2 py-1">AKTIF</span>
                                         </div>
                                         <div class="text-xs text-muted mb-2">
-                                            <div><i class="fas fa-location-dot text-teal mr-1"></i> <strong>Lokasi:</strong> <?= esc($w->location ?: 'Klinik Sawamawa') ?></div>
+                                            <div><i class="fas fa-location-dot text-teal mr-1"></i> <strong>Lokasi:</strong> <?= esc($w->location ?: 'Gitria Klinik') ?></div>
                                             <div><i class="fas fa-user-shield text-info mr-1"></i> <strong>PIC / Apoteker:</strong> <?= esc($w->pic_name ?: 'Apoteker Penanggung Jawab') ?></div>
                                             <div><i class="fas fa-phone text-success mr-1"></i> <strong>Kontak / WA:</strong> <?= esc($w->phone ?: '-') ?></div>
                                         </div>

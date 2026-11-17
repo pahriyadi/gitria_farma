@@ -147,7 +147,7 @@ class System extends BaseController
         } else {
             // Create User
             if (empty($password)) {
-                $password = 'Sawamawa@2026';
+                $password = 'Gitria Klinik@2026';
             }
             $insertData = [
                 'username'       => $username,
@@ -615,8 +615,8 @@ class System extends BaseController
 
         // 1. Ensure essential default system settings exist
         $defaults = [
-            ['setting_group' => 'klinik', 'setting_key' => 'clinic_name', 'setting_value' => 'Sawamawa Medical Center', 'description' => 'Nama Resmi Klinik Utama'],
-            ['setting_group' => 'klinik', 'setting_key' => 'clinic_address', 'setting_value' => 'Jl. Raya Sawamawa No. 100, Sumbawa Besar', 'description' => 'Alamat Kantor Klinik Utama'],
+            ['setting_group' => 'klinik', 'setting_key' => 'clinic_name', 'setting_value' => 'Gitria Klinik', 'description' => 'Nama Resmi Klinik Utama'],
+            ['setting_group' => 'klinik', 'setting_key' => 'clinic_address', 'setting_value' => 'Jl. Raya Gitria Klinik No. 100, Sumbawa Besar', 'description' => 'Alamat Kantor Klinik Utama'],
             ['setting_group' => 'klinik', 'setting_key' => 'clinic_phone', 'setting_value' => '081122334455', 'description' => 'Nomor Telepon Hotline Klinik'],
             ['setting_group' => 'api', 'setting_key' => 'wa_gateway_provider', 'setting_value' => 'fonnte', 'description' => 'Provider WhatsApp Gateway (fonnte/wablas)'],
             ['setting_group' => 'api', 'setting_key' => 'wa_api_token', 'setting_value' => '', 'description' => 'API Token WhatsApp Gateway'],
@@ -733,7 +733,7 @@ class System extends BaseController
             }
             $snapshotFile = $backupDir . 'pre_reset_backup_' . date('Ymd_His') . '.sql';
             
-            $dump = "-- Sawamawa Automatic Backup Prior to Transaction Reset\n";
+            $dump = "-- Gitria Klinik Automatic Backup Prior to Transaction Reset\n";
             $dump .= "-- Generated on: " . date('Y-m-d H:i:s') . "\n";
             $dump .= "SET FOREIGN_KEY_CHECKS = 0;\n\n";
             foreach ($tablesToTruncate as $tb) {
@@ -1325,12 +1325,12 @@ class System extends BaseController
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
-        // 2. Ensure all default settings exist (Sawamawa Medical Center Single Source of Truth)
+        // 2. Ensure all default settings exist (Gitria Klinik Single Source of Truth)
         $defaults = [
             // Identitas & Profil Klinik
-            ['setting_group' => 'klinik', 'setting_key' => 'clinic_name', 'setting_value' => 'Sawamawa Medical Center', 'description' => 'Nama Resmi Klinik Utama'],
+            ['setting_group' => 'klinik', 'setting_key' => 'clinic_name', 'setting_value' => 'Gitria Klinik', 'description' => 'Nama Resmi Klinik Utama'],
             ['setting_group' => 'klinik', 'setting_key' => 'clinic_tagline', 'setting_value' => 'Pusat Layanan Medis Terpadu & Terpercaya', 'description' => 'Slogan / Tagline Resmi'],
-            ['setting_group' => 'klinik', 'setting_key' => 'clinic_address', 'setting_value' => 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB', 'description' => 'Alamat Kantor Klinik Utama'],
+            ['setting_group' => 'klinik', 'setting_key' => 'clinic_address', 'setting_value' => 'Kelurahan Brang Biji, Sumbawa Besar, NTB', 'description' => 'Alamat Kantor Klinik Utama'],
             ['setting_group' => 'klinik', 'setting_key' => 'clinic_phone', 'setting_value' => '(0371) 23456 / 081122334455', 'description' => 'Nomor Telepon Hotline Klinik'],
             ['setting_group' => 'klinik', 'setting_key' => 'clinic_email', 'setting_value' => 'info@sawamawamedicalcenter.id', 'description' => 'Email Resmi Pelayanan'],
             ['setting_group' => 'klinik', 'setting_key' => 'clinic_website', 'setting_value' => 'www.sawamawamedicalcenter.id', 'description' => 'Website Resmi Klinik'],
@@ -1346,8 +1346,8 @@ class System extends BaseController
             ['setting_group' => 'branding', 'setting_key' => 'clinic_logo', 'setting_value' => '', 'description' => 'File Logo Resmi Klinik'],
             ['setting_group' => 'branding', 'setting_key' => 'clinic_favicon', 'setting_value' => '', 'description' => 'File Favicon Website'],
             ['setting_group' => 'branding', 'setting_key' => 'clinic_stamp', 'setting_value' => '', 'description' => 'File Stempel Digital Resmi Klinik'],
-            ['setting_group' => 'branding', 'setting_key' => 'clinic_watermark', 'setting_value' => 'SAWAMAWA', 'description' => 'Teks Watermark Lembar Dokumen'],
-            ['setting_group' => 'branding', 'setting_key' => 'clinic_footer_note', 'setting_value' => 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Klinik Sawamawa Medical Center.', 'description' => 'Catatan Kaki Dokumen Cetak'],
+            ['setting_group' => 'branding', 'setting_key' => 'clinic_watermark', 'setting_value' => 'GITRIA KLINIK', 'description' => 'Teks Watermark Lembar Dokumen'],
+            ['setting_group' => 'branding', 'setting_key' => 'clinic_footer_note', 'setting_value' => 'Dokumen resmi ini diterbitkan secara digital oleh SIM-Gitria Klinik Medical Center.', 'description' => 'Catatan Kaki Dokumen Cetak'],
 
             // API & Integrasi
             ['setting_group' => 'api', 'setting_key' => 'wa_gateway_provider', 'setting_value' => 'fonnte', 'description' => 'Provider WhatsApp Gateway (fonnte/wablas/custom)'],
@@ -1385,8 +1385,8 @@ class System extends BaseController
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_active', 'setting_value' => 'true', 'description' => 'Status Aktif Integrasi SATUSEHAT (true/false)'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_mode', 'setting_value' => 'sandbox', 'description' => 'Mode Lingkungan SATUSEHAT (sandbox/staging/production)'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_org_id', 'setting_value' => '10000004', 'description' => 'Organization ID Faskes SATUSEHAT Kemenkes'],
-            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_id', 'setting_value' => 'MOCK-CLIENT-ID-SAWAMAWA', 'description' => 'Client ID DTO Kemenkes'],
-            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_secret', 'setting_value' => 'MOCK-CLIENT-SECRET-SAWAMAWA', 'description' => 'Client Secret DTO Kemenkes'],
+            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_id', 'setting_value' => 'MOCK-CLIENT-ID-GITRIA KLINIK', 'description' => 'Client ID DTO Kemenkes'],
+            ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_client_secret', 'setting_value' => 'MOCK-CLIENT-SECRET-GITRIA KLINIK', 'description' => 'Client Secret DTO Kemenkes'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_auth_url', 'setting_value' => 'https://api-satusehat-stg.dto.kemkes.go.id/oauth2/v1', 'description' => 'URL OAuth2 Auth Token SATUSEHAT'],
             ['setting_group' => 'satusehat', 'setting_key' => 'satusehat_fhir_url', 'setting_value' => 'https://api-satusehat-stg.dto.kemkes.go.id/fhir-r4/v1', 'description' => 'Base URL HL7 FHIR R4 SATUSEHAT'],
 
@@ -1695,7 +1695,7 @@ class System extends BaseController
             title VARCHAR(255) NOT NULL,
             slug VARCHAR(255) NOT NULL UNIQUE,
             category VARCHAR(100) NOT NULL DEFAULT 'Edukasi Kesehatan',
-            author VARCHAR(150) NULL DEFAULT 'Tim Medis Sawamawa',
+            author VARCHAR(150) NULL DEFAULT 'Tim Medis Gitria Klinik',
             summary TEXT NOT NULL,
             content LONGTEXT NOT NULL,
             image_url VARCHAR(255) NULL,
@@ -1715,7 +1715,7 @@ class System extends BaseController
                     'category'    => 'Edukasi Kesehatan',
                     'author'      => 'dr. Andi Wijaya, Sp.PD',
                     'summary'     => 'Perubahan cuaca ekstrem rentan menurunkan imunitas. Kenali 5 langkah sederhana menjaga tubuh tetap bugar dan terhindar dari infeksi virus.',
-                    'content'     => '<p>Pergantian musim atau pancaroba sering kali diiringi dengan peningkatan kasus infeksi saluran pernapasan atas (ISPA), flu, hingga gangguan pencernaan. Menjaga imunitas tubuh merupakan pertahanan terdepan agar tetap aktif dan produktif.</p><h5>1. Konsumsi Makanan Bergizi Seimbang</h5><p>Perbanyak asupan vitamin C, D, dan zinc yang bisa didapatkan dari buah jeruk, sayuran hijau, telur, dan ikan. Makanan kaya antioksidan membantu menangkal radikal bebas dan memperkuat sel imun.</p><h5>2. Penuhi Kebutuhan Cairan (Minimal 2 Liter/Hari)</h5><p>Dehidrasi dapat menurunkan efektivitas membran mukosa di saluran pernapasan dalam menyaring debu dan bakteri. Pastikan minum air putih cukup sepanjang hari.</p><h5>3. Istirahat Cukup (7-8 Jam Tiap Malam)</h5><p>Saat tidur, tubuh memproduksi sitokin yang berperan penting dalam melawan infeksi dan peradangan. Kurang tidur kronis secara langsung menurunkan respon imun tubuh.</p><h5>4. Olahraga Ringan Rutin</h5><p>Aktivitas fisik seperti jalan cepat 30 menit sehari dapat memperlancar sirkulasi darah dan pergerakan sel-sel darah putih dalam mendeteksi kuman penyakit.</p><p>Jika Anda merasakan gejala demam lebih dari 3 hari, batuk memberat, atau lemas berkepanjangan, segera konsultasikan ke <strong>Poliklinik Penyakit Dalam Sawamawa Medical Center</strong> untuk pemeriksaan medis menyeluruh.</p>',
+                    'content'     => '<p>Pergantian musim atau pancaroba sering kali diiringi dengan peningkatan kasus infeksi saluran pernapasan atas (ISPA), flu, hingga gangguan pencernaan. Menjaga imunitas tubuh merupakan pertahanan terdepan agar tetap aktif dan produktif.</p><h5>1. Konsumsi Makanan Bergizi Seimbang</h5><p>Perbanyak asupan vitamin C, D, dan zinc yang bisa didapatkan dari buah jeruk, sayuran hijau, telur, dan ikan. Makanan kaya antioksidan membantu menangkal radikal bebas dan memperkuat sel imun.</p><h5>2. Penuhi Kebutuhan Cairan (Minimal 2 Liter/Hari)</h5><p>Dehidrasi dapat menurunkan efektivitas membran mukosa di saluran pernapasan dalam menyaring debu dan bakteri. Pastikan minum air putih cukup sepanjang hari.</p><h5>3. Istirahat Cukup (7-8 Jam Tiap Malam)</h5><p>Saat tidur, tubuh memproduksi sitokin yang berperan penting dalam melawan infeksi dan peradangan. Kurang tidur kronis secara langsung menurunkan respon imun tubuh.</p><h5>4. Olahraga Ringan Rutin</h5><p>Aktivitas fisik seperti jalan cepat 30 menit sehari dapat memperlancar sirkulasi darah dan pergerakan sel-sel darah putih dalam mendeteksi kuman penyakit.</p><p>Jika Anda merasakan gejala demam lebih dari 3 hari, batuk memberat, atau lemas berkepanjangan, segera konsultasikan ke <strong>Poliklinik Penyakit Dalam Gitria Klinik</strong> untuk pemeriksaan medis menyeluruh.</p>',
                     'image_url'   => null,
                     'status'      => 'published',
                     'views'       => 142,
@@ -1727,19 +1727,19 @@ class System extends BaseController
                     'category'    => 'Tips Medis',
                     'author'      => 'dr. Siti Rahmawati, Sp.A',
                     'summary'     => 'Hipertensi dan diabetes sering disebut "silent killer" karena kerap tidak menimbulkan gejala pada fase awal. Medical check-up rutin adalah kunci pencegahan.',
-                    'content'     => '<p>Penyakit Tidak Menular (PTM) seperti tekanan darah tinggi (hipertensi) dan diabetes melitus terus menjadi penyebab utama komplikasi kardiovaskular di Indonesia. Sebagian besar pasien baru menyadari kondisinya saat telah terjadi komplikasi pada jantung, ginjal, atau mata.</p><h5>Siapa yang Wajib Melakukan Skrining?</h5><ul><li>Individu berusia 30 tahun ke atas.</li><li>Memiliki riwayat keluarga dengan diabetes atau hipertensi.</li><li>Memiliki indeks massa tubuh (BMI) di atas batas normal atau obesitas.</li><li>Gaya hidup kurang gerak (sedentary lifestyle) dan perokok aktif.</li></ul><h5>Pemeriksaan Berkala di Sawamawa Medical Center</h5><p>Laboratorium kami menyediakan paket pemeriksaan gula darah puasa, HbA1c, profil lipid (kolesterol), serta pemantauan tensi digital terintegrasi rekam medis elektronik.</p>',
+                    'content'     => '<p>Penyakit Tidak Menular (PTM) seperti tekanan darah tinggi (hipertensi) dan diabetes melitus terus menjadi penyebab utama komplikasi kardiovaskular di Indonesia. Sebagian besar pasien baru menyadari kondisinya saat telah terjadi komplikasi pada jantung, ginjal, atau mata.</p><h5>Siapa yang Wajib Melakukan Skrining?</h5><ul><li>Individu berusia 30 tahun ke atas.</li><li>Memiliki riwayat keluarga dengan diabetes atau hipertensi.</li><li>Memiliki indeks massa tubuh (BMI) di atas batas normal atau obesitas.</li><li>Gaya hidup kurang gerak (sedentary lifestyle) dan perokok aktif.</li></ul><h5>Pemeriksaan Berkala di Gitria Klinik</h5><p>Laboratorium kami menyediakan paket pemeriksaan gula darah puasa, HbA1c, profil lipid (kolesterol), serta pemantauan tensi digital terintegrasi rekam medis elektronik.</p>',
                     'image_url'   => null,
                     'status'      => 'published',
                     'views'       => 98,
                     'created_at'  => date('Y-m-d H:i:s', strtotime('-3 days'))
                 ],
                 [
-                    'title'       => 'Transformasi Digital: Layanan E-Resep & Antrean Realtime di Sawamawa Medical Center',
+                    'title'       => 'Transformasi Digital: Layanan E-Resep & Antrean Realtime di Gitria Klinik',
                     'slug'        => 'transformasi-digital-layanan-e-resep-antrean-realtime',
                     'category'    => 'Berita Klinik',
-                    'author'      => 'Humas & IT Sawamawa',
-                    'summary'     => 'Sawamawa Medical Center mengimplementasikan sistem rekam medis elektronik terintegrasi SATUSEHAT Kemenkes RI, e-resep otomatis farmasi, dan reservasi online.',
-                    'content'     => '<p>Sebagai wujud komitmen memberikan pelayanan medis yang modern, cepat, dan transparan, <strong>Sawamawa Medical Center</strong> telah mengadopsi SIM-Klinik digital terpadu.</p><h5>Fitur Unggulan Sistem Baru:</h5><ol><li><strong>Pendaftaran Online Mandiri:</strong> Pasien baru dan lama dapat memesan nomor antrean dokter tanpa harus antre fisik sejak subuh.</li><li><strong>E-Resep Digital Tanpa Kertas:</strong> Resep obat dari ruang periksa dokter langsung terkirim secara instan ke Instalasi Farmasi, memangkas waktu tunggu penyiapan obat hingga 60%.</li><li><strong>Integrasi SATUSEHAT Kemenkes RI:</strong> Riwayat diagnosis dan resume medis pasien terstandar secara nasional dan aman terlindungi.</li></ol>',
+                    'author'      => 'Humas & IT Gitria Klinik',
+                    'summary'     => 'Gitria Klinik mengimplementasikan sistem rekam medis elektronik terintegrasi SATUSEHAT Kemenkes RI, e-resep otomatis farmasi, dan reservasi online.',
+                    'content'     => '<p>Sebagai wujud komitmen memberikan pelayanan medis yang modern, cepat, dan transparan, <strong>Gitria Klinik</strong> telah mengadopsi SIM-Klinik digital terpadu.</p><h5>Fitur Unggulan Sistem Baru:</h5><ol><li><strong>Pendaftaran Online Mandiri:</strong> Pasien baru dan lama dapat memesan nomor antrean dokter tanpa harus antre fisik sejak subuh.</li><li><strong>E-Resep Digital Tanpa Kertas:</strong> Resep obat dari ruang periksa dokter langsung terkirim secara instan ke Instalasi Farmasi, memangkas waktu tunggu penyiapan obat hingga 60%.</li><li><strong>Integrasi SATUSEHAT Kemenkes RI:</strong> Riwayat diagnosis dan resume medis pasien terstandar secara nasional dan aman terlindungi.</li></ol>',
                     'image_url'   => null,
                     'status'      => 'published',
                     'views'       => 215,
@@ -1749,9 +1749,9 @@ class System extends BaseController
                     'title'       => 'Pentingnya Nutrisi Terukur untuk Pasien Rawat Jalan dan Keluarga',
                     'slug'        => 'pentingnya-nutrisi-terukur-rawat-jalan',
                     'category'    => 'Layanan & Fasilitas',
-                    'author'      => 'Instalasi Gizi & Resto Sawamawa',
-                    'summary'     => 'Makanan bergizi bukan hanya untuk pemulihan pasien, melainkan investasi kesehatan jangka panjang. Resto Sehat Sawamawa siap menyajikan menu diet higienis.',
-                    'content'     => '<p>Gizi yang tepat memegang peranan krusial dalam mempercepat proses penyembuhan jaringan tubuh dan menjaga kestabilan metabolisme. Di <strong>Resto Gizi Sehat Sawamawa</strong>, setiap menu dikurasi oleh ahli gizi klinis dengan takaran kalori, natrium, dan gula yang terukur.</p><p>Keluarga pasien dan masyarakat umum dapat menikmati aneka hidangan sehat, jus segar tanpa pemanis buatan, serta sup nutrisi yang higienis dan lezat.</p>',
+                    'author'      => 'Instalasi Gizi & Resto Gitria Klinik',
+                    'summary'     => 'Makanan bergizi bukan hanya untuk pemulihan pasien, melainkan investasi kesehatan jangka panjang. Resto Sehat Gitria Klinik siap menyajikan menu diet higienis.',
+                    'content'     => '<p>Gizi yang tepat memegang peranan krusial dalam mempercepat proses penyembuhan jaringan tubuh dan menjaga kestabilan metabolisme. Di <strong>Resto Gizi Sehat Gitria Klinik</strong>, setiap menu dikurasi oleh ahli gizi klinis dengan takaran kalori, natrium, dan gula yang terukur.</p><p>Keluarga pasien dan masyarakat umum dapat menikmati aneka hidangan sehat, jus segar tanpa pemanis buatan, serta sup nutrisi yang higienis dan lezat.</p>',
                     'image_url'   => null,
                     'status'      => 'published',
                     'views'       => 76,
@@ -1768,7 +1768,7 @@ class System extends BaseController
             if ($action === 'create' || $action === 'update') {
                 $title    = trim(strip_tags((string)$this->request->getPost('title')));
                 $category = trim(strip_tags((string)$this->request->getPost('category'))) ?: 'Edukasi Kesehatan';
-                $author   = trim(strip_tags((string)$this->request->getPost('author'))) ?: 'Tim Medis Sawamawa';
+                $author   = trim(strip_tags((string)$this->request->getPost('author'))) ?: 'Tim Medis Gitria Klinik';
                 $summary  = trim(strip_tags((string)$this->request->getPost('summary')));
                 $content  = trim((string)$this->request->getPost('content'));
                 $status   = $this->request->getPost('status') === 'draft' ? 'draft' : 'published';
@@ -2146,7 +2146,7 @@ class System extends BaseController
         return $this->response->setJSON([
             'status'        => 'success',
             'version'       => $info ? $info->version : 'v2.10.0',
-            'title'         => $info ? $info->title : 'Sawamawa Medical Center Enterprise',
+            'title'         => $info ? $info->title : 'Gitria Klinik Enterprise',
             'category'      => $info ? $info->category : 'PERFORMA & DATA',
             'badge_color'   => $info ? $info->badge_color : 'teal',
             'release_date'  => $info ? $info->release_date : '2026-10-11',

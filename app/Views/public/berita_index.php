@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Pusat Edukasi Medis & Berita Kesehatan - Sawamawa Medical Center') ?></title>
+    <title><?= esc($title ?? 'Pusat Edukasi Medis & Berita Kesehatan - Gitria Klinik') ?></title>
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
         <link rel="shortcut icon" href="<?= clinic_favicon() ?>">
@@ -156,7 +156,7 @@
             <?php else: ?>
                 <span class="text-teal mr-2" style="font-size: 22px;"><i class="fas fa-hospital-user"></i></span>
             <?php endif; ?>
-            <span><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></span>
+            <span><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></span>
         </a>
         <div class="ml-auto d-flex align-items-center" style="gap: 8px;">
             <button type="button" class="btn-public-theme" id="btn-public-theme-toggle" title="Ganti Mode Terang / Gelap">
@@ -180,7 +180,7 @@
         </span>
         <h1 class="font-weight-bold text-dark" style="font-size: 32px;">Pusat Artikel &amp; Berita Kesehatan</h1>
         <p class="text-muted text-sm mx-auto" style="max-width: 600px;">
-            Ragam tips hidup sehat, informasi penyakit, dan pengumuman resmi dari tenaga medis profesional Sawamawa Medical Center.
+            Ragam tips hidup sehat, informasi penyakit, dan pengumuman resmi dari tenaga medis profesional Gitria Klinik.
         </p>
 
         <!-- Search Form -->
@@ -270,7 +270,7 @@
             Sistem Informasi Medis Terenkripsi 256-Bit SSL &bull; Standar Keamanan Informasi &amp; Privasi Data Pasien Internasional
         </div>
         <div style="color: #64748b;">
-            &copy; <?= date('Y') ?> <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>. Seluruh hak cipta dilindungi undang-undang.
+            &copy; <?= date('Y') ?> <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>. Seluruh hak cipta dilindungi undang-undang.
         </div>
     </div>
 </footer>

@@ -312,7 +312,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <small class="text-muted">Default: <code>Sawamawa@2026</code></small>
+                            <small class="text-muted">Default: <code>Gitria Klinik@2026</code></small>
                         </div>
 
                         <div class="col-md-3 form-group mb-2">

@@ -111,7 +111,7 @@
 <body>
 
 <div class="no-print">
-    <div><strong>Pratinjau Laporan Pelayanan Klinik</strong> (Sawamawa Medical Center)</div>
+    <div><strong>Pratinjau Laporan Pelayanan Klinik</strong> (Gitria Klinik)</div>
     <div>
         <button onclick="window.print();" class="btn btn-print">Cetak Laporan Resmi</button>
         <button onclick="window.close();" class="btn">Tutup</button>
@@ -120,9 +120,9 @@
 
 <!-- Header / Kop -->
 <div class="header">
-    <h2>SAWAMAWA MEDICAL CENTER</h2>
+    <h2>GITRIA KLINIK</h2>
     <h3>KLINIK PRATAMA RAWAT JALAN & PELAYANAN MEDIS TERPADU</h3>
-    <p>Jl. Kebangsaan No. 12, Sumbawa Besar, NTB | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
+    <p>Kelurahan Brang Biji, Sumbawa Besar, NTB | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
 </div>
 
 <div class="report-title">
@@ -305,7 +305,7 @@
     </div>
     <div class="sig-box">
         <div>Sumbawa Besar, <?= date('d F Y') ?></div>
-        <div>Direktur Sawamawa Medical Center</div>
+        <div>Direktur Gitria Klinik</div>
         <div class="sig-space"></div>
         <div><strong><u>dr. Direktur Utama</u></strong></div>
         <div style="font-size: 11px;">Pimpinan Fasilitas Pelayanan Kesehatan</div>

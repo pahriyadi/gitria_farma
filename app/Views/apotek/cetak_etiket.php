@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Cetak E-Tiket Obat') ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title ?? 'Cetak E-Tiket Obat') ?> - Gitria Klinik</title>
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -145,7 +145,7 @@
                         <div class="etiket-header d-flex justify-content-between align-items-center">
                             <div>
                                 <div class="etiket-title"><i class="fas fa-clinic-medical"></i> INSTALASI FARMASI</div>
-                                <div style="font-size: 11px; font-weight: 600; color: #444;">SAWAMAWA MEDICAL CENTER</div>
+                                <div style="font-size: 11px; font-weight: 600; color: #444;">GITRIA KLINIK</div>
                                 <div style="font-size: 9px; color: #777;">SIA: 440/12/DINKES/2026 | Telp: (0371) 23456</div>
                             </div>
                             <div class="text-right">

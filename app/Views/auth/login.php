@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?> | Portal Autentikasi macOS</title>
+    <title><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?> | Portal Autentikasi macOS</title>
 
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
@@ -535,7 +535,7 @@
         <?php else: ?>
             <i class="fas fa-hospital-user mr-1 text-teal"></i>
         <?php endif; ?>
-        <span><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></span>
+        <span><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></span>
     </div>
     <div class="macos-menubar-status">
         <a href="<?= base_url() ?>" class="text-white text-decoration-none mr-2">
@@ -758,7 +758,7 @@
 
 <!-- 3. Bottom Dock Credits -->
 <div class="macos-bottom-dock">
-    &copy; <?= date('Y') ?> <strong><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></strong> &bull; Sistem Informasi Manajemen Klinik &bull; <a href="<?= base_url() ?>">Kembali ke Beranda Publik</a>
+    &copy; <?= date('Y') ?> <strong><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></strong> &bull; Sistem Informasi Manajemen Klinik &bull; <a href="<?= base_url() ?>">Kembali ke Beranda Publik</a>
 </div>
 
 <!-- Scripts -->

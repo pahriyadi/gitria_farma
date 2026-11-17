@@ -174,7 +174,7 @@ class DatabaseBackupService
         // Header SQL Dump
         $dbName = $this->db->getDatabase();
         $writeStream("-- ====================================================================\n");
-        $writeStream("-- SAWAMAWA MEDICAL CENTER - AUTOMATED DATABASE BACKUP\n");
+        $writeStream("-- GITRIA KLINIK - AUTOMATED DATABASE BACKUP\n");
         $writeStream("-- Type       : " . strtoupper($type) . " SNAPSHOT\n");
         $writeStream("-- Database   : {$dbName}\n");
         $writeStream("-- Generated  : " . date('Y-m-d H:i:s') . "\n");

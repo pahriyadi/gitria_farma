@@ -560,9 +560,9 @@ class Accounting extends BaseController
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <Author>Sawamawa Medical Center</Author>
+  <Author>Gitria Klinik</Author>
   <Created><?= date('Y-m-d\TH:i:s\Z') ?></Created>
-  <Company>Sawamawa Medical Center</Company>
+  <Company>Gitria Klinik</Company>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">
@@ -708,7 +708,7 @@ class Accounting extends BaseController
 
    <!-- TITLE BLOCK -->
    <Row ss:Height="22">
-    <Cell ss:MergeAcross="9" ss:StyleID="ClinicTitle"><Data ss:Type="String"><?= htmlspecialchars(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER'), ENT_QUOTES, 'UTF-8') ?></Data></Cell>
+    <Cell ss:MergeAcross="9" ss:StyleID="ClinicTitle"><Data ss:Type="String"><?= htmlspecialchars(clinic_setting('clinic_name', 'GITRIA KLINIK'), ENT_QUOTES, 'UTF-8') ?></Data></Cell>
    </Row>
    <Row ss:Height="18">
     <Cell ss:MergeAcross="9" ss:StyleID="ReportTitle"><Data ss:Type="String">BUKU JURNAL UMUM KONSOLIDASIAN &amp; PENYESUAIAN</Data></Cell>
@@ -1448,7 +1448,7 @@ class Accounting extends BaseController
         $totalEquityWithNet = $totalEquity + $netIncome;
 
         $data = [
-            'title'             => 'Cetak Laporan Keuangan Resmi - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+            'title'             => 'Cetak Laporan Keuangan Resmi - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
             'startDate'         => $startDate,
             'endDate'           => $endDate,
             'type'              => $type,

@@ -278,7 +278,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 </span>
             <?php endif; ?>
             <span class="brand-text font-weight-bold text-dark" style="font-size: 14px; letter-spacing: -0.3px;">
-                <?= esc(clinic_setting('clinic_name', 'SAWAMAWA')) ?>
+                <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?>
             </span>
         </a>
 
@@ -922,7 +922,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                         </div>
                         <div>
                             <h5 class="modal-title font-weight-bold mb-0 text-white" id="modalWhatsNewPopupLabel">
-                                Apa yang Baru di Sawamawa Medical Center?
+                                Apa yang Baru di Gitria Klinik?
                             </h5>
                             <small class="text-white-50">Log Pembaruan Rilis Versi Terkini: <strong><?= esc($latestUpdateInfo ? $latestUpdateInfo->version : 'v2.10.0') ?></strong> (<?= esc($latestUpdateInfo ? date('d F Y', strtotime($latestUpdateInfo->release_date)) : '11 Oktober 2026') ?>)</small>
                         </div>
@@ -985,7 +985,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                         <div class="text-center py-4 text-muted">
                             <i class="fas fa-sparkles fa-3x text-warning mb-2"></i>
                             <h6 class="font-weight-bold text-dark">Versi Sistem Stabil Terpasang</h6>
-                            <p class="text-xs mb-0">Sistem Sawamawa Medical Center berjalan dengan versi rilis terkini.</p>
+                            <p class="text-xs mb-0">Sistem Gitria Klinik berjalan dengan versi rilis terkini.</p>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1289,7 +1289,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                 </div>
                 <div class="modal-footer bg-light py-2 px-4 d-flex justify-content-between align-items-center">
                     <span class="text-xs text-muted">
-                        <i class="fas fa-shield-halved text-teal mr-1"></i> <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?> &bull; v<?= esc(clinic_latest_version()) ?>
+                        <i class="fas fa-shield-halved text-teal mr-1"></i> <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?> &bull; v<?= esc(clinic_latest_version()) ?>
                     </span>
                     <button type="button" class="btn btn-sm btn-secondary font-weight-bold" data-dismiss="modal">Tutup</button>
                 </div>
@@ -3121,7 +3121,7 @@ $canAccessAdmin = $isSuper || in_array($roleName, ['Direksi']);
                     <span><kbd>↓</kbd><kbd>↑</kbd> Navigasi</span>
                     <span><kbd>esc</kbd> Tutup</span>
                 </div>
-                <span class="font-weight-bold" style="color: #007aff; font-size: 11.5px;"><i class="fas fa-bolt mr-1"></i> Sawamawa Spotlight</span>
+                <span class="font-weight-bold" style="color: #007aff; font-size: 11.5px;"><i class="fas fa-bolt mr-1"></i> Gitria Klinik Spotlight</span>
             </div>
         </div>
     </div>

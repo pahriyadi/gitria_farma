@@ -144,7 +144,7 @@
             <?php endif; ?>
             <div>
                 <h3 class="font-weight-bold mb-0 text-dark" style="font-family:'Outfit', sans-serif; letter-spacing: -0.5px;">
-                    <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?>
+                    <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?>
                 </h3>
                 <small class="text-secondary d-block font-weight-bold">
                     Izin Operasional Pelayanan Kesehatan No: <?= esc(clinic_setting('clinic_license_number', '445/012/DINKES/2024')) ?>
@@ -410,7 +410,7 @@
                     <strong>Disetujui &amp; Disahkan Oleh,</strong><br>
                     Direktur Utama Klinik<br><br><br><br><br>
                     <u><strong><?= esc(clinic_setting('clinic_director', 'dr. Andi Wijaya, Sp.PD')) ?></strong></u><br>
-                    Direktur Sawamawa Medical Center
+                    Direktur Gitria Klinik
                 </td>
             </tr>
         </table>

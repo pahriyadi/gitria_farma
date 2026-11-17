@@ -1806,9 +1806,9 @@ class Keuangan extends BaseController
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <Author>Sawamawa Medical Center</Author>
+  <Author>Gitria Klinik</Author>
   <Created><?= date('Y-m-d\TH:i:s\Z') ?></Created>
-  <Company>Sawamawa Medical Center</Company>
+  <Company>Gitria Klinik</Company>
  </DocumentProperties>
  <Styles>
   <Style ss:ID="Default" ss:Name="Normal">

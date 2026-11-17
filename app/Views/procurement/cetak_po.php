@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +50,7 @@
         }
 
         .paper-document::before {
-            content: "SAWAMAWA";
+            content: "GITRIA KLINIK";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -310,7 +310,7 @@
                 </div>
             <?php endif; ?>
             <div>
-                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <div class="clinic-subtitle"><?= esc(clinic_setting('clinic_tagline', 'Divisi Logistik, Farmasi & Pengadaan Barang Medis')) ?></div>
                 <div class="clinic-address"><?= esc(clinic_setting('clinic_address')) ?> | Telp: <?= esc(clinic_setting('clinic_phone')) ?> | Email: <?= esc(clinic_setting('clinic_email')) ?></div>
             </div>
@@ -357,7 +357,7 @@
             </div>
             <div class="meta-item">
                 <span class="meta-label">Alamat Pengiriman</span>
-                <span class="meta-value">: Gudang Farmasi Sawamawa Medical Center</span>
+                <span class="meta-value">: Gudang Farmasi Gitria Klinik</span>
             </div>
         </div>
     </div>
@@ -437,14 +437,14 @@
                 <span class="badge badge-success px-3 py-1 font-weight-bold"><i class="fas fa-certificate mr-1"></i> VERIFIED & AUTHORIZED</span>
             </div>
             <div class="sign-name">Direktur Operasional</div>
-            <div class="small text-muted">Sawamawa Medical Center</div>
+            <div class="small text-muted">Gitria Klinik</div>
         </div>
     </div>
 
     <!-- Footer -->
     <div class="doc-footer">
         <div>
-            <i class="fas fa-shield-alt mr-1 text-teal"></i> Dokumen Purchase Order resmi ini sah dan dicetak dari SIM-Klinik Sawamawa Medical Center.
+            <i class="fas fa-shield-alt mr-1 text-teal"></i> Dokumen Purchase Order resmi ini sah dan dicetak dari SIM-Gitria Klinik Medical Center.
         </div>
         <div>
             PO-HASH: <?= md5($po->po_no . $po->created_at) ?>

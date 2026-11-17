@@ -139,7 +139,7 @@
                     </div>
                     <div class="form-group">
                         <label>Atas Nama Rekening / Pemilik Akun</label>
-                        <input type="text" name="account_name" class="form-control" placeholder="a.n. Sawamawa Medical Center">
+                        <input type="text" name="account_name" class="form-control" placeholder="a.n. Gitria Klinik">
                     </div>
                     <div class="form-group">
                         <label>Catatan / Instruksi Pembayaran</label>

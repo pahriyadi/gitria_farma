@@ -210,7 +210,7 @@
                         </div>
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Penulis / Dokter:</label>
-                            <input type="text" name="author" class="form-control form-control-sm" value="Tim Medis Sawamawa">
+                            <input type="text" name="author" class="form-control form-control-sm" value="Tim Medis Gitria Klinik">
                         </div>
                         <div class="col-md-4 form-group mb-3">
                             <label class="text-xs font-weight-bold text-dark">Status Publikasi:</label>

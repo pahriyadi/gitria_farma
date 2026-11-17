@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Laporan Farmasi') ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title ?? 'Laporan Farmasi') ?> - Gitria Klinik</title>
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -114,9 +114,9 @@
         <!-- Clinic Header -->
         <div class="clinic-header d-flex justify-content-between align-items-center">
             <div>
-                <div class="clinic-title"><i class="fas fa-clinic-medical mr-1"></i> SAWAMAWA MEDICAL CENTER</div>
+                <div class="clinic-title"><i class="fas fa-clinic-medical mr-1"></i> GITRIA KLINIK</div>
                 <div class="text-secondary small font-weight-bold">INSTALASI FARMASI & PELAYANAN OBAT</div>
-                <div class="text-muted text-xs">Jl. Kebangsaan No. 12, Sumbawa Besar, NTB | Telp: (0371) 23456</div>
+                <div class="text-muted text-xs">Kelurahan Brang Biji, Sumbawa Besar, NTB | Telp: (0371) 23456</div>
             </div>
             <div class="text-right">
                 <span class="report-badge text-uppercase"><i class="fas fa-chart-bar mr-1"></i> LAPORAN RESMI FARMASI</span>
@@ -372,7 +372,7 @@
                 <div class="text-muted small">Mengetahui,<br>Direktur / Pimpinan Klinik,</div>
                 <div style="height: 40px;"></div>
                 <div class="font-weight-bold text-dark border-top d-inline-block pt-1 px-3">
-                    ( Manajemen Sawamawa )
+                    ( Manajemen Gitria Klinik )
                 </div>
             </div>
         </div>

@@ -9,7 +9,7 @@
     <meta name="csrf-name" content="<?= csrf_token() ?>">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
     <script>window.BASE_URL = "<?= rtrim(base_url(), '/') ?>";</script>
-    <title><?= esc($title ?? 'Layar Display TV Antrean & Informasi - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
+    <title><?= esc($title ?? 'Layar Display TV Antrean & Informasi - ' . clinic_setting('clinic_name', 'Gitria Klinik')) ?></title>
 
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
@@ -518,7 +518,7 @@
             <i class="fas fa-hospital-user fa-2x mr-3 text-warning"></i>
         <?php endif; ?>
         <div>
-            <div class="clinic-brand"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+            <div class="clinic-brand"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
             <div class="clinic-tagline"><?= esc(clinic_setting('clinic_tagline', 'Layanan Kesehatan Paripurna & Resto Gizi Sehat Terpadu')) ?></div>
         </div>
     </div>
@@ -565,7 +565,7 @@
                 <div class="ad-slide" style="background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80');">
                     <div class="slide-overlay-content">
                         <span class="slide-badge"><i class="fas fa-utensils mr-1"></i> Nutrisi Sehat</span>
-                        <div class="slide-title">Sawamawa Resto Gizi Sehat & Nutrisi Medis</div>
+                        <div class="slide-title">Gitria Klinik Resto Gizi Sehat & Nutrisi Medis</div>
                         <div class="slide-desc">Menyajikan makanan sehat bergizi seimbang yang dikurasi khusus oleh ahli gizi klinis untuk mendukung pemulihan stamina pasien.</div>
                     </div>
                 </div>
@@ -668,7 +668,7 @@
     <div class="container-fluid">
         <marquee scrollamount="6">
             <i class="fas fa-bullhorn text-warning mr-2"></i> 
-            Selamat datang di <strong><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></strong>. Harap perhatikan nomor antrean Anda pada layar. Bagi pasien yang nomor antreannya dipanggil, silakan langsung menuju ke ruang poliklinik atau ruang tindakan terkait. Pendaftaran online dan jadwal dokter dapat diakses melalui website resmi kami. Jagalah ketertiban dan kebersihan bersama demi kenyamanan pelayanan.
+            Selamat datang di <strong><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></strong>. Harap perhatikan nomor antrean Anda pada layar. Bagi pasien yang nomor antreannya dipanggil, silakan langsung menuju ke ruang poliklinik atau ruang tindakan terkait. Pendaftaran online dan jadwal dokter dapat diakses melalui website resmi kami. Jagalah ketertiban dan kebersihan bersama demi kenyamanan pelayanan.
         </marquee>
     </div>
 </div>

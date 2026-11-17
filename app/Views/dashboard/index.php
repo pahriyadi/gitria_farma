@@ -12,7 +12,7 @@
                     <span class="badge badge-subtle-teal ml-2 font-weight-bold"><?= esc($roleName) ?></span>
                 </h5>
                 <p class="text-muted mb-0 mt-1" style="font-size: 13px;">
-                    Panel Kontrol Terpadu <strong><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></strong> — Pelayanan Medis, Farmasi, Resto Sehat & Keuangan Akuntansi.
+                    Panel Kontrol Terpadu <strong><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></strong> — Pelayanan Medis, Farmasi, Resto Sehat & Keuangan Akuntansi.
                 </p>
             </div>
             <div class="col-md-4 text-md-right mt-2 mt-md-0">

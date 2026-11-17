@@ -58,7 +58,7 @@ Events::on('pre_system', static function (): void {
 
 /*
  * --------------------------------------------------------------------
- * Enterprise Domain Events & Hooks (Sawamawa Medical Center)
+ * Enterprise Domain Events & Hooks (Gitria Klinik)
  * --------------------------------------------------------------------
  */
 

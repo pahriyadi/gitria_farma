@@ -14,7 +14,7 @@ class TestVoiceQueue extends BaseCommand
 
     public function run(array $params)
     {
-        CLI::write('=== SIMULASI ALUR TERPADU PANDUAN SUARA PASIEN SAWAMAWA MEDICAL CENTER ===', 'yellow');
+        CLI::write('=== SIMULASI ALUR TERPADU PANDUAN SUARA PASIEN GITRIA KLINIK ===', 'yellow');
         CLI::newLine();
 
         $service = new QueueCallService();

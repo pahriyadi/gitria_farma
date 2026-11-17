@@ -412,7 +412,7 @@ class LiveSync extends BaseController
             'server_time' => date('Y-m-d H:i:s'),
             'csrf_name'   => csrf_token(),
             'csrf_hash'   => csrf_hash(),
-            'app'         => 'Sawamawa Medical Center ERP'
+            'app'         => 'Gitria Klinik ERP'
         ]);
     }
 

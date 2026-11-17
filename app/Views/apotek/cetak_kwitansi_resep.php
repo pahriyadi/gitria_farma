@@ -34,7 +34,7 @@ if (!function_exists('terbilangResep')) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Kwitansi Pembayaran Resep Obat') ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title ?? 'Kwitansi Pembayaran Resep Obat') ?> - Gitria Klinik</title>
     <!-- Google Font: Source Sans Pro & Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -158,9 +158,9 @@ if (!function_exists('terbilangResep')) {
                 <i class="fas fa-clinic-medical text-teal" style="font-size: 42px;"></i>
             </div>
             <div>
-                <div class="clinic-title">SAWAMAWA MEDICAL CENTER</div>
+                <div class="clinic-title">GITRIA KLINIK</div>
                 <div class="font-weight-bold text-dark text-sm">INSTALASI FARMASI & APOTEK RESMI</div>
-                <div class="text-muted text-xs">Jl. Kebangsaan No. 12, Sumbawa Besar | Telp: (0371) 23456 | WA: 0812-3456-7890</div>
+                <div class="text-muted text-xs">Kelurahan Brang Biji, Sumbawa Besar | Telp: (0371) 23456 | WA: 0812-3456-7890</div>
                 <div class="text-muted text-xs">Izin Operasional Apotek: No. 503/044/DPM-PTSP/FARM/2024</div>
             </div>
         </div>
@@ -320,7 +320,7 @@ if (!function_exists('terbilangResep')) {
     </div>
 
     <div class="text-center text-muted mt-4 pt-2 border-top" style="font-size: 10px;">
-        Dokumen kwitansi ini merupakan bukti pembayaran dan penyerahan resep obat yang sah yang diterbitkan oleh SIM-Klinik Sawamawa Medical Center.
+        Dokumen kwitansi ini merupakan bukti pembayaran dan penyerahan resep obat yang sah yang diterbitkan oleh SIM-Gitria Klinik Medical Center.
     </div>
 </div>
 

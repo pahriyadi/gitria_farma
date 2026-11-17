@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Struk e-Resep Pasien') ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title ?? 'Struk e-Resep Pasien') ?> - Gitria Klinik</title>
     <style>
         @page {
             size: 80mm auto;
@@ -144,9 +144,9 @@
 </div>
 
 <div class="header">
-    <h3>SAWAMAWA MEDICAL CENTER</h3>
+    <h3>GITRIA KLINIK</h3>
     <p><strong>INSTALASI FARMASI & APOTEK</strong></p>
-    <p>Jl. Kebangsaan No. 12, Sumbawa Besar</p>
+    <p>Kelurahan Brang Biji, Sumbawa Besar</p>
     <p>Telp: (0371) 23456 | WA: 0812-3456-7890</p>
 </div>
 

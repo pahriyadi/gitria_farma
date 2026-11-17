@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -82,7 +82,7 @@
     </div>
 
     <div class="header">
-        <h2>SAWAMAWA MEDICAL CENTER</h2>
+        <h2>GITRIA KLINIK</h2>
         <p>BERITA ACARA REKAP PENERIMAAN KASIR & LAPORAN TUTUP SHIFT HARIAN</p>
         <p>Tanggal Transaksi: <strong><?= date('d F Y', strtotime($date)) ?></strong> | Waktu Cetak: <?= date('d/m/Y H:i:s') ?> WITA</p>
     </div>

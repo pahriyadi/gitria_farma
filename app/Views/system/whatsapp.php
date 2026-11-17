@@ -59,7 +59,7 @@
                                 <strong class="text-dark d-block mb-1 font-weight-bold"><i class="fas fa-ticket text-teal mr-1"></i> 1. e-Ticket Antrean Online</strong>
                                 <p class="text-muted mb-2">Dikirim otomatis saat pasien selesai mendaftar secara mandiri melalui website.</p>
                                 <div class="p-2 bg-white border rounded font-italic">
-                                    "Halo [Nama Pasien], pendaftaran Anda di Sawamawa Medical Center berhasil! No Antrean: [A-01], Poliklinik: [Poli Umum], Estimasi: [09:00 WITA]."
+                                    "Halo [Nama Pasien], pendaftaran Anda di Gitria Klinik berhasil! No Antrean: [A-01], Poliklinik: [Poli Umum], Estimasi: [09:00 WITA]."
                                 </div>
                             </div>
                         </div>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="form-group mb-0">
                         <label class="text-xs font-weight-bold text-dark">Konten Pesan WhatsApp <span class="text-danger">*</span></label>
-                        <textarea name="message_content" class="form-control form-control-sm" rows="4" placeholder="Tulis isi pesan WhatsApp..." required>Halo, ini adalah pesan resmi dari Sawamawa Medical Center. Terima kasih telah mempercayakan layanan kesehatan Anda kepada kami.</textarea>
+                        <textarea name="message_content" class="form-control form-control-sm" rows="4" placeholder="Tulis isi pesan WhatsApp..." required>Halo, ini adalah pesan resmi dari Gitria Klinik. Terima kasih telah mempercayakan layanan kesehatan Anda kepada kami.</textarea>
                     </div>
                 </div>
                 <div class="modal-footer p-2 bg-light border-top">

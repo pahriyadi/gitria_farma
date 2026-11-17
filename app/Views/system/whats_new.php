@@ -23,7 +23,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-9">
                         <h5 class="font-weight-bold wn-hero-title mb-1">
-                            <i class="fas fa-rocket text-teal mr-1"></i> Sawamawa Enterprise ERP &amp; Pelayanan Medis Modern
+                            <i class="fas fa-rocket text-teal mr-1"></i> Gitria Klinik Enterprise ERP &amp; Pelayanan Medis Modern
                         </h5>
                         <p class="wn-hero-desc mb-0" style="font-size: 13px; line-height: 1.5;">
                             Sistem terintegrasi menyeluruh dari pendaftaran pasien berkecepatan tinggi dengan <strong>DataTables Server-Side Processing</strong>, <strong>Rekam Medis Elektronik (RME) SOAP</strong>, <strong>Farmasi Multi-Batch</strong>, <strong>POS Resto Sehat &amp; KDS Dapur</strong>, hingga <strong>Akuntansi Terotomatisasi (Smart Auto-Balancing)</strong>.

@@ -146,8 +146,8 @@
                 <?php endif; ?>
             </td>
             <td class="header-title">
-                <h2><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></h2>
-                <p><?= esc(clinic_setting('clinic_address', 'Jl. Raya Sawamawa No. 123, Indonesia')) ?> | Telp: <?= esc(clinic_setting('clinic_phone', '(021) 12345678')) ?></p>
+                <h2><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></h2>
+                <p><?= esc(clinic_setting('clinic_address', 'Jl. Raya Gitria Klinik No. 123, Indonesia')) ?> | Telp: <?= esc(clinic_setting('clinic_phone', '(021) 12345678')) ?></p>
             </td>
         </tr>
     </table>

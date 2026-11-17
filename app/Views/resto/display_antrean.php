@@ -7,7 +7,7 @@
     <meta name="csrf-token-name" content="<?= csrf_token() ?>">
     <meta name="csrf-hash" content="<?= csrf_hash() ?>">
     <script>window.BASE_URL = "<?= rtrim(base_url(), '/') ?>";</script>
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
@@ -233,7 +233,7 @@
     <header class="header-bar d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <div class="brand-logo mr-4">
-                <i class="fas fa-utensils mr-2 text-teal"></i>SAWAMAWA <span>RESTO & NUTRITION</span>
+                <i class="fas fa-utensils mr-2 text-teal"></i>GITRIA KLINIK <span>RESTO & NUTRITION</span>
             </div>
             <span class="badge badge-dark border border-secondary px-3 py-2 text-light font-weight-bold" style="font-size: 12px;">
                 <span class="pulsing-dot"></span> ANTRIAN PESANAN REALTIME
@@ -326,7 +326,7 @@
     <footer class="ticker-bar">
         <div class="ticker-label"><i class="fas fa-heart-pulse mr-1"></i> Edukasi Gizi</div>
         <marquee behavior="scroll" direction="left" scrollamount="6" class="text-light">
-            Selamat Datang di <strong>Sawamawa Medical Center Resto & Healthy Nutrition Store</strong>. 
+            Selamat Datang di <strong>Gitria Klinik Resto & Healthy Nutrition Store</strong>. 
             Semua menu makanan dan minuman disiapkan higienis oleh nutrisionis klinis dengan bahan segar pilihan. 
             Untuk diet khusus diabetes, hipertensi, atau asam urat, silakan konsultasikan dengan dokter spesialis gizi kami.
         </marquee>

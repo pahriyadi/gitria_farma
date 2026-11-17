@@ -252,7 +252,7 @@ class Dashboard extends BaseController
                                      ->getResult();
 
         $data = [
-            'title'                      => 'Dashboard Sawamawa Medical Center',
+            'title'                      => 'Dashboard Gitria Klinik',
             'active_menu'                => 'dashboard',
             'isExecutive'                => $isExecutive,
             'roleName'                   => $roleName,

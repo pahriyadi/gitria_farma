@@ -74,7 +74,7 @@ class CreateSystemUpdatesTable extends Migration
                     'category'     => 'PUBLIC PORTAL',
                     'badge_color'  => 'primary',
                     'release_date' => '2026-08-19',
-                    'summary'      => 'Website profil modern Sawamawa Medical Center dan formulir pendaftaran pasien online aman.',
+                    'summary'      => 'Website profil modern Gitria Klinik dan formulir pendaftaran pasien online aman.',
                     'details'      => "• Landing Page Premium: Profil dokter, poliklinik, layanan apotek & resto, dan peta lokasi.\n• Registrasi Pasien Baru Online: Penerbitan No RM otomatis terlindungi CSRF dan verifikasi NIK.\n• Booking Kunjungan Pasien Lama: Reservasi poli cepat dengan verifikasi ganda No RM / NIK dan Tanggal Lahir.",
                     'is_major'     => 0,
                     'is_published' => 1,

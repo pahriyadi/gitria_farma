@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Artikel Kesehatan - Sawamawa Medical Center') ?></title>
+    <title><?= esc($title ?? 'Artikel Kesehatan - Gitria Klinik') ?></title>
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
         <link rel="shortcut icon" href="<?= clinic_favicon() ?>">
@@ -92,7 +92,7 @@
             <?php else: ?>
                 <span class="text-teal mr-2" style="font-size: 22px;"><i class="fas fa-hospital-user"></i></span>
             <?php endif; ?>
-            <span><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></span>
+            <span><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></span>
         </a>
         <div class="ml-auto d-flex align-items-center" style="gap: 8px;">
             <button type="button" class="btn-public-theme" id="btn-public-theme-toggle" title="Ganti Mode Terang / Gelap">
@@ -154,7 +154,7 @@
                         <strong class="text-dark text-xs">Bagikan artikel ini ke kerabat &amp; keluarga:</strong>
                     </div>
                     <div>
-                        <a href="https://api.whatsapp.com/send?text=<?= urlencode('*' . $article->title . "*\n\nBaca artikel kesehatan dari Sawamawa Medical Center di: " . current_url()) ?>" target="_blank" class="btn btn-success btn-sm font-weight-bold">
+                        <a href="https://api.whatsapp.com/send?text=<?= urlencode('*' . $article->title . "*\n\nBaca artikel kesehatan dari Gitria Klinik di: " . current_url()) ?>" target="_blank" class="btn btn-success btn-sm font-weight-bold">
                             <i class="fab fa-whatsapp mr-1"></i> WhatsApp
                         </a>
                         <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(current_url()) ?>" target="_blank" class="btn btn-primary btn-sm font-weight-bold ml-1">
@@ -212,7 +212,7 @@
             Sistem Informasi Medis Terenkripsi 256-Bit SSL &bull; Standar Keamanan Informasi &amp; Privasi Data Pasien Internasional
         </div>
         <div style="color: #64748b;">
-            &copy; <?= date('Y') ?> <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>. Seluruh hak cipta dilindungi undang-undang.
+            &copy; <?= date('Y') ?> <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>. Seluruh hak cipta dilindungi undang-undang.
         </div>
     </div>
 </footer>

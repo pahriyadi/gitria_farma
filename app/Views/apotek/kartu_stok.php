@@ -152,9 +152,9 @@
 
 <!-- Print Letterhead (Visible only on print) -->
 <div class="print-header mb-4 text-center">
-    <h4 class="font-weight-bold mb-0">SAWAMAWA MEDICAL CENTER</h4>
+    <h4 class="font-weight-bold mb-0">GITRIA KLINIK</h4>
     <p class="mb-0 text-sm">INSTALASI FARMASI &amp; LOGISTIK OBAT</p>
-    <p class="text-xs text-muted">Jl. Raya Sawamawa No. 123, Telp: (021) 7788-9900 | SIPA: 503/Apt/2026</p>
+    <p class="text-xs text-muted">Jl. Raya Gitria Klinik No. 123, Telp: (021) 7788-9900 | SIPA: 503/Apt/2026</p>
     <hr style="border-top: 2px solid #000; margin-top: 5px; margin-bottom: 15px;">
     <h5 class="font-weight-bold text-uppercase">LEMBAR BUKU KARTU STOK OBAT</h5>
 </div>

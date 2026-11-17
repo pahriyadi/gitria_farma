@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title) ?> - Gitria Klinik</title>
     <!-- Fonts & Bootstrap 4 -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -50,7 +50,7 @@
         }
 
         .paper-document::before {
-            content: "SAWAMAWA";
+            content: "GITRIA KLINIK";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -310,7 +310,7 @@
                 </div>
             <?php endif; ?>
             <div>
-                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="clinic-title"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <div class="clinic-subtitle"><?= esc(clinic_setting('clinic_tagline', 'Gudang Logistik Farmasi & Alat Kesehatan')) ?></div>
                 <div class="clinic-address"><?= esc(clinic_setting('clinic_address')) ?> | Telp: <?= esc(clinic_setting('clinic_phone')) ?></div>
             </div>
@@ -428,7 +428,7 @@
                 <span class="badge badge-success px-3 py-1 font-weight-bold"><i class="fas fa-check-circle mr-1"></i> STOCK UPDATED</span>
             </div>
             <div class="sign-name"><?= esc($grn->receiver_name ?: 'Petugas Gudang Farmasi') ?></div>
-            <div class="small text-muted">Staff Logistik Sawamawa</div>
+            <div class="small text-muted">Staff Logistik Gitria Klinik</div>
         </div>
     </div>
 

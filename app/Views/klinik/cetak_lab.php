@@ -128,7 +128,7 @@
 <body>
 
 <div class="no-print">
-    <div><strong>Pratinjau Lembar Hasil Laboratorium</strong> (Sawamawa Medical Center)</div>
+    <div><strong>Pratinjau Lembar Hasil Laboratorium</strong> (Gitria Klinik)</div>
     <div>
         <button onclick="window.print();" class="btn btn-print">Cetak Hasil Lab</button>
         <button onclick="window.close();" class="btn">Tutup</button>
@@ -137,9 +137,9 @@
 
 <!-- Header / Kop -->
 <div class="header">
-    <h2>SAWAMAWA MEDICAL CENTER</h2>
+    <h2>GITRIA KLINIK</h2>
     <h3>INSTALASI LABORATORIUM KLINIK & DIAGNOSTIK</h3>
-    <p>Jl. Kebangsaan No. 12, Sumbawa Besar, NTB | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
+    <p>Kelurahan Brang Biji, Sumbawa Besar, NTB | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
 </div>
 
 <div class="doc-title">

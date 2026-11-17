@@ -47,7 +47,7 @@
         <tr>
             <td style="width: 60%;">
                 <h2 style="margin: 0; color: #0d9488; font-size: 18px; font-weight: 800; letter-spacing: 0.5px;">
-                    <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER & DISTRIBUSI')) ?>
+                    <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK & DISTRIBUSI')) ?>
                 </h2>
                 <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
                     <strong>Unit Bisnis Distributor &amp; PBF Farmasi Grosir</strong><br>
@@ -156,7 +156,7 @@
                     <strong>Informasi Pembayaran Bank:</strong><br>
                     Bank: <strong>Bank Central Asia (BCA)</strong><br>
                     No. Rekening: <strong>7925-888-999</strong><br>
-                    Atas Nama: <strong>GITRIA FARMA / SAWAMAWA ERP</strong><br>
+                    Atas Nama: <strong>GITRIA FARMA / GITRIA KLINIK ERP</strong><br>
                     <small style="color: #64748b; display: block; margin-top: 4px;">* Harap mencantumkan No. Faktur pada berita transfer.</small>
                 </div>
 

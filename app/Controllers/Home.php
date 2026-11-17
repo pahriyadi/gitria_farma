@@ -57,7 +57,7 @@ class Home extends BaseController
         } catch (\Throwable $e) {}
 
         $data = [
-            'title'         => 'Sawamawa Medical Center - Klinik Pratama & Pelayanan Kesehatan Terpadu Sumbawa',
+            'title'         => 'Gitria Klinik - Klinik Pratama & Pelayanan Kesehatan Terpadu Sumbawa',
             'doctors'       => $doctors,
             'polyclinics'   => $polyclinics,
             'services'      => $services,
@@ -274,7 +274,7 @@ class Home extends BaseController
                        ->getResult();
 
         $data = [
-            'title'         => 'Pendaftaran Pasien Online (Pasien Baru & Lama) - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+            'title'         => 'Pendaftaran Pasien Online (Pasien Baru & Lama) - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
             'doctors'       => $doctors,
             'polyclinics'   => $polyclinics,
             'services'      => $services,
@@ -381,7 +381,7 @@ class Home extends BaseController
         }
 
         // WhatsApp Confirmation Message
-        $clinicName = clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER');
+        $clinicName = clinic_setting('clinic_name', 'GITRIA KLINIK');
         $waText = "Halo Bpk/Ibu *" . $visit->patient_name . "*,\n\n"
                 . "Pendaftaran kunjungan berobat Anda di *" . $clinicName . "* telah BERHASIL diverifikasi!\n\n"
                 . "📋 *DATA PENDAFTARAN & ANTREAN ANDA:*\n"
@@ -408,7 +408,7 @@ class Home extends BaseController
         }
 
         $waUrl = "https://api.whatsapp.com/send?phone=" . $rawPhone . "&text=" . urlencode($waText);
-        $adminWaUrl = "https://api.whatsapp.com/send?phone=" . clinic_setting('clinic_phone', '6281234567890') . "&text=" . urlencode("Halo Admin Sawamawa, saya ingin konfirmasi pendaftaran online atas nama {$visit->patient_name} (No. Antrean: {$visit->queue_no}, No. RM: {$visit->no_rm}).");
+        $adminWaUrl = "https://api.whatsapp.com/send?phone=" . clinic_setting('clinic_phone', '6281234567890') . "&text=" . urlencode("Halo Admin Gitria Klinik, saya ingin konfirmasi pendaftaran online atas nama {$visit->patient_name} (No. Antrean: {$visit->queue_no}, No. RM: {$visit->no_rm}).");
 
         $data = [
             'title'      => 'Bukti Pendaftaran Online - ' . $visit->patient_name,
@@ -473,7 +473,7 @@ class Home extends BaseController
                                  ->getResult();
 
             $data = [
-                'title'          => esc($article->title) . ' - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+                'title'          => esc($article->title) . ' - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
                 'article'        => $article,
                 'recentArticles' => $recentArticles
             ];
@@ -500,7 +500,7 @@ class Home extends BaseController
         $articles = $builder->orderBy('id', 'DESC')->get()->getResult();
 
         $data = [
-            'title'       => 'Pusat Edukasi Medis & Berita Kesehatan - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center'),
+            'title'       => 'Pusat Edukasi Medis & Berita Kesehatan - ' . clinic_setting('clinic_name', 'Gitria Klinik'),
             'articles'    => $articles,
             'currentCat'  => $category,
             'searchQuery' => $search

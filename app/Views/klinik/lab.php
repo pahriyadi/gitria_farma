@@ -287,7 +287,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <label class="font-weight-bold">Nama Petugas / Analis Laboratorium</label>
-                            <input type="text" name="officer_name" class="form-control" value="Analis Lab Sawamawa">
+                            <input type="text" name="officer_name" class="form-control" value="Analis Lab Gitria Klinik">
                         </div>
                     </div>
 

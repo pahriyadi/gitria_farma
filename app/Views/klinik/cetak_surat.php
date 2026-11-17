@@ -126,9 +126,9 @@
 
 <!-- Letterhead / Kop Klinik -->
 <div class="header">
-    <h2>SAWAMAWA MEDICAL CENTER</h2>
+    <h2>GITRIA KLINIK</h2>
     <h3>KLINIK PRATAMA RAWAT JALAN & PELAYANAN MEDIS TERPADU</h3>
-    <p>Jl. Kebangsaan No. 12, Sumbawa Besar, Nusa Tenggara Barat (NTB) | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
+    <p>Kelurahan Brang Biji, Sumbawa Besar, Nusa Tenggara Barat (NTB) | Telp: (0371) 23456 | CS: 0812-3456-7890</p>
     <p>Izin Operasional Klinik No: 503/042/DPM-PTSP/2026</p>
 </div>
 
@@ -149,7 +149,7 @@
 <!-- Isi Surat -->
 <div class="content-body">
     <?php if ($letter->letter_type === 'sakit'): ?>
-        <p>Yang bertanda tangan di bawah ini, Dokter Pemeriksa pada <strong>Sawamawa Medical Center</strong>, menerangkan dengan sebenarnya bahwa:</p>
+        <p>Yang bertanda tangan di bawah ini, Dokter Pemeriksa pada <strong>Gitria Klinik</strong>, menerangkan dengan sebenarnya bahwa:</p>
         
         <table class="patient-table">
             <tr>
@@ -192,7 +192,7 @@
         <p>Demikian surat keterangan ini kami berikan dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>
 
     <?php elseif ($letter->letter_type === 'sehat'): ?>
-        <p>Yang bertanda tangan di bawah ini, Dokter Pemeriksa pada <strong>Sawamawa Medical Center</strong>, menerangkan bahwa telah melakukan pemeriksaan kesehatan fisik kepada:</p>
+        <p>Yang bertanda tangan di bawah ini, Dokter Pemeriksa pada <strong>Gitria Klinik</strong>, menerangkan bahwa telah melakukan pemeriksaan kesehatan fisik kepada:</p>
         
         <table class="patient-table">
             <tr>

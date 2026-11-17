@@ -21,7 +21,7 @@ class DatabaseBackup extends BaseCommand
     public function run(array $params)
     {
         CLI::write("=================================================================", 'cyan');
-        CLI::write("  🏥 SAWAMAWA MEDICAL CENTER - DATABASE BACKUP & ROTATION ENGINE ", 'white', 'blue');
+        CLI::write("  🏥 GITRIA KLINIK - DATABASE BACKUP & ROTATION ENGINE ", 'white', 'blue');
         CLI::write("=================================================================", 'cyan');
 
         $backupService = new DatabaseBackupService();

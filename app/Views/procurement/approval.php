@@ -300,9 +300,9 @@
                                 <i class="fas fa-hospital"></i>
                             </div>
                             <div>
-                                <h5 class="font-weight-bold text-teal mb-0">SAWAMAWA MEDICAL CENTER</h5>
+                                <h5 class="font-weight-bold text-teal mb-0">GITRIA KLINIK</h5>
                                 <small class="text-secondary font-weight-bold d-block">Logistik Farmasi, Pelayanan Medis & Pengadaan</small>
-                                <small class="text-muted" style="font-size: 11px;">Jl. Kebangsaan No. 12, Sumbawa Besar, NTB</small>
+                                <small class="text-muted" style="font-size: 11px;">Kelurahan Brang Biji, Sumbawa Besar, NTB</small>
                             </div>
                         </div>
                         <div class="text-right">
@@ -351,7 +351,7 @@
                     <!-- Verification Footer Seal -->
                     <div class="d-flex justify-content-between align-items-center pt-2 border-top text-muted" style="font-size: 11px;">
                         <div>
-                            <i class="fas fa-shield-alt text-teal mr-1"></i> Terverifikasi digital melalui SIM-Klinik Sawamawa Medical Center
+                            <i class="fas fa-shield-alt text-teal mr-1"></i> Terverifikasi digital melalui SIM-Gitria Klinik Medical Center
                         </div>
                         <div>
                             Pusat Persetujuan Transaksi

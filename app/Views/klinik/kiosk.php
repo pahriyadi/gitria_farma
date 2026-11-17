@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-name" content="<?= csrf_token() ?>">
     <meta name="csrf-token" content="<?= csrf_hash() ?>">
-    <title><?= esc($title ?? 'Anjungan Pendaftaran Mandiri (Kiosk) - ' . clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></title>
+    <title><?= esc($title ?? 'Anjungan Pendaftaran Mandiri (Kiosk) - ' . clinic_setting('clinic_name', 'Gitria Klinik')) ?></title>
 
     <?php if (clinic_favicon()): ?>
         <link rel="icon" type="image/x-icon" href="<?= clinic_favicon() ?>">
@@ -491,7 +491,7 @@
             <i class="fas fa-hospital-user fa-2x mr-3 text-warning"></i>
         <?php endif; ?>
         <div>
-            <div class="clinic-brand"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+            <div class="clinic-brand"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
             <div class="clinic-tagline"><i class="fas fa-desktop mr-1 text-teal"></i> Anjungan Pendaftaran Mandiri (APM) Layar Sentuh</div>
         </div>
     </div>
@@ -553,7 +553,7 @@
                 <div class="touch-action-card card-gold" onclick="goToStep('step-2-new-patient', 2);">
                     <div class="touch-card-icon"><i class="fas fa-user-plus"></i></div>
                     <div class="touch-card-title">PASIEN BARU</div>
-                    <div class="touch-card-desc">Belum pernah berobat / Pertama kali berkunjung ke Sawamawa Medical Center.</div>
+                    <div class="touch-card-desc">Belum pernah berobat / Pertama kali berkunjung ke Gitria Klinik.</div>
                     <button class="btn btn-warning btn-lg font-weight-bold px-4 mt-3" style="border-radius: 30px;">
                         <i class="fas fa-plus-circle mr-1"></i> Daftar Pasien Baru
                     </button>
@@ -836,7 +836,7 @@
 
         <!-- THERMAL TICKET DESIGN -->
         <div class="thermal-ticket-box" id="print-ticket-area">
-            <div class="ticket-clinic-name" id="ticket-clinic-name"><?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?></div>
+            <div class="ticket-clinic-name" id="ticket-clinic-name"><?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?></div>
             <div class="ticket-tagline" id="ticket-clinic-tagline"><?= esc(clinic_setting('clinic_tagline', 'Layanan Medis Terpadu & Paripurna')) ?></div>
             <div style="font-size: 11px; border-bottom: 1px dashed #000; padding-bottom: 4px;" id="ticket-datetime">-</div>
 
@@ -899,7 +899,7 @@
         <i class="fas fa-shield-alt text-warning mr-1"></i> Terkoneksi Rekam Medis Digital &amp; Layar TV Display Real-Time
     </div>
     <div>
-        Sawamawa Smart Kiosk APM &copy; <?= date('Y') ?>
+        Gitria Klinik Smart Kiosk APM &copy; <?= date('Y') ?>
     </div>
 </div>
 

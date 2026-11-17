@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title><?= esc($title ?? 'Sawamawa Medical Center - Klinik Pratama & Pelayanan Kesehatan Terpadu') ?></title>
+    <title><?= esc($title ?? 'Gitria Klinik - Klinik Pratama & Pelayanan Kesehatan Terpadu') ?></title>
     
     <!-- Meta SEO & Open Graph -->
-    <meta name="description" content="Sawamawa Medical Center - Pusat Pelayanan Medis Terpadu, Poliklinik Dokter Spesialis, Farmasi E-Resep, Laboratorium, dan Resto Sehat di Sumbawa Besar.">
-    <meta name="keywords" content="klinik sumbawa, dokter spesialis sumbawa, sawamawa medical center, daftar online klinik, rekam medis elektronik, satusehat">
-    <meta name="author" content="<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>">
+    <meta name="description" content="Gitria Klinik - Pusat Pelayanan Medis Terpadu, Poliklinik Dokter Spesialis, Farmasi E-Resep, Laboratorium, dan Resto Sehat di Sumbawa Besar.">
+    <meta name="keywords" content="klinik sumbawa, dokter spesialis sumbawa, Gitria Klinik, daftar online klinik, rekam medis elektronik, satusehat">
+    <meta name="author" content="<?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>">
     <meta name="theme-color" content="#0d9488">
 
     <?php if (clinic_favicon()): ?>
@@ -730,7 +730,7 @@
     <div class="container d-flex flex-wrap justify-content-between align-items-center">
         <div class="d-flex align-items-center flex-wrap">
             <span class="badge badge-success mr-2 font-weight-bold" style="font-size: 10px; background: #059669; padding: 4px 8px;">IGD 24 JAM</span>
-            <span class="text-truncate"><i class="fas fa-location-dot mr-1"></i> <?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB')) ?></span>
+            <span class="text-truncate"><i class="fas fa-location-dot mr-1"></i> <?= esc(clinic_setting('clinic_address', 'Kelurahan Brang Biji, Sumbawa Besar, NTB')) ?></span>
         </div>
         <div class="d-none d-md-flex align-items-center" style="gap: 15px;">
             <span><i class="fab fa-whatsapp mr-1"></i> Hotline: <a href="https://api.whatsapp.com/send?phone=<?= clinic_setting('clinic_phone', '6281234567890') ?>" target="_blank"><?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?></a></span>
@@ -748,7 +748,7 @@
             <?php else: ?>
                 <span class="text-teal mr-2" style="font-size: 24px;"><i class="fas fa-hospital-user"></i></span>
             <?php endif; ?>
-            <span><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span>
+            <span><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span>
         </a>
         
         <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
@@ -882,7 +882,7 @@
                             <i class="fas fa-clock mr-1"></i> Pendaftaran Online &amp; WA Sedang Tutup
                         </button>
                         <div class="mt-3 text-center">
-                            <small class="text-muted">Untuk kondisi darurat, silakan langsung menuju <strong>IGD Sawamawa Medical Center (24 Jam)</strong>.</small>
+                            <small class="text-muted">Untuk kondisi darurat, silakan langsung menuju <strong>IGD Gitria Klinik (24 Jam)</strong>.</small>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -1152,7 +1152,7 @@
     <div class="container">
         <div class="row pb-4 border-bottom" style="border-color: #334155 !important;">
             <div class="col-lg-5 col-md-6 col-12 mb-4 mb-lg-0">
-                <div class="h6 text-white font-weight-bold mb-2"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></div>
+                <div class="h6 text-white font-weight-bold mb-2"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></div>
                 <p class="text-xs" style="color: #94a3b8; max-width: 380px;">Klinik Pratama Rawat Jalan, Pelayanan Farmasi e-Resep, Laboratorium Diagnostik, dan Resto Gizi Terpadu Sumbawa Besar, NTB.</p>
                 <div class="mt-3">
                     <span class="badge badge-dark border py-2 px-3 text-teal font-weight-bold" style="background:#1e293b; border-color:#334155 !important; color:#2dd4bf !important;">
@@ -1175,7 +1175,7 @@
                 <h5>Kontak Resmi</h5>
                 <p class="text-xs mb-1 text-white font-weight-bold"><i class="fab fa-whatsapp mr-1 text-teal"></i> <?= esc(clinic_setting('clinic_phone', '0812-3456-7890')) ?></p>
                 <p class="text-xs mb-1 text-white"><i class="fas fa-envelope mr-1 text-teal"></i> <?= esc(clinic_setting('clinic_email', 'info@sawamawamedicalcenter.id')) ?></p>
-                <p class="text-xs mt-2" style="color: #94a3b8;"><?= esc(clinic_setting('clinic_address', 'Jl. Kebangsaan No. 12, Sumbawa Besar, NTB')) ?></p>
+                <p class="text-xs mt-2" style="color: #94a3b8;"><?= esc(clinic_setting('clinic_address', 'Kelurahan Brang Biji, Sumbawa Besar, NTB')) ?></p>
             </div>
         </div>
 
@@ -1201,7 +1201,7 @@
         </div>
 
         <div class="pt-3 text-center text-xs" style="color: #64748b;">
-            &copy; 2026 PT. ARM ERA CORPORAT &mdash; <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>. All rights reserved.
+            &copy; 2026 PT. ARM ERA CORPORAT &mdash; <?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>. All rights reserved.
         </div>
     </div>
 </footer>
@@ -1215,7 +1215,7 @@
                     <h5 class="modal-title font-weight-bold d-flex align-items-center mb-0" id="modalDaftarWaTitle" style="font-size: 17px;">
                         <i class="fab fa-whatsapp fa-lg mr-2"></i> Pendaftaran Berobat via WhatsApp
                     </h5>
-                    <small class="text-white-50">Layanan reservasi langsung ke WhatsApp Admin Sawamawa Medical Center</small>
+                    <small class="text-white-50">Layanan reservasi langsung ke WhatsApp Admin Gitria Klinik Medical Center</small>
                 </div>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -1227,7 +1227,7 @@
                         <i class="fas fa-clock text-warning fa-lg mr-1"></i> <strong class="text-dark">Layanan Pendaftaran Berobat via WhatsApp Sedang Ditutup</strong>
                         <div class="text-xs text-secondary mt-1"><?= esc($closedMessage) ?></div>
                         <div class="mt-2 text-xs font-weight-bold text-dark">
-                            <i class="fas fa-hospital mr-1 text-teal"></i> Untuk kondisi darurat medis, silakan langsung menuju IGD Sawamawa Medical Center (Siaga 24 Jam).
+                            <i class="fas fa-hospital mr-1 text-teal"></i> Untuk kondisi darurat medis, silakan langsung menuju IGD Gitria Klinik (Siaga 24 Jam).
                         </div>
                     </div>
                 <?php endif; ?>
@@ -1451,7 +1451,7 @@
                 }
 
                 msg = `*PENDAFTARAN BEROBAT VIA WHATSAPP*\n` +
-                      `*<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>*\n` +
+                      `*<?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>*\n` +
                       `---------------------------------------\n` +
                       `• *Status Pasien:* PASIEN BARU\n` +
                       `• *Nama Lengkap:* ${name}\n` +
@@ -1477,7 +1477,7 @@
                 }
 
                 msg = `*PENDAFTARAN BEROBAT VIA WHATSAPP*\n` +
-                      `*<?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center')) ?>*\n` +
+                      `*<?= esc(clinic_setting('clinic_name', 'Gitria Klinik')) ?>*\n` +
                       `---------------------------------------\n` +
                       `• *Status Pasien:* PASIEN LAMA\n` +
                       `• *No. Rekam Medis (RM) / NIK:* ${rm}\n` +
@@ -1540,7 +1540,7 @@
         // Share Article to WhatsApp
         $('#btn-share-article-wa').click(function() {
             const shareUrl = window.location.origin + '<?= base_url('berita/') ?>' + currentArticleSlug;
-            const text = `*${currentArticleTitle}*\nBaca selengkapnya artikel kesehatan dari <?= esc(clinic_setting('clinic_name', 'Sawamawa Medical Center'), 'js') ?> di:\n${shareUrl}`;
+            const text = `*${currentArticleTitle}*\nBaca selengkapnya artikel kesehatan dari <?= esc(clinic_setting('clinic_name', 'Gitria Klinik'), 'js') ?> di:\n${shareUrl}`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         });
 

@@ -14,7 +14,7 @@ class RunSystemTests extends BaseCommand
     public function run(array $params)
     {
         CLI::write("==================================================================", 'yellow');
-        CLI::write("🚀 PENGUJIAN OTOMATIS ARSITEKTUR TERPADU SAWAMAWA MEDICAL CENTER", 'yellow');
+        CLI::write("🚀 PENGUJIAN OTOMATIS ARSITEKTUR TERPADU GITRIA KLINIK", 'yellow');
         CLI::write("==================================================================", 'yellow');
 
         $totalSuites = 6;

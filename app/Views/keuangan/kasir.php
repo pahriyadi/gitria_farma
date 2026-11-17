@@ -1461,7 +1461,7 @@
                             if (action === 'to_pharmacy') {
                                 speechText = 'Nomor antrean ' + spokenQ + ', atas nama ' + pName + ', pembayaran kasir telah selesai. Silakan menuju ke Loket Farmasi dan Apotek untuk pengambilan obat. Terima kasih.';
                             } else {
-                                speechText = 'Nomor antrean ' + spokenQ + ', atas nama ' + pName + ', pembayaran dan pelayanan telah selesai. Terima kasih banyak atas kunjungan Anda di Sawamawa Medical Center.';
+                                speechText = 'Nomor antrean ' + spokenQ + ', atas nama ' + pName + ', pembayaran dan pelayanan telah selesai. Terima kasih banyak atas kunjungan Anda di Gitria Klinik.';
                             }
                             const utt = new SpeechSynthesisUtterance(speechText);
                             utt.lang = 'id-ID';

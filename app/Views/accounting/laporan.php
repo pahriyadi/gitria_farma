@@ -286,7 +286,7 @@ body.dark-mode .table-bordered thead th {
             <div class="tab-pane fade show active" id="tab-labarugi">
                 <div class="text-center mb-4 pb-2 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-1" style="letter-spacing: 0.5px;">LAPORAN LABA RUGI KOMPREHENSIF</h5>
-                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span><br>
+                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span><br>
                     <small class="text-muted font-weight-bold">Standar Pelaporan: SAK EMKM / Bank Indonesia &bull; Mata Uang: Rupiah (IDR)</small><br>
                     <span class="badge badge-light border mt-1">Periode: <?= date('d F Y', strtotime($startDate)) ?> s/d <?= date('d F Y', strtotime($endDate)) ?></span>
                 </div>
@@ -408,7 +408,7 @@ body.dark-mode .table-bordered thead th {
             <div class="tab-pane fade" id="tab-neraca">
                 <div class="text-center mb-4 pb-2 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-1" style="letter-spacing: 0.5px;">LAPORAN POSISI KEUANGAN (NERACA)</h5>
-                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span><br>
+                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span><br>
                     <small class="text-muted font-weight-bold">Klasifikasi Aset Lancar, Aset Tetap, Liabilitas & Ekuitas SAK EMKM</small><br>
                     <span class="badge badge-light border mt-1">Per Tanggal: <?= date('d F Y', strtotime($endDate)) ?></span>
                 </div>
@@ -567,7 +567,7 @@ body.dark-mode .table-bordered thead th {
             <div class="tab-pane fade" id="tab-aruskas">
                 <div class="text-center mb-4 pb-2 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-1" style="letter-spacing: 0.5px;">LAPORAN ARUS KAS (METODE LANGSUNG)</h5>
-                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span><br>
+                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span><br>
                     <small class="text-muted font-weight-bold">Penerimaan & Pengeluaran Kas Operasi, Investasi, dan Pendanaan</small><br>
                     <span class="badge badge-light border mt-1">Periode: <?= date('d F Y', strtotime($startDate)) ?> s/d <?= date('d F Y', strtotime($endDate)) ?></span>
                 </div>
@@ -645,7 +645,7 @@ body.dark-mode .table-bordered thead th {
             <div class="tab-pane fade" id="tab-unitbisnis">
                 <div class="text-center mb-4 pb-2 border-bottom">
                     <h5 class="font-weight-bold text-dark mb-1" style="letter-spacing: 0.5px;">REKAPITULASI KONTRIBUSI OMSET PER UNIT BISNIS</h5>
-                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER')) ?></span><br>
+                    <span class="text-teal font-weight-bold" style="font-size:14px;"><?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK')) ?></span><br>
                     <small class="text-muted font-weight-bold">Performa Lini Usaha Rawat Jalan, Farmasi, Restoran & Laboratorium</small><br>
                     <span class="badge badge-light border mt-1">Periode: <?= date('d F Y', strtotime($startDate)) ?> s/d <?= date('d F Y', strtotime($endDate)) ?></span>
                 </div>

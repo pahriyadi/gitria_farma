@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Kwitansi Pembayaran') ?> - Sawamawa Medical Center</title>
+    <title><?= esc($title ?? 'Kwitansi Pembayaran') ?> - Gitria Klinik</title>
     <!-- Google Font: Source Sans Pro & Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -172,10 +172,10 @@ function terbilangAngka($angka) {
         <!-- Clinic Header -->
         <div class="clinic-header d-flex justify-content-between align-items-center">
             <div>
-                <div class="clinic-title"><i class="fas fa-hospital-alt mr-1"></i> SAWAMAWA MEDICAL CENTER</div>
+                <div class="clinic-title"><i class="fas fa-hospital-alt mr-1"></i> GITRIA KLINIK</div>
                 <div class="text-secondary small font-weight-bold">Layanan Kesehatan Primer, Spesialis, Apotek Farmasi & Resto Gizi</div>
                 <div class="text-muted text-xs">Izin Operasional: 440/102/SIP-K/DINKES/2026 | NPWP: 98.765.432.1-912.000</div>
-                <div class="text-muted text-xs">Jl. Kebangsaan No. 12, Sumbawa Besar, NTB | Telp: (0371) 23456 / WA: 0812-3456-7890</div>
+                <div class="text-muted text-xs">Kelurahan Brang Biji, Sumbawa Besar, NTB | Telp: (0371) 23456 / WA: 0812-3456-7890</div>
             </div>
             <div class="text-right">
                 <span class="receipt-badge text-uppercase"><i class="fas fa-receipt mr-1"></i> KWITANSI PEMBAYARAN</span>
@@ -322,7 +322,7 @@ function terbilangAngka($angka) {
                     <?php endif; ?>
                 </div>
                 <div class="text-muted text-xs font-italic">
-                    * Kwitansi ini merupakan bukti pembayaran yang sah yang diterbitkan secara elektronik oleh Sistem Informasi Sawamawa Medical Center.
+                    * Kwitansi ini merupakan bukti pembayaran yang sah yang diterbitkan secara elektronik oleh Sistem Informasi Gitria Klinik.
                 </div>
             </div>
             <div class="col-5">

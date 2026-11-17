@@ -455,7 +455,7 @@ class RestoService
         }
 
         if (empty($recommendations)) {
-            $recommendations[] = ['tag' => 'Menu Sehat Seimbang', 'badge' => 'teal', 'desc' => 'Cocok untuk seluruh menu bergizi Sawamawa Resto'];
+            $recommendations[] = ['tag' => 'Menu Sehat Seimbang', 'badge' => 'teal', 'desc' => 'Cocok untuk seluruh menu bergizi Gitria Klinik Resto'];
         }
 
         return [

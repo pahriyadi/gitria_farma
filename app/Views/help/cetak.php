@@ -104,7 +104,7 @@
             <?php endif; ?>
             <div>
                 <h4 class="font-weight-bold mb-0 text-dark" style="font-family:'Outfit', sans-serif;">
-                    <?= esc(clinic_setting('clinic_name', 'SAWAMAWA MEDICAL CENTER & RESTO GIZI')) ?>
+                    <?= esc(clinic_setting('clinic_name', 'GITRIA KLINIK & RESTO GIZI')) ?>
                 </h4>
                 <small class="text-secondary d-block font-weight-bold">Buku Pedoman Operasional &amp; Alur Sistem Terpadu</small>
                 <small class="text-muted"><?= esc(clinic_setting('clinic_address', 'Sumbawa Besar, NTB')) ?> | Telp: <?= esc(clinic_setting('clinic_phone', '(0371) 23456')) ?></small>
@@ -166,7 +166,7 @@
     <?php endif; ?>
 
     <div class="mt-4 p-2 bg-light rounded text-center text-xs text-muted border">
-        Dokumen ini diterbitkan secara dinamis dari basis data sistem ERP Sawamawa Medical Center.
+        Dokumen ini diterbitkan secara dinamis dari basis data sistem ERP Gitria Klinik.
     </div>
 </div>
 
