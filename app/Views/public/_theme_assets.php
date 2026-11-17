@@ -136,17 +136,66 @@
         color: #facc15;
     }
 
-    /* Daftar Online Specific Dark Mode Overrides (mengatasi inline background) */
+    /* Daftar Online Specific Dark Mode Overrides (mengatasi inline background & pseudo-element) */
+    body.dark-mode .reg-header-banner::after {
+        background: #14171a !important;
+    }
+    body.dark-mode .step-heading {
+        color: #f0f6fc !important;
+        border-bottom-color: #374151 !important;
+    }
+    body.dark-mode .step-num-badge {
+        background: rgba(20, 184, 166, 0.2) !important;
+        color: #5eead4 !important;
+    }
+    body.dark-mode .patient-type-box {
+        background: #181b1f !important;
+        border-color: #374151 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .patient-type-box:hover,
+    body.dark-mode .patient-type-box.active {
+        background: rgba(13, 148, 136, 0.18) !important;
+        border-color: #14b8a6 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .btn-toggle-service {
+        background: #181b1f !important;
+        border-color: #374151 !important;
+        color: #d1d5db !important;
+    }
+    body.dark-mode .btn-toggle-service:hover {
+        background: rgba(13, 148, 136, 0.16) !important;
+        border-color: #14b8a6 !important;
+        color: #5eead4 !important;
+    }
+    body.dark-mode .btn-toggle-service.active {
+        background: #0d9488 !important;
+        border-color: #0d9488 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode .form-control-custom {
+        background-color: #14171a !important;
+        border-color: #374151 !important;
+        color: #f0f6fc !important;
+    }
+    body.dark-mode .form-control-custom:focus {
+        background-color: #181b1f !important;
+        border-color: #14b8a6 !important;
+        color: #f0f6fc !important;
+    }
     body.dark-mode .status-indicator-bar {
         background: #181b1f !important;
         border-bottom: 1px solid #374151 !important;
     }
-    body.dark-mode .status-open {
+    body.dark-mode .status-open,
+    body.dark-mode .status-pill-open {
         background: rgba(16, 185, 129, 0.14) !important;
         color: #6ee7b7 !important;
         border-color: rgba(16, 185, 129, 0.35) !important;
     }
-    body.dark-mode .status-closed {
+    body.dark-mode .status-closed,
+    body.dark-mode .status-pill-closed {
         background: rgba(239, 68, 68, 0.14) !important;
         color: #fca5a5 !important;
         border-color: rgba(239, 68, 68, 0.35) !important;
